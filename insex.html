@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>慢慢的倉庫</title>
+
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --text: #202426;
+      --muted: #687176;
+      --line: #d9dddf;
+      --accent: #536d78;
+      --content: 760px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    main {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 72px 0;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .intro {
+      margin: 0 0 40px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item {
+      display: block;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .item:hover {
+      border-color: var(--accent);
+    }
+
+    .item-title {
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .item-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>慢慢的倉庫</h1>
+
+    <p class="intro">
+      stillness by slowly 的共用模組與工具存放處。
+    </p>
+
+    <div class="list">
+      <a class="item" href="./slowly-data.js">
+        <div class="item-title">Slowly Data Core</div>
+        <div class="item-desc">
+          共用資料處理與本機儲存模組。
+        </div>
+      </a>
+    </div>
+  </main>
+</body>
+</html>
