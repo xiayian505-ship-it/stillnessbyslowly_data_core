@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar Terms 功能測試</title>
+
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --text: #202426;
+      --muted: #687176;
+      --line: #d9dddf;
+      --accent: #536d78;
+      --success: #5d806d;
+      --fail: #a35f59;
+      --content: 760px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    main {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 72px 0;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 2rem;
+    }
+
+    .intro {
+      margin: 0 0 32px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .card {
+      margin-top: 20px;
+      padding: 28px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .card h2 {
+      margin: 0 0 22px;
+      font-size: 1.2rem;
+    }
+
+    .status {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 28px;
+      line-height: 1.8;
+    }
+
+    .pass { color: var(--success); font-weight: 700; }
+    .fail { color: var(--fail); font-weight: 700; }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      color: var(--muted);
+    }
+
+    input, select, button {
+      width: 100%;
+      min-height: 48px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+
+    button {
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      line-height: 1.9;
+      white-space: pre-line;
+    }
+
+    .test-row {
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+      line-height: 1.6;
+    }
+
+    .test-row:first-of-type {
+      border-top: 0;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        width: min(calc(100% - 24px), var(--content));
+        padding: 40px 0;
+      }
+
+      h1 { font-size: 1.7rem; }
+      .card { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Solar Terms 功能測試</h1>
+
+    <p class="intro">
+      測試 solar_terms_data.js 與 solar_terms.js 的載入、24 節氣查詢、
+      日期查詢、下一節氣、支援範圍與已知午夜邊界案例。
+    </p>
+
+    <section class="card">
+      <h2>模組狀態</h2>
+      <div id="moduleStatus" class="status"></div>
+    </section>
+
+    <section class="card">
+      <h2>年份 → 24 節氣</h2>
+
+      <label for="yearInput">國曆年份</label>
+      <input id="yearInput" type="number" min="1901" max="2100" value="2026">
+
+      <button id="yearButton" type="button">查詢</button>
+
+      <div id="yearResult" class="result"></div>
+    </section>
+
+    <section class="card">
+      <h2>日期 → 節氣</h2>
+
+      <label for="dateInput">國曆日期</label>
+      <input id="dateInput" type="date" min="1901-01-01" max="2100-12-31" value="2026-02-04">
+
+      <button id="dateButton" type="button">查詢</button>
+
+      <div id="dateResult" class="result"></div>
+    </section>
+
+    <section class="card">
+      <h2>指定節氣</h2>
+
+      <label for="termYear">年份</label>
+      <input id="termYear" type="number" min="1901" max="2100" value="2026">
+
+      <label for="termName">節氣</label>
+      <select id="termName"></select>
+
+      <button id="termButton" type="button">查詢</button>
+
+      <div id="termResult" class="result"></div>
+    </section>
+
+    <section class="card">
+      <h2>自動測試</h2>
+      <div id="summary" class="status"></div>
+      <div id="tests"></div>
+    </section>
+  </main>
+
+  <script src="https://lib.stillnessbyslowly.com/calendar/solar_terms_data.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/calendar/solar_terms.js"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const statusEl = document.getElementById("moduleStatus");
+      const summaryEl = document.getElementById("summary");
+      const testsEl = document.getElementById("tests");
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;");
+      }
+
+      function showModuleStatus() {
+        if (!window.SolarTermsData || !window.SolarTerms) {
+          statusEl.innerHTML = '<span class="fail">FAIL：模組未載入</span>';
+          return;
+        }
+
+        statusEl.innerHTML =
+          '<span class="pass">PASS：模組已載入</span>' +
+          '<span>SolarTerms v' + escapeHtml(SolarTerms.VERSION) + '</span>' +
+          '<span>Data v' + escapeHtml(SolarTermsData.VERSION) + '</span>' +
+          '<span>' + escapeHtml(SolarTerms.SUPPORTED_RANGE.start) +
+          ' ～ ' + escapeHtml(SolarTerms.SUPPORTED_RANGE.end) + '</span>';
+      }
+
+      function formatTerm(term) {
+        let text =
+          term.date + "　" +
+          term.name + "　" +
+          term.longitude + "°";
+
+        if (term.boundaryCase) {
+          text += "　[已知午夜邊界]";
+        }
+
+        if (term.note) {
+          text += "\n" + term.note;
+        }
+
+        return text;
+      }
+
+      function fillTermSelect() {
+        const select = document.getElementById("termName");
+        SolarTerms.TERM_ORDER.forEach(function (name) {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          select.appendChild(option);
+        });
+        select.value = "立春";
+      }
+
+      document.getElementById("yearButton").addEventListener("click", function () {
+        const result = document.getElementById("yearResult");
+
+        try {
+          const year = Number(document.getElementById("yearInput").value);
+          const terms = SolarTerms.get(year);
+          result.textContent = terms.map(formatTerm).join("\n");
+        } catch (error) {
+          result.textContent = "ERROR：" + error.message;
+        }
+      });
+
+      document.getElementById("dateButton").addEventListener("click", function () {
+        const result = document.getElementById("dateResult");
+
+        try {
+          const date = document.getElementById("dateInput").value;
+          const terms = SolarTerms.getByDate(date);
+          const next = SolarTerms.next(date);
+
+          result.textContent =
+            (terms.length
+              ? "當日節氣：\n" + terms.map(formatTerm).join("\n")
+              : "當日沒有節氣。") +
+            "\n\n下一節氣：\n" +
+            (next ? formatTerm(next) : "支援範圍內已無下一節氣。");
+        } catch (error) {
+          result.textContent = "ERROR：" + error.message;
+        }
+      });
+
+      document.getElementById("termButton").addEventListener("click", function () {
+        const result = document.getElementById("termResult");
+
+        try {
+          const year = Number(document.getElementById("termYear").value);
+          const name = document.getElementById("termName").value;
+          result.textContent = formatTerm(SolarTerms.getTerm(year, name));
+        } catch (error) {
+          result.textContent = "ERROR：" + error.message;
+        }
+      });
+
+      const testCases = [];
+
+      function test(name, fn) {
+        try {
+          const ok = fn();
+          testCases.push({ name: name, pass: ok === true });
+        } catch (error) {
+          testCases.push({
+            name: name,
+            pass: false,
+            error: error.message
+          });
+        }
+      }
+
+      function throws(fn) {
+        try {
+          fn();
+          return false;
+        } catch (_) {
+          return true;
+        }
+      }
+
+      test("2026 有完整 24 節氣", function () {
+        return SolarTerms.get(2026).length === 24;
+      });
+
+      test("2026 立春 = 2026-02-04", function () {
+        return SolarTerms.getTerm(2026, "立春").date === "2026-02-04";
+      });
+
+      test("2026 春分 = 2026-03-20", function () {
+        return SolarTerms.getTerm(2026, "春分").date === "2026-03-20";
+      });
+
+      test("2026 夏至 = 2026-06-21", function () {
+        return SolarTerms.getTerm(2026, "夏至").date === "2026-06-21";
+      });
+
+      test("2026 秋分 = 2026-09-23", function () {
+        return SolarTerms.getTerm(2026, "秋分").date === "2026-09-23";
+      });
+
+      test("2026 冬至 = 2026-12-22", function () {
+        return SolarTerms.getTerm(2026, "冬至").date === "2026-12-22";
+      });
+
+      test("日期 2026-02-04 可查到立春", function () {
+        const rows = SolarTerms.getByDate("2026-02-04");
+        return rows.length === 1 && rows[0].name === "立春";
+      });
+
+      test("2026-09-06 下一節氣 = 白露", function () {
+        return SolarTerms.next("2026-09-06").name === "白露";
+      });
+
+      test("1901 起始年份可查", function () {
+        return SolarTerms.get(1901).length === 24;
+      });
+
+      test("2100 結束年份可查", function () {
+        return SolarTerms.get(2100).length === 24;
+      });
+
+      test("1900 年明確拒絕", function () {
+        return throws(function () { SolarTerms.get(1900); });
+      });
+
+      test("2101 年明確拒絕", function () {
+        return throws(function () { SolarTerms.get(2101); });
+      });
+
+      test("不存在的節氣名稱明確拒絕", function () {
+        return throws(function () {
+          SolarTerms.getTerm(2026, "慢慢節");
+        });
+      });
+
+      test("2051 春分已標記午夜邊界", function () {
+        const term = SolarTerms.getTerm(2051, "春分");
+        return term.date === "2051-03-20" && term.boundaryCase === true;
+      });
+
+      test("2083 立春已標記午夜邊界", function () {
+        const term = SolarTerms.getTerm(2083, "立春");
+        return term.date === "2083-02-03" && term.boundaryCase === true;
+      });
+
+      test("2084 春分已標記午夜邊界", function () {
+        const term = SolarTerms.getTerm(2084, "春分");
+        return term.date === "2084-03-19" && term.boundaryCase === true;
+      });
+
+      test("節氣黃經順序正確", function () {
+        const expected = [
+          285, 300, 315, 330, 345, 0,
+          15, 30, 45, 60, 75, 90,
+          105, 120, 135, 150, 165, 180,
+          195, 210, 225, 240, 255, 270
+        ];
+
+        return SolarTerms.get(2026).every(function (term, index) {
+          return term.longitude === expected[index];
+        });
+      });
+
+      test("nextOrSame 在節氣當日回傳當日節氣", function () {
+        return SolarTerms.nextOrSame("2026-02-04").name === "立春";
+      });
+
+      function renderTests() {
+        let passCount = 0;
+
+        testCases.forEach(function (item) {
+          if (item.pass) passCount += 1;
+
+          const row = document.createElement("div");
+          row.className = "test-row";
+          row.innerHTML =
+            '<span class="' + (item.pass ? "pass" : "fail") + '">' +
+            (item.pass ? "PASS" : "FAIL") +
+            "</span> — " +
+            escapeHtml(item.name) +
+            (item.error ? "<br>" + escapeHtml(item.error) : "");
+
+          testsEl.appendChild(row);
+        });
+
+        const failCount = testCases.length - passCount;
+
+        summaryEl.innerHTML =
+          '<span class="' + (failCount === 0 ? "pass" : "fail") + '">' +
+          passCount + "/" + testCases.length + " PASS</span>" +
+          "<span>" + failCount + " FAIL</span>";
+      }
+
+      try {
+        showModuleStatus();
+
+        if (!window.SolarTermsData || !window.SolarTerms) {
+          throw new Error("模組未載入，停止測試。");
+        }
+
+        fillTermSelect();
+        renderTests();
+
+        // 初始畫面直接顯示 2026。
+        document.getElementById("yearButton").click();
+        document.getElementById("dateButton").click();
+        document.getElementById("termButton").click();
+      } catch (error) {
+        summaryEl.innerHTML =
+          '<span class="fail">FAIL：' + escapeHtml(error.message) + "</span>";
+      }
+    })();
+  </script>
+</body>
+</html>
