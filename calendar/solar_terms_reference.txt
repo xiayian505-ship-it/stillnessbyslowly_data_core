@@ -1,53 +1,70 @@
 24 SOLAR TERMS REFERENCE
-Version: 0.1-draft
-Prepared: 2026-09-06
+Version: 1.0
+Updated: 2026-09-06
 
 PURPOSE
 =======
-This file is the source/provenance and implementation contract for the future solar_terms.js module.
+This file is the source/provenance, verification policy, and implementation contract
+for solar_terms_data.js and solar_terms.js.
+
 It is intended to be readable by both humans and AI-assisted development tools.
 
 This file is NOT executable code.
+
 Do not infer solar terms from lunar dates.
 Do not silently change timezone conventions.
 Do not hide known astronomical uncertainty.
+Do not claim verification work that has not been completed.
+
+Before modifying solar_terms_data.js or solar_terms.js, read this reference first.
 
 
 SUPPORTED RANGE
 ===============
-Target Gregorian range: 1901-01-01 through 2100-12-31.
+Supported Gregorian year range:
+
+1901 through 2100
 
 The range is intentionally finite.
-Dates outside this range are unsupported unless this reference is explicitly extended and re-verified.
+
+Dates outside this range are unsupported unless this reference, the dataset,
+and the implementation are explicitly extended and re-verified.
 
 Do not extrapolate beyond 1901-2100.
 
 
 SCOPE
 =====
-The future solar_terms.js module may provide, within the supported range:
+Within the supported range, solar_terms.js provides access to the 24 solar terms
+stored in solar_terms_data.js.
 
-- The 24 solar terms for a Gregorian year
+The current data model includes:
+
+- The 24 solar terms for each Gregorian year
 - Solar-term name
-- Solar longitude associated with each term
-- Civil date of a solar term for the selected Taiwan interpretation
-- Solar-term instant/time when retained by the dataset
-- Lookup by date
+- Solar longitude
+- UTC+8 civil date
+- Lookup by Gregorian date
 - Lookup of a named term in a year
-- Next solar term after a date/time
+- Lookup of the next solar term
 
-Lunar-calendar conversion is NOT defined by this file.
+The production dataset currently preserves DATE + NAME + SOLAR LONGITUDE.
+
+It intentionally does not claim exact historical Asia/Taipei local timestamps.
+
+Lunar-calendar conversion is NOT defined by this reference.
 See lunar_reference.txt.
 
-Festival definitions are NOT defined by this file.
+Festival definitions are NOT defined by this reference.
 
 
 ASTRONOMICAL DEFINITION
 =======================
-The 24 solar terms are astronomical events defined by the apparent solar longitude,
+The 24 solar terms are astronomical events defined by apparent solar longitude,
 spaced at 15-degree intervals around the ecliptic.
 
 Examples:
+
 - Vernal Equinox / 春分: 0 degrees
 - 清明: 15 degrees
 - Autumnal Equinox / 秋分: 180 degrees
@@ -56,25 +73,57 @@ Examples:
 Solar terms must not be derived from lunar-calendar dates.
 
 
+DATA DESIGN
+===========
+solar_terms_data.js stores an expanded, human-readable dataset.
+
+For each Gregorian year from 1901 through 2100, it stores 24 records containing:
+
+- Solar-term name
+- Solar longitude
+- Gregorian civil date
+
+The complete current dataset therefore contains:
+
+200 years x 24 terms = 4,800 records
+
+The project intentionally prioritizes:
+
+- Readability
+- Verifiability
+- Maintainability
+
+over compressed representation.
+
+The current dataset stores civil dates rather than historical local event times
+because exact historical Asia/Taipei civil timestamps have not been fully verified.
+
+This avoids manufacturing false precision.
+
+
 CANONICAL CIVIL-TIME INTERPRETATION
 ===================================
 Intended consumer context:
 Taiwan
 
-Canonical modern offset for comparison:
+Canonical modern comparison offset:
 UTC+8
 
 When an astronomical source publishes in Japan Standard Time (JST / UTC+9),
-subtract one hour to obtain the corresponding UTC+8 clock time.
+subtract one hour to obtain the corresponding UTC+8 clock time for comparison.
 
 IMPORTANT:
+
 Historical civil-time rules and daylight-saving-time histories must not be casually
 substituted between Hong Kong, Japan, and Taiwan.
 
-HKO is primarily used here as an official published DATE reference across 1901-2100.
+HKO is primarily used as an official published DATE reference across 1901-2100.
+
 NAOJ is used as an independent astronomical calculation source.
 
-Future implementation work that claims exact historical Asia/Taipei civil timestamps
+The current production dataset stores dates only.
+
+Any future implementation that claims exact historical Asia/Taipei civil timestamps
 must explicitly verify Taiwan's historical timezone rules rather than assuming that
 all historical local clock times were permanently UTC+8.
 
@@ -96,7 +145,9 @@ Published coverage:
 The yearly official tables include solar-term dates.
 
 Role:
-Primary long-range published date reference and source of known uncertainty warnings.
+
+Primary long-range published date reference and source of known astronomical
+uncertainty warnings.
 
 
 INDEPENDENT ASTRONOMICAL SOURCE
@@ -112,6 +163,7 @@ Official URL:
 https://eco.mtk.nao.ac.jp/cgi-bin/koyomi/cande/phenomena_sy.cgi
 
 Output includes:
+
 - Date
 - Time
 - Solar-term name
@@ -120,19 +172,42 @@ Output includes:
 Published time basis:
 Japan Standard Time / UT+9
 
-NAOJ states that the long-term results are calculated using current theories and
+NAOJ states that its long-term results are calculated using current theories and
 parameters and may differ from previously published or future values.
+
 The tool does not account for daylight-saving time.
 
 Role:
+
 Independent astronomical calculation and minute-level cross-check.
 
 
-2026 SOURCE QUALIFICATION TEST
-==============================
+DATASET GENERATION
+==================
+The current 1901-2100 dataset was assembled as a complete 4,800-record date
+candidate set.
+
+Generation method:
+
+- Locate astronomical roots where apparent solar longitude reaches successive
+  15-degree multiples.
+- Interpret resulting civil dates using UTC+8.
+- Preserve name and corresponding solar longitude.
+- For HKO explicitly identified midnight-boundary cases, use the HKO published
+  civil date as the project's selected value.
+
+This generated dataset is usable by the current API and test suite.
+
+However, generated astronomical output is not treated as its own final independent
+verification source.
+
+
+2026 SOURCE QUALIFICATION
+=========================
 Status: PASS
 
 HKO and NAOJ were compared for 2026.
+
 After converting NAOJ JST to UTC+8 by subtracting one hour, checked solar-term
 instants/dates agreed with HKO.
 
@@ -159,31 +234,41 @@ NAOJ JST:  2026-12-22 05:50
 Converted: 2026-12-22 04:50
 
 
-RANGE / STRESS TEST STATUS
-==========================
-The project has additionally checked representative historical, current, future,
-range-end, and known-boundary cases.
+RANGE / STRESS VERIFICATION
+===========================
+Representative historical, current, future, range-end, and known-boundary cases
+have been checked.
 
-Checked examples include:
+Recorded examples include:
+
 - 1976: historical sample; official sources aligned at the date level
-- 2026: full source-qualification sample; PASS
+- 2026: source-qualification sample; PASS
 - 2076: future date-level sample; PASS
 - 2100: end-of-range sample; HKO dates aligned with NAOJ after timezone conversion
 
-The existence of these checks does NOT mean every one of the 4,800 solar-term events
-in 1901-2100 has already been individually frozen into this reference file.
+Additional directly checked published dates currently recorded by the dataset
+include:
 
-Before final dataset release, automated or systematic comparison should be preferred
-over manual transcription.
+- 2021 Winter Solstice / 冬至: 2021-12-21
+- 2051 Vernal Equinox / 春分: 2051-03-20
+- 2083 Start of Spring / 立春: 2083-02-03
+- 2084 Vernal Equinox / 春分: 2084-03-19
+
+These checks establish useful confidence and protect known edge cases.
+
+They do NOT mean that every one of the 4,800 records has been individually frozen
+against the HKO published tables.
 
 
 KNOWN ASTRONOMICAL BOUNDARY CASES
 =================================
 WARNING:
 
-HKO states that calculations of moon phases and solar-term times many decades in the
-future may have errors of several minutes. When an event is very close to midnight,
-the published civil date can consequently differ by one day.
+HKO states that calculations of moon phases and solar-term times many decades into
+the future may have errors of several minutes.
+
+When an event is very close to midnight, the published civil date can consequently
+differ by one day.
 
 HKO specifically identifies solar-term date-risk cases including:
 
@@ -191,21 +276,27 @@ HKO specifically identifies solar-term date-risk cases including:
 - 2083 Start of Spring / 立春
 - 2084 Vernal Equinox / 春分
 
-These are KNOWN BOUNDARY CASES, not ordinary software bugs.
+Current project values for these cases follow the HKO published civil dates:
+
+- 2051 Vernal Equinox / 春分: 2051-03-20
+- 2083 Start of Spring / 立春: 2083-02-03
+- 2084 Vernal Equinox / 春分: 2084-03-19
+
+These are known astronomical boundary cases, not ordinary software bugs.
 
 Rules for these cases:
 
-1. Preserve the selected authoritative dataset value.
-2. Record the uncertainty.
+1. Preserve the selected authoritative published value.
+2. Preserve the uncertainty warning.
 3. Do not silently "correct" the date using another algorithm.
 4. If authoritative sources or later revisions disagree, document the discrepancy.
-5. A future AI modifying solar_terms.js must not remove the warning merely because
-   another calculation returns a different civil date.
+5. A future AI or developer must not remove the warning merely because another
+   calculation returns a different civil date.
 
 
 VERIFICATION POLICY
 ===================
-Before finalizing the production dataset:
+When creating or modifying solar_terms_data.js:
 
 1. Compare HKO published solar-term dates against an independent astronomical source.
 2. Convert timezones explicitly.
@@ -213,44 +304,83 @@ Before finalizing the production dataset:
 4. Give extra attention to events close to 00:00 local civil time.
 5. Preserve source institution, URL, retrieval date, and calculation convention.
 6. Record known disagreements and revisions.
-7. Do not use a single algorithm as both implementation and sole verification source.
+7. Do not use solar_terms_data.js itself as its only test oracle.
+8. Do not use a single generated astronomical algorithm as both implementation
+   and sole verification source.
+9. Do not claim exact historical Asia/Taipei timestamps without verifying the
+   applicable historical civil-time rules.
+10. Do not extrapolate beyond the supported range.
 
 
-IMPLEMENTATION CONTRACT FOR FUTURE solar_terms.js
-==================================================
-The future module should:
+IMPLEMENTATION CONTRACT
+=======================
+solar_terms_data.js:
 
-- Reject unsupported dates explicitly.
-- Never extrapolate beyond the verified supported range.
-- Keep solar-term logic independent from lunar-calendar conversion.
-- Use explicit timezone/civil-date rules.
-- Preserve known boundary-case warnings in documentation.
-- Avoid claiming false astronomical precision.
-- Expose supported-range information to consumers if practical.
+- Stores 24 solar-term records for every Gregorian year from 1901 through 2100.
+- Stores date, name, and solar longitude.
+- Contains 4,800 records in the current complete candidate dataset.
+- Uses UTC+8 civil-date interpretation.
+- Preserves selected HKO dates for documented midnight-boundary cases.
+- Does not claim exact historical local timestamps.
+- Must not silently extend itself beyond the documented range.
 
-A future AI or developer modifying solar_terms.js should read this reference first.
+solar_terms.js:
+
+- Depends on solar_terms_data.js.
+- Provides lookup over the finite dataset.
+- Rejects unsupported dates/years.
+- Does not derive solar terms from lunar dates.
+- Does not extrapolate beyond the supported dataset.
+- Keeps solar-term logic independent from lunar-calendar conversion.
+
+A future AI or developer modifying either file must read this reference first.
 
 
-DATA STATUS
-===========
+CURRENT DATA STATUS
+===================
 Source discovery: PASS
-2026 qualification test: PASS
-Historical sample: PASS
-Future sample: PASS at date level
+2026 source qualification: PASS
+Historical representative sample: PASS
+Future representative sample: PASS at date level
 2100 range-end sample: PASS
-Known midnight boundary cases: IDENTIFIED / FLAGGED
-Target range selected: 1901-2100
-Full 1901-2100 production dataset extraction: NOT YET COMPLETED
-solar_terms.js implementation: NOT YET STARTED
+Known midnight-boundary cases: IDENTIFIED / PRESERVED
+
+Target range:
+1901-2100
+
+solar_terms_data.js:
+- Complete 1901-2100 candidate dataset assembled
+- 4,800 date/name/longitude records present
+- Current data version: 0.1.0
+- Known HKO midnight-boundary dates preserved
+- Available for API and test use
+
+solar_terms.js:
+- Implementation completed
+- Current API version: 1.0.0
+- Uses solar_terms_data.js as its finite lookup dataset
+
+FULL 4,800-RECORD HKO SYSTEMATIC COMPARISON:
+NOT YET COMPLETED
+
+Therefore the current dataset must NOT be described as a line-by-line official
+freeze of all 4,800 HKO records.
+
+The external authoritative sources remain part of the verification contract.
 
 
 CHANGE LOG
 ==========
 2026-09-06
-- Created initial reference contract.
-- Selected target range 1901-2100.
+- Created the initial source and implementation contract.
+- Selected the supported range 1901-2100.
 - Recorded HKO long-range date reference.
 - Recorded NAOJ independent astronomical source.
-- Recorded 2026 qualification checks.
-- Recorded historical/future/range-end test status.
+- Recorded 2026 source qualification.
+- Recorded historical, future, and range-end representative checks.
 - Recorded known 2051, 2083, and 2084 midnight-boundary warnings.
+- Completed assembly of the 1901-2100, 4,800-record candidate dataset.
+- Completed solar_terms.js implementation.
+- Preserved HKO published civil dates for the documented midnight-boundary cases.
+- Updated this document from a future implementation draft to the current
+  source/provenance and implementation contract.
