@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar 月曆顯示測試</title>
+
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --text: #202426;
+      --muted: #687176;
+      --line: #d9dddf;
+      --accent: #536d78;
+      --content: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    main {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 56px 0 72px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+    }
+
+    .intro {
+      margin: 0 0 28px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .field { min-width: 160px; }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .field input,
+    .toolbar button {
+      min-height: 44px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .status {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .year-title {
+      margin: 0 0 18px;
+      font-size: 1.35rem;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .month {
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .month-title {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      font-weight: 700;
+    }
+
+    .weekdays,
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .weekday {
+      padding: 9px 4px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .day {
+      min-height: 68px;
+      padding: 7px 5px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .day:nth-child(7n) { border-right: 0; }
+
+    .day.empty { background: var(--bg); }
+
+    .gregorian {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .lunar,
+    .solar-term {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .lunar.month-start,
+    .solar-term {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .error {
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 900px) {
+      .calendar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      main {
+        width: min(calc(100% - 20px), var(--content));
+        padding: 36px 0 52px;
+      }
+
+      h1 { font-size: 1.65rem; }
+
+      .calendar { grid-template-columns: 1fr; }
+
+      .status {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .day { min-height: 64px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Calendar 月曆顯示測試</h1>
+
+    <p class="intro">
+      直接呼叫 Calendar.getYear() 產生全年資料，再由這個頁面畫成 12 個月。
+      Calendar 只提供資料，顯示方式由 HTML / CSS 負責。
+    </p>
+
+    <div class="toolbar">
+      <div class="field">
+        <label for="yearInput">年份</label>
+        <input id="yearInput" type="number" min="1901" max="2100" value="2027">
+      </div>
+
+      <button id="generateButton" type="button">生成年曆</button>
+
+      <div id="status" class="status"></div>
+    </div>
+
+    <h2 id="yearTitle" class="year-title"></h2>
+    <div id="calendar" class="calendar"></div>
+  </main>
+
+  <script src="https://lib.stillnessbyslowly.com/calendar/lunar_data.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/calendar/lunar.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/calendar/solar_terms_data.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/calendar/solar_terms.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/calendar/calendar.js"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
+      const MONTH_NAMES = [
+        "一月", "二月", "三月", "四月", "五月", "六月",
+        "七月", "八月", "九月", "十月", "十一月", "十二月"
+      ];
+
+      const yearInput = document.getElementById("yearInput");
+      const generateButton = document.getElementById("generateButton");
+      const status = document.getElementById("status");
+      const yearTitle = document.getElementById("yearTitle");
+      const calendar = document.getElementById("calendar");
+
+      function lunarLabel(lunar) {
+        if (!lunar) return "";
+
+        if (lunar.day === 1) {
+          return lunar.monthName || ((lunar.isLeap ? "閏" : "") + lunar.month + "月");
+        }
+
+        return lunar.dayName || String(lunar.day);
+      }
+
+      function solarTermLabel(value) {
+        if (!value) return "";
+
+        if (Array.isArray(value)) {
+          return value.map(function (item) {
+            return item.name || "";
+          }).filter(Boolean).join("、");
+        }
+
+        return value.name || "";
+      }
+
+      function createMonth(monthData) {
+        const monthEl = document.createElement("section");
+        monthEl.className = "month";
+
+        const title = document.createElement("div");
+        title.className = "month-title";
+        title.textContent = MONTH_NAMES[monthData.month - 1];
+        monthEl.appendChild(title);
+
+        const weekdays = document.createElement("div");
+        weekdays.className = "weekdays";
+
+        WEEKDAYS.forEach(function (name) {
+          const el = document.createElement("div");
+          el.className = "weekday";
+          el.textContent = name;
+          weekdays.appendChild(el);
+        });
+
+        monthEl.appendChild(weekdays);
+
+        const daysEl = document.createElement("div");
+        daysEl.className = "days";
+
+        for (let i = 0; i < monthData.firstWeekday; i += 1) {
+          const empty = document.createElement("div");
+          empty.className = "day empty";
+          daysEl.appendChild(empty);
+        }
+
+        monthData.days.forEach(function (dayData) {
+          const dayEl = document.createElement("div");
+          dayEl.className = "day";
+
+          const gregorian = document.createElement("div");
+          gregorian.className = "gregorian";
+          gregorian.textContent = dayData.day;
+          dayEl.appendChild(gregorian);
+
+          if (dayData.lunar) {
+            const lunar = document.createElement("div");
+            lunar.className =
+              "lunar" + (dayData.lunar.day === 1 ? " month-start" : "");
+            lunar.textContent = lunarLabel(dayData.lunar);
+            dayEl.appendChild(lunar);
+          }
+
+          const termName = solarTermLabel(dayData.solarTerm);
+
+          if (termName) {
+            const term = document.createElement("div");
+            term.className = "solar-term";
+            term.textContent = termName;
+            dayEl.appendChild(term);
+          }
+
+          daysEl.appendChild(dayEl);
+        });
+
+        const total = monthData.firstWeekday + monthData.days.length;
+        const trailing = (7 - (total % 7)) % 7;
+
+        for (let i = 0; i < trailing; i += 1) {
+          const empty = document.createElement("div");
+          empty.className = "day empty";
+          daysEl.appendChild(empty);
+        }
+
+        monthEl.appendChild(daysEl);
+        return monthEl;
+      }
+
+      function generate() {
+        calendar.innerHTML = "";
+
+        if (!window.Calendar) {
+          yearTitle.textContent = "";
+          status.textContent = "Calendar 模組未載入";
+          calendar.innerHTML =
+            '<div class="error">無法載入 Calendar CDN，請確認 calendar.js 已部署。</div>';
+          return;
+        }
+
+        const year = Number(yearInput.value);
+
+        try {
+          const yearData = Calendar.getYear(year);
+
+          yearData.months.forEach(function (monthData) {
+            calendar.appendChild(createMonth(monthData));
+          });
+
+          yearTitle.textContent = year + " 年";
+          status.textContent =
+            "Calendar v" + Calendar.VERSION + " / 12 個月已生成";
+        } catch (error) {
+          yearTitle.textContent = "";
+          status.textContent = "生成失敗";
+          calendar.innerHTML =
+            '<div class="error">' + String(error.message) + '</div>';
+        }
+      }
+
+      generateButton.addEventListener("click", generate);
+
+      yearInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          generate();
+        }
+      });
+
+      generate();
+    })();
+  </script>
+</body>
+</html>
