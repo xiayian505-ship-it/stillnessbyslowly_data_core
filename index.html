@@ -45,22 +45,30 @@
       line-height: 1.8;
     }
 
+    .section {
+      margin-top: 32px;
+    }
+
+    .section:first-of-type {
+      margin-top: 0;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
     .list {
       display: grid;
       gap: 12px;
     }
 
     .item {
-      display: block;
       padding: 18px 20px;
       border: 1px solid var(--line);
       background: var(--surface);
-      color: var(--text);
-      text-decoration: none;
-    }
-
-    .item:hover {
-      border-color: var(--accent);
     }
 
     .item-title {
@@ -73,6 +81,46 @@
       font-size: 0.95rem;
       line-height: 1.6;
     }
+
+    .item-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .item-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .item-links a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        width: min(calc(100% - 24px), var(--content));
+        padding: 40px 0;
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .intro {
+        margin-bottom: 28px;
+      }
+
+      .item {
+        padding: 16px;
+      }
+
+      .item-links {
+        gap: 10px 16px;
+      }
+    }
   </style>
 </head>
 
@@ -84,14 +132,29 @@
       stillness by slowly 的共用模組與工具存放處。
     </p>
 
-    <div class="list">
-      <a class="item" href="./slowly-data.js">
-        <div class="item-title">Slowly Data Core</div>
-        <div class="item-desc">
-          共用資料處理與本機儲存模組。
+    <section class="section">
+      <h2 class="section-title">Data</h2>
+
+      <div class="list">
+        <div class="item">
+          <div class="item-title">Fiction Data</div>
+
+          <div class="item-desc">
+            從作品探索拆出的共用資料處理與本機儲存模組。
+          </div>
+
+          <div class="item-links">
+            <a href="./fiction/Fiction_data.js">
+              Fiction_data.js
+            </a>
+
+            <a href="./fiction/test.html">
+              功能測試
+            </a>
+          </div>
         </div>
-      </a>
-    </div>
+      </div>
+    </section>
   </main>
 </body>
 </html>
