@@ -1,0 +1,123 @@
+/*
+ * Responsive Base
+ * 基礎自適應樣式
+ * 只處理跨裝置的基本安全規則，不定義專案視覺。
+ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+/* 防止一般內容撐破容器 */
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* iframe 等嵌入內容 */
+iframe,
+embed,
+object {
+    max-width: 100%;
+}
+
+/* 表單元件避免超出容器 */
+input,
+textarea,
+select,
+button {
+    max-width: 100%;
+    font: inherit;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* 長網址、長字串避免撐破版面 */
+p,
+li,
+dd,
+td,
+th,
+label {
+    overflow-wrap: break-word;
+}
+
+/* 表格需要時可水平捲動 */
+.responsive-table {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.responsive-table table {
+    width: 100%;
+}
+
+/* 通用自適應容器 */
+.responsive-container {
+    width: 100%;
+    min-width: 0;
+}
+
+/* 通用自適應 Grid */
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+/* Flex 子元素允許正常縮小 */
+.responsive-flex {
+    display: flex;
+    min-width: 0;
+}
+
+.responsive-flex > * {
+    min-width: 0;
+}
+
+/* 小螢幕 */
+@media (max-width: 768px) {
+    .responsive-stack {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .responsive-full-mobile {
+        width: 100%;
+    }
+
+    .responsive-hide-mobile {
+        display: none !important;
+    }
+}
+
+/* 尊重使用者的減少動畫設定 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
