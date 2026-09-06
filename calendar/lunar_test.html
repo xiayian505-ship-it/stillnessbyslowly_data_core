@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunar 功能測試</title>
+
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --text: #202426;
+      --muted: #687176;
+      --line: #d9dddf;
+      --accent: #536d78;
+      --success: #557764;
+      --danger: #9a5c56;
+      --content: 860px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    main {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 56px 0;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+    }
+
+    .intro {
+      margin: 0 0 28px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .panel {
+      margin-top: 16px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 1.05rem;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    input,
+    select,
+    button {
+      min-height: 40px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      line-height: 1.7;
+    }
+
+    .pass {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .fail {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .tests {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .test-row {
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+      line-height: 1.6;
+    }
+
+    code {
+      word-break: break-word;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        width: min(calc(100% - 24px), var(--content));
+        padding: 36px 0;
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .form-row {
+        display: grid;
+      }
+
+      input,
+      select,
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Lunar 功能測試</h1>
+    <p class="intro">
+      測試 lunar_data.js 與 lunar.js 的載入、國曆／農曆雙向轉換、閏月、月份天數與支援範圍。
+    </p>
+
+    <section class="panel">
+      <h2>模組狀態</h2>
+      <div id="module-status" class="summary"></div>
+    </section>
+
+    <section class="panel">
+      <h2>國曆 → 農曆</h2>
+      <div class="form-row">
+        <label>
+          國曆日期
+          <input id="gregorian-input" type="date" min="1901-01-01" max="2100-12-31" value="2026-02-17">
+        </label>
+        <button id="to-lunar" type="button">轉換</button>
+      </div>
+      <div id="lunar-result" class="result">尚未轉換</div>
+    </section>
+
+    <section class="panel">
+      <h2>農曆 → 國曆</h2>
+      <div class="form-row">
+        <label>
+          年
+          <input id="lunar-year" type="number" min="1901" max="2100" value="2026">
+        </label>
+        <label>
+          月
+          <input id="lunar-month" type="number" min="1" max="12" value="1">
+        </label>
+        <label>
+          日
+          <input id="lunar-day" type="number" min="1" max="30" value="1">
+        </label>
+        <label>
+          月份類型
+          <select id="lunar-leap">
+            <option value="false">一般月</option>
+            <option value="true">閏月</option>
+          </select>
+        </label>
+        <button id="to-gregorian" type="button">轉換</button>
+      </div>
+      <div id="gregorian-result" class="result">尚未轉換</div>
+    </section>
+
+    <section class="panel">
+      <h2>自動測試</h2>
+      <div id="test-summary" class="summary"></div>
+      <div id="test-list" class="tests"></div>
+    </section>
+  </main>
+
+  <script src="https://lib.stillnessbyslowly.com/calendar/lunar_data.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/calendar/lunar.js"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const moduleStatus = document.getElementById("module-status");
+      const testSummary = document.getElementById("test-summary");
+      const testList = document.getElementById("test-list");
+
+      function textResult(target, callback) {
+        try {
+          target.textContent = callback();
+          target.className = "result";
+        } catch (error) {
+          target.textContent = `${error.name}: ${error.message}`;
+          target.className = "result fail";
+        }
+      }
+
+      if (!window.LunarData || !window.Lunar) {
+        moduleStatus.innerHTML = '<span class="fail">FAIL：模組未完整載入</span>';
+        testSummary.innerHTML = '<span class="fail">無法執行測試</span>';
+        return;
+      }
+
+      moduleStatus.innerHTML = [
+        `<span class="pass">PASS：模組已載入</span>`,
+        `<span>Lunar v${Lunar.VERSION}</span>`,
+        `<span>Data v${Lunar.DATA_VERSION}</span>`,
+        `<span>${Lunar.supportedGregorianRange.start} ～ ${Lunar.supportedGregorianRange.end}</span>`
+      ].join("");
+
+      document.getElementById("to-lunar").addEventListener("click", function () {
+        const input = document.getElementById("gregorian-input").value;
+        textResult(document.getElementById("lunar-result"), function () {
+          const result = Lunar.toLunar(input);
+          return [
+            `國曆：${result.gregorian}`,
+            `農曆：${Lunar.formatLunar(result)}`,
+            `閏月：${result.isLeap ? "是" : "否"}`,
+            `本月天數：${result.monthDays}`
+          ].join("\n");
+        });
+      });
+
+      document.getElementById("to-gregorian").addEventListener("click", function () {
+        const year = Number(document.getElementById("lunar-year").value);
+        const month = Number(document.getElementById("lunar-month").value);
+        const day = Number(document.getElementById("lunar-day").value);
+        const isLeap = document.getElementById("lunar-leap").value === "true";
+
+        textResult(document.getElementById("gregorian-result"), function () {
+          const result = Lunar.toGregorian({ year, month, day, isLeap });
+          return `國曆：${result.iso}`;
+        });
+      });
+
+      const tests = [];
+
+      function test(name, fn) {
+        try {
+          fn();
+          tests.push({ name, pass: true, message: "PASS" });
+        } catch (error) {
+          tests.push({ name, pass: false, message: `${error.name}: ${error.message}` });
+        }
+      }
+
+      function equal(actual, expected, label) {
+        if (actual !== expected) {
+          throw new Error(`${label || "value"} expected ${expected}, got ${actual}`);
+        }
+      }
+
+      function throws(fn, label) {
+        let thrown = false;
+        try {
+          fn();
+        } catch (error) {
+          thrown = true;
+        }
+        if (!thrown) {
+          throw new Error(`${label || "operation"} should throw`);
+        }
+      }
+
+      test("2026-02-17 = 農曆 2026 正月初一", function () {
+        const value = Lunar.toLunar("2026-02-17");
+        equal(value.year, 2026, "year");
+        equal(value.month, 1, "month");
+        equal(value.day, 1, "day");
+        equal(value.isLeap, false, "isLeap");
+      });
+
+      test("2026 正月初一 → 2026-02-17", function () {
+        equal(Lunar.toGregorian(2026, 1, 1, false).iso, "2026-02-17", "date");
+      });
+
+      test("2026 無閏月", function () {
+        equal(Lunar.getLeapMonth(2026), 0, "leapMonth");
+      });
+
+      test("1903 有閏五月", function () {
+        equal(Lunar.getLeapMonth(1903), 5, "leapMonth");
+        equal(Lunar.toLunar("1903-06-25").isLeap, true, "isLeap");
+        equal(Lunar.toLunar("1903-06-25").month, 5, "month");
+      });
+
+      test("1901-01-01 起始邊界可轉換", function () {
+        const value = Lunar.toLunar("1901-01-01");
+        equal(value.year, 1900, "lunarYear");
+        equal(value.month, 11, "lunarMonth");
+        equal(value.day, 11, "lunarDay");
+      });
+
+      test("2100-12-31 結束邊界可轉換", function () {
+        const value = Lunar.toLunar("2100-12-31");
+        equal(value.year, 2100, "lunarYear");
+        equal(value.month, 12, "lunarMonth");
+        equal(value.day, 1, "lunarDay");
+      });
+
+      test("1900-12-31 明確拒絕", function () {
+        throws(function () { Lunar.toLunar("1900-12-31"); }, "before range");
+      });
+
+      test("2101-01-01 明確拒絕", function () {
+        throws(function () { Lunar.toLunar("2101-01-01"); }, "after range");
+      });
+
+      test("不存在的閏月明確拒絕", function () {
+        throws(function () { Lunar.toGregorian(2026, 5, 1, true); }, "nonexistent leap month");
+      });
+
+      test("月份天數不可超出", function () {
+        const days = Lunar.getMonthDays(2026, 2, false);
+        throws(function () { Lunar.toGregorian(2026, 2, days + 1, false); }, "invalid lunar day");
+      });
+
+      test("2057 已知邊界日期可查", function () {
+        const value = Lunar.toLunar("2057-09-28");
+        equal(typeof value.month, "number", "month type");
+      });
+
+      test("2089 已知邊界日期可查", function () {
+        const value = Lunar.toLunar("2089-09-04");
+        equal(typeof value.month, "number", "month type");
+      });
+
+      test("2097 已知邊界日期可查", function () {
+        const value = Lunar.toLunar("2097-08-07");
+        equal(typeof value.month, "number", "month type");
+      });
+
+      test("雙向轉換 round-trip", function () {
+        const dates = ["1901-01-01", "1950-06-15", "2000-01-01", "2026-09-06", "2057-09-28", "2100-12-31"];
+        dates.forEach(function (date) {
+          const lunar = Lunar.toLunar(date);
+          const back = Lunar.toGregorian(lunar.year, lunar.month, lunar.day, lunar.isLeap);
+          equal(back.iso, date, `round-trip ${date}`);
+        });
+      });
+
+      const passed = tests.filter((item) => item.pass).length;
+      const failed = tests.length - passed;
+
+      testSummary.innerHTML = [
+        `<span class="${failed === 0 ? "pass" : "fail"}">${passed}/${tests.length} PASS</span>`,
+        `<span>${failed} FAIL</span>`
+      ].join("");
+
+      tests.forEach(function (item) {
+        const row = document.createElement("div");
+        row.className = "test-row";
+        row.innerHTML = `<span class="${item.pass ? "pass" : "fail"}">${item.pass ? "PASS" : "FAIL"}</span> — ${item.name}${item.pass ? "" : `<br><code>${item.message}</code>`}`;
+        testList.appendChild(row);
+      });
+    })();
+  </script>
+</body>
+</html>
