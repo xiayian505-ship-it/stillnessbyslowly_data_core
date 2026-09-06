@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mail.js 功能測試</title>
+
+  <link
+    rel="stylesheet"
+    href="https://lib.stillnessbyslowly.com/ui/responsive.css"
+  >
+
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --text: #202426;
+      --muted: #687176;
+      --line: #d9dddf;
+      --accent: #536d78;
+      --success: #567565;
+      --error: #9a5d5d;
+      --content: 760px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    main {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 56px 0;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+    }
+
+    .intro {
+      margin: 0 0 32px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .summary,
+    .test {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .summary {
+      margin-bottom: 20px;
+    }
+
+    .test-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .test {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .name {
+      line-height: 1.5;
+    }
+
+    .result {
+      flex: 0 0 auto;
+      font-weight: 700;
+    }
+
+    .pass {
+      color: var(--success);
+    }
+
+    .fail {
+      color: var(--error);
+    }
+
+    .detail {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      word-break: break-word;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Mail.js 功能測試</h1>
+
+    <p class="intro">
+      測試 Mail.js v1.0.0 的公開介面與基本錯誤處理。
+      本頁不需要 Mail Backend，也不會真的寄送 Email。
+    </p>
+
+    <div class="summary" id="summary">
+      測試中……
+    </div>
+
+    <div class="test-list" id="testList"></div>
+  </main>
+
+  <script src="https://lib.stillnessbyslowly.com/mail/mail.js"></script>
+
+  <script>
+    const results = [];
+
+    function addResult(name, passed, detail = "") {
+      results.push({
+        name,
+        passed,
+        detail
+      });
+    }
+
+    function expect(name, condition, detail = "") {
+      addResult(name, Boolean(condition), detail);
+    }
+
+    async function expectReject(name, action, expectedText) {
+      try {
+        await action();
+
+        addResult(
+          name,
+          false,
+          "預期應拋出錯誤，但沒有發生錯誤。"
+        );
+      } catch (error) {
+        const message = String(error && error.message || error);
+
+        addResult(
+          name,
+          message.includes(expectedText),
+          message
+        );
+      }
+    }
+
+    async function runTests() {
+      expect(
+        "Mail 已載入",
+        typeof window.Mail === "object"
+      );
+
+      if (!window.Mail) {
+        render();
+        return;
+      }
+
+      expect(
+        "VERSION 為 1.0.0",
+        Mail.VERSION === "1.0.0",
+        "目前版本：" + Mail.VERSION
+      );
+
+      expect(
+        "configure() 存在",
+        typeof Mail.configure === "function"
+      );
+
+      expect(
+        "send() 存在",
+        typeof Mail.send === "function"
+      );
+
+      expect(
+        "schedule() 存在",
+        typeof Mail.schedule === "function"
+      );
+
+      expect(
+        "cancel() 存在",
+        typeof Mail.cancel === "function"
+      );
+
+      expect(
+        "status() 存在",
+        typeof Mail.status === "function"
+      );
+
+      await expectReject(
+        "未設定 endpoint 時拒絕 send()",
+        () => Mail.send({
+          template: "test",
+          payload: {}
+        }),
+        "endpoint"
+      );
+
+      await expectReject(
+        "send() 缺少 template 時拒絕",
+        () => Mail.send({
+          payload: {}
+        }),
+        "template"
+      );
+
+      await expectReject(
+        "schedule() 缺少 template 時拒絕",
+        () => Mail.schedule({
+          sendAt: "2099-01-01T00:00:00",
+          payload: {}
+        }),
+        "template"
+      );
+
+      await expectReject(
+        "schedule() 缺少 sendAt 時拒絕",
+        () => Mail.schedule({
+          template: "test",
+          payload: {}
+        }),
+        "sendAt"
+      );
+
+      await expectReject(
+        "cancel() 缺少 jobId 時拒絕",
+        () => Mail.cancel(),
+        "jobId"
+      );
+
+      await expectReject(
+        "status() 缺少 jobId 時拒絕",
+        () => Mail.status(),
+        "jobId"
+      );
+
+      render();
+    }
+
+    function render() {
+      const list = document.getElementById("testList");
+      const summary = document.getElementById("summary");
+
+      list.innerHTML = "";
+
+      results.forEach((test) => {
+        const item = document.createElement("div");
+        item.className = "test";
+
+        const content = document.createElement("div");
+
+        const name = document.createElement("div");
+        name.className = "name";
+        name.textContent = test.name;
+
+        content.appendChild(name);
+
+        if (test.detail) {
+          const detail = document.createElement("div");
+          detail.className = "detail";
+          detail.textContent = test.detail;
+          content.appendChild(detail);
+        }
+
+        const result = document.createElement("div");
+        result.className =
+          "result " + (test.passed ? "pass" : "fail");
+
+        result.textContent =
+          test.passed ? "PASS" : "FAIL";
+
+        item.appendChild(content);
+        item.appendChild(result);
+
+        list.appendChild(item);
+      });
+
+      const passed =
+        results.filter((test) => test.passed).length;
+
+      summary.textContent =
+        "測試完成：" +
+        passed +
+        " / " +
+        results.length +
+        " 通過";
+    }
+
+    runTests();
+  </script>
+</body>
+</html>
