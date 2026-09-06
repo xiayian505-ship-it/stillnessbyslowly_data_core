@@ -1,0 +1,256 @@
+24 SOLAR TERMS REFERENCE
+Version: 0.1-draft
+Prepared: 2026-09-06
+
+PURPOSE
+=======
+This file is the source/provenance and implementation contract for the future solar_terms.js module.
+It is intended to be readable by both humans and AI-assisted development tools.
+
+This file is NOT executable code.
+Do not infer solar terms from lunar dates.
+Do not silently change timezone conventions.
+Do not hide known astronomical uncertainty.
+
+
+SUPPORTED RANGE
+===============
+Target Gregorian range: 1901-01-01 through 2100-12-31.
+
+The range is intentionally finite.
+Dates outside this range are unsupported unless this reference is explicitly extended and re-verified.
+
+Do not extrapolate beyond 1901-2100.
+
+
+SCOPE
+=====
+The future solar_terms.js module may provide, within the supported range:
+
+- The 24 solar terms for a Gregorian year
+- Solar-term name
+- Solar longitude associated with each term
+- Civil date of a solar term for the selected Taiwan interpretation
+- Solar-term instant/time when retained by the dataset
+- Lookup by date
+- Lookup of a named term in a year
+- Next solar term after a date/time
+
+Lunar-calendar conversion is NOT defined by this file.
+See lunar_reference.txt.
+
+Festival definitions are NOT defined by this file.
+
+
+ASTRONOMICAL DEFINITION
+=======================
+The 24 solar terms are astronomical events defined by the apparent solar longitude,
+spaced at 15-degree intervals around the ecliptic.
+
+Examples:
+- Vernal Equinox / 春分: 0 degrees
+- 清明: 15 degrees
+- Autumnal Equinox / 秋分: 180 degrees
+- Winter Solstice / 冬至: 270 degrees
+
+Solar terms must not be derived from lunar-calendar dates.
+
+
+CANONICAL CIVIL-TIME INTERPRETATION
+===================================
+Intended consumer context:
+Taiwan
+
+Canonical modern offset for comparison:
+UTC+8
+
+When an astronomical source publishes in Japan Standard Time (JST / UTC+9),
+subtract one hour to obtain the corresponding UTC+8 clock time.
+
+IMPORTANT:
+Historical civil-time rules and daylight-saving-time histories must not be casually
+substituted between Hong Kong, Japan, and Taiwan.
+
+HKO is primarily used here as an official published DATE reference across 1901-2100.
+NAOJ is used as an independent astronomical calculation source.
+
+Future implementation work that claims exact historical Asia/Taipei civil timestamps
+must explicitly verify Taiwan's historical timezone rules rather than assuming that
+all historical local clock times were permanently UTC+8.
+
+
+PRIMARY LONG-RANGE DATE REFERENCE
+=================================
+Institution:
+Hong Kong Observatory (HKO)
+
+Page:
+公曆與農曆對照表
+
+Official URL:
+https://www.hko.gov.hk/tc/gts/time/conversion.htm
+
+Published coverage:
+1901 through 2100
+
+The yearly official tables include solar-term dates.
+
+Role:
+Primary long-range published date reference and source of known uncertainty warnings.
+
+
+INDEPENDENT ASTRONOMICAL SOURCE
+===============================
+Institution:
+National Astronomical Observatory of Japan (NAOJ)
+Calendar and Ephemeris Calculation Office
+
+Tool:
+二十四節気・雑節 長期版
+
+Official URL:
+https://eco.mtk.nao.ac.jp/cgi-bin/koyomi/cande/phenomena_sy.cgi
+
+Output includes:
+- Date
+- Time
+- Solar-term name
+- Solar longitude
+
+Published time basis:
+Japan Standard Time / UT+9
+
+NAOJ states that the long-term results are calculated using current theories and
+parameters and may differ from previously published or future values.
+The tool does not account for daylight-saving time.
+
+Role:
+Independent astronomical calculation and minute-level cross-check.
+
+
+2026 SOURCE QUALIFICATION TEST
+==============================
+Status: PASS
+
+HKO and NAOJ were compared for 2026.
+After converting NAOJ JST to UTC+8 by subtracting one hour, checked solar-term
+instants/dates agreed with HKO.
+
+Key checks included:
+
+Spring Equinox / 春分
+HKO UTC+8: 2026-03-20 22:46
+NAOJ JST:  2026-03-20 23:46
+Converted: 2026-03-20 22:46
+
+Summer Solstice / 夏至
+HKO UTC+8: 2026-06-21 16:25
+NAOJ JST:  2026-06-21 17:25
+Converted: 2026-06-21 16:25
+
+Autumnal Equinox / 秋分
+HKO UTC+8: 2026-09-23 08:05
+NAOJ JST:  2026-09-23 09:05
+Converted: 2026-09-23 08:05
+
+Winter Solstice / 冬至
+HKO UTC+8: 2026-12-22 04:50
+NAOJ JST:  2026-12-22 05:50
+Converted: 2026-12-22 04:50
+
+
+RANGE / STRESS TEST STATUS
+==========================
+The project has additionally checked representative historical, current, future,
+range-end, and known-boundary cases.
+
+Checked examples include:
+- 1976: historical sample; official sources aligned at the date level
+- 2026: full source-qualification sample; PASS
+- 2076: future date-level sample; PASS
+- 2100: end-of-range sample; HKO dates aligned with NAOJ after timezone conversion
+
+The existence of these checks does NOT mean every one of the 4,800 solar-term events
+in 1901-2100 has already been individually frozen into this reference file.
+
+Before final dataset release, automated or systematic comparison should be preferred
+over manual transcription.
+
+
+KNOWN ASTRONOMICAL BOUNDARY CASES
+=================================
+WARNING:
+
+HKO states that calculations of moon phases and solar-term times many decades in the
+future may have errors of several minutes. When an event is very close to midnight,
+the published civil date can consequently differ by one day.
+
+HKO specifically identifies solar-term date-risk cases including:
+
+- 2051 Vernal Equinox / 春分
+- 2083 Start of Spring / 立春
+- 2084 Vernal Equinox / 春分
+
+These are KNOWN BOUNDARY CASES, not ordinary software bugs.
+
+Rules for these cases:
+
+1. Preserve the selected authoritative dataset value.
+2. Record the uncertainty.
+3. Do not silently "correct" the date using another algorithm.
+4. If authoritative sources or later revisions disagree, document the discrepancy.
+5. A future AI modifying solar_terms.js must not remove the warning merely because
+   another calculation returns a different civil date.
+
+
+VERIFICATION POLICY
+===================
+Before finalizing the production dataset:
+
+1. Compare HKO published solar-term dates against an independent astronomical source.
+2. Convert timezones explicitly.
+3. Test all 24 terms in representative years, not only equinoxes and solstices.
+4. Give extra attention to events close to 00:00 local civil time.
+5. Preserve source institution, URL, retrieval date, and calculation convention.
+6. Record known disagreements and revisions.
+7. Do not use a single algorithm as both implementation and sole verification source.
+
+
+IMPLEMENTATION CONTRACT FOR FUTURE solar_terms.js
+==================================================
+The future module should:
+
+- Reject unsupported dates explicitly.
+- Never extrapolate beyond the verified supported range.
+- Keep solar-term logic independent from lunar-calendar conversion.
+- Use explicit timezone/civil-date rules.
+- Preserve known boundary-case warnings in documentation.
+- Avoid claiming false astronomical precision.
+- Expose supported-range information to consumers if practical.
+
+A future AI or developer modifying solar_terms.js should read this reference first.
+
+
+DATA STATUS
+===========
+Source discovery: PASS
+2026 qualification test: PASS
+Historical sample: PASS
+Future sample: PASS at date level
+2100 range-end sample: PASS
+Known midnight boundary cases: IDENTIFIED / FLAGGED
+Target range selected: 1901-2100
+Full 1901-2100 production dataset extraction: NOT YET COMPLETED
+solar_terms.js implementation: NOT YET STARTED
+
+
+CHANGE LOG
+==========
+2026-09-06
+- Created initial reference contract.
+- Selected target range 1901-2100.
+- Recorded HKO long-range date reference.
+- Recorded NAOJ independent astronomical source.
+- Recorded 2026 qualification checks.
+- Recorded historical/future/range-end test status.
+- Recorded known 2051, 2083, and 2084 midnight-boundary warnings.
