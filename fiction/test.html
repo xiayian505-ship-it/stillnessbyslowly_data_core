@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiction Data 功能測試</title>
+
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --text: #202426;
+      --muted: #687176;
+      --line: #d9dddf;
+      --accent: #536d78;
+      --content: 860px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    main {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+    }
+
+    .intro {
+      margin: 0 0 32px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .status {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+    }
+
+    .desc {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+    }
+
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    pre {
+      margin: 20px 0 0;
+      padding: 18px;
+      min-height: 220px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 18px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 680px) {
+      main {
+        width: min(calc(100% - 24px), var(--content));
+        padding: 40px 0;
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      pre {
+        min-height: 180px;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Fiction Data 功能測試</h1>
+    <p class="intro">
+      測試 Fiction_data.js 的 CRUD、localStorage、搜尋、篩選、排序與分頁。
+    </p>
+
+    <div class="status" id="status">模組檢查中...</div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>CRUD / localStorage</h2>
+        <p class="desc">新增、讀取、修改、刪除與清空測試資料。</p>
+        <div class="actions">
+          <button id="add">新增</button>
+          <button id="read">讀取</button>
+          <button id="update">修改第一筆</button>
+          <button id="delete">刪除第一筆</button>
+          <button id="clear">清空</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Query</h2>
+        <p class="desc">自動建立測試資料後，測搜尋、篩選、排序與分頁。</p>
+        <div class="actions">
+          <button id="seed">建立測試資料</button>
+          <button id="search">搜尋「月」</button>
+          <button id="filter">篩選奇幻</button>
+          <button id="sort">最新排序</button>
+          <button id="page">分頁 2 筆</button>
+        </div>
+      </section>
+    </div>
+
+    <pre id="output">等待操作...</pre>
+
+    <a class="back" href="../">返回慢慢的倉庫</a>
+  </main>
+
+  <script src="./Fiction_data.js"></script>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const output = document.getElementById("output");
+
+    function show(title, data) {
+      output.textContent =
+        title + "\n\n" +
+        (typeof data === "string"
+          ? data
+          : JSON.stringify(data, null, 2));
+    }
+
+    if (typeof FictionData === "undefined") {
+      statusEl.textContent = "載入失敗：找不到 FictionData";
+      throw new Error("FictionData 未載入");
+    }
+
+    statusEl.textContent =
+      "載入成功：FictionData v" + FictionData.version;
+
+    const db = FictionData.create({
+      namespace: "fiction-data-self-test"
+    });
+
+    const works = db.collection("works");
+
+    document.getElementById("add").onclick = async () => {
+      const item = await works.add({
+        title: "測試作品",
+        author: "慢慢",
+        category: "測試"
+      });
+
+      show("新增成功", item);
+    };
+
+    document.getElementById("read").onclick = async () => {
+      const list = await works.all();
+      show("目前共 " + list.length + " 筆", list);
+    };
+
+    document.getElementById("update").onclick = async () => {
+      const list = await works.all();
+
+      if (!list.length) {
+        show("修改失敗", "目前沒有資料。");
+        return;
+      }
+
+      const updated = await works.update(list[0].id, {
+        title: "已修改的測試作品"
+      });
+
+      show("修改成功", updated);
+    };
+
+    document.getElementById("delete").onclick = async () => {
+      const list = await works.all();
+
+      if (!list.length) {
+        show("刪除失敗", "目前沒有資料。");
+        return;
+      }
+
+      const removed = await works.remove(list[0].id);
+      show("刪除結果", { removed });
+    };
+
+    document.getElementById("clear").onclick = async () => {
+      await works.clear();
+      show("清空完成", "localStorage 測試資料已清空。");
+    };
+
+    document.getElementById("seed").onclick = async () => {
+      await works.clear();
+
+      const samples = [
+        {
+          title: "月下旅人",
+          author: "甲",
+          categories: ["奇幻"],
+          score: 30
+        },
+        {
+          title: "白塔",
+          author: "乙",
+          categories: ["懸疑"],
+          score: 10
+        },
+        {
+          title: "月光森林",
+          author: "丙",
+          categories: ["奇幻", "冒險"],
+          score: 20
+        },
+        {
+          title: "海邊書店",
+          author: "丁",
+          categories: ["日常"],
+          score: 40
+        }
+      ];
+
+      for (const item of samples) {
+        await works.add(item);
+      }
+
+      show("測試資料建立完成", await works.all());
+    };
+
+    document.getElementById("search").onclick = async () => {
+      const list = await works.all();
+
+      const result = FictionData.utils.search(
+        list,
+        "月",
+        ["title", "author"]
+      );
+
+      show("搜尋「月」", result);
+    };
+
+    document.getElementById("filter").onclick = async () => {
+      const list = await works.all();
+
+      const result = FictionData.utils.filter(list, {
+        containsAll: {
+          categories: ["奇幻"]
+        }
+      });
+
+      show("篩選 categories 包含「奇幻」", result);
+    };
+
+    document.getElementById("sort").onclick = async () => {
+      const list = await works.all();
+
+      const result = FictionData.utils.sort(list, {
+        field: "createdAt",
+        direction: "desc",
+        type: "date"
+      });
+
+      show("createdAt 最新排序", result);
+    };
+
+    document.getElementById("page").onclick = async () => {
+      const list = await works.all();
+
+      const result = FictionData.utils.paginate(list, {
+        page: 1,
+        pageSize: 2
+      });
+
+      show("分頁測試：第 1 頁，每頁 2 筆", result);
+    };
+  </script>
+</body>
+</html>
