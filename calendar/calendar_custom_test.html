@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Calendar Custom Test</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.6;
+      color: #202426;
+      background: #f4f5f5;
+    }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .summary {
+      margin: 20px 0;
+      font-weight: 700;
+    }
+
+    .test {
+      padding: 10px 0;
+      border-bottom: 1px solid #d9dddf;
+    }
+
+    .pass {
+      color: #287a45;
+    }
+
+    .fail {
+      color: #b3261e;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Calendar Custom Test</h1>
+
+    <div id="summary" class="summary"></div>
+    <div id="results"></div>
+  </main>
+
+  <script src="./lunar_data.js"></script>
+  <script src="./lunar.js"></script>
+  <script src="./calendar_custom.js"></script>
+
+  <script>
+    const tests = [];
+
+    function test(name, fn) {
+      tests.push({ name, fn });
+    }
+
+    function assert(condition, message = "Assertion failed") {
+      if (!condition) {
+        throw new Error(message);
+      }
+    }
+
+    function assertEqual(actual, expected, message = "") {
+      if (actual !== expected) {
+        throw new Error(
+          `${message} expected=${JSON.stringify(expected)} actual=${JSON.stringify(actual)}`
+        );
+      }
+    }
+
+    function assertThrows(fn, message = "") {
+      let threw = false;
+
+      try {
+        fn();
+      } catch (error) {
+        threw = true;
+      }
+
+      if (!threw) {
+        throw new Error(
+          message || "Expected function to throw."
+        );
+      }
+    }
+
+    const db = CalendarCustom.create({
+      namespace: "calendar-custom-test"
+    });
+
+    db.clear();
+
+    test("CalendarCustom exists", () => {
+      assert(typeof CalendarCustom === "object");
+    });
+
+    test("Version is 1.0.0", () => {
+      assertEqual(CalendarCustom.VERSION, "1.0.0");
+    });
+
+    test("Title max length is 5", () => {
+      assertEqual(
+        CalendarCustom.TITLE_MAX_LENGTH,
+        5
+      );
+    });
+
+    test("Recommended title length is 2", () => {
+      assertEqual(
+        CalendarCustom.TITLE_RECOMMENDED_LENGTH,
+        2
+      );
+    });
+
+    test("Add solar event", () => {
+      const item = db.add({
+        calendar: "solar",
+        date: "2026-09-07",
+        yearly: false,
+        title: "測試",
+        note: "單次西曆事件"
+      });
+
+      assert(typeof item.id === "string");
+      assertEqual(item.title, "測試");
+      assertEqual(item.date, "2026-09-07");
+    });
+
+    test("Get event by id", () => {
+      const item = db.add({
+        calendar: "solar",
+        date: "2026-10-10",
+        yearly: true,
+        title: "紀念"
+      });
+
+      const found = db.get(item.id);
+
+      assert(found !== null);
+      assertEqual(found.id, item.id);
+    });
+
+    test("Update event", () => {
+      const item = db.add({
+        calendar: "solar",
+        date: "2026-12-01",
+        title: "舊名"
+      });
+
+      const updated = db.update(item.id, {
+        title: "新名"
+      });
+
+      assertEqual(updated.title, "新名");
+      assertEqual(updated.id, item.id);
+      assertEqual(updated.createdAt, item.createdAt);
+    });
+
+    test("Delete event", () => {
+      const item = db.add({
+        calendar: "solar",
+        date: "2026-11-01",
+        title: "刪除"
+      });
+
+      assertEqual(db.remove(item.id), true);
+      assertEqual(db.get(item.id), null);
+    });
+
+    test("Delete missing id returns false", () => {
+      assertEqual(
+        db.remove("not-found"),
+        false
+      );
+    });
+
+    test("2-character title has no advice", () => {
+      assertEqual(
+        db.getTitleAdvice("生日"),
+        null
+      );
+    });
+
+    test("Non-2-character title gets display advice", () => {
+      assertEqual(
+        db.getTitleAdvice("228"),
+        "建議使用 2 個字，日曆顯示效果較佳。"
+      );
+    });
+
+    test("5-character title is allowed", () => {
+      const item = db.add({
+        calendar: "solar",
+        date: "2026-02-28",
+        title: "和平紀念日"
+      });
+
+      assertEqual(item.title, "和平紀念日");
+    });
+
+    test("Title longer than 5 characters is rejected", () => {
+      assertThrows(() => {
+        db.add({
+          calendar: "solar",
+          date: "2026-01-01",
+          title: "這個名稱太長了"
+        });
+      });
+    });
+
+    test("Special characters are rejected", () => {
+      assertThrows(() => {
+        db.add({
+          calendar: "solar",
+          date: "2026-01-01",
+          title: "生日!"
+        });
+      });
+    });
+
+    test("Spaces inside title are rejected", () => {
+      assertThrows(() => {
+        db.add({
+          calendar: "solar",
+          date: "2026-01-01",
+          title: "生 日"
+        });
+      });
+    });
+
+    test("Letters and numbers are allowed", () => {
+      const item = db.add({
+        calendar: "solar",
+        date: "2026-01-02",
+        title: "DAY1"
+      });
+
+      assertEqual(item.title, "DAY1");
+    });
+
+    test("Korean letters are allowed", () => {
+      const item = db.add({
+        calendar: "solar",
+        date: "2026-01-03",
+        title: "생일"
+      });
+
+      assertEqual(item.title, "생일");
+    });
+
+    test("Invalid Gregorian date is rejected", () => {
+      assertThrows(() => {
+        db.add({
+          calendar: "solar",
+          date: "2026-02-30",
+          title: "測試"
+        });
+      });
+    });
+
+    test("Yearly solar event matches another year", () => {
+      db.add({
+        calendar: "solar",
+        date: "2026-03-15",
+        yearly: true,
+        title: "週年"
+      });
+
+      const found = db.getByDate("2030-03-15");
+
+      assert(
+        found.some(item => item.title === "週年")
+      );
+    });
+
+    test("One-time solar event does not match another year", () => {
+      db.add({
+        calendar: "solar",
+        date: "2026-04-15",
+        yearly: false,
+        title: "單次"
+      });
+
+      const found = db.getByDate("2030-04-15");
+
+      assert(
+        !found.some(item => item.title === "單次")
+      );
+    });
+
+    test("Add yearly lunar event", () => {
+      const item = db.add({
+        calendar: "lunar",
+        lunarMonth: 1,
+        lunarDay: 1,
+        isLeapMonth: false,
+        yearly: true,
+        title: "農生"
+      });
+
+      assertEqual(item.calendar, "lunar");
+      assertEqual(item.lunarMonth, 1);
+      assertEqual(item.lunarDay, 1);
+    });
+
+    test("Yearly lunar event matches Gregorian date", () => {
+      db.add({
+        calendar: "lunar",
+        lunarMonth: 1,
+        lunarDay: 1,
+        isLeapMonth: false,
+        yearly: true,
+        title: "農曆"
+      });
+
+      const found = db.getByDate("2027-02-06");
+
+      assert(
+        found.some(item => item.title === "農曆")
+      );
+    });
+
+    test("Lunar leap-month flag is stored", () => {
+    
+    test("One-time lunar event requires lunarYear", () => {
+  assertThrows(() => {
+    db.add({
+      calendar: "lunar",
+      lunarMonth: 1,
+      lunarDay: 1,
+      isLeapMonth: false,
+      yearly: false,
+      title: "單農"
+    });
+  });
+});
+
+test("One-time lunar event matches only its lunar year", () => {
+  db.add({
+    calendar: "lunar",
+    lunarYear: 2027,
+    lunarMonth: 1,
+    lunarDay: 1,
+    isLeapMonth: false,
+    yearly: false,
+    title: "限定"
+  });
+
+  const target = db.getByDate("2027-02-06");
+
+  assert(
+    target.some(item => item.title === "限定")
+  );
+
+  const anotherYear = db.getByDate("2028-01-26");
+
+  assert(
+    !anotherYear.some(item => item.title === "限定")
+  );
+});
+      const item = db.add({
+        calendar: "lunar",
+        lunarMonth: 6,
+        lunarDay: 1,
+        isLeapMonth: true,
+        yearly: true,
+        title: "閏月"
+      });
+
+      assertEqual(item.isLeapMonth, true);
+    });
+
+    test("all() returns events", () => {
+      assert(Array.isArray(db.all()));
+      assert(db.all().length > 0);
+    });
+
+    test("has() detects matching event", () => {
+      db.add({
+        calendar: "solar",
+        date: "2026-05-20",
+        title: "有事"
+      });
+
+      assertEqual(
+        db.has("2026-05-20"),
+        true
+      );
+    });
+
+    test("clear() removes all events", () => {
+      db.clear();
+
+      assertEqual(
+        db.all().length,
+        0
+      );
+    });
+
+    let passed = 0;
+    const results =
+      document.getElementById("results");
+
+    for (const item of tests) {
+      const row = document.createElement("div");
+      row.className = "test";
+
+      try {
+        item.fn();
+
+        passed++;
+
+        row.classList.add("pass");
+        row.textContent =
+          `PASS — ${item.name}`;
+      } catch (error) {
+        row.classList.add("fail");
+        row.textContent =
+          `FAIL — ${item.name}: ${error.message}`;
+      }
+
+      results.appendChild(row);
+    }
+
+    document.getElementById("summary").textContent =
+      `${passed}/${tests.length} PASS`;
+  </script>
+</body>
+</html>
