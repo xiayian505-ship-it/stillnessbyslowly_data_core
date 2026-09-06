@@ -230,8 +230,8 @@
         assert(day.lunar.day === 1, "農曆日期不是初一");
       });
 
-      test("2027-02-07 為農曆正月初一", function () {
-        const day = Calendar.createDay(2027, 2, 7);
+      test("2027-02-06 為農曆正月初一", function () {
+        const day = Calendar.createDay(2027, 2, 6);
         assert(day.lunar, "沒有 Lunar 資料");
         assert(day.lunar.month === 1, "農曆月份不是 1");
         assert(day.lunar.day === 1, "農曆日期不是初一");
