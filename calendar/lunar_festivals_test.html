@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunar Festivals 功能測試</title>
+
+    <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            line-height: 1.6;
+            color: #222;
+            background: #fff;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            margin-top: 0;
+        }
+
+        section {
+            margin: 0 0 28px;
+        }
+
+        .status,
+        .result,
+        .test-list {
+            border: 1px solid #ccc;
+            padding: 16px;
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        input,
+        button {
+            font: inherit;
+            padding: 8px 10px;
+        }
+
+        .pass {
+            font-weight: bold;
+        }
+
+        .fail {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .test-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .test-item:last-child {
+            border-bottom: 0;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Lunar Festivals 功能測試</h1>
+    <p>測試 LunarFestivals 與既有 Lunar 模組的整合、固定節日、除夕、閏月排除與支援範圍。</p>
+
+    <section>
+        <h2>模組狀態</h2>
+        <div id="status" class="status">載入中……</div>
+    </section>
+
+    <section>
+        <h2>日期查詢</h2>
+        <div class="row">
+            <label for="dateInput">國曆日期</label>
+            <input id="dateInput" type="date" value="2027-02-06">
+            <button id="queryButton" type="button">查詢</button>
+        </div>
+        <div id="queryResult" class="result" style="margin-top:12px;">尚未查詢</div>
+    </section>
+
+    <section>
+        <h2>自動測試</h2>
+        <div id="summary" class="status">尚未執行</div>
+        <div id="tests" class="test-list" style="margin-top:12px;"></div>
+    </section>
+</main>
+
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar_festivals_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar_festivals.js"></script>
+
+<script>
+(function () {
+    "use strict";
+
+    const testsEl = document.getElementById("tests");
+    const summaryEl = document.getElementById("summary");
+    const statusEl = document.getElementById("status");
+    const queryResultEl = document.getElementById("queryResult");
+
+    function addTest(name, passed, detail) {
+        const item = document.createElement("div");
+        item.className = "test-item " + (passed ? "pass" : "fail");
+        item.textContent = (passed ? "PASS — " : "FAIL — ") + name +
+            (detail ? "｜" + detail : "");
+        testsEl.appendChild(item);
+        return passed;
+    }
+
+    function includesName(date, name) {
+        return LunarFestivals.getNames(date).includes(name);
+    }
+
+    function runTests() {
+        testsEl.innerHTML = "";
+
+        const tests = [];
+
+        function test(name, fn) {
+            try {
+                const result = fn();
+                tests.push(addTest(name, Boolean(result)));
+            } catch (error) {
+                tests.push(addTest(name, false, error.message));
+            }
+        }
+
+        test("Lunar 已載入", () => typeof Lunar !== "undefined");
+        test("LunarFestivalsData 已載入", () => typeof LunarFestivalsData !== "undefined");
+        test("LunarFestivals 已載入", () => typeof LunarFestivals !== "undefined");
+        test("資料版本為 0.1.0", () => LunarFestivalsData.VERSION === "0.1.0");
+        test("API 版本為 1.0.0", () => LunarFestivals.VERSION === "1.0.0");
+
+        // 2027 春節：已另以官方曆表核對過的日期。
+        test("2027-02-05 = 除夕", () => includesName("2027-02-05", "除夕"));
+        test("2027-02-06 = 春節", () => includesName("2027-02-06", "春節"));
+        test("2027-02-07 = 初二", () => includesName("2027-02-07", "初二"));
+        test("2027-02-08 = 初三", () => includesName("2027-02-08", "初三"));
+        test("2027-02-09 = 初四", () => includesName("2027-02-09", "初四"));
+        test("2027-02-10 = 開工", () => includesName("2027-02-10", "開工"));
+        test("2027-02-21 = 元宵節", () => includesName("2027-02-21", "元宵節"));
+
+        // 直接以 Lunar.toGregorian 取得固定農曆日期，
+        // 再回送 LunarFestivals，驗證兩層整合。
+        function gregorianOf(lunarYear, lunarMonth, lunarDay) {
+            const value = Lunar.toGregorian(lunarYear, lunarMonth, lunarDay, false);
+            return value.date ?? value.gregorianDate ?? value.iso ?? value;
+        }
+
+        test("端午節規則", () => {
+            const date = gregorianOf(2027, 5, 5);
+            return includesName(date, "端午節");
+        });
+
+        test("七夕規則", () => {
+            const date = gregorianOf(2027, 7, 7);
+            return includesName(date, "七夕");
+        });
+
+        test("中元節規則", () => {
+            const date = gregorianOf(2027, 7, 15);
+            return includesName(date, "中元節");
+        });
+
+        test("中秋節規則", () => {
+            const date = gregorianOf(2027, 8, 15);
+            return includesName(date, "中秋節");
+        });
+
+        test("重陽節規則", () => {
+            const date = gregorianOf(2027, 9, 9);
+            return includesName(date, "重陽節");
+        });
+
+        test("一般日期不產生節日", () => LunarFestivals.get("2027-01-01").length === 0);
+
+        test("閏月不重複固定節日", () => {
+            let found = null;
+
+            for (let year = 1901; year <= 2100; year++) {
+                const leapMonth = Lunar.getLeapMonth(year);
+
+                if ([1, 5, 7, 8, 9].includes(leapMonth)) {
+                    found = { year, leapMonth };
+                    break;
+                }
+            }
+
+            if (!found) {
+                throw new Error("測試範圍內找不到適用閏月案例");
+            }
+
+            const targetDay =
+                found.leapMonth === 1 ? 15 :
+                found.leapMonth === 5 ? 5 :
+                found.leapMonth === 7 ? 7 :
+                found.leapMonth === 8 ? 15 :
+                9;
+
+            const lunarObject = {
+                lunarYear: found.year,
+                lunarMonth: found.leapMonth,
+                lunarDay: targetDay,
+                isLeapMonth: true
+            };
+
+            return LunarFestivals.getByLunar(lunarObject).length === 0;
+        });
+
+        test("1900-12-31 不支援", () => LunarFestivals.isSupportedDate("1900-12-31") === false);
+        test("2101-01-01 不支援", () => LunarFestivals.isSupportedDate("2101-01-01") === false);
+
+        const passed = tests.filter(Boolean).length;
+        const total = tests.length;
+        summaryEl.textContent = passed + "/" + total + " PASS，" + (total - passed) + " FAIL";
+    }
+
+    function query() {
+        const date = document.getElementById("dateInput").value;
+
+        try {
+            const lunar = Lunar.toLunar(date);
+            const festivals = LunarFestivals.get(date);
+
+            queryResultEl.innerHTML =
+                "<strong>" + date + "</strong><br>" +
+                "農曆：" + JSON.stringify(lunar) + "<br>" +
+                "節日：" + (
+                    festivals.length
+                        ? festivals.map(item => item.name).join("、")
+                        : "無"
+                );
+        } catch (error) {
+            queryResultEl.textContent = "錯誤：" + error.message;
+        }
+    }
+
+    try {
+        statusEl.innerHTML =
+            "Lunar：" + (typeof Lunar !== "undefined" ? Lunar.VERSION : "未載入") + "<br>" +
+            "LunarFestivalsData：" +
+                (typeof LunarFestivalsData !== "undefined" ? LunarFestivalsData.VERSION : "未載入") + "<br>" +
+            "LunarFestivals：" +
+                (typeof LunarFestivals !== "undefined" ? LunarFestivals.VERSION : "未載入");
+
+        document.getElementById("queryButton").addEventListener("click", query);
+
+        runTests();
+        query();
+    } catch (error) {
+        statusEl.textContent = "初始化失敗：" + error.message;
+    }
+})();
+</script>
+</body>
+</html>
