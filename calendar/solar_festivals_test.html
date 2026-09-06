@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Solar Festivals Test</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.6;
+      color: #202426;
+      background: #f4f5f5;
+    }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .summary {
+      margin: 20px 0;
+      font-weight: 700;
+    }
+
+    .test {
+      padding: 10px 0;
+      border-bottom: 1px solid #d9dddf;
+    }
+
+    .pass {
+      color: #287a45;
+    }
+
+    .fail {
+      color: #b3261e;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Solar Festivals Test</h1>
+
+    <div id="summary" class="summary"></div>
+    <div id="results"></div>
+  </main>
+
+  <script src="./solar_festivals_data.js"></script>
+  <script src="./solar_festivals.js"></script>
+
+  <script>
+    const tests = [];
+
+    function test(name, fn) {
+      tests.push({ name, fn });
+    }
+
+    function assert(condition, message = "Assertion failed") {
+      if (!condition) {
+        throw new Error(message);
+      }
+    }
+
+    function assertEqual(actual, expected, message = "") {
+      if (actual !== expected) {
+        throw new Error(
+          `${message} expected=${JSON.stringify(expected)} actual=${JSON.stringify(actual)}`
+        );
+      }
+    }
+
+    function assertArrayEqual(actual, expected, message = "") {
+      const a = JSON.stringify(actual);
+      const b = JSON.stringify(expected);
+
+      if (a !== b) {
+        throw new Error(
+          `${message} expected=${b} actual=${a}`
+        );
+      }
+    }
+
+    test("SolarFestivals exists", () => {
+      assert(typeof SolarFestivals === "object");
+    });
+
+    test("Version is 1.0.0", () => {
+      assertEqual(SolarFestivals.VERSION, "1.0.0");
+    });
+
+    test("元旦", () => {
+      assertArrayEqual(
+        SolarFestivals.getNames("2026-01-01"),
+        ["元旦"]
+      );
+    });
+
+    test("西洋情人節", () => {
+      assertArrayEqual(
+        SolarFestivals.getNames("2026-02-14"),
+        ["西洋情人節"]
+      );
+    });
+
+    test("和平紀念日", () => {
+      assertArrayEqual(
+        SolarFestivals.getNames("2026-02-28"),
+        ["和平紀念日"]
+      );
+    });
+
+    test("兒童節", () => {
+      assertArrayEqual(
+        SolarFestivals.getNames("2026-04-04"),
+        ["兒童節"]
+      );
+    });
+
+    test("勞動節", () => {
+      assertArrayEqual(
+        SolarFestivals.getNames("2026-05-01"),
+        ["勞動節"]
+      );
+    });
+
+    test("國慶日", () => {
+      const result = SolarFestivals.get("2026-10-10");
+
+      assert(result !== null);
+      assertEqual(result.year, 2026);
+      assertEqual(result.month, 10);
+      assertEqual(result.day, 10);
+
+      assertArrayEqual(
+        result.names,
+        ["國慶日"]
+      );
+    });
+
+    test("12/25 can contain multiple names", () => {
+      assertArrayEqual(
+        SolarFestivals.getNames("2026-12-25"),
+        ["聖誕節", "行憲紀念日"]
+      );
+    });
+
+    test("Normal date returns empty names", () => {
+      assertArrayEqual(
+        SolarFestivals.getNames("2026-06-18"),
+        []
+      );
+    });
+
+    test("Normal date has() is false", () => {
+      assertEqual(
+        SolarFestivals.has("2026-06-18"),
+        false
+      );
+    });
+
+    test("Festival date has() is true", () => {
+      assertEqual(
+        SolarFestivals.has("2026-10-10"),
+        true
+      );
+    });
+
+    test("Lookup by month and day", () => {
+      const result = SolarFestivals.getByMonthDay(10, 31);
+
+      assert(result !== null);
+
+      assertArrayEqual(
+        result.names,
+        ["萬聖節"]
+      );
+    });
+
+    test("Invalid date returns null", () => {
+      assertEqual(
+        SolarFestivals.get("2026-02-30"),
+        null
+      );
+    });
+
+    test("Invalid string format returns null", () => {
+      assertEqual(
+        SolarFestivals.get("2026/10/10"),
+        null
+      );
+    });
+
+    test("Father's Day is intentionally not included", () => {
+      assertArrayEqual(
+        SolarFestivals.getNames("2026-08-08"),
+        []
+      );
+    });
+
+    let passed = 0;
+    const results = document.getElementById("results");
+
+    for (const item of tests) {
+      const row = document.createElement("div");
+      row.className = "test";
+
+      try {
+        item.fn();
+
+        passed++;
+
+        row.classList.add("pass");
+        row.textContent = `PASS — ${item.name}`;
+      } catch (error) {
+        row.classList.add("fail");
+        row.textContent =
+          `FAIL — ${item.name}: ${error.message}`;
+      }
+
+      results.appendChild(row);
+    }
+
+    document.getElementById("summary").textContent =
+      `${passed}/${tests.length} PASS`;
+  </script>
+</body>
+</html>
