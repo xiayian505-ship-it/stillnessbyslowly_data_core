@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slowly Calendar Component｜展示</title>
+<link rel="stylesheet" href="./calendar_component.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:#f6f6f6;color:#222;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}
+main{max-width:1100px;margin:auto}
+h1{margin:0 0 8px;font-size:1.4rem}
+.intro{margin:0 0 20px;color:#666;font-size:.9rem}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:18px;padding:14px;background:#fff;border:1px solid #ddd}
+.controls label{display:inline-flex;gap:6px;align-items:center}
+.shell{width:100%;max-width:880px;margin:auto;padding:18px;background:#fff;border:1px solid #ddd}
+.width{max-width:880px;margin:0 auto 10px;display:grid;gap:6px}
+.width input{width:100%}
+</style>
+</head>
+<body>
+<main>
+<h1>Slowly Calendar Component｜展示</h1>
+<p class="intro">同一顆 Component。調整顯示範圍、格線與容器寬度，直接看它怎麼變。</p>
+
+<div class="controls">
+<label>顯示範圍
+<select id="view">
+<option value="month">1 個月</option>
+<option value="3weeks">3 週</option>
+<option value="2weeks">2 週</option>
+<option value="week">1 週</option>
+</select></label>
+<label><input id="grid" type="checkbox">格線</label>
+<label><input id="lunar" type="checkbox" checked>農曆</label>
+<label><input id="festival" type="checkbox" checked>節慶</label>
+<label><input id="term" type="checkbox" checked>節氣</label>
+<label><input id="boldSolar" type="checkbox">西曆粗體</label>
+<label><input id="boldLunar" type="checkbox">農曆粗體</label>
+<label><input id="boldFestival" type="checkbox">節慶粗體</label>
+<label><input id="boldTerm" type="checkbox">節氣粗體</label>
+</div>
+
+<div class="width">
+<label>展示容器寬度：<span id="widthValue">880</span>px</label>
+<input id="width" type="range" min="260" max="880" value="880">
+</div>
+
+<div id="shell" class="shell"><div id="calendar"></div></div>
+</main>
+
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar_festivals_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar_festivals.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/solar_festivals_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/solar_festivals.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/solar_terms_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/solar_terms.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/calendar.js"></script>
+<script src="./calendar_component.js"></script>
+
+<script>
+const c=SlowlyCalendar.mount("#calendar");
+
+const ids=["view","grid","lunar","festival","term","boldSolar","boldLunar","boldFestival","boldTerm"];
+ids.forEach(id=>document.getElementById(id).addEventListener("change",()=>{
+  c.update({
+    view:view.value,
+    gridLines:grid.checked,
+    showLunar:lunar.checked,
+    showFestivals:festival.checked,
+    showSolarTerms:term.checked,
+    bold:{
+      solarDate:boldSolar.checked,
+      lunar:boldLunar.checked,
+      festival:boldFestival.checked,
+      solarTerm:boldTerm.checked
+    }
+  });
+}));
+
+width.addEventListener("input",()=>{
+  widthValue.textContent=width.value;
+  shell.style.maxWidth=width.value+"px";
+});
+</script>
+</body>
+</html>

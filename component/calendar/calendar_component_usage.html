@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slowly Calendar Component｜元件使用</title>
+<style>
+body{margin:0;padding:24px;color:#222;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;line-height:1.7}
+main{max-width:820px;margin:auto}
+pre{overflow:auto;padding:14px;background:#f6f6f6;border:1px solid #ddd}
+code{font-family:ui-monospace,monospace}
+</style>
+</head>
+<body><main>
+<h1>Slowly Calendar Component</h1>
+<p>完整可呼叫萬年曆元件。預設 1 個月，農曆、節慶、節氣全開。</p>
+
+<h2>載入</h2>
+<pre><code>&lt;link rel="stylesheet" href="calendar_component.css"&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/calendar/lunar_data.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/calendar/lunar.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/calendar/lunar_festivals_data.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/calendar/lunar_festivals.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/calendar/solar_festivals_data.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/calendar/solar_festivals.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/calendar/solar_terms_data.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/calendar/solar_terms.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/calendar/calendar.js"&gt;&lt;/script&gt;
+
+&lt;script src="calendar_component.js"&gt;&lt;/script&gt;</code></pre>
+
+<h2>最簡單呼叫</h2>
+<pre><code>&lt;div id="calendar"&gt;&lt;/div&gt;
+&lt;script&gt;
+  SlowlyCalendar.mount("#calendar");
+&lt;/script&gt;</code></pre>
+
+<h2>顯示範圍</h2>
+<pre><code>SlowlyCalendar.mount("#calendar", {
+  view: "month" // month / 3weeks / 2weeks / week
+});</code></pre>
+
+<h2>Options</h2>
+<pre><code>SlowlyCalendar.mount("#calendar", {
+  view: "2weeks",
+  gridLines: true,
+  showLunar: true,
+  showFestivals: true,
+  showSolarTerms: true,
+  bold: {
+    solarDate: false,
+    weekend: true,
+    lunar: false,
+    festival: true,
+    solarTerm: false
+  }
+});</code></pre>
+
+<h2>已 mount 後</h2>
+<pre><code>const calendar = SlowlyCalendar.mount("#calendar");
+calendar.setView("week");
+calendar.goToday();
+calendar.setDate("2026-09-08");
+calendar.update({ gridLines: true });</code></pre>
+
+<h2>改色</h2>
+<pre><code>#calendar .slowly-calendar {
+  --sc-weekend: #b84d4d;
+  --sc-lunar: #777;
+  --sc-festival: #a34f4f;
+  --sc-solar-term: #4f6f7a;
+}</code></pre>
+
+<p>Responsive 依元件自己的容器寬度，不依整台裝置 viewport。</p>
+</main></body>
+</html>

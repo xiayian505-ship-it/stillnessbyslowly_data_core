@@ -1,0 +1,193 @@
+/* Slowly Calendar Component v1 */
+
+/* ===== 可自訂顏色：只改這區即可 ===== */
+.slowly-calendar{
+  --sc-bg:#fff;
+  --sc-text:#222;
+  --sc-muted:#777;
+  --sc-soft:#f6f6f6;
+  --sc-weekend:#b84d4d;
+  --sc-lunar:#777;
+  --sc-festival:#a34f4f;
+  --sc-solar-term:#4f6f7a;
+  --sc-grid-line:#ddd;
+  --sc-selected-bg:#eee;
+  --sc-selected-text:#111;
+  --sc-selected-border:#aaa;
+  --sc-today-ring:#777;
+}
+/* ===== 可自訂顏色結束 ===== */
+
+.slowly-calendar{
+  container-type:inline-size;
+  width:100%;
+  min-width:0;
+  color:var(--sc-text);
+  background:var(--sc-bg);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
+  line-height:1.45;
+}
+.slowly-calendar *{box-sizing:border-box;}
+.slowly-calendar button,.slowly-calendar input,.slowly-calendar select{font:inherit;}
+
+.sc-toolbar{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto auto;
+  gap:8px;
+  align-items:center;
+  margin-bottom:14px;
+}
+.sc-nav,.sc-today,.sc-title,.sc-picker-go{
+  border:1px solid var(--sc-grid-line);
+  background:var(--sc-bg);
+  color:var(--sc-text);
+  cursor:pointer;
+}
+.sc-nav,.sc-today,.sc-picker-go{
+  min-height:38px;
+  padding:7px 11px;
+  border-radius:10px;
+}
+.sc-nav{min-width:38px;font-size:1.25rem;line-height:1;}
+.sc-title{
+  width:100%;
+  min-height:38px;
+  padding:7px 10px;
+  border-radius:10px;
+  display:flex;
+  justify-content:center;
+  gap:.4em;
+  font-weight:700;
+}
+.sc-picker{
+  display:grid;
+  grid-template-columns:1fr 1fr auto;
+  gap:8px;
+  align-items:end;
+  padding:10px;
+  margin-bottom:14px;
+  border:1px solid var(--sc-grid-line);
+  border-radius:10px;
+  background:var(--sc-soft);
+}
+.sc-picker[hidden]{display:none;}
+.sc-picker label{display:grid;gap:5px;color:var(--sc-muted);font-size:.8rem;}
+.sc-picker input,.sc-picker select{
+  width:100%;
+  min-width:0;
+  padding:7px 8px;
+  border:1px solid var(--sc-grid-line);
+  border-radius:8px;
+  background:var(--sc-bg);
+  color:var(--sc-text);
+}
+
+.sc-hero{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:20px;
+  margin-bottom:14px;
+  padding:4px 2px 10px;
+  border-bottom:1px solid var(--sc-grid-line);
+}
+.sc-hero-month{
+  margin-bottom:3px;
+  color:var(--sc-muted);
+  font-size:.78rem;
+  letter-spacing:.18em;
+}
+.sc-hero-year{font-size:clamp(1.7rem,6cqi,2.2rem);font-weight:800;line-height:1.08;}
+.sc-hero-day{font-size:clamp(3rem,13cqi,4.4rem);font-weight:800;line-height:.9;}
+
+.sc-weekdays,.sc-grid{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:7px;
+}
+.sc-weekdays{margin-bottom:7px;}
+.sc-weekday{
+  min-width:0;
+  padding:7px 2px;
+  border-radius:9px;
+  background:var(--sc-soft);
+  color:var(--sc-muted);
+  text-align:center;
+  font-size:.76rem;
+}
+.sc-weekday:first-child,.sc-weekday:last-child{color:var(--sc-weekend);}
+
+.sc-day{
+  min-width:0;
+  min-height:88px;
+  padding:7px 6px;
+  border:1px solid var(--sc-grid-line);
+  border-radius:12px;
+  background:var(--sc-bg);
+  color:var(--sc-text);
+  text-align:left;
+  cursor:pointer;
+  overflow:hidden;
+}
+.sc-empty{cursor:default;background:transparent;opacity:.35;}
+.sc-solar-date{display:block;margin-bottom:3px;font-size:.98rem;}
+.sc-day-detail{display:block;overflow-wrap:anywhere;font-size:.76rem;color:var(--sc-muted);}
+.sc-lunar{color:var(--sc-lunar);}
+.sc-festival{color:var(--sc-festival);}
+.sc-solar-term{color:var(--sc-solar-term);}
+.sc-day.is-weekend .sc-solar-date{color:var(--sc-weekend);}
+.sc-day.is-outside{opacity:.42;}
+.sc-day.is-selected{
+  color:var(--sc-selected-text);
+  background:var(--sc-selected-bg);
+  border-color:var(--sc-selected-border);
+}
+.sc-day.is-today{box-shadow:inset 0 0 0 1px var(--sc-today-ring);}
+.sc-day .is-bold{font-weight:700;}
+
+/* 格線模式 */
+.slowly-calendar[data-grid="on"] .sc-weekdays,
+.slowly-calendar[data-grid="on"] .sc-grid{gap:0;}
+.slowly-calendar[data-grid="on"] .sc-weekday,
+.slowly-calendar[data-grid="on"] .sc-day{border-radius:0;}
+.slowly-calendar[data-grid="on"] .sc-weekday{
+  border-top:1px solid var(--sc-grid-line);
+  border-right:1px solid var(--sc-grid-line);
+}
+.slowly-calendar[data-grid="on"] .sc-weekday:first-child{border-left:1px solid var(--sc-grid-line);}
+.slowly-calendar[data-grid="on"] .sc-day{
+  border-right:1px solid var(--sc-grid-line);
+  border-bottom:1px solid var(--sc-grid-line);
+  border-top:0;
+  border-left:0;
+}
+.slowly-calendar[data-grid="on"] .sc-day:nth-child(7n+1){border-left:1px solid var(--sc-grid-line);}
+
+.sc-detail{
+  display:none;
+  margin-top:14px;
+  padding:16px 2px 4px;
+  border-top:1px solid var(--sc-grid-line);
+}
+.sc-detail-date{margin-bottom:4px;font-size:1rem;font-weight:700;}
+.sc-detail-lunar,.sc-detail-special{font-size:.86rem;line-height:1.7;color:var(--sc-muted);}
+.sc-detail-special{color:var(--sc-festival);}
+.sc-status{margin:12px 0 0;color:var(--sc-festival);font-size:.85rem;}
+
+/* 容器變窄：先收節慶/節氣，再收農曆。斷點是 v1 起始值，實測再調。 */
+@container (max-width:620px){
+  .sc-day{min-height:62px;padding:6px 4px;text-align:center;}
+  .sc-day .sc-festival,.sc-day .sc-solar-term{display:none;}
+  .sc-detail{display:block;}
+}
+@container (max-width:400px){
+  .sc-toolbar{grid-template-columns:auto minmax(0,1fr) auto;}
+  .sc-today{grid-column:1/-1;min-height:34px;}
+  .sc-picker{grid-template-columns:1fr 1fr;}
+  .sc-picker-go{grid-column:1/-1;}
+  .sc-day{min-height:44px;padding:5px 2px;display:grid;place-items:center;}
+  .sc-day-detail{display:none;}
+  .sc-solar-date{margin:0;font-size:.88rem;}
+  .sc-weekdays,.sc-grid{gap:4px;}
+  .sc-weekday{padding:5px 1px;font-size:.7rem;}
+}
