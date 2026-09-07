@@ -6,133 +6,7 @@
   <title>慢慢的倉庫</title>
 
   <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
-
-  <style>
-    :root {
-      --bg: #f4f5f5;
-      --surface: #ffffff;
-      --text: #202426;
-      --muted: #687176;
-      --line: #d9dddf;
-      --accent: #536d78;
-      --content: 760px;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, "Microsoft JhengHei", sans-serif;
-    }
-
-    main {
-      width: min(calc(100% - 32px), var(--content));
-      margin: 0 auto;
-      padding: 72px 0;
-    }
-
-    h1 {
-      margin: 0 0 12px;
-      font-size: 2rem;
-      font-weight: 700;
-    }
-
-    .intro {
-      margin: 0 0 28px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .category-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 18px;
-      padding: 0 0 18px;
-      margin-bottom: 32px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .category-nav button {
-      padding: 0;
-      border: 0;
-      background: none;
-      color: var(--muted);
-      font: inherit;
-      cursor: pointer;
-    }
-
-    .category-nav button:hover,
-    .category-nav button[aria-selected="true"] {
-      color: var(--text);
-      font-weight: 700;
-    }
-
-    .page { display: none; }
-    .page.active { display: block; }
-
-    .section-title {
-      margin: 0 0 12px;
-      font-size: 1rem;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .directory-placeholder {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .item {
-      padding: 18px 20px;
-      border: 1px solid var(--line);
-      background: var(--surface);
-    }
-
-    .item-title {
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
-
-    .item-desc {
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    .item-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 14px;
-    }
-
-    .item-links a {
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-
-    .item-links a:hover { text-decoration: underline; }
-
-    @media (max-width: 600px) {
-      main {
-        width: min(calc(100% - 24px), var(--content));
-        padding: 40px 0;
-      }
-
-      h1 { font-size: 1.7rem; }
-      .intro { margin-bottom: 22px; }
-      .category-nav { gap: 8px 14px; margin-bottom: 24px; }
-      .item { padding: 16px; }
-      .item-links { gap: 10px 16px; }
-    }
-  </style>
+  <link rel="stylesheet" href="./index.css">
 </head>
 
 <body>
@@ -239,6 +113,39 @@
           <div class="item-links">
             <a href="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js">Fiction_storage.js</a>
             <a href="https://lib.stillnessbyslowly.com/fiction/test_storage.html">功能測試</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-title">Data Backup</div>
+          <div class="item-desc">
+            通用 JSON 備份與匯入工具，提供 JSON 下載、檔案讀取、備份 payload 建立與資料擷取功能。
+          </div>
+          <div class="item-links">
+            <a href="https://lib.stillnessbyslowly.com/data/Data_backup.js">Data_backup.js</a>
+            <a href="https://lib.stillnessbyslowly.com/data/test_backup.html">功能測試</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-title">Money</div>
+          <div class="item-desc">
+            通用數值與金額處理工具，提供加總、四捨五入、數字正規化與金額格式化功能。
+          </div>
+          <div class="item-links">
+            <a href="https://lib.stillnessbyslowly.com/data/Money.js">Money.js</a>
+            <a href="https://lib.stillnessbyslowly.com/data/test_money.html">功能測試</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-title">Currency</div>
+          <div class="item-desc">
+            通用幣別與匯率換算工具，以 TWD 為基準，提供外幣與台幣雙向換算、匯率方向轉換與即時匯率取得。
+          </div>
+          <div class="item-links">
+            <a href="https://lib.stillnessbyslowly.com/data/Currency.js">Currency.js</a>
+            <a href="https://lib.stillnessbyslowly.com/data/test_currency.html">功能測試</a>
           </div>
         </div>
 
