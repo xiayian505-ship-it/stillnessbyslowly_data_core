@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiction Storage 功能測試</title>
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --text: #202426;
+      --muted: #687176;
+      --line: #d9dddf;
+      --accent: #536d78;
+      --content: 860px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    main {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+    }
+
+    .intro {
+      margin: 0 0 32px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .status {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+    }
+
+    .desc {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    pre {
+      margin: 20px 0 0;
+      padding: 18px;
+      min-height: 220px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 18px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .back:hover { text-decoration: underline; }
+
+    @media (max-width: 680px) {
+      main {
+        width: min(calc(100% - 24px), var(--content));
+        padding: 40px 0;
+      }
+
+      h1 { font-size: 1.7rem; }
+
+      .grid { grid-template-columns: 1fr; }
+
+      .card { padding: 16px; }
+
+      pre {
+        min-height: 180px;
+        padding: 14px;
+      }
+    }
+</style>
+</head>
+<body>
+  <main>
+    <h1>Fiction Storage 功能測試</h1>
+    <p class="intro">測試 Fiction_storage.js 的 localStorage、CRUD、replace、count 與 clearAll。</p>
+    <div class="status" id="status">模組檢查中...</div>
+    <div class="grid">
+      <section class="card">
+        <h2>CRUD / localStorage</h2>
+        <p class="desc">新增、讀取、修改、刪除與清空測試資料。</p>
+        <div class="actions">
+          <button id="add">新增</button>
+          <button id="read">讀取</button>
+          <button id="update">修改第一筆</button>
+          <button id="delete">刪除第一筆</button>
+          <button id="clear">清空 collection</button>
+        </div>
+      </section>
+      <section class="card">
+        <h2>其他資料操作</h2>
+        <p class="desc">replace、count、find、filter 與 namespace 清空。</p>
+        <div class="actions">
+          <button id="replace">Replace 3 筆</button>
+          <button id="count">Count</button>
+          <button id="find">Find score = 20</button>
+          <button id="filter">Filter score ≥ 20</button>
+          <button id="clearAll">Clear All</button>
+        </div>
+      </section>
+    </div>
+    <pre id="output">等待操作...</pre>
+    <a class="back" href="../">返回慢慢的倉庫</a>
+  </main>
+  <script src="./Fiction_storage.js"></script>
+  <script>
+    const statusEl = document.getElementById("status");
+    const output = document.getElementById("output");
+
+    function show(title, data) {
+      output.textContent =
+        title + "\n\n" +
+        (typeof data === "string"
+          ? data
+          : JSON.stringify(data, null, 2));
+    }
+
+    if (typeof FictionStorage === "undefined") {
+      statusEl.textContent = "載入失敗：找不到 FictionStorage";
+      throw new Error("FictionStorage 未載入");
+    }
+
+    statusEl.textContent =
+      "載入成功：FictionStorage v" + FictionStorage.version;
+
+    const db = FictionStorage.create({
+      namespace: "fiction-storage-self-test"
+    });
+
+    const works = db.collection("works");
+
+    document.getElementById("add").onclick = async () => {
+      const item = await works.add({
+        title: "測試作品",
+        author: "慢慢",
+        score: 10
+      });
+      show("新增成功", item);
+    };
+
+    document.getElementById("read").onclick = async () => {
+      const list = await works.all();
+      show("目前共 " + list.length + " 筆", list);
+    };
+
+    document.getElementById("update").onclick = async () => {
+      const list = await works.all();
+      if (!list.length) {
+        show("修改失敗", "目前沒有資料。");
+        return;
+      }
+      const updated = await works.update(list[0].id, {
+        title: "已修改的測試作品"
+      });
+      show("修改成功", updated);
+    };
+
+    document.getElementById("delete").onclick = async () => {
+      const list = await works.all();
+      if (!list.length) {
+        show("刪除失敗", "目前沒有資料。");
+        return;
+      }
+      const removed = await works.remove(list[0].id);
+      show("刪除結果", { removed });
+    };
+
+    document.getElementById("clear").onclick = async () => {
+      await works.clear();
+      show("清空完成", "目前 collection 已清空。");
+    };
+
+    document.getElementById("replace").onclick = async () => {
+      const result = await works.replace([
+        { title: "A", score: 10 },
+        { title: "B", score: 20 },
+        { title: "C", score: 30 }
+      ]);
+      show("Replace 完成", result);
+    };
+
+    document.getElementById("count").onclick = async () => {
+      show("Count", { count: await works.count() });
+    };
+
+    document.getElementById("find").onclick = async () => {
+      show("Find score = 20", await works.find(item => item.score === 20));
+    };
+
+    document.getElementById("filter").onclick = async () => {
+      show("Filter score ≥ 20", await works.filter(item => item.score >= 20));
+    };
+
+    document.getElementById("clearAll").onclick = async () => {
+      await db.clearAll();
+      show("Clear All 完成", "namespace 已清空。");
+    };
+  </script>
+</body>
+</html>
