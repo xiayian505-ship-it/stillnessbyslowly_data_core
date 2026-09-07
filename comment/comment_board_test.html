@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommentBoard Test</title>
+
+  <!-- CommentBoard 只提供最低限度的功能性 CSS -->
+  <link
+    rel="stylesheet"
+    href="https://lib.stillnessbyslowly.com/comment/comment_board.css"
+  >
+
+  <style>
+    /* 測試頁自己的最低限度排版，不屬於 CommentBoard */
+    main {
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    form > div {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 8rem;
+    }
+
+    .test-note {
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>CommentBoard Test</h1>
+
+    <p class="test-note">
+      本頁使用 FictionData / localStorage 測試 CommentBoard。
+      目前以 admin 模式啟動，方便一次測試新增、編輯、刪除與管理者回覆。
+      前端 admin 模式不是實際權限控制。
+    </p>
+
+    <section class="comment-board">
+      <h2 id="commentFormTitle">新增留言</h2>
+
+      <form id="commentForm">
+        <div>
+          <label for="commentName">暱稱</label>
+          <input
+            id="commentName"
+            name="name"
+            type="text"
+            maxlength="40"
+            autocomplete="nickname"
+            required
+          >
+        </div>
+
+        <div>
+          <label for="commentContent">留言內容</label>
+          <textarea
+            id="commentContent"
+            name="content"
+            maxlength="1000"
+            required
+          ></textarea>
+        </div>
+
+        <button id="commentSubmit" type="submit">送出留言</button>
+        <button id="commentCancelEdit" type="button" hidden>取消編輯</button>
+
+        <p id="commentStatus" aria-live="polite"></p>
+      </form>
+
+      <hr>
+
+      <div>
+        <label for="commentSort">排序</label>
+        <select id="commentSort">
+          <option value="newest">最新優先</option>
+          <option value="oldest">最舊優先</option>
+        </select>
+      </div>
+
+      <p id="commentCount">0 則</p>
+      <div id="commentList"></div>
+    </section>
+
+    <!--
+      絕對路徑：
+      1. FictionData
+      2. CommentBoard
+      載入順序不可顛倒。
+    -->
+    <script src="https://lib.stillnessbyslowly.com/fiction/Fiction_data.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/comment/comment_board.js"></script>
+
+    <script>
+      (() => {
+        "use strict";
+
+        if (!window.FictionData) {
+          document.getElementById("commentList").textContent =
+            "FictionData 載入失敗。";
+          return;
+        }
+
+        if (!window.CommentBoard) {
+          document.getElementById("commentList").textContent =
+            "CommentBoard 載入失敗。";
+          return;
+        }
+
+        CommentBoard.create({
+          namespace: "comment_board_test",
+          collection: "comments",
+
+          /*
+           * 測試頁使用 admin，方便測全部功能。
+           * 真正公開頁請使用：
+           * role: "public"
+           *
+           * SECURITY:
+           * role 只控制前端功能，不是後端權限。
+           */
+          role: "admin",
+
+          sort: "newest",
+          locale: "zh-TW"
+
+          /*
+           * BACKEND ADAPTER 預留：
+           *
+           * 未來接後端時可傳入：
+           *
+           * adapter: {
+           *   list(sort) {},
+           *   get(id) {},
+           *   create(data) {},
+           *   update(id, data) {},       // ADMIN ONLY
+           *   remove(id) {},             // ADMIN ONLY
+           *   reply(id, content) {},     // ADMIN ONLY
+           *   removeReply(id) {}         // ADMIN ONLY
+           * }
+           *
+           * 公開後端上線前，必須在 API / DB / RLS 真正限制：
+           * - public 只能讀取 + 新增允許欄位
+           * - public 不可 UPDATE / DELETE
+           * - public 不可寫 adminReply / adminRepliedAt
+           * - admin 操作必須驗證管理者身分
+           */
+        });
+      })();
+    </script>
+  </main>
+</body>
+</html>
