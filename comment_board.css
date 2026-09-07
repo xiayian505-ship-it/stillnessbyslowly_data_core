@@ -1,0 +1,45 @@
+/*
+ * CommentBoard 基礎 CSS
+ * 只處理功能性與最低限度可讀性。
+ * 顏色、字體、卡片、圓角、陰影、版面與 responsive UI
+ * 請由使用頁面自己的 CSS 決定。
+ */
+
+.comment-board [hidden] {
+  display: none !important;
+}
+
+.comment-board textarea {
+  resize: vertical;
+}
+
+.comment-board__content,
+.comment-board__reply-content {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.comment-board__item + .comment-board__item {
+  margin-top: 1rem;
+}
+
+.comment-board__reply {
+  margin-top: 0.75rem;
+}
+
+.comment-board__actions {
+  margin-top: 0.75rem;
+}
+
+.comment-board__actions button + button {
+  margin-left: 0.25rem;
+}
+
+.comment-board__time,
+.comment-board__reply-time {
+  display: block;
+}
+
+.comment-board__error {
+  overflow-wrap: anywhere;
+}
