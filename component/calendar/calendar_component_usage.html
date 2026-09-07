@@ -65,12 +65,52 @@ calendar.setDate("2026-09-08");
 calendar.update({ gridLines: true });</code></pre>
 
 <h2>改色</h2>
+<p>
+  Slowly Calendar 預設使用中性色。嵌入既有網站時，不需要修改
+  <code>calendar_component.css</code>；請在使用端覆寫
+  <code>.slowly-calendar</code> 的 CSS Variables。
+</p>
+
+<p>如果宿主網站已經有自己的色票，優先直接對應既有變數：</p>
 <pre><code>#calendar .slowly-calendar {
+  --sc-bg: var(--panel);
+  --sc-text: var(--ink);
+  --sc-muted: var(--muted);
+  --sc-soft: var(--surface-soft);
+
+  --sc-weekend: var(--accent);
+  --sc-lunar: var(--muted);
+  --sc-festival: var(--accent);
+  --sc-solar-term: var(--accent-secondary);
+
+  --sc-grid-line: var(--line);
+  --sc-selected-bg: var(--selected-bg);
+  --sc-selected-text: var(--ink);
+  --sc-selected-border: var(--accent);
+  --sc-today-ring: var(--accent);
+}</code></pre>
+
+<p>也可以直接填入色碼：</p>
+<pre><code>#calendar .slowly-calendar {
+  --sc-bg: #fff;
+  --sc-text: #222;
+  --sc-muted: #777;
+  --sc-soft: #f6f6f6;
   --sc-weekend: #b84d4d;
   --sc-lunar: #777;
   --sc-festival: #a34f4f;
   --sc-solar-term: #4f6f7a;
+  --sc-grid-line: #ddd;
+  --sc-selected-bg: #eee;
+  --sc-selected-text: #111;
+  --sc-selected-border: #aaa;
+  --sc-today-ring: #777;
 }</code></pre>
+
+<p>
+  原則：Calendar Component 負責結構與功能，宿主頁面負責自己的視覺風格。
+  優先覆寫變數，不直接修改 Component CSS。
+</p>
 
 <p>Responsive 依元件自己的容器寬度，不依整台裝置 viewport。</p>
 </main></body>

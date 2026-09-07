@@ -1,6 +1,30 @@
 /* Slowly Calendar Component v1 */
 
-/* ===== 可自訂顏色：只改這區即可 ===== */
+/* ===== Theme / Color Override =====
+   元件本體保持中性預設色。
+
+   嵌入既有網站時，不需要修改 calendar_component.css。
+   請在「宿主頁面」另外覆寫 .slowly-calendar 的 --sc-* 變數，
+   並優先對應宿主網站原本就有的色彩變數。
+
+   例如：
+
+   #calendar .slowly-calendar{
+     --sc-bg:var(--panel);
+     --sc-text:var(--ink);
+     --sc-muted:var(--muted);
+     --sc-soft:var(--surface-soft);
+     --sc-weekend:var(--accent);
+     --sc-lunar:var(--muted);
+     --sc-festival:var(--accent);
+     --sc-grid-line:var(--line);
+   }
+
+   原則：
+   - Calendar Component 負責結構與功能。
+   - 宿主頁面負責自己的視覺風格。
+   - 優先覆寫變數，不直接改 Component CSS。
+================================== */
 .slowly-calendar{
   --sc-bg:#fff;
   --sc-text:#222;
@@ -16,7 +40,7 @@
   --sc-selected-border:#aaa;
   --sc-today-ring:#777;
 }
-/* ===== 可自訂顏色結束 ===== */
+/* ===== Theme / Color Override 結束 ===== */
 
 .slowly-calendar{
   container-type:inline-size;
