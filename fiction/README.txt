@@ -14,6 +14,7 @@ stillness by slowly
 - test_shuffle.html
 - test_paginate.html
 - test_storage.html
+- test_data.html（原完整 Fiction_data.js 測試頁，避免與既有 test.html 重名）
 
 原則：
 - 原 Fiction_data.js 完整版不動。
