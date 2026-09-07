@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Backup Test</title>
+<style>:root{
+  --bg:#f4f5f5;
+  --surface:#fff;
+  --text:#202426;
+  --muted:#687176;
+  --line:#d9dddf;
+  --accent:#536d78;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+main{
+  width:min(860px,calc(100% - 32px));
+  margin:40px auto;
+}
+a{color:var(--accent)}
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:20px;
+  margin:16px 0;
+}
+h1{font-size:1.6rem;margin-bottom:8px}
+h2{font-size:1.05rem;margin-top:0}
+p{line-height:1.7}
+button,input,select{
+  font:inherit;
+}
+button{
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  cursor:pointer;
+}
+button.primary{
+  background:var(--accent);
+  color:#fff;
+}
+input,select{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  background:#f7f8f8;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  overflow:auto;
+}
+.ok{font-weight:700}
+@media(max-width:640px){
+  main{width:min(100% - 20px,860px);margin:20px auto}
+  .grid{grid-template-columns:1fr}
+}</style>
+</head>
+<body>
+<main>
+  <p><a href="../index.html">← 返回慢慢的倉庫</a></p>
+  <h1>Data Backup Test</h1>
+  <p>測試 payload、資料擷取、JSON 下載與 JSON 檔案讀取。</p>
+
+  <section class="card">
+    <h2>自動測試</h2>
+    <pre id="result"></pre>
+  </section>
+
+  <section class="card">
+    <h2>下載 JSON</h2>
+    <button class="primary" id="downloadBtn">下載測試備份</button>
+  </section>
+
+  <section class="card">
+    <h2>讀取 JSON</h2>
+    <input id="fileInput" type="file" accept="application/json,.json">
+    <pre id="fileResult">尚未選擇檔案。</pre>
+  </section>
+</main>
+
+<script src="./Data_backup.js"></script>
+<script>
+const result = document.getElementById("result");
+
+try {
+  const payload = DataBackup.createPayload({
+    app:"sbs_test",
+    version:1,
+    data:[{id:1,name:"測試"}]
+  });
+
+  const extracted = DataBackup.extractData(payload);
+  const raw = DataBackup.extractData([1,2,3]);
+
+  result.textContent = [
+    `version: ${DataBackup.version}`,
+    `todayISO: ${DataBackup.todayISO()}`,
+    `payload app: ${payload.meta.app}`,
+    `extract payload: ${JSON.stringify(extracted)}`,
+    `extract raw: ${JSON.stringify(raw)}`,
+    "",
+    "PASS"
+  ].join("\n");
+} catch(error) {
+  result.textContent = "FAIL\n" + error.stack;
+}
+
+document.getElementById("downloadBtn").onclick = () => {
+  DataBackup.downloadJson("data_backup_test.json", {
+    hello:"慢慢的倉庫",
+    date:DataBackup.todayISO()
+  });
+};
+
+document.getElementById("fileInput").onchange = async event => {
+  const file = event.target.files?.[0];
+  if(!file) return;
+
+  try {
+    const data = await DataBackup.readJsonFile(file);
+    document.getElementById("fileResult").textContent =
+      JSON.stringify(data,null,2);
+  } catch(error) {
+    document.getElementById("fileResult").textContent =
+      "FAIL\n" + error.message;
+  }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Currency Test</title>
+<style>:root{
+  --bg:#f4f5f5;
+  --surface:#fff;
+  --text:#202426;
+  --muted:#687176;
+  --line:#d9dddf;
+  --accent:#536d78;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+main{
+  width:min(860px,calc(100% - 32px));
+  margin:40px auto;
+}
+a{color:var(--accent)}
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:20px;
+  margin:16px 0;
+}
+h1{font-size:1.6rem;margin-bottom:8px}
+h2{font-size:1.05rem;margin-top:0}
+p{line-height:1.7}
+button,input,select{
+  font:inherit;
+}
+button{
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  cursor:pointer;
+}
+button.primary{
+  background:var(--accent);
+  color:#fff;
+}
+input,select{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  background:#f7f8f8;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  overflow:auto;
+}
+.ok{font-weight:700}
+@media(max-width:640px){
+  main{width:min(100% - 20px,860px);margin:20px auto}
+  .grid{grid-template-columns:1fr}
+}</style>
+</head>
+<body>
+<main>
+  <p><a href="../index.html">← 返回慢慢的倉庫</a></p>
+  <h1>Currency Test</h1>
+  <p>測試固定匯率換算、TWD ↔ 外幣、倒數匯率，以及即時匯率。</p>
+
+  <section class="card">
+    <h2>自動測試</h2>
+    <pre id="result"></pre>
+  </section>
+
+  <section class="card">
+    <h2>換算測試</h2>
+    <div class="grid">
+      <label>外幣金額<input id="foreign" type="number" value="100" step="any"></label>
+      <label>1 外幣 = 幾 TWD<input id="rate" type="number" value="32" step="any"></label>
+    </div>
+    <p id="converted"></p>
+  </section>
+
+  <section class="card">
+    <h2>即時匯率</h2>
+    <div class="grid">
+      <label>幣別
+        <select id="liveCurrency">
+          <option>USD</option>
+          <option>EUR</option>
+          <option>JPY</option>
+          <option>CNY</option>
+          <option>HKD</option>
+        </select>
+      </label>
+      <div><button class="primary" id="liveBtn">取得即時匯率</button></div>
+    </div>
+    <pre id="liveResult">尚未查詢。</pre>
+  </section>
+</main>
+
+<script src="./Currency.js"></script>
+<script>
+const result = document.getElementById("result");
+
+try {
+  const rows = [
+    ["USD default rate", Currency.getRateToTWD("USD") === 32],
+    ["foreignToTWD", Currency.foreignToTWD(10,32) === 320],
+    ["twdToForeign", Currency.twdToForeign(320,32) === 10],
+    ["invertRate", Currency.invertRate(0.03125) === 32],
+    ["API base rate conversion", Math.abs(Currency.rateFromTwdBaseRates({USD:0.03125},"USD") - 32) < 1e-10]
+  ];
+
+  result.textContent = rows
+    .map(([name,pass]) => `${pass ? "PASS" : "FAIL"}  ${name}`)
+    .join("\n");
+} catch(error) {
+  result.textContent = "FAIL\n" + error.stack;
+}
+
+function update(){
+  const amount = Number(document.getElementById("foreign").value);
+  const rate = Number(document.getElementById("rate").value);
+  const twd = Currency.foreignToTWD(amount,rate);
+  document.getElementById("converted").textContent =
+    Number.isFinite(twd) ? `${amount} × ${rate} = ${twd} TWD` : "請輸入有效數字";
+}
+
+document.getElementById("foreign").oninput = update;
+document.getElementById("rate").oninput = update;
+update();
+
+document.getElementById("liveBtn").onclick = async () => {
+  const currency = document.getElementById("liveCurrency").value;
+  const output = document.getElementById("liveResult");
+  output.textContent = "查詢中…";
+
+  try {
+    const rate = await Currency.fetchRateToTWD(currency);
+    output.textContent = `1 ${currency} ≈ ${rate} TWD`;
+  } catch(error) {
+    output.textContent = "FAIL\n" + error.message;
+  }
+};
+</script>
+</body>
+</html>

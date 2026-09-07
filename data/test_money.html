@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Money Test</title>
+<style>:root{
+  --bg:#f4f5f5;
+  --surface:#fff;
+  --text:#202426;
+  --muted:#687176;
+  --line:#d9dddf;
+  --accent:#536d78;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+main{
+  width:min(860px,calc(100% - 32px));
+  margin:40px auto;
+}
+a{color:var(--accent)}
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:20px;
+  margin:16px 0;
+}
+h1{font-size:1.6rem;margin-bottom:8px}
+h2{font-size:1.05rem;margin-top:0}
+p{line-height:1.7}
+button,input,select{
+  font:inherit;
+}
+button{
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  cursor:pointer;
+}
+button.primary{
+  background:var(--accent);
+  color:#fff;
+}
+input,select{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  background:#f7f8f8;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  overflow:auto;
+}
+.ok{font-weight:700}
+@media(max-width:640px){
+  main{width:min(100% - 20px,860px);margin:20px auto}
+  .grid{grid-template-columns:1fr}
+}</style>
+</head>
+<body>
+<main>
+  <p><a href="../index.html">← 返回慢慢的倉庫</a></p>
+  <h1>Money Test</h1>
+  <p>測試加總、四捨五入、數字清理與金額格式。</p>
+
+  <section class="card">
+    <h2>自動測試</h2>
+    <pre id="result"></pre>
+  </section>
+
+  <section class="card">
+    <h2>互動測試</h2>
+    <div class="grid">
+      <label>數字<input id="amount" type="number" value="1234.5678" step="any"></label>
+      <label>幣別
+        <select id="currency">
+          <option>TWD</option>
+          <option>JPY</option>
+          <option>USD</option>
+          <option>EUR</option>
+        </select>
+      </label>
+    </div>
+    <p id="formatted"></p>
+  </section>
+</main>
+
+<script src="./Money.js"></script>
+<script>
+const result = document.getElementById("result");
+
+try {
+  const rows = [
+    ["sum numbers", Money.sum([10,20,30]) === 60],
+    ["sum field", Money.sum([{a:2},{a:3}],"a") === 5],
+    ["roundTo", Money.roundTo(1.005,2) === 1.01],
+    ["cleanNumber", Money.cleanNumber("12.30") === "12.3"],
+    ["formatMoney", Money.formatMoney(1234.5,"TWD").startsWith("TWD ")]
+  ];
+
+  result.textContent = rows
+    .map(([name,pass]) => `${pass ? "PASS" : "FAIL"}  ${name}`)
+    .join("\n");
+} catch(error) {
+  result.textContent = "FAIL\n" + error.stack;
+}
+
+function update(){
+  const value = document.getElementById("amount").value;
+  const currency = document.getElementById("currency").value;
+  document.getElementById("formatted").textContent =
+    Money.formatMoney(value,currency);
+}
+
+document.getElementById("amount").oninput = update;
+document.getElementById("currency").onchange = update;
+update();
+</script>
+</body>
+</html>
