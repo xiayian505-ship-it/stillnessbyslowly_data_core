@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiction Paginate 功能測試</title>
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --text: #202426;
+      --muted: #687176;
+      --line: #d9dddf;
+      --accent: #536d78;
+      --content: 860px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    main {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+    }
+
+    .intro {
+      margin: 0 0 32px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .status {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+    }
+
+    .desc {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    pre {
+      margin: 20px 0 0;
+      padding: 18px;
+      min-height: 220px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 18px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .back:hover { text-decoration: underline; }
+
+    @media (max-width: 680px) {
+      main {
+        width: min(calc(100% - 24px), var(--content));
+        padding: 40px 0;
+      }
+
+      h1 { font-size: 1.7rem; }
+
+      .grid { grid-template-columns: 1fr; }
+
+      .card { padding: 16px; }
+
+      pre {
+        min-height: 180px;
+        padding: 14px;
+      }
+    }
+</style>
+</head>
+<body>
+  <main>
+    <h1>Fiction Paginate 功能測試</h1>
+    <p class="intro">測試 Fiction_paginate.js 的頁碼、每頁筆數、邊界修正與空陣列。</p>
+    <div class="status" id="status">模組檢查中...</div>
+    <div class="grid">
+      <section class="card">
+        <h2>Paginate</h2>
+        <p class="desc">使用 7 筆固定資料執行不同分頁條件。</p>
+        <div class="actions">
+          <button id="page1">第 1 頁 / 3 筆</button>
+          <button id="page2">第 2 頁 / 3 筆</button>
+          <button id="last">超過最大頁碼</button>
+          <button id="zero">頁碼 0</button>
+          <button id="empty">空陣列</button>
+        </div>
+      </section>
+    </div>
+    <pre id="output">等待操作...</pre>
+    <a class="back" href="../">返回慢慢的倉庫</a>
+  </main>
+  <script src="./Fiction_paginate.js"></script>
+  <script>
+    const statusEl = document.getElementById("status");
+    const output = document.getElementById("output");
+    const items = ["A", "B", "C", "D", "E", "F", "G"];
+
+    function show(title, data) {
+      output.textContent = title + "\n\n" + JSON.stringify(data, null, 2);
+    }
+
+    if (typeof FictionPaginate === "undefined") {
+      statusEl.textContent = "載入失敗：找不到 FictionPaginate";
+      throw new Error("FictionPaginate 未載入");
+    }
+
+    statusEl.textContent = "載入成功：FictionPaginate v" + FictionPaginate.version;
+
+    document.getElementById("page1").onclick = () =>
+      show("第 1 頁 / 3 筆", FictionPaginate.paginate(items, { page: 1, pageSize: 3 }));
+
+    document.getElementById("page2").onclick = () =>
+      show("第 2 頁 / 3 筆", FictionPaginate.paginate(items, { page: 2, pageSize: 3 }));
+
+    document.getElementById("last").onclick = () =>
+      show("超過最大頁碼", FictionPaginate.paginate(items, { page: 99, pageSize: 3 }));
+
+    document.getElementById("zero").onclick = () =>
+      show("頁碼 0", FictionPaginate.paginate(items, { page: 0, pageSize: 3 }));
+
+    document.getElementById("empty").onclick = () =>
+      show("空陣列", FictionPaginate.paginate([], { page: 1, pageSize: 3 }));
+  </script>
+</body>
+</html>
