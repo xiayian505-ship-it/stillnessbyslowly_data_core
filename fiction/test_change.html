@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Fiction Change 功能測試</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 60px 22px;
+      background: #f4f5f5;
+      color: #202326;
+      font-family:
+        Arial,
+        "Noto Sans TC",
+        "Microsoft JhengHei",
+        sans-serif;
+    }
+
+    h1 {
+      margin: 0 0 24px;
+      font-size: 34px;
+      line-height: 1.3;
+    }
+
+    p {
+      margin: 0;
+      color: #727b7f;
+      font-size: 20px;
+      line-height: 1.8;
+    }
+
+    .box {
+      margin-top: 36px;
+      padding: 28px 30px;
+      background: #fff;
+      border: 1px solid #d7d9d9;
+    }
+
+    .box h2 {
+      margin: 0 0 20px;
+      font-size: 24px;
+    }
+
+    .box p {
+      margin-bottom: 24px;
+      font-size: 18px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    button {
+      padding: 13px 20px;
+      background: #fff;
+      color: #24282a;
+      border: 1px solid #d5d7d8;
+      font: inherit;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #output {
+      min-height: 220px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family:
+        Consolas,
+        Monaco,
+        monospace;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Fiction Change 功能測試</h1>
+
+  <p>
+    測試 Fiction_change.js 的 subscribe、emit、unsubscribe、
+    clear 與 listenerCount。
+  </p>
+
+  <div class="box" id="load-status">
+    載入中...
+  </div>
+
+  <div class="box">
+    <h2>Change</h2>
+
+    <p>
+      建立訂閱後發送不同資料變更事件，確認通知與取消訂閱結果。
+    </p>
+
+    <div class="buttons">
+      <button id="subscribe">
+        訂閱
+      </button>
+
+      <button id="add">
+        emit add
+      </button>
+
+      <button id="update">
+        emit update
+      </button>
+
+      <button id="remove">
+        emit remove
+      </button>
+
+      <button id="replace">
+        emit replace
+      </button>
+
+      <button id="clear-event">
+        emit clear
+      </button>
+
+      <button id="unsubscribe">
+        取消訂閱
+      </button>
+
+      <button id="clear-listeners">
+        清除 listeners
+      </button>
+    </div>
+  </div>
+
+  <div class="box" id="output">
+等待操作...
+  </div>
+
+  <script src="https://lib.stillnessbyslowly.com/fiction/Fiction_change.js"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const loadStatus =
+        document.getElementById("load-status");
+
+      const output =
+        document.getElementById("output");
+
+      if (!window.FictionChange) {
+        loadStatus.textContent =
+          "載入失敗：找不到 FictionChange";
+
+        return;
+      }
+
+      loadStatus.textContent =
+        `載入成功：FictionChange v${FictionChange.version}`;
+
+      const change =
+        FictionChange.create({
+          name: "change-test"
+        });
+
+      let unsubscribe = null;
+
+      function show(title, data) {
+        const listenerCount =
+          change.listenerCount();
+
+        let text =
+          `${title}\n\n` +
+          `listenerCount: ${listenerCount}`;
+
+        if (data !== undefined) {
+          text +=
+            `\n\n${JSON.stringify(
+              data,
+              null,
+              2
+            )}`;
+        }
+
+        output.textContent = text;
+      }
+
+      function handleChange(event) {
+        show(
+          `收到事件：${event.type}`,
+          event
+        );
+      }
+
+      document
+        .getElementById("subscribe")
+        .addEventListener("click", () => {
+          if (unsubscribe) {
+            show("目前已訂閱");
+            return;
+          }
+
+          unsubscribe =
+            change.subscribe(handleChange);
+
+          show("訂閱成功");
+        });
+
+      document
+        .getElementById("unsubscribe")
+        .addEventListener("click", () => {
+          if (!unsubscribe) {
+            show("目前沒有訂閱");
+            return;
+          }
+
+          unsubscribe();
+          unsubscribe = null;
+
+          show("取消訂閱成功");
+        });
+
+      document
+        .getElementById("add")
+        .addEventListener("click", () => {
+          const event =
+            change.emit({
+              type: "add",
+              collection: "works",
+              record: {
+                id: "work-1",
+                title: "作品 A"
+              },
+              records: [
+                {
+                  id: "work-1",
+                  title: "作品 A"
+                }
+              ]
+            });
+
+          if (!unsubscribe) {
+            show(
+              "已發送 add，但目前沒有訂閱",
+              event
+            );
+          }
+        });
+
+      document
+        .getElementById("update")
+        .addEventListener("click", () => {
+          const event =
+            change.emit({
+              type: "update",
+              collection: "works",
+              record: {
+                id: "work-1",
+                title: "作品 A 修改"
+              },
+              records: [
+                {
+                  id: "work-1",
+                  title: "作品 A 修改"
+                }
+              ]
+            });
+
+          if (!unsubscribe) {
+            show(
+              "已發送 update，但目前沒有訂閱",
+              event
+            );
+          }
+        });
+
+      document
+        .getElementById("remove")
+        .addEventListener("click", () => {
+          const event =
+            change.emit({
+              type: "remove",
+              collection: "works",
+              id: "work-1",
+              record: {
+                id: "work-1",
+                title: "作品 A"
+              },
+              records: []
+            });
+
+          if (!unsubscribe) {
+            show(
+              "已發送 remove，但目前沒有訂閱",
+              event
+            );
+          }
+        });
+
+      document
+        .getElementById("replace")
+        .addEventListener("click", () => {
+          const event =
+            change.emit({
+              type: "replace",
+              collection: "works",
+              records: [
+                {
+                  id: "work-2",
+                  title: "作品 B"
+                },
+                {
+                  id: "work-3",
+                  title: "作品 C"
+                }
+              ]
+            });
+
+          if (!unsubscribe) {
+            show(
+              "已發送 replace，但目前沒有訂閱",
+              event
+            );
+          }
+        });
+
+      document
+        .getElementById("clear-event")
+        .addEventListener("click", () => {
+          const event =
+            change.emit({
+              type: "clear",
+              collection: "works",
+              records: []
+            });
+
+          if (!unsubscribe) {
+            show(
+              "已發送 clear，但目前沒有訂閱",
+              event
+            );
+          }
+        });
+
+      document
+        .getElementById("clear-listeners")
+        .addEventListener("click", () => {
+          change.clear();
+          unsubscribe = null;
+
+          show("已清除全部 listeners");
+        });
+
+    })();
+  </script>
+
+</body>
+</html>
