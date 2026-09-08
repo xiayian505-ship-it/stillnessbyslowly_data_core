@@ -1,0 +1,282 @@
+/*
+ * Slowly Data CRUD Component v1
+ *
+ * 這份 CSS 只處理：
+ * - 基本排版
+ * - 表單可用性
+ * - 列表分隔
+ * - RWD
+ *
+ * 不主動建立卡片、陰影、大面積底色或強烈視覺。
+ * 宿主若要改顏色，可覆寫下列 --sdc-* 變數。
+ */
+
+.slowly-data-crud{
+  --sdc-text:#222;
+  --sdc-muted:#777;
+  --sdc-line:#ddd;
+  --sdc-accent:#444;
+  --sdc-danger:#a33;
+
+  width:100%;
+  color:var(--sdc-text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  line-height:1.5;
+  container-type:inline-size;
+}
+
+.slowly-data-crud *{
+  box-sizing:border-box;
+}
+
+.slowly-data-crud button,
+.slowly-data-crud input,
+.slowly-data-crud textarea,
+.slowly-data-crud select{
+  font:inherit;
+}
+
+.sdc-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.sdc-title{
+  margin:0 0 2px;
+  font-size:1.1rem;
+}
+
+.sdc-count{
+  color:var(--sdc-muted);
+  font-size:.9rem;
+}
+
+.sdc-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(260px,340px);
+  gap:24px;
+  align-items:start;
+}
+
+.sdc-list{
+  min-width:0;
+}
+
+.sdc-item{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:16px;
+  padding:14px 0;
+  border-bottom:1px solid var(--sdc-line);
+}
+
+.sdc-item:first-child{
+  border-top:1px solid var(--sdc-line);
+}
+
+.sdc-item-title{
+  margin-bottom:6px;
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+
+.sdc-item-meta{
+  margin:0;
+  display:grid;
+  gap:3px;
+}
+
+.sdc-item-meta-row{
+  display:grid;
+  grid-template-columns:max-content minmax(0,1fr);
+  gap:8px;
+  font-size:.9rem;
+  color:var(--sdc-muted);
+}
+
+.sdc-item-meta dt,
+.sdc-item-meta dd{
+  margin:0;
+}
+
+.sdc-item-meta dd{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.sdc-item-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:6px;
+}
+
+.sdc-button{
+  border:1px solid var(--sdc-line);
+  background:transparent;
+  color:var(--sdc-text);
+  padding:6px 10px;
+  cursor:pointer;
+}
+
+.sdc-button:hover{
+  border-color:var(--sdc-accent);
+}
+
+.sdc-button:focus-visible,
+.sdc-control:focus-visible,
+.sdc-checkbox-line input:focus-visible{
+  outline:2px solid var(--sdc-accent);
+  outline-offset:2px;
+}
+
+.sdc-button-primary{
+  border-color:var(--sdc-accent);
+}
+
+.sdc-button-danger{
+  color:var(--sdc-danger);
+}
+
+.sdc-button-small{
+  padding:4px 8px;
+  font-size:.88rem;
+}
+
+.sdc-empty{
+  padding:18px 0;
+  border-top:1px solid var(--sdc-line);
+  border-bottom:1px solid var(--sdc-line);
+  color:var(--sdc-muted);
+}
+
+.sdc-panel{
+  min-width:0;
+}
+
+.sdc-panel[hidden]{
+  display:none !important;
+}
+
+.sdc-panel-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:10px;
+  margin-bottom:14px;
+  border-bottom:1px solid var(--sdc-line);
+}
+
+.sdc-panel-title{
+  margin:0;
+  font-size:1.05rem;
+}
+
+.sdc-detail{
+  margin:0;
+}
+
+.sdc-detail-row{
+  display:grid;
+  grid-template-columns:max-content minmax(0,1fr);
+  gap:12px;
+  padding:8px 0;
+  border-bottom:1px solid var(--sdc-line);
+}
+
+.sdc-detail dt,
+.sdc-detail dd{
+  margin:0;
+}
+
+.sdc-detail dt{
+  color:var(--sdc-muted);
+}
+
+.sdc-detail dd{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+.sdc-form{
+  display:grid;
+  gap:12px;
+}
+
+.sdc-field{
+  display:grid;
+  gap:5px;
+}
+
+.sdc-label{
+  font-size:.9rem;
+}
+
+.sdc-control{
+  width:100%;
+  min-width:0;
+  border:1px solid var(--sdc-line);
+  background:transparent;
+  color:var(--sdc-text);
+  padding:7px 8px;
+}
+
+textarea.sdc-control{
+  min-height:90px;
+  resize:vertical;
+}
+
+.sdc-checkbox-line{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.sdc-checkbox-line input{
+  margin:0;
+}
+
+.sdc-status{
+  min-height:1.4em;
+  color:var(--sdc-danger);
+  font-size:.9rem;
+}
+
+.sdc-panel-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:2px;
+}
+
+@container (max-width:720px){
+  .sdc-layout{
+    grid-template-columns:1fr;
+  }
+}
+
+@container (max-width:480px){
+  .sdc-toolbar{
+    align-items:stretch;
+    flex-direction:column;
+  }
+
+  .sdc-item{
+    grid-template-columns:1fr;
+  }
+
+  .sdc-item-actions{
+    justify-content:flex-start;
+  }
+
+  .sdc-detail-row{
+    grid-template-columns:1fr;
+    gap:2px;
+  }
+}
