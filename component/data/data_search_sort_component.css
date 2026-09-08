@@ -1,0 +1,16 @@
+/*
+ * Slowly Data Search Sort Component v1
+ * 只處理搜尋 / 排序基本排列、表單不爆版、窄容器堆疊與 focus。
+ * 不建立卡片、陰影、大面積底色或強烈視覺。
+ */
+.slowly-data-search-sort{
+  --sdss-text:#222;--sdss-line:#ccc;--sdss-accent:#444;
+  width:100%;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,220px);gap:12px;align-items:end;color:var(--sdss-text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.5;container-type:inline-size;
+}
+.slowly-data-search-sort *{box-sizing:border-box;}
+.slowly-data-search-sort input,.slowly-data-search-sort select,.slowly-data-search-sort button{font:inherit;}
+.sdss-group{min-width:0;}
+.sdss-label{display:grid;gap:5px;font-size:.9rem;}
+.sdss-control{width:100%;min-width:0;border:1px solid var(--sdss-line);background:transparent;color:var(--sdss-text);padding:7px 8px;}
+.sdss-control:focus-visible{outline:2px solid var(--sdss-accent);outline-offset:2px;}
+@container (max-width:520px){.slowly-data-search-sort{grid-template-columns:1fr;}}
