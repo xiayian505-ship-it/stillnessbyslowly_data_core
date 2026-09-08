@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slowly Data Search Sort Component｜元件使用</title>
+
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+  <style>
+    body{margin:0;background:#fff;color:#222;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.7}
+    main{width:min(100% - 32px,900px);margin:0 auto;padding:40px 0 64px}
+    h1,h2{line-height:1.35} h1{margin:0 0 8px} h2{margin:32px 0 12px;font-size:1.2rem}
+    p{margin:8px 0} code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    pre{margin:12px 0;padding:14px;overflow-x:auto;border:1px solid #ddd;background:#fff;white-space:pre}
+    table{width:100%;border-collapse:collapse;margin:12px 0} th,td{padding:9px 8px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top} th{font-weight:600}
+    .note{color:#666}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Slowly Data Search Sort Component</h1>
+    <p>純前端搜尋與排序元件。組合 Fiction Search 與 Fiction Sort，只處理資料瀏覽控制，不負責儲存、CRUD、Filter 或 Pagination。</p>
+
+    <h2>載入</h2>
+    <p>請依照下列順序載入。Fiction Search 與 Fiction Sort 都是必要依賴。</p>
+    <pre><code>&lt;link rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/ui/responsive.css"&gt;
+
+&lt;link rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/component/data/data_search_sort_component.css"&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/fiction/Fiction_search.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/fiction/Fiction_sort.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/component/data/data_search_sort_component.js"&gt;&lt;/script&gt;</code></pre>
+
+    <h2>最簡單呼叫</h2>
+    <pre><code>&lt;div id="search-sort"&gt;&lt;/div&gt;
+&lt;div id="result"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  const data = [
+    { title: "作品 A", createdAt: "2026-09-08T10:00:00" },
+    { title: "作品 B", createdAt: "2026-09-07T10:00:00" }
+  ];
+
+  const component = SlowlyDataSearchSort.create({
+    target: "#search-sort",
+    data,
+    search: {
+      fields: ["title"]
+    },
+    sort: {
+      options: [
+        {
+          value: "newest",
+          label: "最新建立",
+          field: "createdAt",
+          direction: "desc",
+          type: "date"
+        },
+        {
+          value: "title",
+          label: "標題",
+          field: "title",
+          direction: "asc",
+          type: "string"
+        }
+      ]
+    },
+    onChange(result) {
+      console.log(result);
+    }
+  });
+&lt;/script&gt;</code></pre>
+
+    <h2>必要設定</h2>
+    <table><thead><tr><th>設定</th><th>說明</th></tr></thead><tbody>
+      <tr><td><code>target</code></td><td>元件掛載位置。可傳 selector 字串或 HTMLElement。</td></tr>
+      <tr><td><code>data</code></td><td>要搜尋與排序的原始資料陣列。</td></tr>
+    </tbody></table>
+    <p class="note">元件不負責 storage。資料可來自 localStorage、API、其他元件或宿主自己的陣列。</p>
+
+    <h2>Search</h2>
+    <pre><code>search: {
+  fields: ["title", "author", "tags"],
+  placeholder: "搜尋標題、作者或標籤",
+  label: "搜尋"
+}</code></pre>
+    <table><thead><tr><th>設定</th><th>說明</th></tr></thead><tbody>
+      <tr><td><code>fields</code></td><td>指定要搜尋的欄位，可使用巢狀欄位路徑。未指定時由 Fiction Search 搜尋資料項目的值。</td></tr>
+      <tr><td><code>placeholder</code></td><td>搜尋輸入框提示文字，預設為「搜尋」。</td></tr>
+      <tr><td><code>label</code></td><td>搜尋欄位標籤，預設為「搜尋」。</td></tr>
+    </tbody></table>
+    <p>如果宿主只需要排序，可設定：</p>
+    <pre><code>search: false</code></pre>
+
+    <h2>Sort</h2>
+    <pre><code>sort: {
+  defaultValue: "newest",
+  label: "排序",
+  options: [
+    {
+      value: "newest",
+      label: "最新建立",
+      field: "createdAt",
+      direction: "desc",
+      type: "date"
+    }
+  ]
+}</code></pre>
+    <table><thead><tr><th>設定</th><th>說明</th></tr></thead><tbody>
+      <tr><td><code>defaultValue</code></td><td>預設選取的排序 option value。未指定或找不到時使用第一個 option。</td></tr>
+      <tr><td><code>label</code></td><td>排序欄位標籤，預設為「排序」。</td></tr>
+      <tr><td><code>options</code></td><td>排序選項陣列。啟用 sort 時至少需要一個。</td></tr>
+    </tbody></table>
+
+    <h2>Sort Option</h2>
+    <table><thead><tr><th>設定</th><th>說明</th></tr></thead><tbody>
+      <tr><td><code>value</code></td><td>必填。select 使用的唯一值。</td></tr>
+      <tr><td><code>label</code></td><td>必填。顯示文字。</td></tr>
+      <tr><td><code>field</code></td><td>排序欄位，預設 createdAt，可使用巢狀欄位路徑。</td></tr>
+      <tr><td><code>direction</code></td><td>asc 或 desc，其他值會視為 asc。</td></tr>
+      <tr><td><code>type</code></td><td>auto、number、date、string。預設 auto。</td></tr>
+      <tr><td><code>compare</code></td><td>可傳自訂比較函式，交給 Fiction Sort 使用。</td></tr>
+    </tbody></table>
+    <p>如果宿主只需要搜尋，可設定：</p>
+    <pre><code>sort: false</code></pre>
+    <p class="note">search 與 sort 可以單獨停用其中一個，但不可同時停用。</p>
+
+    <h2>onChange</h2>
+    <pre><code>onChange(result) {
+  renderList(result);
+}</code></pre>
+    <p>搜尋文字、排序選項或 data 改變後，元件會依序執行：Fiction Search → Fiction Sort → onChange(result)。</p>
+    <p>元件只回傳處理後的資料，不負責結果列表怎麼顯示。</p>
+
+    <h2>已 create 後</h2>
+    <pre><code>component.setData(newData);
+component.refresh();
+const result = component.getResult();
+component.destroy();</code></pre>
+    <table><thead><tr><th>方法</th><th>用途</th></tr></thead><tbody>
+      <tr><td><code>setData(data)</code></td><td>替換原始資料並立即重新搜尋、排序與回傳結果。</td></tr>
+      <tr><td><code>refresh()</code></td><td>使用目前 data、搜尋文字與排序選項重新處理結果。</td></tr>
+      <tr><td><code>getResult()</code></td><td>取得目前處理完成的結果陣列。</td></tr>
+      <tr><td><code>destroy()</code></td><td>移除事件與元件內容。destroy 後不可再呼叫其他操作方法。</td></tr>
+    </tbody></table>
+
+    <h2>改色</h2>
+    <p>Slowly Data Search Sort 的 CSS 只處理搜尋／排序基本排列、表單不爆版、focus 可辨識與窄容器堆疊。宿主不需要修改 <code>data_search_sort_component.css</code>，可直接覆寫 <code>.slowly-data-search-sort</code> 的 CSS Variables。</p>
+    <pre><code>#search-sort .slowly-data-search-sort {
+  --sdss-text: var(--text);
+  --sdss-line: var(--line);
+  --sdss-accent: var(--accent);
+}</code></pre>
+    <p>原則：Component 負責結構與功能，宿主頁面負責自己的視覺。Responsive 依元件自己的容器寬度處理，不依整台裝置 viewport。</p>
+  </main>
+</body>
+</html>

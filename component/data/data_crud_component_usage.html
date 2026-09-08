@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slowly Data CRUD Component｜元件使用</title>
+
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+  <style>
+    body{margin:0;background:#fff;color:#222;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.7}
+    main{width:min(100% - 32px,900px);margin:0 auto;padding:40px 0 64px}
+    h1,h2{line-height:1.35} h1{margin:0 0 8px} h2{margin:32px 0 12px;font-size:1.2rem}
+    p{margin:8px 0} code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    pre{margin:12px 0;padding:14px;overflow-x:auto;border:1px solid #ddd;background:#fff;white-space:pre}
+    table{width:100%;border-collapse:collapse;margin:12px 0} th,td{padding:9px 8px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top} th{font-weight:600}
+    .note{color:#666}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Slowly Data CRUD Component</h1>
+    <p>純前端 CRUD 元件。依欄位設定自動建立資料列表、查看、新增、修改與刪除介面，資料儲存於 localStorage。</p>
+
+    <h2>載入</h2>
+    <p>請依照下列順序載入。Timestamp 與 Fiction Storage 都是必要依賴。</p>
+    <pre><code>&lt;link rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/ui/responsive.css"&gt;
+
+&lt;link rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/component/data/data_crud_component.css"&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/date/timestamp.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/component/data/data_crud_component.js"&gt;&lt;/script&gt;</code></pre>
+
+    <h2>最簡單呼叫</h2>
+    <pre><code>&lt;div id="crud"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  const crud = SlowlyDataCRUD.create({
+    target: "#crud",
+    storageKey: "my-tool-data",
+    fields: [
+      { key: "name", label: "名稱", type: "text", required: true },
+      { key: "amount", label: "金額", type: "number" },
+      { key: "date", label: "日期", type: "date" }
+    ]
+  });
+&lt;/script&gt;</code></pre>
+
+    <h2>必要設定</h2>
+    <table><thead><tr><th>設定</th><th>說明</th></tr></thead><tbody>
+      <tr><td><code>target</code></td><td>元件掛載位置。可傳 selector 字串或 HTMLElement。</td></tr>
+      <tr><td><code>storageKey</code></td><td>每個宿主工具自己的唯一資料名稱。沒有預設值，空白時會停止初始化。</td></tr>
+      <tr><td><code>fields</code></td><td>欄位設定陣列，至少需要一個欄位。</td></tr>
+    </tbody></table>
+    <p class="note">元件內部固定使用 <code>records</code> collection，因此實際 localStorage key 會是 <code>&lt;storageKey&gt;:records</code>。</p>
+
+    <h2>Fields</h2>
+    <pre><code>{
+  key: "name",
+  label: "名稱",
+  type: "text",
+  required: true,
+  placeholder: "請輸入名稱",
+  defaultValue: "",
+  list: true
+}</code></pre>
+    <table><thead><tr><th>欄位設定</th><th>說明</th></tr></thead><tbody>
+      <tr><td><code>key</code></td><td>必填。資料欄位名稱，同一組 fields 不可重複。</td></tr>
+      <tr><td><code>label</code></td><td>必填。顯示名稱。</td></tr>
+      <tr><td><code>type</code></td><td>可用：text、number、textarea、date、select、checkbox。未填時為 text。</td></tr>
+      <tr><td><code>required</code></td><td>是否必填。</td></tr>
+      <tr><td><code>placeholder</code></td><td>非 select 欄位可使用的提示文字。</td></tr>
+      <tr><td><code>defaultValue</code></td><td>新增資料時的預設值。checkbox 未設定時預設為 false，其餘為空字串。</td></tr>
+      <tr><td><code>list</code></td><td>設為 false 時，不顯示在列表摘要；仍會出現在查看與編輯介面。</td></tr>
+    </tbody></table>
+    <p>第一個 field 會作為列表主要標題。</p>
+
+    <h2>Select</h2>
+    <p>select 的 <code>options</code> 可使用單純字串：</p>
+    <pre><code>{
+  key: "status",
+  label: "狀態",
+  type: "select",
+  options: ["進行中", "已完成"]
+}</code></pre>
+    <p>也可以分開設定 value 與 label：</p>
+    <pre><code>{
+  key: "status",
+  label: "狀態",
+  type: "select",
+  options: [
+    { value: "active", label: "進行中" },
+    { value: "done", label: "已完成" }
+  ]
+}</code></pre>
+
+    <h2>其他 Options</h2>
+    <table><thead><tr><th>設定</th><th>預設</th><th>說明</th></tr></thead><tbody>
+      <tr><td><code>title</code></td><td>空字串</td><td>元件內標題。</td></tr>
+      <tr><td><code>addLabel</code></td><td>新增</td><td>新增按鈕文字。</td></tr>
+      <tr><td><code>emptyText</code></td><td>目前沒有資料。</td><td>沒有資料時的文字。</td></tr>
+      <tr><td><code>confirmDelete</code></td><td>原生 confirm</td><td>可傳入函式，自行決定刪除確認流程。函式會收到 record，可回傳 boolean 或 Promise。</td></tr>
+    </tbody></table>
+
+    <h2>系統欄位</h2>
+    <p><code>id</code>、<code>createdAt</code>、<code>updatedAt</code> 由元件與 Fiction Storage 管理，不需要加入 fields，也不會出現在表單中。</p>
+    <p>新增資料時，元件使用 <code>Timestamp.create()</code> 產生 <code>YYYYMMDDHHmmssSSS</code> 格式的 ID。</p>
+
+    <h2>已 create 後</h2>
+    <pre><code>const crud = SlowlyDataCRUD.create({
+  target: "#crud",
+  storageKey: "my-tool-data",
+  fields: [
+    { key: "name", label: "名稱", type: "text" }
+  ]
+});
+
+await crud.refresh();
+crud.openCreate();
+await crud.openView(id);
+await crud.openEdit(id);
+await crud.deleteRecord(id);
+crud.closePanel();
+crud.destroy();</code></pre>
+
+    <table><thead><tr><th>方法</th><th>用途</th></tr></thead><tbody>
+      <tr><td><code>refresh()</code></td><td>重新讀取 storage 並更新列表，回傳目前 records。</td></tr>
+      <tr><td><code>openCreate()</code></td><td>開啟新增表單。</td></tr>
+      <tr><td><code>openView(id)</code></td><td>開啟指定資料的查看面板。</td></tr>
+      <tr><td><code>openEdit(id)</code></td><td>開啟指定資料的編輯表單。</td></tr>
+      <tr><td><code>deleteRecord(id)</code></td><td>刪除指定資料，會先經過刪除確認。</td></tr>
+      <tr><td><code>closePanel()</code></td><td>關閉目前查看／編輯／新增面板。</td></tr>
+      <tr><td><code>destroy()</code></td><td>移除事件與元件內容。destroy 後不可再呼叫其他操作方法。</td></tr>
+    </tbody></table>
+
+    <h2>改色</h2>
+    <p>Slowly Data CRUD 的 CSS 只處理基本結構、表單可用性、列表分隔與自適應。宿主不需要修改 <code>data_crud_component.css</code>，可直接覆寫 <code>.slowly-data-crud</code> 的 CSS Variables。</p>
+    <pre><code>#crud .slowly-data-crud {
+  --sdc-text: var(--text);
+  --sdc-muted: var(--muted);
+  --sdc-line: var(--line);
+  --sdc-accent: var(--accent);
+  --sdc-danger: var(--danger);
+}</code></pre>
+    <p>原則：Component 負責結構與功能，宿主頁面負責自己的視覺。Responsive 依元件自己的容器寬度處理，不依整台裝置 viewport。</p>
+  </main>
+</body>
+</html>
