@@ -20,9 +20,9 @@ body{margin:0;background:#fff;color:#000;font-family:system-ui,-apple-system,Bli
 <script src="./data_search_sort_component.js"></script>
 <script>
 const data=[
- {title:"長安客棧夜話",author:"青雀",tags:["古風","江湖"],createdAt:"2026-09-08T10:00:00"},
- {title:"隔壁班的天文社",author:"星野",tags:["校園","青春"],createdAt:"2026-09-06T10:00:00"},
- {title:"龍脊之上",author:"墨言",tags:["奇幻","冒險"],createdAt:"2026-09-07T10:00:00"}
+ {title:"折彎",author:"夏熠安",tags:["現代","BL"],createdAt:"2026-09-08T10:00:00"},
+ {title:"出嫁從夫",author:"古靈",tags:["古風","愛情"],createdAt:"2026-09-06T10:00:00"},
+ {title:"哈利波特",author:"羅琳",tags:["奇幻","冒險"],createdAt:"2026-09-07T10:00:00"}
 ];
 const resultElement=document.querySelector("#result");
 function renderResult(items){resultElement.innerHTML="";const count=document.createElement("p");count.textContent=`共 ${items.length} 筆`;resultElement.append(count);items.forEach(item=>{const article=document.createElement("article"),title=document.createElement("h2"),author=document.createElement("p");article.className="demo-item";title.textContent=item.title;author.textContent=`作者：${item.author}`;article.append(title,author);resultElement.append(article);});}
