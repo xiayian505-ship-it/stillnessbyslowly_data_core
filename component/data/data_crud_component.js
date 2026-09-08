@@ -1,33 +1,59 @@
 /*!
- * Slowly Data CRUD Component v1
+ * Slowly Data CRUD Component v1.1
  * stillness by slowly
  *
  * 依賴：
  * - Timestamp.create()    https://lib.stillnessbyslowly.com/date/timestamp.js
  * - FictionStorage       https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js
+ * - FictionChange        https://lib.stillnessbyslowly.com/fiction/Fiction_change.js
  *
  * 元件負責：
  * - localStorage CRUD 操作
  * - schema 驅動的列表 / 詳情 / 新增 / 編輯 UI
  * - 基礎欄位驗證
  * - 自動產生資料 ID
+ * - 資料新增 / 修改 / 刪除後發送變更通知
  *
  * 宿主負責：
  * - target
  * - 唯一 storageKey
  * - fields 欄位設定
  * - 視覺覆寫（建議透過 CSS --sdc-* 變數）
+ * - 可選 onChange 接收資料變更事件
  *
  * 重要：
  * - storageKey 沒有預設值，空白時會直接停止初始化。
  * - id / createdAt / updatedAt 為系統欄位，不會出現在表單中。
- * - 不要在元件內自行重做 localStorage 或 Timestamp；資料層交給既有倉庫模組。
+ * - 不要在元件內自行重做 localStorage、Timestamp 或資料變更通知；
+ *   資料層交給既有倉庫模組。
+ *
+ * 資料變更事件：
+ *
+ * const crud = SlowlyDataCRUD.create({
+ *   target: "#crud",
+ *   storageKey: "my-data",
+ *   fields: [...],
+ *
+ *   onChange(event) {
+ *     console.log(event.type);
+ *     console.log(event.records);
+ *   }
+ * });
+ *
+ * 也可以另外訂閱：
+ *
+ * const unsubscribe = crud.subscribe(event => {
+ *   console.log(event);
+ * });
+ *
+ * unsubscribe();
  */
 
 (function (global) {
   "use strict";
 
-  const VERSION = "1.0.0";
+  const VERSION = "1.1.0";
+
   const SUPPORTED_TYPES = new Set([
     "text",
     "number",
@@ -42,25 +68,45 @@
   }
 
   function escapeSelectorId(value) {
-    if (global.CSS && typeof global.CSS.escape === "function") {
+    if (
+      global.CSS &&
+      typeof global.CSS.escape === "function"
+    ) {
       return global.CSS.escape(value);
     }
-    return String(value).replace(/["\\]/g, "\\$&");
+
+    return String(value).replace(
+      /["\\]/g,
+      "\\$&"
+    );
   }
 
   function clone(value) {
-    if (typeof global.structuredClone === "function") {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    if (
+      typeof global.structuredClone ===
+      "function"
+    ) {
       return global.structuredClone(value);
     }
+
     return JSON.parse(JSON.stringify(value));
   }
 
   function resolveTarget(target) {
     if (typeof target === "string") {
-      const element = global.document.querySelector(target);
+      const element =
+        global.document.querySelector(target);
+
       if (!element) {
-        throw new Error(`[SlowlyDataCRUD] 找不到 target：${target}`);
+        throw new Error(
+          `[SlowlyDataCRUD] 找不到 target：${target}`
+        );
       }
+
       return element;
     }
 
@@ -76,14 +122,19 @@
   function normalizeOptions(rawOptions) {
     const options = rawOptions ?? {};
 
-    const storageKey = normalizeText(options.storageKey);
+    const storageKey =
+      normalizeText(options.storageKey);
+
     if (!storageKey) {
       throw new Error(
         "[SlowlyDataCRUD] storageKey 為必填，且不可為空白。每個工具請使用自己的唯一 storageKey。"
       );
     }
 
-    if (!Array.isArray(options.fields) || options.fields.length === 0) {
+    if (
+      !Array.isArray(options.fields) ||
+      options.fields.length === 0
+    ) {
       throw new TypeError(
         "[SlowlyDataCRUD] fields 必須是至少包含一個欄位的陣列。"
       );
@@ -91,100 +142,159 @@
 
     const seenKeys = new Set();
 
-    const fields = options.fields.map((rawField, index) => {
-      const field = rawField ?? {};
-      const key = normalizeText(field.key);
-      const label = normalizeText(field.label);
-      const type = normalizeText(field.type || "text").toLowerCase();
+    const fields = options.fields.map(
+      (rawField, index) => {
+        const field = rawField ?? {};
 
-      if (!key) {
-        throw new Error(
-          `[SlowlyDataCRUD] fields[${index}] 缺少 key。`
-        );
-      }
+        const key =
+          normalizeText(field.key);
 
-      if (seenKeys.has(key)) {
-        throw new Error(
-          `[SlowlyDataCRUD] fields 出現重複 key：${key}`
-        );
-      }
-      seenKeys.add(key);
+        const label =
+          normalizeText(field.label);
 
-      if (!label) {
-        throw new Error(
-          `[SlowlyDataCRUD] fields[${index}] (${key}) 缺少 label。`
-        );
-      }
+        const type =
+          normalizeText(
+            field.type || "text"
+          ).toLowerCase();
 
-      if (!SUPPORTED_TYPES.has(type)) {
-        throw new Error(
-          `[SlowlyDataCRUD] ${key} 使用不支援的 type：${type}`
-        );
-      }
-
-      let selectOptions = null;
-
-      if (type === "select") {
-        if (!Array.isArray(field.options) || field.options.length === 0) {
+        if (!key) {
           throw new Error(
-            `[SlowlyDataCRUD] select 欄位 ${key} 必須提供非空的 options。`
+            `[SlowlyDataCRUD] fields[${index}] 缺少 key。`
           );
         }
 
-        selectOptions = field.options.map((option, optionIndex) => {
-          if (
-            option &&
-            typeof option === "object" &&
-            !Array.isArray(option)
-          ) {
-            if (!("value" in option)) {
-              throw new Error(
-                `[SlowlyDataCRUD] ${key}.options[${optionIndex}] 缺少 value。`
-              );
-            }
+        if (seenKeys.has(key)) {
+          throw new Error(
+            `[SlowlyDataCRUD] fields 出現重複 key：${key}`
+          );
+        }
 
-            return {
-              value: String(option.value),
-              label: String(
-                option.label ?? option.value
-              )
-            };
+        seenKeys.add(key);
+
+        if (!label) {
+          throw new Error(
+            `[SlowlyDataCRUD] fields[${index}] (${key}) 缺少 label。`
+          );
+        }
+
+        if (!SUPPORTED_TYPES.has(type)) {
+          throw new Error(
+            `[SlowlyDataCRUD] ${key} 使用不支援的 type：${type}`
+          );
+        }
+
+        let selectOptions = null;
+
+        if (type === "select") {
+          if (
+            !Array.isArray(field.options) ||
+            field.options.length === 0
+          ) {
+            throw new Error(
+              `[SlowlyDataCRUD] select 欄位 ${key} 必須提供非空的 options。`
+            );
           }
 
-          return {
-            value: String(option),
-            label: String(option)
-          };
-        });
-      }
+          selectOptions =
+            field.options.map(
+              (option, optionIndex) => {
+                if (
+                  option &&
+                  typeof option === "object" &&
+                  !Array.isArray(option)
+                ) {
+                  if (!("value" in option)) {
+                    throw new Error(
+                      `[SlowlyDataCRUD] ${key}.options[${optionIndex}] 缺少 value。`
+                    );
+                  }
 
-      return {
-        key,
-        label,
-        type,
-        required: Boolean(field.required),
-        placeholder: String(field.placeholder ?? ""),
-        defaultValue:
-          field.defaultValue !== undefined
-            ? clone(field.defaultValue)
-            : type === "checkbox"
-              ? false
-              : "",
-        list: field.list !== false,
-        options: selectOptions
-      };
-    });
+                  return {
+                    value: String(
+                      option.value
+                    ),
+                    label: String(
+                      option.label ??
+                      option.value
+                    )
+                  };
+                }
+
+                return {
+                  value: String(option),
+                  label: String(option)
+                };
+              }
+            );
+        }
+
+        return {
+          key,
+          label,
+          type,
+          required:
+            Boolean(field.required),
+
+          placeholder:
+            String(
+              field.placeholder ?? ""
+            ),
+
+          defaultValue:
+            field.defaultValue !==
+            undefined
+              ? clone(
+                  field.defaultValue
+                )
+              : type === "checkbox"
+                ? false
+                : "",
+
+          list:
+            field.list !== false,
+
+          options:
+            selectOptions
+        };
+      }
+    );
 
     return {
-      target: resolveTarget(options.target),
+      target:
+        resolveTarget(options.target),
+
       storageKey,
+
       fields,
-      emptyText: String(options.emptyText ?? "目前沒有資料。"),
-      addLabel: String(options.addLabel ?? "新增"),
-      title: String(options.title ?? ""),
+
+      emptyText:
+        String(
+          options.emptyText ??
+          "目前沒有資料。"
+        ),
+
+      addLabel:
+        String(
+          options.addLabel ??
+          "新增"
+        ),
+
+      title:
+        String(
+          options.title ??
+          ""
+        ),
+
       confirmDelete:
-        typeof options.confirmDelete === "function"
+        typeof options.confirmDelete ===
+        "function"
           ? options.confirmDelete
+          : null,
+
+      onChange:
+        typeof options.onChange ===
+        "function"
+          ? options.onChange
           : null
     };
   }
@@ -192,7 +302,8 @@
   function assertDependencies() {
     if (
       !global.Timestamp ||
-      typeof global.Timestamp.create !== "function"
+      typeof global.Timestamp.create !==
+      "function"
     ) {
       throw new Error(
         "[SlowlyDataCRUD] 缺少 Timestamp.create()。請先載入 date/timestamp.js。"
@@ -201,10 +312,21 @@
 
     if (
       !global.FictionStorage ||
-      typeof global.FictionStorage.create !== "function"
+      typeof global.FictionStorage.create !==
+      "function"
     ) {
       throw new Error(
         "[SlowlyDataCRUD] 缺少 FictionStorage。請先載入 fiction/Fiction_storage.js。"
+      );
+    }
+
+    if (
+      !global.FictionChange ||
+      typeof global.FictionChange.create !==
+      "function"
+    ) {
+      throw new Error(
+        "[SlowlyDataCRUD] 缺少 FictionChange。請先載入 fiction/Fiction_change.js。"
       );
     }
   }
@@ -214,98 +336,261 @@
       return value ? "是" : "否";
     }
 
-    if (field.type === "select" && field.options) {
-      const matched = field.options.find(
-        option => String(option.value) === String(value)
-      );
-      return matched ? matched.label : String(value ?? "");
+    if (
+      field.type === "select" &&
+      field.options
+    ) {
+      const matched =
+        field.options.find(
+          option =>
+            String(option.value) ===
+            String(value)
+        );
+
+      return matched
+        ? matched.label
+        : String(value ?? "");
     }
 
     return String(value ?? "");
   }
 
-  function hasDisplayValue(field, value) {
-    if (field.type === "checkbox") return true;
-    return value !== null &&
+  function hasDisplayValue(
+    field,
+    value
+  ) {
+    if (field.type === "checkbox") {
+      return true;
+    }
+
+    return (
+      value !== null &&
       value !== undefined &&
-      String(value).trim() !== "";
+      String(value).trim() !== ""
+    );
   }
 
   class DataCRUDComponent {
     constructor(rawOptions) {
       assertDependencies();
 
-      this.options = normalizeOptions(rawOptions);
-      this.target = this.options.target;
-      this.fields = this.options.fields;
+      this.options =
+        normalizeOptions(rawOptions);
 
-      this.store = global.FictionStorage.create({
-        namespace: this.options.storageKey
-      });
+      this.target =
+        this.options.target;
 
-      // storageKey 由宿主決定；元件內部固定使用 records collection。
-      // 實際 localStorage key 會是：<storageKey>:records
-      this.collection = this.store.collection("records");
+      this.fields =
+        this.options.fields;
+
+      this.store =
+        global.FictionStorage.create({
+          namespace:
+            this.options.storageKey
+        });
+
+      // storageKey 由宿主決定；
+      // 元件內部固定使用 records collection。
+      //
+      // 實際 localStorage key：
+      // <storageKey>:records
+      this.collection =
+        this.store.collection(
+          "records"
+        );
+
+      // Fiction Change
+      // 僅負責資料變更通知，
+      // 不負責資料讀寫。
+      this.change =
+        global.FictionChange.create({
+          name:
+            `${this.options.storageKey}:records`
+        });
 
       this.mode = "closed";
       this.activeId = null;
       this.destroyed = false;
+      this.records = [];
 
-      this.handleRootClick = this.handleRootClick.bind(this);
-      this.handleFormSubmit = this.handleFormSubmit.bind(this);
+      this.handleRootClick =
+        this.handleRootClick.bind(this);
+
+      this.handleFormSubmit =
+        this.handleFormSubmit.bind(this);
+
+      // options.onChange 是宿主建立元件時
+      // 最直接的資料變更通知入口。
+      if (this.options.onChange) {
+        this.change.subscribe(
+          this.options.onChange
+        );
+      }
 
       this.renderShell();
       this.refresh();
     }
 
+    /*
+     * 對外資料變更訂閱
+     */
+
+    subscribe(listener) {
+      this.ensureAlive();
+
+      return this.change.subscribe(
+        listener
+      );
+    }
+
+    /*
+     * 元件內部統一發送變更事件。
+     *
+     * records 一律使用目前 refresh 後的
+     * 最新完整資料。
+     */
+
+    emitChange(
+      type,
+      detail = {}
+    ) {
+      this.ensureAlive();
+
+      return this.change.emit({
+        type,
+        collection: "records",
+        ...clone(detail),
+        records:
+          clone(this.records || [])
+      });
+    }
+
     renderShell() {
       this.target.innerHTML = "";
 
-      const root = global.document.createElement("section");
-      root.className = "slowly-data-crud";
-      root.dataset.sdcVersion = VERSION;
+      const root =
+        global.document.createElement(
+          "section"
+        );
 
-      const toolbar = global.document.createElement("div");
-      toolbar.className = "sdc-toolbar";
+      root.className =
+        "slowly-data-crud";
 
-      const heading = global.document.createElement("div");
-      heading.className = "sdc-heading";
+      root.dataset.sdcVersion =
+        VERSION;
+
+      const toolbar =
+        global.document.createElement(
+          "div"
+        );
+
+      toolbar.className =
+        "sdc-toolbar";
+
+      const heading =
+        global.document.createElement(
+          "div"
+        );
+
+      heading.className =
+        "sdc-heading";
 
       if (this.options.title) {
-        const title = global.document.createElement("h2");
-        title.className = "sdc-title";
-        title.textContent = this.options.title;
+        const title =
+          global.document.createElement(
+            "h2"
+          );
+
+        title.className =
+          "sdc-title";
+
+        title.textContent =
+          this.options.title;
+
         heading.append(title);
       }
 
-      const count = global.document.createElement("div");
-      count.className = "sdc-count";
-      count.setAttribute("aria-live", "polite");
+      const count =
+        global.document.createElement(
+          "div"
+        );
+
+      count.className =
+        "sdc-count";
+
+      count.setAttribute(
+        "aria-live",
+        "polite"
+      );
+
       heading.append(count);
 
-      const addButton = global.document.createElement("button");
+      const addButton =
+        global.document.createElement(
+          "button"
+        );
+
       addButton.type = "button";
-      addButton.className = "sdc-button sdc-button-primary";
-      addButton.dataset.sdcAction = "create";
-      addButton.textContent = this.options.addLabel;
 
-      toolbar.append(heading, addButton);
+      addButton.className =
+        "sdc-button sdc-button-primary";
 
-      const layout = global.document.createElement("div");
-      layout.className = "sdc-layout";
+      addButton.dataset.sdcAction =
+        "create";
 
-      const list = global.document.createElement("div");
-      list.className = "sdc-list";
-      list.setAttribute("aria-live", "polite");
+      addButton.textContent =
+        this.options.addLabel;
 
-      const panel = global.document.createElement("aside");
-      panel.className = "sdc-panel";
+      toolbar.append(
+        heading,
+        addButton
+      );
+
+      const layout =
+        global.document.createElement(
+          "div"
+        );
+
+      layout.className =
+        "sdc-layout";
+
+      const list =
+        global.document.createElement(
+          "div"
+        );
+
+      list.className =
+        "sdc-list";
+
+      list.setAttribute(
+        "aria-live",
+        "polite"
+      );
+
+      const panel =
+        global.document.createElement(
+          "aside"
+        );
+
+      panel.className =
+        "sdc-panel";
+
       panel.hidden = true;
 
-      layout.append(list, panel);
-      root.append(toolbar, layout);
+      layout.append(
+        list,
+        panel
+      );
 
-      root.addEventListener("click", this.handleRootClick);
+      root.append(
+        toolbar,
+        layout
+      );
+
+      root.addEventListener(
+        "click",
+        this.handleRootClick
+      );
 
       this.root = root;
       this.countElement = count;
@@ -317,132 +602,294 @@
 
     async refresh() {
       this.ensureAlive();
-      const records = await this.collection.all();
+
+      const records =
+        await this.collection.all();
+
       this.records = records;
+
       this.renderList(records);
+
       return clone(records);
     }
 
     renderList(records) {
-      this.countElement.textContent = `共 ${records.length} 筆`;
+      this.countElement.textContent =
+        `共 ${records.length} 筆`;
 
-      this.listElement.innerHTML = "";
+      this.listElement.innerHTML =
+        "";
 
       if (records.length === 0) {
-        const empty = global.document.createElement("div");
-        empty.className = "sdc-empty";
-        empty.textContent = this.options.emptyText;
-        this.listElement.append(empty);
+        const empty =
+          global.document.createElement(
+            "div"
+          );
+
+        empty.className =
+          "sdc-empty";
+
+        empty.textContent =
+          this.options.emptyText;
+
+        this.listElement.append(
+          empty
+        );
+
         return;
       }
 
       records.forEach(record => {
-        this.listElement.append(this.createListItem(record));
+        this.listElement.append(
+          this.createListItem(record)
+        );
       });
     }
 
     createListItem(record) {
-      const item = global.document.createElement("article");
-      item.className = "sdc-item";
+      const item =
+        global.document.createElement(
+          "article"
+        );
 
-      const main = global.document.createElement("div");
-      main.className = "sdc-item-main";
+      item.className =
+        "sdc-item";
 
-      const primaryField = this.fields[0];
-      const primaryValue = displayValue(
-        primaryField,
-        record?.[primaryField.key]
-      );
+      const main =
+        global.document.createElement(
+          "div"
+        );
 
-      const title = global.document.createElement("div");
-      title.className = "sdc-item-title";
+      main.className =
+        "sdc-item-main";
+
+      const primaryField =
+        this.fields[0];
+
+      const primaryValue =
+        displayValue(
+          primaryField,
+          record?.[
+            primaryField.key
+          ]
+        );
+
+      const title =
+        global.document.createElement(
+          "div"
+        );
+
+      title.className =
+        "sdc-item-title";
+
       title.textContent =
-        primaryValue || `未填寫${primaryField.label}`;
+        primaryValue ||
+        `未填寫${primaryField.label}`;
+
       main.append(title);
 
-      const meta = global.document.createElement("dl");
-      meta.className = "sdc-item-meta";
+      const meta =
+        global.document.createElement(
+          "dl"
+        );
 
-      this.fields.slice(1).forEach(field => {
-        if (!field.list) return;
+      meta.className =
+        "sdc-item-meta";
 
-        const value = record?.[field.key];
-        if (!hasDisplayValue(field, value)) return;
+      this.fields
+        .slice(1)
+        .forEach(field => {
+          if (!field.list) return;
 
-        const row = global.document.createElement("div");
-        row.className = "sdc-item-meta-row";
+          const value =
+            record?.[field.key];
 
-        const dt = global.document.createElement("dt");
-        dt.textContent = field.label;
+          if (
+            !hasDisplayValue(
+              field,
+              value
+            )
+          ) {
+            return;
+          }
 
-        const dd = global.document.createElement("dd");
-        dd.textContent = displayValue(field, value);
+          const row =
+            global.document.createElement(
+              "div"
+            );
 
-        row.append(dt, dd);
-        meta.append(row);
-      });
+          row.className =
+            "sdc-item-meta-row";
 
-      if (meta.childElementCount > 0) {
+          const dt =
+            global.document.createElement(
+              "dt"
+            );
+
+          dt.textContent =
+            field.label;
+
+          const dd =
+            global.document.createElement(
+              "dd"
+            );
+
+          dd.textContent =
+            displayValue(
+              field,
+              value
+            );
+
+          row.append(
+            dt,
+            dd
+          );
+
+          meta.append(row);
+        });
+
+      if (
+        meta.childElementCount > 0
+      ) {
         main.append(meta);
       }
 
-      const actions = global.document.createElement("div");
-      actions.className = "sdc-item-actions";
+      const actions =
+        global.document.createElement(
+          "div"
+        );
+
+      actions.className =
+        "sdc-item-actions";
 
       actions.append(
-        this.createActionButton("view", "查看", record.id),
-        this.createActionButton("edit", "編輯", record.id),
-        this.createActionButton("delete", "刪除", record.id, true)
+        this.createActionButton(
+          "view",
+          "查看",
+          record.id
+        ),
+
+        this.createActionButton(
+          "edit",
+          "編輯",
+          record.id
+        ),
+
+        this.createActionButton(
+          "delete",
+          "刪除",
+          record.id,
+          true
+        )
       );
 
-      item.append(main, actions);
+      item.append(
+        main,
+        actions
+      );
+
       return item;
     }
 
-    createActionButton(action, label, id, danger = false) {
-      const button = global.document.createElement("button");
+    createActionButton(
+      action,
+      label,
+      id,
+      danger = false
+    ) {
+      const button =
+        global.document.createElement(
+          "button"
+        );
+
       button.type = "button";
+
       button.className =
         "sdc-button sdc-button-small" +
-        (danger ? " sdc-button-danger" : "");
-      button.dataset.sdcAction = action;
-      button.dataset.sdcId = String(id);
-      button.textContent = label;
+        (
+          danger
+            ? " sdc-button-danger"
+            : ""
+        );
+
+      button.dataset.sdcAction =
+        action;
+
+      button.dataset.sdcId =
+        String(id);
+
+      button.textContent =
+        label;
+
       return button;
     }
 
     handleRootClick(event) {
-      const button = event.target.closest("[data-sdc-action]");
-      if (!button || !this.root.contains(button)) return;
+      const button =
+        event.target.closest(
+          "[data-sdc-action]"
+        );
 
-      const action = button.dataset.sdcAction;
-      const id = button.dataset.sdcId;
+      if (
+        !button ||
+        !this.root.contains(button)
+      ) {
+        return;
+      }
+
+      const action =
+        button.dataset.sdcAction;
+
+      const id =
+        button.dataset.sdcId;
 
       if (action === "create") {
         this.openCreate();
-      } else if (action === "view") {
+
+      } else if (
+        action === "view"
+      ) {
         this.openView(id);
-      } else if (action === "edit") {
+
+      } else if (
+        action === "edit"
+      ) {
         this.openEdit(id);
-      } else if (action === "delete") {
+
+      } else if (
+        action === "delete"
+      ) {
         this.deleteRecord(id);
-      } else if (action === "close") {
+
+      } else if (
+        action === "close"
+      ) {
         this.closePanel();
-      } else if (action === "edit-active") {
-        this.openEdit(this.activeId);
+
+      } else if (
+        action === "edit-active"
+      ) {
+        this.openEdit(
+          this.activeId
+        );
       }
     }
 
     openCreate() {
       this.ensureAlive();
+
       this.mode = "create";
       this.activeId = null;
+
       this.renderFormPanel(null);
     }
 
     async openView(id) {
       this.ensureAlive();
-      const record = await this.collection.get(id);
+
+      const record =
+        await this.collection.get(id);
+
       if (!record) {
         await this.refresh();
         this.closePanel();
@@ -451,13 +898,20 @@
 
       this.mode = "view";
       this.activeId = record.id;
-      this.renderViewPanel(record);
+
+      this.renderViewPanel(
+        record
+      );
+
       return clone(record);
     }
 
     async openEdit(id) {
       this.ensureAlive();
-      const record = await this.collection.get(id);
+
+      const record =
+        await this.collection.get(id);
+
       if (!record) {
         await this.refresh();
         this.closePanel();
@@ -466,254 +920,584 @@
 
       this.mode = "edit";
       this.activeId = record.id;
-      this.renderFormPanel(record);
+
+      this.renderFormPanel(
+        record
+      );
+
       return clone(record);
     }
 
-    renderPanelHeader(titleText) {
-      this.panelElement.innerHTML = "";
-      this.panelElement.hidden = false;
+    renderPanelHeader(
+      titleText
+    ) {
+      this.panelElement.innerHTML =
+        "";
 
-      const header = global.document.createElement("div");
-      header.className = "sdc-panel-header";
+      this.panelElement.hidden =
+        false;
 
-      const title = global.document.createElement("h3");
-      title.className = "sdc-panel-title";
-      title.textContent = titleText;
+      const header =
+        global.document.createElement(
+          "div"
+        );
 
-      const close = global.document.createElement("button");
+      header.className =
+        "sdc-panel-header";
+
+      const title =
+        global.document.createElement(
+          "h3"
+        );
+
+      title.className =
+        "sdc-panel-title";
+
+      title.textContent =
+        titleText;
+
+      const close =
+        global.document.createElement(
+          "button"
+        );
+
       close.type = "button";
-      close.className = "sdc-button sdc-button-small";
-      close.dataset.sdcAction = "close";
-      close.textContent = "關閉";
 
-      header.append(title, close);
-      this.panelElement.append(header);
+      close.className =
+        "sdc-button sdc-button-small";
+
+      close.dataset.sdcAction =
+        "close";
+
+      close.textContent =
+        "關閉";
+
+      header.append(
+        title,
+        close
+      );
+
+      this.panelElement.append(
+        header
+      );
     }
 
     renderViewPanel(record) {
-      const primaryField = this.fields[0];
-      const primaryValue = displayValue(
-        primaryField,
-        record?.[primaryField.key]
-      );
+      const primaryField =
+        this.fields[0];
+
+      const primaryValue =
+        displayValue(
+          primaryField,
+          record?.[
+            primaryField.key
+          ]
+        );
 
       this.renderPanelHeader(
-        primaryValue || "查看資料"
+        primaryValue ||
+        "查看資料"
       );
 
-      const detail = global.document.createElement("dl");
-      detail.className = "sdc-detail";
+      const detail =
+        global.document.createElement(
+          "dl"
+        );
 
-      this.fields.forEach(field => {
-        const row = global.document.createElement("div");
-        row.className = "sdc-detail-row";
+      detail.className =
+        "sdc-detail";
 
-        const dt = global.document.createElement("dt");
-        dt.textContent = field.label;
+      this.fields.forEach(
+        field => {
+          const row =
+            global.document.createElement(
+              "div"
+            );
 
-        const dd = global.document.createElement("dd");
-        const value = record?.[field.key];
-        dd.textContent = hasDisplayValue(field, value)
-          ? displayValue(field, value)
-          : "—";
+          row.className =
+            "sdc-detail-row";
 
-        row.append(dt, dd);
-        detail.append(row);
-      });
+          const dt =
+            global.document.createElement(
+              "dt"
+            );
 
-      const footer = global.document.createElement("div");
-      footer.className = "sdc-panel-actions";
+          dt.textContent =
+            field.label;
 
-      const edit = global.document.createElement("button");
+          const dd =
+            global.document.createElement(
+              "dd"
+            );
+
+          const value =
+            record?.[field.key];
+
+          dd.textContent =
+            hasDisplayValue(
+              field,
+              value
+            )
+              ? displayValue(
+                  field,
+                  value
+                )
+              : "—";
+
+          row.append(
+            dt,
+            dd
+          );
+
+          detail.append(row);
+        }
+      );
+
+      const footer =
+        global.document.createElement(
+          "div"
+        );
+
+      footer.className =
+        "sdc-panel-actions";
+
+      const edit =
+        global.document.createElement(
+          "button"
+        );
+
       edit.type = "button";
-      edit.className = "sdc-button sdc-button-primary";
-      edit.dataset.sdcAction = "edit-active";
-      edit.textContent = "編輯";
+
+      edit.className =
+        "sdc-button sdc-button-primary";
+
+      edit.dataset.sdcAction =
+        "edit-active";
+
+      edit.textContent =
+        "編輯";
 
       footer.append(edit);
 
-      this.panelElement.append(detail, footer);
+      this.panelElement.append(
+        detail,
+        footer
+      );
     }
 
     renderFormPanel(record) {
-      const isEdit = Boolean(record);
-      this.renderPanelHeader(isEdit ? "編輯資料" : "新增資料");
+      const isEdit =
+        Boolean(record);
 
-      const form = global.document.createElement("form");
-      form.className = "sdc-form";
-      form.noValidate = true;
-      form.addEventListener("submit", this.handleFormSubmit);
-
-      this.fields.forEach(field => {
-        form.append(
-          this.createFieldControl(
-            field,
-            isEdit
-              ? record?.[field.key]
-              : clone(field.defaultValue)
-          )
-        );
-      });
-
-      const message = global.document.createElement("div");
-      message.className = "sdc-status";
-      message.setAttribute("role", "status");
-      message.setAttribute("aria-live", "polite");
-
-      const actions = global.document.createElement("div");
-      actions.className = "sdc-panel-actions";
-
-      const save = global.document.createElement("button");
-      save.type = "submit";
-      save.className = "sdc-button sdc-button-primary";
-      save.textContent = "儲存";
-
-      const cancel = global.document.createElement("button");
-      cancel.type = "button";
-      cancel.className = "sdc-button";
-      cancel.dataset.sdcAction = "close";
-      cancel.textContent = "取消";
-
-      actions.append(save, cancel);
-      form.append(message, actions);
-      this.panelElement.append(form);
-
-      this.formElement = form;
-      this.statusElement = message;
-
-      const firstControl = form.querySelector(
-        "input:not([type='checkbox']), textarea, select"
+      this.renderPanelHeader(
+        isEdit
+          ? "編輯資料"
+          : "新增資料"
       );
+
+      const form =
+        global.document.createElement(
+          "form"
+        );
+
+      form.className =
+        "sdc-form";
+
+      form.noValidate = true;
+
+      form.addEventListener(
+        "submit",
+        this.handleFormSubmit
+      );
+
+      this.fields.forEach(
+        field => {
+          form.append(
+            this.createFieldControl(
+              field,
+              isEdit
+                ? record?.[
+                    field.key
+                  ]
+                : clone(
+                    field.defaultValue
+                  )
+            )
+          );
+        }
+      );
+
+      const message =
+        global.document.createElement(
+          "div"
+        );
+
+      message.className =
+        "sdc-status";
+
+      message.setAttribute(
+        "role",
+        "status"
+      );
+
+      message.setAttribute(
+        "aria-live",
+        "polite"
+      );
+
+      const actions =
+        global.document.createElement(
+          "div"
+        );
+
+      actions.className =
+        "sdc-panel-actions";
+
+      const save =
+        global.document.createElement(
+          "button"
+        );
+
+      save.type = "submit";
+
+      save.className =
+        "sdc-button sdc-button-primary";
+
+      save.textContent =
+        "儲存";
+
+      const cancel =
+        global.document.createElement(
+          "button"
+        );
+
+      cancel.type = "button";
+
+      cancel.className =
+        "sdc-button";
+
+      cancel.dataset.sdcAction =
+        "close";
+
+      cancel.textContent =
+        "取消";
+
+      actions.append(
+        save,
+        cancel
+      );
+
+      form.append(
+        message,
+        actions
+      );
+
+      this.panelElement.append(
+        form
+      );
+
+      this.formElement =
+        form;
+
+      this.statusElement =
+        message;
+
+      const firstControl =
+        form.querySelector(
+          "input:not([type='checkbox']), textarea, select"
+        );
+
       if (firstControl) {
-        global.setTimeout(() => firstControl.focus(), 0);
+        global.setTimeout(
+          () =>
+            firstControl.focus(),
+          0
+        );
       }
     }
 
-    createFieldControl(field, value) {
-      const wrapper = global.document.createElement("div");
-      wrapper.className = "sdc-field";
-      wrapper.dataset.sdcField = field.key;
+    createFieldControl(
+      field,
+      value
+    ) {
+      const wrapper =
+        global.document.createElement(
+          "div"
+        );
+
+      wrapper.className =
+        "sdc-field";
+
+      wrapper.dataset.sdcField =
+        field.key;
 
       const controlId =
         `sdc-${this.options.storageKey}-${field.key}`
-          .replace(/\s+/g, "-");
+          .replace(
+            /\s+/g,
+            "-"
+          );
 
-      if (field.type === "checkbox") {
-        const line = global.document.createElement("label");
-        line.className = "sdc-checkbox-line";
+      if (
+        field.type ===
+        "checkbox"
+      ) {
+        const line =
+          global.document.createElement(
+            "label"
+          );
 
-        const input = global.document.createElement("input");
-        input.type = "checkbox";
-        input.name = field.key;
-        input.id = controlId;
-        input.checked = Boolean(value);
+        line.className =
+          "sdc-checkbox-line";
 
-        const text = global.document.createElement("span");
+        const input =
+          global.document.createElement(
+            "input"
+          );
+
+        input.type =
+          "checkbox";
+
+        input.name =
+          field.key;
+
+        input.id =
+          controlId;
+
+        input.checked =
+          Boolean(value);
+
+        const text =
+          global.document.createElement(
+            "span"
+          );
+
         text.textContent =
-          field.label + (field.required ? " *" : "");
+          field.label +
+          (
+            field.required
+              ? " *"
+              : ""
+          );
 
-        line.append(input, text);
+        line.append(
+          input,
+          text
+        );
+
         wrapper.append(line);
+
         return wrapper;
       }
 
-      const label = global.document.createElement("label");
-      label.className = "sdc-label";
-      label.htmlFor = controlId;
+      const label =
+        global.document.createElement(
+          "label"
+        );
+
+      label.className =
+        "sdc-label";
+
+      label.htmlFor =
+        controlId;
+
       label.textContent =
-        field.label + (field.required ? " *" : "");
+        field.label +
+        (
+          field.required
+            ? " *"
+            : ""
+        );
 
       let control;
 
-      if (field.type === "textarea") {
-        control = global.document.createElement("textarea");
+      if (
+        field.type ===
+        "textarea"
+      ) {
+        control =
+          global.document.createElement(
+            "textarea"
+          );
+
         control.rows = 4;
-      } else if (field.type === "select") {
-        control = global.document.createElement("select");
+
+      } else if (
+        field.type ===
+        "select"
+      ) {
+        control =
+          global.document.createElement(
+            "select"
+          );
 
         if (!field.required) {
-          const blank = global.document.createElement("option");
+          const blank =
+            global.document.createElement(
+              "option"
+            );
+
           blank.value = "";
-          blank.textContent = "請選擇";
-          control.append(blank);
+
+          blank.textContent =
+            "請選擇";
+
+          control.append(
+            blank
+          );
         }
 
-        field.options.forEach(option => {
-          const item = global.document.createElement("option");
-          item.value = option.value;
-          item.textContent = option.label;
-          control.append(item);
-        });
+        field.options.forEach(
+          option => {
+            const item =
+              global.document.createElement(
+                "option"
+              );
+
+            item.value =
+              option.value;
+
+            item.textContent =
+              option.label;
+
+            control.append(
+              item
+            );
+          }
+        );
+
       } else {
-        control = global.document.createElement("input");
-        control.type = field.type;
+        control =
+          global.document.createElement(
+            "input"
+          );
+
+        control.type =
+          field.type;
       }
 
-      control.id = controlId;
-      control.name = field.key;
-      control.className = "sdc-control";
-      control.required = field.required;
+      control.id =
+        controlId;
 
-      if (field.placeholder && field.type !== "select") {
-        control.placeholder = field.placeholder;
+      control.name =
+        field.key;
+
+      control.className =
+        "sdc-control";
+
+      control.required =
+        field.required;
+
+      if (
+        field.placeholder &&
+        field.type !== "select"
+      ) {
+        control.placeholder =
+          field.placeholder;
       }
 
-      if (field.type === "number") {
+      if (
+        field.type ===
+        "number"
+      ) {
         control.value =
-          value === null || value === undefined
+          value === null ||
+          value === undefined
             ? ""
             : String(value);
+
       } else {
-        control.value = String(value ?? "");
+        control.value =
+          String(value ?? "");
       }
 
-      wrapper.append(label, control);
+      wrapper.append(
+        label,
+        control
+      );
+
       return wrapper;
     }
 
     handleFormSubmit(event) {
       event.preventDefault();
+
       this.saveForm();
     }
 
     readFormValues() {
       const values = {};
 
-      for (const field of this.fields) {
+      for (
+        const field
+        of this.fields
+      ) {
         const selector =
-          `[name="${escapeSelectorId(field.key)}"]`;
-        const control = this.formElement.querySelector(selector);
+          `[name="${escapeSelectorId(
+            field.key
+          )}"]`;
 
-        if (!control) continue;
+        const control =
+          this.formElement.querySelector(
+            selector
+          );
 
-        if (field.type === "checkbox") {
-          values[field.key] = control.checked;
+        if (!control) {
           continue;
         }
 
-        const raw = control.value;
+        if (
+          field.type ===
+          "checkbox"
+        ) {
+          values[field.key] =
+            control.checked;
 
-        if (field.required && String(raw).trim() === "") {
-          control.focus();
-          throw new Error(`${field.label}為必填。`);
+          continue;
         }
 
-        if (field.type === "number") {
+        const raw =
+          control.value;
+
+        if (
+          field.required &&
+          String(raw).trim() ===
+          ""
+        ) {
+          control.focus();
+
+          throw new Error(
+            `${field.label}為必填。`
+          );
+        }
+
+        if (
+          field.type ===
+          "number"
+        ) {
           values[field.key] =
-            String(raw).trim() === ""
+            String(raw).trim() ===
+            ""
               ? ""
               : Number(raw);
 
           if (
-            values[field.key] !== "" &&
-            !Number.isFinite(values[field.key])
+            values[field.key] !==
+              "" &&
+            !Number.isFinite(
+              values[field.key]
+            )
           ) {
             control.focus();
-            throw new Error(`${field.label}必須是有效數字。`);
+
+            throw new Error(
+              `${field.label}必須是有效數字。`
+            );
           }
+
         } else {
-          values[field.key] = raw;
+          values[field.key] =
+            raw;
         }
       }
 
@@ -723,24 +1507,46 @@
     async saveForm() {
       this.ensureAlive();
 
-      if (!this.formElement) return;
+      if (!this.formElement) {
+        return;
+      }
 
-      this.statusElement.textContent = "";
+      this.statusElement.textContent =
+        "";
 
       let values;
 
       try {
-        values = this.readFormValues();
+        values =
+          this.readFormValues();
+
       } catch (error) {
-        this.statusElement.textContent = error.message;
+        this.statusElement.textContent =
+          error.message;
+
         return;
       }
 
       try {
-        if (this.mode === "edit" && this.activeId) {
-          await this.collection.update(this.activeId, values);
+        let saved;
+        let changeType;
+
+        if (
+          this.mode === "edit" &&
+          this.activeId
+        ) {
+          saved =
+            await this.collection.update(
+              this.activeId,
+              values
+            );
+
+          changeType =
+            "update";
+
         } else {
-          const id = global.Timestamp.create();
+          const id =
+            global.Timestamp.create();
 
           if (!id) {
             throw new Error(
@@ -748,59 +1554,115 @@
             );
           }
 
-          await this.collection.add({
-            id,
-            ...values
-          });
+          saved =
+            await this.collection.add({
+              id,
+              ...values
+            });
+
+          changeType =
+            "add";
         }
 
+        /*
+         * 先重新讀取最新完整資料，
+         * 再發送 Change。
+         *
+         * 因此 event.records 永遠是
+         * 寫入完成後的最新 collection。
+         */
         await this.refresh();
+
+        this.emitChange(
+          changeType,
+          {
+            id: saved.id,
+            record: saved
+          }
+        );
+
         this.closePanel();
+
       } catch (error) {
         console.error(error);
+
         this.statusElement.textContent =
-          error?.message || "儲存失敗。";
+          error?.message ||
+          "儲存失敗。";
       }
     }
 
     async deleteRecord(id) {
       this.ensureAlive();
 
-      const record = await this.collection.get(id);
+      const record =
+        await this.collection.get(id);
+
       if (!record) {
         await this.refresh();
+
         return false;
       }
 
       let approved;
 
-      if (this.options.confirmDelete) {
-        approved = await this.options.confirmDelete(
-          clone(record)
-        );
+      if (
+        this.options.confirmDelete
+      ) {
+        approved =
+          await this.options.confirmDelete(
+            clone(record)
+          );
+
       } else {
-        approved = global.confirm("確定要刪除這筆資料嗎？");
+        approved =
+          global.confirm(
+            "確定要刪除這筆資料嗎？"
+          );
       }
 
-      if (!approved) return false;
+      if (!approved) {
+        return false;
+      }
 
-      const removed = await this.collection.remove(id);
+      const removed =
+        await this.collection.remove(
+          id
+        );
 
       if (
         removed &&
-        String(this.activeId) === String(id)
+        String(this.activeId) ===
+          String(id)
       ) {
         this.closePanel();
       }
 
       await this.refresh();
+
+      if (removed) {
+        this.emitChange(
+          "remove",
+          {
+            id,
+            record
+          }
+        );
+      }
+
       return removed;
     }
 
     closePanel() {
-      if (!this.panelElement) return;
+      if (!this.panelElement) {
+        return;
+      }
 
-      const form = this.panelElement.querySelector("form");
+      const form =
+        this.panelElement.querySelector(
+          "form"
+        );
+
       if (form) {
         form.removeEventListener(
           "submit",
@@ -808,8 +1670,11 @@
         );
       }
 
-      this.panelElement.innerHTML = "";
-      this.panelElement.hidden = true;
+      this.panelElement.innerHTML =
+        "";
+
+      this.panelElement.hidden =
+        true;
 
       this.formElement = null;
       this.statusElement = null;
@@ -826,7 +1691,9 @@
     }
 
     destroy() {
-      if (this.destroyed) return;
+      if (this.destroyed) {
+        return;
+      }
 
       if (this.root) {
         this.root.removeEventListener(
@@ -835,24 +1702,53 @@
         );
       }
 
-      this.target.innerHTML = "";
-      this.destroyed = true;
+      /*
+       * 元件銷毀時一起移除所有
+       * Fiction Change listeners。
+       */
+      if (this.change) {
+        this.change.clear();
+      }
+
+      this.target.innerHTML =
+        "";
+
+      this.destroyed =
+        true;
     }
   }
 
-  const SlowlyDataCRUD = Object.freeze({
-    version: VERSION,
+  const SlowlyDataCRUD =
+    Object.freeze({
+      version: VERSION,
 
-    create(options = {}) {
-      return new DataCRUDComponent(options);
+      create(options = {}) {
+        return new DataCRUDComponent(
+          options
+        );
+      }
+    });
+
+  Object.defineProperty(
+    global,
+    "SlowlyDataCRUD",
+    {
+      value:
+        SlowlyDataCRUD,
+
+      writable:
+        false,
+
+      configurable:
+        false,
+
+      enumerable:
+        true
     }
-  });
+  );
 
-  Object.defineProperty(global, "SlowlyDataCRUD", {
-    value: SlowlyDataCRUD,
-    writable: false,
-    configurable: false,
-    enumerable: true
-  });
-
-})(typeof window !== "undefined" ? window : globalThis);
+})(
+  typeof window !== "undefined"
+    ? window
+    : globalThis
+);

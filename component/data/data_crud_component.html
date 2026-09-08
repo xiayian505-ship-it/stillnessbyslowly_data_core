@@ -28,29 +28,50 @@
       margin:0 0 24px;
       color:#777;
     }
+
+    .change-log{
+      margin-top:24px;
+      padding:16px;
+      border:1px solid #ddd;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+      font-family:Consolas,Monaco,monospace;
+      font-size:14px;
+      line-height:1.6;
+    }
   </style>
 </head>
 
 <body>
   <main>
     <h1>Slowly Data CRUD Component</h1>
-    <p class="demo-note">查看、新增、修改、刪除。資料儲存在 localStorage。</p>
+    <p class="demo-note">
+      查看、新增、修改、刪除。資料儲存在 localStorage，資料變更後會發送 Change 事件。
+    </p>
 
     <div id="crud-demo"></div>
+
+    <div id="change-log" class="change-log">
+等待資料變更...
+    </div>
   </main>
 
   <!--
     載入順序：
     1. Timestamp
     2. FictionStorage
-    3. Data CRUD Component
+    3. FictionChange
+    4. Data CRUD Component
   -->
   <script src="https://lib.stillnessbyslowly.com/date/timestamp.js"></script>
   <script src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/fiction/Fiction_change.js"></script>
   <script src="./data_crud_component.js"></script>
 
   <script>
-    SlowlyDataCRUD.create({
+    const changeLog = document.getElementById("change-log");
+
+    const crud = SlowlyDataCRUD.create({
       // 必填：selector 或 HTMLElement。
       target: "#crud-demo",
 
@@ -108,8 +129,22 @@
           // false = 不顯示在列表摘要，但查看與編輯仍保留。
           list: false
         }
-      ]
+      ],
+
+      // 可選：資料新增、修改、刪除後接收 Change 事件。
+      onChange(event) {
+        changeLog.textContent =
+          JSON.stringify(event, null, 2);
+      }
     });
+
+    // 也可以另外使用 subscribe() 訂閱。
+    //
+    // const unsubscribe = crud.subscribe(event => {
+    //   console.log(event);
+    // });
+    //
+    // unsubscribe();
   </script>
 </body>
 </html>
