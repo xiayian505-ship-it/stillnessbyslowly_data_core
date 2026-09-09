@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Custom Select｜使用說明</title>
+
+  <style>
+    body{
+      margin:24px;
+      font-family:system-ui,sans-serif;
+      line-height:1.7;
+      background:#fff;
+      color:#000;
+    }
+
+    main{
+      max-width:760px;
+      margin:auto;
+    }
+
+    pre{
+      overflow:auto;
+      padding:12px;
+      border:1px solid #000;
+      background:#fff;
+    }
+
+    code{
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Custom Select</h1>
+
+    <p>
+      用自訂 HTML 介面取代原生 select 的可見選單，
+      但保留原本的 select 作為真正的 value / change 資料來源。
+    </p>
+
+    <h2>引用</h2>
+
+    <pre><code>&lt;link rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/ui/custom_select.css"&gt;
+
+&lt;script
+  src="https://lib.stillnessbyslowly.com/ui/custom_select.js"&gt;&lt;/script&gt;</code></pre>
+
+    <h2>HTML</h2>
+
+    <pre><code>&lt;select id="mySelect"&gt;
+  &lt;option value="TWD"&gt;TWD&lt;/option&gt;
+  &lt;option value="JPY"&gt;JPY&lt;/option&gt;
+  &lt;option value="USD"&gt;USD&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+
+    <h2>初始化</h2>
+
+    <pre><code>const mySelect = SlowlySelect.create("#mySelect");</code></pre>
+
+    <p>
+      使用者切換 Custom Select 時，
+      原本的 <code>select.value</code> 會同步更新，
+      並正常觸發原生 <code>change</code> 事件。
+    </p>
+
+    <h2>原本的 change 可直接沿用</h2>
+
+    <pre><code>document.querySelector("#mySelect")
+  .addEventListener("change", (e)=&gt;{
+    console.log(e.target.value);
+  });</code></pre>
+
+    <h2>程式修改 value</h2>
+
+    <pre><code>const el = document.querySelector("#mySelect");
+
+el.value = "USD";
+mySelect.sync();</code></pre>
+
+    <h2>API</h2>
+
+    <pre><code>mySelect.sync();
+mySelect.open();
+mySelect.close();
+mySelect.destroy();</code></pre>
+
+    <h2>同頁多顆</h2>
+
+    <pre><code>SlowlySelect.create("#selectA");
+SlowlySelect.create("#selectB");
+SlowlySelect.create("#selectC");</code></pre>
+
+    <p>每一顆都獨立管理自己的 options，不共用 option 範圍。</p>
+
+    <h2>批次初始化</h2>
+
+    <pre><code>&lt;select data-slowly-select&gt;...&lt;/select&gt;
+&lt;select data-slowly-select&gt;...&lt;/select&gt;
+
+&lt;script&gt;
+  SlowlySelect.createAll();
+&lt;/script&gt;</code></pre>
+
+    <h2>改色</h2>
+
+    <p>
+      不要修改 <code>custom_select.css</code>。
+      在宿主頁面覆寫 <code>.slowly-select</code> 的 <code>--ss-*</code> 變數即可。
+    </p>
+
+    <pre><code>#currencyArea .slowly-select{
+  --ss-bg:var(--panel);
+  --ss-text:var(--ink);
+  --ss-border:var(--line);
+  --ss-hover:var(--surface-soft);
+  --ss-selected-bg:var(--accent-soft);
+  --ss-selected-text:var(--accent);
+  --ss-focus:var(--accent);
+}</code></pre>
+  </main>
+</body>
+</html>

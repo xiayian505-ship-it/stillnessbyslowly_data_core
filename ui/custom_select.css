@@ -1,0 +1,158 @@
+/* Slowly Custom Select v1 */
+
+/* ===== Theme / Color Override =====
+   元件本體保持中性預設色。
+
+   嵌入既有網站時，不需要修改 custom_select.css。
+   請在「宿主頁面」另外覆寫 .slowly-select 的 --ss-* 變數，
+   並優先對應宿主網站原本就有的色彩變數。
+
+   例如：
+
+   #currencyArea .slowly-select{
+     --ss-bg:var(--panel);
+     --ss-text:var(--ink);
+     --ss-border:var(--line);
+     --ss-hover:var(--surface-soft);
+     --ss-selected-bg:var(--accent-soft);
+     --ss-selected-text:var(--accent);
+     --ss-focus:var(--accent);
+   }
+
+   原則：
+   - Custom Select 負責結構與互動。
+   - 宿主頁面負責自己的視覺風格。
+   - 優先覆寫變數，不直接改 Custom Select CSS。
+================================== */
+.slowly-select{
+  --ss-bg:#fff;
+  --ss-text:#222;
+  --ss-border:#aaa;
+  --ss-hover:#f3f3f3;
+  --ss-selected-bg:#e9e9e9;
+  --ss-selected-text:#111;
+  --ss-focus:#777;
+}
+/* ===== Theme / Color Override 結束 ===== */
+
+.slowly-select{
+  position:relative;
+  width:100%;
+  min-width:0;
+  color:var(--ss-text);
+  font-family:inherit;
+}
+
+.slowly-select *{
+  box-sizing:border-box;
+}
+
+.slowly-select-native{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+}
+
+.slowly-select-trigger{
+  width:100%;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px;
+  border:1px solid var(--ss-border);
+  border-radius:0;
+  background:var(--ss-bg);
+  color:var(--ss-text);
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+.slowly-select-trigger:hover,
+.slowly-select-trigger:focus-visible,
+.slowly-select-trigger[aria-expanded="true"]{
+  border-color:var(--ss-focus);
+  outline:0;
+}
+
+.slowly-select-trigger:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.slowly-select-label{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.slowly-select-arrow{
+  flex:0 0 auto;
+  font-size:.8em;
+  line-height:1;
+  transition:transform .15s ease;
+}
+
+.slowly-select-trigger[aria-expanded="true"] .slowly-select-arrow{
+  transform:rotate(180deg);
+}
+
+.slowly-select-menu{
+  position:absolute;
+  z-index:1000;
+  top:calc(100% + 4px);
+  left:0;
+  right:0;
+  max-height:240px;
+  overflow:auto;
+  border:1px solid var(--ss-border);
+  background:var(--ss-bg);
+}
+
+.slowly-select-menu[hidden]{
+  display:none;
+}
+
+.slowly-select-option{
+  width:100%;
+  display:block;
+  padding:10px 12px;
+  border:0;
+  border-bottom:1px solid var(--ss-border);
+  border-radius:0;
+  background:var(--ss-bg);
+  color:var(--ss-text);
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+.slowly-select-option:last-child{
+  border-bottom:0;
+}
+
+.slowly-select-option:hover,
+.slowly-select-option:focus-visible{
+  background:var(--ss-hover);
+  color:var(--ss-text);
+  outline:0;
+}
+
+.slowly-select-option[aria-selected="true"]{
+  background:var(--ss-selected-bg);
+  color:var(--ss-selected-text);
+}
+
+.slowly-select-option:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
