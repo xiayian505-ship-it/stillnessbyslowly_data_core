@@ -1,0 +1,519 @@
+/* 慢慢的倉庫｜首頁目錄資料 */
+window.SlowlyLibraryIndex = [
+  {
+    "page": "examples",
+    "title": "完成品使用",
+    "items": [
+      {
+        "title": "Slowly Calendar",
+        "desc": "可直接嵌入網站使用的完整萬年曆元件，整合西曆、農曆、節慶與二十四節氣，支援一個月、三週、兩週與一週顯示，並依容器寬度調整資訊密度。",
+        "links": [
+          {
+            "label": "calendar_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/calendar/calendar_component.js"
+          },
+          {
+            "label": "calendar_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/calendar/calendar_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/calendar/calendar_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/calendar/calendar_component_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Slowly Data CRUD",
+        "desc": "可直接嵌入網站使用的純前端 CRUD 元件，依欄位設定自動建立資料列表、查看、新增、修改與刪除介面，使用 Timestamp 產生資料 ID，並透過 Fiction Storage 儲存於 localStorage。",
+        "links": [
+          {
+            "label": "data_crud_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/data/data_crud_component.js"
+          },
+          {
+            "label": "data_crud_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/data/data_crud_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/data/data_crud_component.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/data/data_crud_component_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Slowly Data Search Sort",
+        "desc": "可直接嵌入網站使用的純前端搜尋與排序元件，組合 Fiction Search 與 Fiction Sort，依設定建立搜尋輸入與排序選單，並將處理後的資料結果回傳給使用端。",
+        "links": [
+          {
+            "label": "data_search_sort_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/data/data_search_sort_component.js"
+          },
+          {
+            "label": "data_search_sort_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/data/data_search_sort_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/data/data_search_sort_component.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/data/data_search_sort_component_usage.html"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "data",
+    "title": "Data",
+    "items": [
+      {
+        "title": "Fiction Data",
+        "desc": "從作品探索拆出的完整共用資料處理與本機儲存模組，包含 localStorage、CRUD、搜尋、篩選、排序、隨機與分頁。",
+        "links": [
+          {
+            "label": "Fiction_data.js",
+            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_data.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/fiction/test_data.html"
+          }
+        ]
+      },
+      {
+        "title": "Fiction Search",
+        "desc": "從 Fiction Data 拆出的獨立搜尋功能，支援關鍵字搜尋、指定欄位與巢狀欄位。",
+        "links": [
+          {
+            "label": "Fiction_search.js",
+            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_search.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/fiction/test_search.html"
+          }
+        ]
+      },
+      {
+        "title": "Fiction Filter",
+        "desc": "從 Fiction Data 拆出的獨立篩選功能，支援 equals、boolean、containsAll、containsAny 與自訂 predicate。",
+        "links": [
+          {
+            "label": "Fiction_filter.js",
+            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_filter.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/fiction/test_filter.html"
+          }
+        ]
+      },
+      {
+        "title": "Fiction Sort",
+        "desc": "從 Fiction Data 拆出的獨立排序功能，支援數字、日期、字串、自動判定與自訂比較函式。",
+        "links": [
+          {
+            "label": "Fiction_sort.js",
+            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_sort.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/fiction/test_sort.html"
+          }
+        ]
+      },
+      {
+        "title": "Fiction Shuffle",
+        "desc": "從 Fiction Data 拆出的獨立隨機排序功能，以新陣列回傳隨機排列結果，不修改原始資料。",
+        "links": [
+          {
+            "label": "Fiction_shuffle.js",
+            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_shuffle.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/fiction/test_shuffle.html"
+          }
+        ]
+      },
+      {
+        "title": "Fiction Paginate",
+        "desc": "從 Fiction Data 拆出的獨立分頁功能，提供頁碼、每頁筆數、總頁數、前後頁狀態與資料切片。",
+        "links": [
+          {
+            "label": "Fiction_paginate.js",
+            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_paginate.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/fiction/test_paginate.html"
+          }
+        ]
+      },
+      {
+        "title": "Fiction Storage",
+        "desc": "從 Fiction Data 拆出的獨立 localStorage 與 CRUD 資料層，提供 Store、Collection、新增、讀取、修改、刪除、替換與清空功能。",
+        "links": [
+          {
+            "label": "Fiction_storage.js",
+            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/fiction/test_storage.html"
+          }
+        ]
+      },
+      {
+        "title": "Fiction Change",
+        "desc": "從 Fiction Data 延伸拆出的獨立資料變更通知功能，提供訂閱、取消訂閱與事件發送，讓資料新增、修改、刪除、替換或清空後可通知其他模組與使用端。",
+        "links": [
+          {
+            "label": "Fiction_change.js",
+            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_change.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/fiction/test_change.html"
+          }
+        ]
+      },
+      {
+        "title": "Data Backup",
+        "desc": "通用 JSON 備份與匯入工具，提供 JSON 下載、檔案讀取、備份 payload 建立與資料擷取功能。",
+        "links": [
+          {
+            "label": "Data_backup.js",
+            "href": "https://lib.stillnessbyslowly.com/data/Data_backup.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/data/test_backup.html"
+          }
+        ]
+      },
+      {
+        "title": "Money",
+        "desc": "通用數值與金額處理工具，提供加總、四捨五入、數字正規化與金額格式化功能。",
+        "links": [
+          {
+            "label": "Money.js",
+            "href": "https://lib.stillnessbyslowly.com/data/Money.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/data/test_money.html"
+          }
+        ]
+      },
+      {
+        "title": "Currency",
+        "desc": "通用幣別與匯率換算工具，以 TWD 為基準，提供外幣與台幣雙向換算、匯率方向轉換與即時匯率取得。",
+        "links": [
+          {
+            "label": "Currency.js",
+            "href": "https://lib.stillnessbyslowly.com/data/Currency.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/data/test_currency.html"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "date",
+    "title": "Date",
+    "items": [
+      {
+        "title": "Date Time",
+        "desc": "一般網站常用的日期與時間處理模組，提供本地日期鍵、日期解析、日期加減、日期差、日期格式化與時間差拆分。",
+        "links": [
+          {
+            "label": "datetime.js",
+            "href": "https://lib.stillnessbyslowly.com/date/datetime.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/date/date_test_datetime.html"
+          }
+        ]
+      },
+      {
+        "title": "Timestamp",
+        "desc": "通用本地時間戳產生模組，輸出 YYYYMMDDHHmmssSSS 格式，可用於資料識別、建立時間標記與需要可排序時間字串的情境。",
+        "links": [
+          {
+            "label": "timestamp.js",
+            "href": "https://lib.stillnessbyslowly.com/date/timestamp.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/date/date_test_timestamp.html"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "calendar",
+    "title": "Calendar",
+    "items": [
+      {
+        "title": "Lunar Calendar",
+        "desc": "1901–2100 國曆與農曆雙向轉換模組，包含閏月、月份天數與農曆日期資料。",
+        "links": [
+          {
+            "label": "lunar.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar.js"
+          },
+          {
+            "label": "lunar_data.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_data.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_test.html"
+          },
+          {
+            "label": "資料基準",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_reference.txt"
+          }
+        ]
+      },
+      {
+        "title": "Lunar Festivals",
+        "desc": "農曆節日查詢模組，依 Lunar 提供的農曆日期判定常用農曆年節，包含春節期間、元宵、端午、七夕、中元、中秋、重陽與除夕。",
+        "links": [
+          {
+            "label": "lunar_festivals.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals.js"
+          },
+          {
+            "label": "lunar_festivals_data.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals_data.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals_test.html"
+          },
+          {
+            "label": "資料基準",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals_reference.txt"
+          }
+        ]
+      },
+      {
+        "title": "Solar Festivals",
+        "desc": "台灣常見固定西曆節日查詢模組，不包含農曆節日、節氣、星期規則與政府補假／補班資料。",
+        "links": [
+          {
+            "label": "solar_festivals.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_festivals.js"
+          },
+          {
+            "label": "solar_festivals_data.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_festivals_data.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_festivals_test.html"
+          }
+        ]
+      },
+      {
+        "title": "Solar Terms",
+        "desc": "1901–2100 二十四節氣查詢模組，提供年度節氣、日期查詢、指定節氣與下一節氣。",
+        "links": [
+          {
+            "label": "solar_terms.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms.js"
+          },
+          {
+            "label": "solar_terms_data.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms_data.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms_test.html"
+          },
+          {
+            "label": "資料基準",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms_reference.txt"
+          }
+        ]
+      },
+      {
+        "title": "Calendar Custom",
+        "desc": "使用者自訂事件管理模組，支援西曆與農曆事件、新增、查詢、修改、刪除、單次事件與每年重複，資料儲存於 localStorage。",
+        "links": [
+          {
+            "label": "calendar_custom.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_custom.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_custom_test.html"
+          },
+          {
+            "label": "操作測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_custom_view_test.html"
+          }
+        ]
+      },
+      {
+        "title": "Calendar",
+        "desc": "1901–2100 西曆日曆資料生成與整合模組，提供年、月、日與星期結構，並可整合農曆與二十四節氣資料。顯示方式與視覺由使用端自行決定。",
+        "links": [
+          {
+            "label": "calendar.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_test.html"
+          },
+          {
+            "label": "顯示測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_view_test.html"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "ui",
+    "title": "UI",
+    "items": [
+      {
+        "title": "Responsive Base",
+        "desc": "共用基礎自適應樣式，只處理跨裝置的基本安全規則，不定義專案視覺。",
+        "links": [
+          {
+            "label": "responsive.css",
+            "href": "https://lib.stillnessbyslowly.com/ui/responsive.css"
+          }
+        ]
+      },
+      {
+        "title": "Custom Select",
+        "desc": "自訂下拉選單 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 select 展開樣式，同時保留原生 select 作為真正的 value 與 change 資料來源。支援同頁多實例、程式同步、點外部與 Escape 關閉，視覺可由宿主頁面透過 CSS 變數覆寫。",
+        "links": [
+          {
+            "label": "custom_select.js",
+            "href": "https://lib.stillnessbyslowly.com/ui/custom_select.js"
+          },
+          {
+            "label": "custom_select.css",
+            "href": "https://lib.stillnessbyslowly.com/ui/custom_select.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/ui/test_custom_select.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/ui/custom_select_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Custom File",
+        "desc": "自訂檔案選擇 UI 元件，以自訂介面取代瀏覽器原生 file input 的顯示方式，同時保留原生 input 作為真正的 files 與 change 資料來源。支援不同檔案類型、同頁多實例與宿主頁面 CSS 變數覆寫，可用於 JSON、圖片、文字、程式檔與其他檔案選擇情境。",
+        "links": [
+          {
+            "label": "custom_file.js",
+            "href": "https://lib.stillnessbyslowly.com/ui/custom_file.js"
+          },
+          {
+            "label": "custom_file.css",
+            "href": "https://lib.stillnessbyslowly.com/ui/custom_file.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/ui/test_custom_file.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/ui/custom_file_usage.html"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "image",
+    "title": "Image",
+    "items": [
+      {
+        "title": "Lineart",
+        "desc": "圖片轉黑白線稿模組，使用灰階、輕微降噪與 Sobel Edge 擷取圖片線條，並可調整邊緣判定門檻。",
+        "links": [
+          {
+            "label": "lineart.js",
+            "href": "https://lib.stillnessbyslowly.com/Image/lineart.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/Image/test_lineart.html"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "comment",
+    "title": "Comment",
+    "items": [
+      {
+        "title": "Comment Board",
+        "desc": "輕型留言板模組，提供留言新增、時間排序與管理者編輯、刪除及回覆功能。目前使用 FictionData 儲存於 localStorage，並預留後端資料與權限控制介面。",
+        "links": [
+          {
+            "label": "comment_board.js",
+            "href": "https://lib.stillnessbyslowly.com/comment/comment_board.js"
+          },
+          {
+            "label": "comment_board.css",
+            "href": "https://lib.stillnessbyslowly.com/comment/comment_board.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/comment/comment_board_test.html"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "mail",
+    "title": "Mail",
+    "items": [
+      {
+        "title": "Mail",
+        "desc": "共用 Email 呼叫介面，提供即時寄送、排程、取消與狀態查詢。實際寄送、排程、驗證與敏感設定由後端負責。",
+        "links": [
+          {
+            "label": "mail.js",
+            "href": "https://lib.stillnessbyslowly.com/mail/mail.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/mail/mail_test.html"
+          }
+        ]
+      }
+    ]
+  }
+];

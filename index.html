@@ -1,427 +1,111 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>慢慢的倉庫</title>
-
-  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
-  <link rel="stylesheet" href="./index.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>慢慢的倉庫</title>
+<link href="https://lib.stillnessbyslowly.com/ui/responsive.css" rel="stylesheet"/>
+<link href="./index.css" rel="stylesheet"/>
 </head>
-
 <body>
-  <main>
-    <h1>慢慢的倉庫</h1>
-    <p class="intro">stillness by slowly 的共用模組與工具存放處。</p>
-
-    <nav class="category-nav" aria-label="倉庫分類">
-      <button type="button" data-page="directory" aria-selected="true">目錄</button>
-      <button type="button" data-page="examples" aria-selected="false">完成品使用</button>
-      <button type="button" data-page="data" aria-selected="false">Data</button>
-      <button type="button" data-page="date" aria-selected="false">Date</button>
-      <button type="button" data-page="calendar" aria-selected="false">Calendar</button>
-      <button type="button" data-page="ui" aria-selected="false">UI</button>
-      <button type="button" data-page="image" aria-selected="false">Image</button>
-      <button type="button" data-page="comment" aria-selected="false">Comment</button>
-      <button type="button" data-page="mail" aria-selected="false">Mail</button>
-    </nav>
-
-    <section class="page active" data-page-panel="directory">
-      <h2 class="section-title">目錄</h2>
-      <p class="directory-placeholder">
+<main>
+<h1>慢慢的倉庫</h1>
+<p class="intro">stillness by slowly 的共用模組與工具存放處。</p>
+<nav aria-label="倉庫分類" class="category-nav">
+<button aria-selected="true" data-page="directory" type="button">目錄</button>
+<button aria-selected="false" data-page="examples" type="button">完成品使用</button>
+<button aria-selected="false" data-page="data" type="button">Data</button>
+<button aria-selected="false" data-page="date" type="button">Date</button>
+<button aria-selected="false" data-page="calendar" type="button">Calendar</button>
+<button aria-selected="false" data-page="ui" type="button">UI</button>
+<button aria-selected="false" data-page="image" type="button">Image</button>
+<button aria-selected="false" data-page="comment" type="button">Comment</button>
+<button aria-selected="false" data-page="mail" type="button">Mail</button>
+</nav>
+<section class="page active" data-page-panel="directory">
+<h2 class="section-title">目錄</h2>
+<p class="directory-placeholder">
         完成品使用、UI、Data、Date、Calendar、Image、Comment、Mail
       </p>
-    </section>
+</section>
+<section class="page" data-page-panel="examples">
+<h2 class="section-title">完成品使用</h2>
+<div class="list"></div>
+</section>
+<section class="page" data-page-panel="data">
+<h2 class="section-title">Data</h2>
+<div class="list"></div>
+</section>
+<section class="page" data-page-panel="date">
+<h2 class="section-title">Date</h2>
+<div class="list"></div>
+</section>
+<section class="page" data-page-panel="calendar">
+<h2 class="section-title">Calendar</h2>
+<div class="list"></div>
+</section>
+<section class="page" data-page-panel="ui">
+<h2 class="section-title">UI</h2>
+<div class="list"></div>
+</section>
+<section class="page" data-page-panel="image">
+<h2 class="section-title">Image</h2>
+<div class="list"></div>
+</section>
+<section class="page" data-page-panel="comment">
+<h2 class="section-title">Comment</h2>
+<div class="list"></div>
+</section>
+<section class="page" data-page-panel="mail">
+<h2 class="section-title">Mail</h2>
+<div class="list"></div>
+</section>
+</main>
 
-    <section class="page" data-page-panel="examples">
-      <h2 class="section-title">完成品使用</h2>
-
-      <div class="list">
-
-        <div class="item">
-          <div class="item-title">Slowly Calendar</div>
-          <div class="item-desc">
-            可直接嵌入網站使用的完整萬年曆元件，整合西曆、農曆、節慶與二十四節氣，支援一個月、三週、兩週與一週顯示，並依容器寬度調整資訊密度。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/component/calendar/calendar_component.js">calendar_component.js</a>
-            <a href="https://lib.stillnessbyslowly.com/component/calendar/calendar_component.css">calendar_component.css</a>
-            <a href="https://lib.stillnessbyslowly.com/component/calendar/calendar_component_demo.html">展示頁</a>
-            <a href="https://lib.stillnessbyslowly.com/component/calendar/calendar_component_usage.html">使用說明</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Slowly Data CRUD</div>
-          <div class="item-desc">
-            可直接嵌入網站使用的純前端 CRUD 元件，依欄位設定自動建立資料列表、查看、新增、修改與刪除介面，使用 Timestamp 產生資料 ID，並透過 Fiction Storage 儲存於 localStorage。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/component/data/data_crud_component.js">data_crud_component.js</a>
-            <a href="https://lib.stillnessbyslowly.com/component/data/data_crud_component.css">data_crud_component.css</a>
-            <a href="https://lib.stillnessbyslowly.com/component/data/data_crud_component.html">展示頁</a>
-            <a href="https://lib.stillnessbyslowly.com/component/data/data_crud_component_usage.html">使用說明</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Slowly Data Search Sort</div>
-          <div class="item-desc">
-            可直接嵌入網站使用的純前端搜尋與排序元件，組合 Fiction Search 與 Fiction Sort，依設定建立搜尋輸入與排序選單，並將處理後的資料結果回傳給使用端。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/component/data/data_search_sort_component.js">data_search_sort_component.js</a>
-            <a href="https://lib.stillnessbyslowly.com/component/data/data_search_sort_component.css">data_search_sort_component.css</a>
-            <a href="https://lib.stillnessbyslowly.com/component/data/data_search_sort_component.html">展示頁</a>
-            <a href="https://lib.stillnessbyslowly.com/component/data/data_search_sort_component_usage.html">使用說明</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="page" data-page-panel="data">
-      <h2 class="section-title">Data</h2>
-
-      <div class="list">
-
-        <div class="item">
-          <div class="item-title">Fiction Data</div>
-          <div class="item-desc">
-            從作品探索拆出的完整共用資料處理與本機儲存模組，包含 localStorage、CRUD、搜尋、篩選、排序、隨機與分頁。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/fiction/Fiction_data.js">Fiction_data.js</a>
-            <a href="https://lib.stillnessbyslowly.com/fiction/test_data.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Fiction Search</div>
-          <div class="item-desc">
-            從 Fiction Data 拆出的獨立搜尋功能，支援關鍵字搜尋、指定欄位與巢狀欄位。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/fiction/Fiction_search.js">Fiction_search.js</a>
-            <a href="https://lib.stillnessbyslowly.com/fiction/test_search.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Fiction Filter</div>
-          <div class="item-desc">
-            從 Fiction Data 拆出的獨立篩選功能，支援 equals、boolean、containsAll、containsAny 與自訂 predicate。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/fiction/Fiction_filter.js">Fiction_filter.js</a>
-            <a href="https://lib.stillnessbyslowly.com/fiction/test_filter.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Fiction Sort</div>
-          <div class="item-desc">
-            從 Fiction Data 拆出的獨立排序功能，支援數字、日期、字串、自動判定與自訂比較函式。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/fiction/Fiction_sort.js">Fiction_sort.js</a>
-            <a href="https://lib.stillnessbyslowly.com/fiction/test_sort.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Fiction Shuffle</div>
-          <div class="item-desc">
-            從 Fiction Data 拆出的獨立隨機排序功能，以新陣列回傳隨機排列結果，不修改原始資料。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/fiction/Fiction_shuffle.js">Fiction_shuffle.js</a>
-            <a href="https://lib.stillnessbyslowly.com/fiction/test_shuffle.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Fiction Paginate</div>
-          <div class="item-desc">
-            從 Fiction Data 拆出的獨立分頁功能，提供頁碼、每頁筆數、總頁數、前後頁狀態與資料切片。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/fiction/Fiction_paginate.js">Fiction_paginate.js</a>
-            <a href="https://lib.stillnessbyslowly.com/fiction/test_paginate.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Fiction Storage</div>
-          <div class="item-desc">
-            從 Fiction Data 拆出的獨立 localStorage 與 CRUD 資料層，提供 Store、Collection、新增、讀取、修改、刪除、替換與清空功能。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js">Fiction_storage.js</a>
-            <a href="https://lib.stillnessbyslowly.com/fiction/test_storage.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Fiction Change</div>
-          <div class="item-desc">
-            從 Fiction Data 延伸拆出的獨立資料變更通知功能，提供訂閱、取消訂閱與事件發送，讓資料新增、修改、刪除、替換或清空後可通知其他模組與使用端。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/fiction/Fiction_change.js">Fiction_change.js</a>
-            <a href="https://lib.stillnessbyslowly.com/fiction/test_change.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Data Backup</div>
-          <div class="item-desc">
-            通用 JSON 備份與匯入工具，提供 JSON 下載、檔案讀取、備份 payload 建立與資料擷取功能。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/data/Data_backup.js">Data_backup.js</a>
-            <a href="https://lib.stillnessbyslowly.com/data/test_backup.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Money</div>
-          <div class="item-desc">
-            通用數值與金額處理工具，提供加總、四捨五入、數字正規化與金額格式化功能。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/data/Money.js">Money.js</a>
-            <a href="https://lib.stillnessbyslowly.com/data/test_money.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Currency</div>
-          <div class="item-desc">
-            通用幣別與匯率換算工具，以 TWD 為基準，提供外幣與台幣雙向換算、匯率方向轉換與即時匯率取得。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/data/Currency.js">Currency.js</a>
-            <a href="https://lib.stillnessbyslowly.com/data/test_currency.html">功能測試</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="page" data-page-panel="date">
-      <h2 class="section-title">Date</h2>
-
-      <div class="list">
-
-        <div class="item">
-          <div class="item-title">Date Time</div>
-          <div class="item-desc">
-            一般網站常用的日期與時間處理模組，提供本地日期鍵、日期解析、日期加減、日期差、日期格式化與時間差拆分。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/date/datetime.js">datetime.js</a>
-            <a href="https://lib.stillnessbyslowly.com/date/date_test_datetime.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Timestamp</div>
-          <div class="item-desc">
-            通用本地時間戳產生模組，輸出 YYYYMMDDHHmmssSSS 格式，可用於資料識別、建立時間標記與需要可排序時間字串的情境。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/date/timestamp.js">timestamp.js</a>
-            <a href="https://lib.stillnessbyslowly.com/date/date_test_timestamp.html">功能測試</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="page" data-page-panel="calendar">
-      <h2 class="section-title">Calendar</h2>
-
-      <div class="list">
-
-        <div class="item">
-          <div class="item-title">Lunar Calendar</div>
-          <div class="item-desc">
-            1901–2100 國曆與農曆雙向轉換模組，包含閏月、月份天數與農曆日期資料。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/calendar/lunar.js">lunar.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/lunar_data.js">lunar_data.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/lunar_test.html">功能測試</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/lunar_reference.txt">資料基準</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Lunar Festivals</div>
-          <div class="item-desc">
-            農曆節日查詢模組，依 Lunar 提供的農曆日期判定常用農曆年節，包含春節期間、元宵、端午、七夕、中元、中秋、重陽與除夕。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/calendar/lunar_festivals.js">lunar_festivals.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/lunar_festivals_data.js">lunar_festivals_data.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/lunar_festivals_test.html">功能測試</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/lunar_festivals_reference.txt">資料基準</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Solar Festivals</div>
-          <div class="item-desc">
-            台灣常見固定西曆節日查詢模組，不包含農曆節日、節氣、星期規則與政府補假／補班資料。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/calendar/solar_festivals.js">solar_festivals.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/solar_festivals_data.js">solar_festivals_data.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/solar_festivals_test.html">功能測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Solar Terms</div>
-          <div class="item-desc">
-            1901–2100 二十四節氣查詢模組，提供年度節氣、日期查詢、指定節氣與下一節氣。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/calendar/solar_terms.js">solar_terms.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/solar_terms_data.js">solar_terms_data.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/solar_terms_test.html">功能測試</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/solar_terms_reference.txt">資料基準</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Calendar Custom</div>
-          <div class="item-desc">
-            使用者自訂事件管理模組，支援西曆與農曆事件、新增、查詢、修改、刪除、單次事件與每年重複，資料儲存於 localStorage。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/calendar/calendar_custom.js">calendar_custom.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/calendar_custom_test.html">功能測試</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/calendar_custom_view_test.html">操作測試</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Calendar</div>
-          <div class="item-desc">
-            1901–2100 西曆日曆資料生成與整合模組，提供年、月、日與星期結構，並可整合農曆與二十四節氣資料。顯示方式與視覺由使用端自行決定。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/calendar/calendar.js">calendar.js</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/calendar_test.html">功能測試</a>
-            <a href="https://lib.stillnessbyslowly.com/calendar/calendar_view_test.html">顯示測試</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="page" data-page-panel="ui">
-      <h2 class="section-title">UI</h2>
-
-      <div class="list">
-
-        <div class="item">
-          <div class="item-title">Responsive Base</div>
-          <div class="item-desc">
-            共用基礎自適應樣式，只處理跨裝置的基本安全規則，不定義專案視覺。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/ui/responsive.css">responsive.css</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Custom Select</div>
-          <div class="item-desc">
-            自訂下拉選單 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 select 展開樣式，同時保留原生 select 作為真正的 value 與 change 資料來源。支援同頁多實例、程式同步、點外部與 Escape 關閉，視覺可由宿主頁面透過 CSS 變數覆寫。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/ui/custom_select.js">custom_select.js</a>
-            <a href="https://lib.stillnessbyslowly.com/ui/custom_select.css">custom_select.css</a>
-            <a href="https://lib.stillnessbyslowly.com/ui/test_custom_select.html">功能測試</a>
-            <a href="https://lib.stillnessbyslowly.com/ui/custom_select_usage.html">使用說明</a>
-          </div>
-        </div>
-
-        <div class="item">
-          <div class="item-title">Custom File</div>
-          <div class="item-desc">
-            自訂檔案選擇 UI 元件，以自訂介面取代瀏覽器原生 file input 的顯示方式，同時保留原生 input 作為真正的 files 與 change 資料來源。支援不同檔案類型、同頁多實例與宿主頁面 CSS 變數覆寫，可用於 JSON、圖片、文字、程式檔與其他檔案選擇情境。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/ui/custom_file.js">custom_file.js</a>
-            <a href="https://lib.stillnessbyslowly.com/ui/custom_file.css">custom_file.css</a>
-            <a href="https://lib.stillnessbyslowly.com/ui/test_custom_file.html">功能測試</a>
-            <a href="https://lib.stillnessbyslowly.com/ui/custom_file_usage.html">使用說明</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="page" data-page-panel="image">
-      <h2 class="section-title">Image</h2>
-
-      <div class="list">
-        <div class="item">
-          <div class="item-title">Lineart</div>
-          <div class="item-desc">
-            圖片轉黑白線稿模組，使用灰階、輕微降噪與 Sobel Edge 擷取圖片線條，並可調整邊緣判定門檻。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/Image/lineart.js">lineart.js</a>
-            <a href="https://lib.stillnessbyslowly.com/Image/test_lineart.html">功能測試</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page" data-page-panel="comment">
-      <h2 class="section-title">Comment</h2>
-
-      <div class="list">
-        <div class="item">
-          <div class="item-title">Comment Board</div>
-          <div class="item-desc">
-            輕型留言板模組，提供留言新增、時間排序與管理者編輯、刪除及回覆功能。目前使用 FictionData 儲存於 localStorage，並預留後端資料與權限控制介面。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/comment/comment_board.js">comment_board.js</a>
-            <a href="https://lib.stillnessbyslowly.com/comment/comment_board.css">comment_board.css</a>
-            <a href="https://lib.stillnessbyslowly.com/comment/comment_board_test.html">功能測試</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page" data-page-panel="mail">
-      <h2 class="section-title">Mail</h2>
-
-      <div class="list">
-        <div class="item">
-          <div class="item-title">Mail</div>
-          <div class="item-desc">
-            共用 Email 呼叫介面，提供即時寄送、排程、取消與狀態查詢。實際寄送、排程、驗證與敏感設定由後端負責。
-          </div>
-          <div class="item-links">
-            <a href="https://lib.stillnessbyslowly.com/mail/mail.js">mail.js</a>
-            <a href="https://lib.stillnessbyslowly.com/mail/mail_test.html">功能測試</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <script>
+<script src="./index_data.js"></script><script>
+    const libraryData = window.SlowlyLibraryIndex || [];
     const navButtons = document.querySelectorAll("[data-page]");
     const pages = document.querySelectorAll("[data-page-panel]");
+
+    function createItem(item) {
+      const card = document.createElement("div");
+      card.className = "item";
+
+      const title = document.createElement("div");
+      title.className = "item-title";
+      title.textContent = item.title;
+
+      const desc = document.createElement("div");
+      desc.className = "item-desc";
+      desc.textContent = item.desc;
+
+      const links = document.createElement("div");
+      links.className = "item-links";
+
+      item.links.forEach((link) => {
+        const a = document.createElement("a");
+        a.href = link.href;
+        a.textContent = link.label;
+        links.appendChild(a);
+      });
+
+      card.append(title, desc, links);
+      return card;
+    }
+
+    function renderLibrary() {
+      libraryData.forEach((group) => {
+        const list = document.querySelector(
+          `[data-page-panel="${group.page}"] .list`
+        );
+
+        if (!list) return;
+
+        group.items.forEach((item) => {
+          list.appendChild(createItem(item));
+        });
+      });
+    }
 
     function showPage(pageName) {
       navButtons.forEach((button) => {
@@ -439,12 +123,13 @@
       });
     }
 
+    renderLibrary();
+
     navButtons.forEach((button) => {
       button.addEventListener(
         "click",
         () => showPage(button.dataset.page)
       );
     });
-  </script>
-</body>
+  </script></body>
 </html>
