@@ -1,0 +1,93 @@
+/* Slowly Custom File v1 */
+
+/* ===== Theme / Color Override =====
+   元件本體保持中性預設色。
+
+   嵌入既有網站時，不需要修改 custom_file.css。
+   請在「宿主頁面」另外覆寫 .slowly-file 的 --sf-* 變數，
+   並優先對應宿主網站原本就有的色彩變數。
+
+   例如：
+
+   #backupArea .slowly-file{
+     --sf-bg:var(--panel);
+     --sf-text:var(--ink);
+     --sf-border:var(--line);
+     --sf-hover:var(--surface-soft);
+     --sf-focus:var(--accent);
+   }
+
+   原則：
+   - Custom File 負責結構與互動。
+   - 原生 input[type="file"] 仍負責 files / change / accept 等能力。
+   - 宿主頁面負責自己的視覺風格。
+   - 優先覆寫變數，不直接改 Custom File CSS。
+================================== */
+.slowly-file{
+  --sf-bg:#fff;
+  --sf-text:#222;
+  --sf-border:#aaa;
+  --sf-hover:#f3f3f3;
+  --sf-focus:#777;
+}
+/* ===== Theme / Color Override 結束 ===== */
+
+.slowly-file{
+  position:relative;
+  width:100%;
+  min-width:0;
+  color:var(--sf-text);
+  font-family:inherit;
+}
+
+.slowly-file *{
+  box-sizing:border-box;
+}
+
+.slowly-file-native{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+}
+
+.slowly-file-trigger{
+  width:100%;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:12px;
+  padding:10px 12px;
+  border:1px solid var(--sf-border);
+  border-radius:0;
+  background:var(--sf-bg);
+  color:var(--sf-text);
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+.slowly-file-trigger:hover,
+.slowly-file-trigger:focus-visible{
+  border-color:var(--sf-focus);
+  background:var(--sf-hover);
+  outline:0;
+}
+
+.slowly-file-trigger:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.slowly-file-label{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}

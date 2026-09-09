@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slowly Custom File v1 - 功能測試</title>
+  <link rel="stylesheet" href="custom_file.css">
+</head>
+<body>
+  <h1>Slowly Custom File v1 - 功能測試</h1>
+
+  <h2>1. 一般檔案</h2>
+  <div class="slowly-file" id="fileAny">
+    <input class="slowly-file-native" type="file">
+    <button class="slowly-file-trigger" type="button">
+      <span class="slowly-file-label">選擇檔案</span>
+    </button>
+  </div>
+  <p id="resultAny">尚未選擇</p>
+  <button type="button" id="resetAny">重設</button>
+
+  <h2>2. JSON</h2>
+  <div class="slowly-file" id="fileJson">
+    <input class="slowly-file-native" type="file" accept="application/json,.json">
+    <button class="slowly-file-trigger" type="button">
+      <span class="slowly-file-label">選擇 JSON</span>
+    </button>
+  </div>
+  <p id="resultJson">尚未選擇</p>
+
+  <h2>3. 圖片</h2>
+  <div class="slowly-file" id="fileImage">
+    <input class="slowly-file-native" type="file" accept="image/jpeg,image/png,image/webp">
+    <button class="slowly-file-trigger" type="button">
+      <span class="slowly-file-label">選擇圖片</span>
+    </button>
+  </div>
+  <p id="resultImage">尚未選擇</p>
+
+  <h2>4. multiple</h2>
+  <div class="slowly-file" id="fileMultiple">
+    <input class="slowly-file-native" type="file" multiple>
+    <button class="slowly-file-trigger" type="button">
+      <span class="slowly-file-label">選擇多個檔案</span>
+    </button>
+  </div>
+  <p id="resultMultiple">尚未選擇</p>
+
+  <h2>5. disabled</h2>
+  <div class="slowly-file" id="fileDisabled">
+    <input class="slowly-file-native" type="file" disabled>
+    <button class="slowly-file-trigger" type="button">
+      <span class="slowly-file-label">不可選擇</span>
+    </button>
+  </div>
+
+  <script src="custom_file.js"></script>
+  <script>
+    SlowlyCustomFile.initAll();
+
+    function showFile(inputSelector, outputSelector){
+      const input = document.querySelector(inputSelector);
+      const output = document.querySelector(outputSelector);
+
+      input.addEventListener("change", ()=>{
+        const files = Array.from(input.files || []);
+        output.textContent = files.length
+          ? files.map(file => `${file.name} (${file.type || "無 MIME"}, ${file.size} bytes)`).join(" / ")
+          : "尚未選擇";
+      });
+    }
+
+    showFile("#fileAny .slowly-file-native", "#resultAny");
+    showFile("#fileJson .slowly-file-native", "#resultJson");
+    showFile("#fileImage .slowly-file-native", "#resultImage");
+    showFile("#fileMultiple .slowly-file-native", "#resultMultiple");
+
+    document.getElementById("resetAny").addEventListener("click", ()=>{
+      SlowlyCustomFile.reset("#fileAny");
+      document.getElementById("resultAny").textContent = "尚未選擇";
+    });
+  </script>
+</body>
+</html>
