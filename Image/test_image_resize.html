@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image Resize Test</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/custom_file.css"></head><body>
+<h1>Image Resize Test</h1>
+<div class="slowly-file" id="image_picker">
+<input class="slowly-file-native" id="image_file" type="file" accept="image/*">
+<button class="slowly-file-trigger" type="button">選擇圖片</button>
+<span class="slowly-file-label" data-default-label="尚未選擇圖片">尚未選擇圖片</span>
+</div>
+<p id="status">尚未處理。</p><img id="preview" alt="縮圖預覽" hidden style="max-width:600px;width:100%;height:auto">
+<script src="https://lib.stillnessbyslowly.com/ui/custom_file.js"></script>
+<script src="./image_resize.js"></script>
+<script>
+SlowlyCustomFile.init("#image_picker");
+const input=document.querySelector("#image_file"),status=document.querySelector("#status"),preview=document.querySelector("#preview");
+let preview_url="";
+input.addEventListener("change",async()=>{
+ const file=input.files?.[0]; if(!file)return;
+ try{
+  const r=await ImageResize.resize(file);
+  if(preview_url)URL.revokeObjectURL(preview_url);
+  preview_url=URL.createObjectURL(r.blob);preview.src=preview_url;preview.hidden=false;
+  status.textContent=`${r.sourceWidth}×${r.sourceHeight} / ${r.sourceBytes} bytes → ${r.width}×${r.height} / ${r.outputBytes} bytes`;
+ }catch(e){preview.hidden=true;status.textContent=e.message||String(e);}
+});
+</script></body></html>
