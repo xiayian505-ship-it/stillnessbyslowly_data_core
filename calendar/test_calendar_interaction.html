@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calendar Interaction Test</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/component/calendar/calendar_component.css">
+<link rel="stylesheet" href="./calendar_interaction.css">
+</head><body>
+<h1>Calendar Interaction Test</h1>
+<p>目前選取：<strong id="selected_date">-</strong></p>
+<button id="set_markers" type="button">設定 marker</button>
+<button id="clear_markers" type="button">清除 marker</button>
+<div id="calendar"></div>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar_festivals_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/lunar_festivals.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/solar_festivals_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/solar_festivals.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/solar_terms_data.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/solar_terms.js"></script>
+<script src="https://lib.stillnessbyslowly.com/calendar/calendar.js"></script>
+<script src="https://lib.stillnessbyslowly.com/component/calendar/calendar_component.js"></script>
+<script src="./calendar_interaction.js"></script>
+<script>
+const calendar=SlowlyCalendar.mount("#calendar",{view:"month"});
+const interaction=CalendarInteraction.create(calendar);
+const output=document.querySelector("#selected_date");
+output.textContent=interaction.getDateKey();
+interaction.subscribe(e=>output.textContent=e.dateKey);
+document.querySelector("#set_markers").onclick=()=>interaction.setMarkers([
+  interaction.getDateKey(),"2026-09-05","2026-09-18"
+]);
+document.querySelector("#clear_markers").onclick=()=>interaction.setMarkers([]);
+</script></body></html>

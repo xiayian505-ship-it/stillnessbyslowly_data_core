@@ -1,0 +1,5 @@
+.slowly-calendar .sc-day.has-marker{position:relative}
+.slowly-calendar .sc-day.has-marker::after{
+  content:"";position:absolute;left:50%;bottom:4px;width:5px;height:5px;
+  border-radius:50%;background:currentColor;transform:translateX(-50%)
+}
