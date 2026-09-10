@@ -203,6 +203,20 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Realtime Sync",
+        "desc": "通用 Supabase Realtime 資料同步工具，提供 postgres_changes 訂閱與解除訂閱、依 updated_at 判斷遠端版本、忽略相同或較舊事件，並在重新連線後通知使用端重新載入最新資料。登入、資料儲存與 UI 由宿主自行處理。",
+        "links": [
+          {
+            "label": "Realtime_sync.js",
+            "href": "https://lib.stillnessbyslowly.com/data/Realtime_sync.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/data/test_realtime_sync.html"
+          }
+        ]
+      },
+      {
         "title": "Money",
         "desc": "通用數值與金額處理工具，提供加總、四捨五入、數字正規化與金額格式化功能。",
         "links": [
