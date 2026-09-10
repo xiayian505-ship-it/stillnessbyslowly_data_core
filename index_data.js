@@ -425,6 +425,28 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Auth Permission UI",
+        "desc": "共用登入、登出、身份與權限 UI 狀態模組。登入驗證、Session、角色與資料存取權限由後端／資料庫負責；前端模組只依已確認的 Auth／Permission 狀態切換介面，不把隱藏按鈕當成安全機制。",
+        "links": [
+          {
+            "label": "Auth_permission_ui.js",
+            "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.js"
+          },
+          {
+            "label": "Auth_permission_ui.css",
+            "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/ui/test_Auth_permission_ui.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui_guide.html"
+          }
+        ]
+      },
+      {
         "title": "Custom Select",
         "desc": "自訂下拉選單 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 select 展開樣式，同時保留原生 select 作為真正的 value 與 change 資料來源。支援同頁多實例、程式同步、點外部與 Escape 關閉，視覺可由宿主頁面透過 CSS 變數覆寫。",
         "links": [
