@@ -389,6 +389,24 @@ window.SlowlyLibraryIndex = [
             "href": "https://lib.stillnessbyslowly.com/calendar/calendar_view_test.html"
           }
         ]
+      },
+      {
+        "title": "Calendar Interaction",
+        "desc": "Slowly Calendar 的獨立互動橋接模組，在不修改 Calendar Component 的情況下取得目前選取日期、監聽日期變更，並支援替指定日期加入資料標記。",
+        "links": [
+          {
+            "label": "calendar_interaction.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_interaction.js"
+          },
+          {
+            "label": "calendar_interaction.css",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_interaction.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/test_calendar_interaction.html"
+          }
+        ]
       }
     ]
   },
@@ -467,6 +485,34 @@ window.SlowlyLibraryIndex = [
           {
             "label": "功能測試",
             "href": "https://lib.stillnessbyslowly.com/Image/test_lineart.html"
+          }
+        ]
+      },
+      {
+        "title": "Image Resize",
+        "desc": "通用圖片縮放與壓縮模組，將 File 或 Blob 經 Canvas 等比例縮小後輸出為 Blob，可限制最大尺寸、輸出格式、品質與原始檔案大小。",
+        "links": [
+          {
+            "label": "image_resize.js",
+            "href": "https://lib.stillnessbyslowly.com/Image/image_resize.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/Image/test_image_resize.html"
+          }
+        ]
+      },
+      {
+        "title": "Image Storage",
+        "desc": "通用 IndexedDB 圖片儲存模組，以 Blob 保存圖片，提供新增、讀取、刪除、清空與數量查詢，可讓文字資料只保存 imageId。",
+        "links": [
+          {
+            "label": "image_storage.js",
+            "href": "https://lib.stillnessbyslowly.com/Image/image_storage.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/Image/test_image_storage.html"
           }
         ]
       }
