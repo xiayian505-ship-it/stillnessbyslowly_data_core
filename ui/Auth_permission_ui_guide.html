@@ -1,0 +1,42 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Auth Permission UI 說明</title><style>body{font-family:system-ui,sans-serif;max-width:900px;margin:32px auto;padding:0 18px;line-height:1.7}code,pre{background:#f3f3f3}code{padding:2px 5px}pre{padding:12px;overflow:auto}table{border-collapse:collapse;width:100%}th,td{border:1px solid #bbb;padding:8px;text-align:left;vertical-align:top}h2{margin-top:32px}.warn{border-left:4px solid #777;padding-left:12px}</style></head><body>
+<h1>Auth_permission_ui.js v1.0.0</h1><p>共用的前端登入／登出／身份／權限 UI 狀態模組。它不綁 Supabase、Firebase 或 PHP，也不負責真正的安全驗證。</p>
+<h2>1. 它負責什麼</h2><p>登入表單送出、登入中狀態、錯誤訊息、登入後隱藏登入表單、顯示登出與已登入區塊，以及依 role / permissions 控制前端元素顯示。</p>
+<h2>2. 它不負責什麼</h2><p>不驗證帳密、不保存 session/token、不直接連資料庫、不判斷真正資料權限，也沒有註冊、忘記密碼、重設密碼、Email 驗證與帳號申請。</p>
+<h2>3. 最小 HTML 標記</h2><pre>&lt;section id="authRoot"&gt;
+  &lt;div data-auth-status&gt;&lt;/div&gt;
+  &lt;div data-permission-status&gt;&lt;/div&gt;
+  &lt;form data-auth-form&gt;
+    &lt;input data-auth-account&gt;
+    &lt;input data-auth-password type="password"&gt;
+    &lt;button data-auth-submit&gt;登入&lt;/button&gt;
+    &lt;div data-auth-message&gt;&lt;/div&gt;
+  &lt;/form&gt;
+  &lt;button data-auth-logout hidden&gt;登出&lt;/button&gt;
+&lt;/section&gt;</pre>
+<h2>4. JS 接口</h2><pre>const ui = AuthPermissionUI.create({
+  root: "#authRoot",
+  async onLogin({ account, password }, ui) {
+    // 1. 把帳密送到真正 Auth API
+    // 2. 從後端取得可信任的身份 / role / permissions
+    // 3. 再把結果交給 UI
+    ui.setState({
+      role: "editor",
+      permissions: ["read", "edit"],
+      statusText: "已登入｜小明",
+      permissionText: "編輯權限"
+    });
+  },
+  async onLogout(ui) {
+    // 先讓真正後端/session/token 登出或失效
+    ui.setState({ role:"guest", permissions:[] });
+  }
+});</pre>
+<table><tr><th>接口</th><th>用途</th></tr><tr><td><code>onLogin(data, ui)</code></td><td>宿主接真正登入 API 的位置。data 只有 account/password。</td></tr><tr><td><code>onLogout(ui)</code></td><td>宿主接真正登出 / session 失效的位置。</td></tr><tr><td><code>ui.setState(state)</code></td><td>把後端已確認的 role / permissions / 顯示文字交給 UI。</td></tr><tr><td><code>ui.getState()</code></td><td>讀取目前前端 UI state；不能拿它當後端授權證明。</td></tr><tr><td><code>ui.setMessage()</code></td><td>設定登入訊息。</td></tr><tr><td><code>ui.clearPassword()</code></td><td>清除密碼欄。</td></tr><tr><td><code>ui.clearCredentials()</code></td><td>清除帳號與密碼欄。</td></tr></table>
+<h2>5. 權限顯示</h2><pre>&lt;div data-auth-visible="guest"&gt;只有未登入看得到&lt;/div&gt;
+&lt;div data-auth-visible="authenticated" hidden&gt;登入後看得到&lt;/div&gt;
+&lt;button data-permission="edit" hidden&gt;編輯&lt;/button&gt;
+&lt;button data-permission="read edit" data-permission-mode="all" hidden&gt;需要 read + edit&lt;/button&gt;</pre><p><code>data-permission</code> 預設 any；加 <code>data-permission-mode="all"</code> 才要求全部符合。role 本身也會加入比對，因此 <code>data-permission="admin"</code> 可對 role=admin 顯示。</p>
+<h2>6. 安全界線：資料庫／後端要負責</h2><div class="warn"><p><strong>前端隱藏按鈕不是權限。</strong> 使用者可以自己修改 DOM 和 JS。</p></div><p>後端／資料庫必須真正驗證：登入憑證、session/token、user id、role/permissions、每筆資料的讀取權、建立權、修改權、刪除權、資源歸屬，以及管理者操作。Supabase 專案應以 RLS/policy 落實；其他後端則由 Security Rules、API middleware 或 server-side authorization 落實。</p>
+<h2>7. CSS</h2><p><code>Auth_permission_ui.css</code> 只提供 grid、欄位寬度、responsive 與 <code>hidden</code> 必要規則，不設定主題色、圓角、陰影等視覺風格，外觀由宿主網站 CSS 負責。</p>
+<h2>8. 建議接法</h2><p>頁面載入 → 宿主先向後端確認目前 session → 得到可信任身份後呼叫 <code>ui.setState()</code>。登入時由 <code>onLogin</code> 呼叫 Auth API；登出時由 <code>onLogout</code> 呼叫真正登出接口。所有資料 CRUD 仍直接走有後端權限驗證的資料接口，不經由本模組授權。</p>
+</body></html>

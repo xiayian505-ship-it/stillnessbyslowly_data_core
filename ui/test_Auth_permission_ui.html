@@ -1,0 +1,17 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Auth Permission UI 功能測試</title><link rel="stylesheet" href="./Auth_permission_ui.css"><style>body{font-family:system-ui,sans-serif;max-width:720px;margin:30px auto;padding:0 16px}section{margin:20px 0}input,button{padding:8px}.box{padding:10px;border:1px solid #aaa;margin:8px 0}</style></head><body>
+<h1>Auth_permission_ui 功能測試</h1><p>樸素測試頁。假後端帳號：user / 1234、admin / 1234。錯誤帳密應顯示登入失敗。</p>
+<section id="authRoot">
+  <div data-auth-status>未登入</div><div data-permission-status>權限：訪客</div>
+  <form data-auth-form><label>帳號<input data-auth-account required></label><label>密碼<input data-auth-password type="password" required></label><button data-auth-submit>登入</button><div data-auth-message></div></form>
+  <button data-auth-logout hidden>登出</button>
+  <div class="box" data-auth-visible="guest">guest only：未登入時看得到</div>
+  <div class="box" data-auth-visible="authenticated" hidden>authenticated only：登入後看得到</div>
+  <div class="box" data-permission="read" hidden>permission = read</div>
+  <div class="box" data-permission="admin" hidden>role / permission = admin</div>
+  <div class="box" data-permission="read edit" data-permission-mode="all" hidden>read + edit 全部具備才顯示</div>
+</section>
+<script src="./Auth_permission_ui.js"></script><script>
+const users={user:{password:"1234",role:"user",permissions:["read"],name:"一般使用者"},admin:{password:"1234",role:"admin",permissions:["read","edit","manage"],name:"管理者"}};
+const ui=AuthPermissionUI.create({root:"#authRoot",loginErrorText:"登入失敗：帳號或密碼錯誤。",async onLogin({account,password},ui){await new Promise(r=>setTimeout(r,300));const u=users[account];if(!u||u.password!==password)throw new Error("login failed");ui.setState({role:u.role,permissions:u.permissions,displayName:u.name,statusText:`已登入｜${u.name}`,permissionText:`role：${u.role}｜permissions：${u.permissions.join(", ")}`});ui.clearPassword();},async onLogout(ui){ui.setState({role:"guest",permissions:[],displayName:"",statusText:"未登入",permissionText:"權限：訪客"});ui.clearCredentials();}});
+ui.setState({role:"guest",permissions:[],statusText:"未登入",permissionText:"權限：訪客"});
+</script></body></html>
