@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Realtime Sync 功能測試</title>
+</head>
+<body>
+  <h1>Realtime Sync 功能測試</h1>
+
+  <p>
+    測試方式：同一個 Supabase 帳號開兩個分頁。
+    兩邊都登入並開始訂閱後，在其中一邊按「送出測試更新」；
+    另一邊應立即收到 UPDATE。
+  </p>
+
+  <section>
+    <h2>登入</h2>
+    <label>
+      Email
+      <input id="email" type="email" autocomplete="username">
+    </label>
+    <br>
+    <label>
+      密碼
+      <input id="password" type="password" autocomplete="current-password">
+    </label>
+    <br>
+    <button id="loginBtn" type="button">登入</button>
+    <button id="logoutBtn" type="button">登出</button>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>狀態</h2>
+    <div id="authStatus">未登入</div>
+    <div id="syncStatus">尚未訂閱</div>
+    <div>目前版本：<code id="version">—</code></div>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>Realtime</h2>
+    <button id="subscribeBtn" type="button">開始訂閱</button>
+    <button id="unsubscribeBtn" type="button">解除訂閱</button>
+    <button id="reloadBtn" type="button">重新載入最新版</button>
+    <button id="pingBtn" type="button">送出測試更新</button>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>事件紀錄</h2>
+    <pre id="log"></pre>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://stillnessbyslowly.com/setting/supabase_config.js"></script>
+
+  <!-- 上傳倉庫後可改成：
+  <script src="https://lib.stillnessbyslowly.com/data/Realtime_sync.js"></script>
+  -->
+  <script src="./Realtime_sync.js"></script>
+
+  <script>
+    (async function(){
+      "use strict";
+
+      const $ = selector => document.querySelector(selector);
+
+      const email = $("#email");
+      const password = $("#password");
+      const loginBtn = $("#loginBtn");
+      const logoutBtn = $("#logoutBtn");
+      const subscribeBtn = $("#subscribeBtn");
+      const unsubscribeBtn = $("#unsubscribeBtn");
+      const reloadBtn = $("#reloadBtn");
+      const pingBtn = $("#pingBtn");
+      const authStatus = $("#authStatus");
+      const syncStatus = $("#syncStatus");
+      const versionEl = $("#version");
+      const logEl = $("#log");
+
+      if(
+        !window.supabase?.createClient ||
+        !window.SBS_SUPABASE_CONFIG?.url ||
+        !window.SBS_SUPABASE_CONFIG?.publishableKey ||
+        !window.RealtimeSync
+      ){
+        alert("必要模組載入失敗。");
+        return;
+      }
+
+      const client = window.supabase.createClient(
+        window.SBS_SUPABASE_CONFIG.url,
+        window.SBS_SUPABASE_CONFIG.publishableKey
+      );
+
+      let user = null;
+      let sync = null;
+      let currentState = null;
+      let currentVersion = null;
+
+      function log(message, data){
+        const time = new Date().toLocaleTimeString();
+        let line = `[${time}] ${message}`;
+
+        if(data !== undefined){
+          try{
+            line += "\n" + JSON.stringify(data, null, 2);
+          }catch{
+            line += "\n" + String(data);
+          }
+        }
+
+        logEl.textContent = line + "\n\n" + logEl.textContent;
+      }
+
+      function render(){
+        authStatus.textContent = user
+          ? `已登入：${user.email || user.id}`
+          : "未登入";
+
+        versionEl.textContent = currentVersion || "—";
+      }
+
+      async function loadBook(){
+        if(!user){
+          throw new Error("請先登入。");
+        }
+
+        const { data, error } = await client
+          .from("books")
+          .select("state,updated_at")
+          .eq("owner_id", user.id)
+          .single();
+
+        if(error) throw error;
+
+        currentState = data.state;
+        currentVersion = data.updated_at || null;
+
+        if(sync){
+          sync.setKnownVersion(currentVersion);
+        }
+
+        render();
+        log("已重新載入 books 最新版本。", {
+          updated_at: currentVersion
+        });
+
+        return data;
+      }
+
+      async function stopSync(){
+        if(!sync) return;
+
+        await sync.destroy();
+        sync = null;
+        syncStatus.textContent = "尚未訂閱";
+        log("Realtime 已解除訂閱。");
+      }
+
+      async function startSync(){
+        if(!user){
+          alert("請先登入。");
+          return;
+        }
+
+        await stopSync();
+
+        sync = RealtimeSync.create({
+          client,
+          table: "books",
+          event: "UPDATE",
+          filter: `owner_id=eq.${user.id}`,
+          versionField: "updated_at",
+
+          onStatus({status, error}){
+            syncStatus.textContent = `Realtime：${status || "UNKNOWN"}`;
+            log(`Realtime status：${status || "UNKNOWN"}`, error || undefined);
+          },
+
+          async onRemote(event){
+            currentState = event.record?.state ?? currentState;
+            currentVersion = event.version || currentVersion;
+            render();
+
+            log("收到另一個分頁 / 裝置的 UPDATE。", {
+              updated_at: event.version,
+              previous_known_version: event.knownVersion
+            });
+          },
+
+          async onReconnect(){
+            log("Realtime 已重新連線，重新讀取 books 最新版本。");
+            await loadBook();
+          }
+        });
+
+        sync.setKnownVersion(currentVersion);
+        await sync.subscribe();
+      }
+
+      async function restoreSession(){
+        const { data, error } = await client.auth.getSession();
+
+        if(error){
+          console.error(error);
+          return;
+        }
+
+        user = data.session?.user || null;
+        render();
+
+        if(user){
+          try{
+            await loadBook();
+          }catch(error){
+            log("Session 存在，但讀取 books 失敗。", {
+              message: error.message
+            });
+          }
+        }
+      }
+
+      loginBtn.onclick = async function(){
+        try{
+          await stopSync();
+
+          const { data, error } = await client.auth.signInWithPassword({
+            email: email.value.trim(),
+            password: password.value
+          });
+
+          if(error) throw error;
+
+          user = data.user;
+          password.value = "";
+          render();
+
+          await loadBook();
+          log("登入成功。");
+        }catch(error){
+          console.error(error);
+          alert(`登入失敗：${error.message || error}`);
+        }
+      };
+
+      logoutBtn.onclick = async function(){
+        try{
+          await stopSync();
+
+          const { error } = await client.auth.signOut();
+          if(error) throw error;
+
+          user = null;
+          currentState = null;
+          currentVersion = null;
+          render();
+          log("已登出。");
+        }catch(error){
+          console.error(error);
+          alert(`登出失敗：${error.message || error}`);
+        }
+      };
+
+      subscribeBtn.onclick = async function(){
+        try{
+          if(!currentState){
+            await loadBook();
+          }
+
+          await startSync();
+        }catch(error){
+          console.error(error);
+          alert(`開始訂閱失敗：${error.message || error}`);
+        }
+      };
+
+      unsubscribeBtn.onclick = async function(){
+        try{
+          await stopSync();
+        }catch(error){
+          console.error(error);
+          alert(`解除訂閱失敗：${error.message || error}`);
+        }
+      };
+
+      reloadBtn.onclick = async function(){
+        try{
+          await loadBook();
+        }catch(error){
+          console.error(error);
+          alert(`重新載入失敗：${error.message || error}`);
+        }
+      };
+
+      pingBtn.onclick = async function(){
+        try{
+          if(!user){
+            alert("請先登入。");
+            return;
+          }
+
+          if(currentState === null){
+            await loadBook();
+          }
+
+          /*
+           * 不改帳本內容，只把目前 state 原樣 UPDATE 回去。
+           * books 的 trigger 會更新 updated_at，
+           * 因此可安全測試 Realtime，不污染帳本資料。
+           */
+          const expectedVersion = currentVersion;
+
+          let query = client
+            .from("books")
+            .update({ state: currentState })
+            .eq("owner_id", user.id);
+
+          // 同時順便驗證 optimistic locking 的條件更新。
+          if(expectedVersion){
+            query = query.eq("updated_at", expectedVersion);
+          }
+
+          const { data, error } = await query
+            .select("updated_at")
+            .maybeSingle();
+
+          if(error) throw error;
+
+          if(!data){
+            alert("版本衝突：雲端已被其他分頁更新。請重新載入最新版。");
+            log("測試更新被版本鎖擋下。", {
+              expected_updated_at: expectedVersion
+            });
+            return;
+          }
+
+          currentVersion = data.updated_at || currentVersion;
+
+          if(sync){
+            sync.setKnownVersion(currentVersion);
+          }
+
+          render();
+
+          log("本分頁送出測試 UPDATE 成功。", {
+            previous_updated_at: expectedVersion,
+            updated_at: currentVersion
+          });
+        }catch(error){
+          console.error(error);
+          alert(`測試更新失敗：${error.message || error}`);
+        }
+      };
+
+      await restoreSession();
+    })();
+  </script>
+</body>
+</html>
