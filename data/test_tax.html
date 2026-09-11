@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tax Test</title>
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; line-height: 1.6; }
+    section { margin: 24px 0; }
+    .pass { color: green; }
+    .fail { color: crimson; }
+    label { display: block; margin: 8px 0; }
+    input { padding: 6px 8px; max-width: 220px; }
+    output { font-weight: 700; }
+  </style>
+</head>
+<body>
+  <p><a href="../index.html">← 返回慢慢的倉庫</a></p>
+
+  <h1>Tax Test</h1>
+  <p>測試單一百分比稅率的含稅金額拆分。</p>
+
+  <section>
+    <h2>自動測試</h2>
+    <div id="tests"></div>
+  </section>
+
+  <section>
+    <h2>互動測試</h2>
+
+    <label>
+      含稅金額
+      <input id="total" type="number" inputmode="decimal" value="2900">
+    </label>
+
+    <label>
+      稅率（%）
+      <input id="rate" type="number" inputmode="decimal" value="5" step="0.01">
+    </label>
+
+    <p>營業額：<output id="sales"></output></p>
+    <p>稅額：<output id="tax"></output></p>
+  </section>
+
+  <script src="./Tax.js"></script>
+  <script>
+    const cases = [
+      { total: 1450, rate: 5, sales: 1381, tax: 69 },
+      { total: 1700, rate: 5, sales: 1619, tax: 81 },
+      { total: 1850, rate: 5, sales: 1762, tax: 88 },
+      { total: 2350, rate: 5, sales: 2238, tax: 112 },
+      { total: 2900, rate: 5, sales: 2762, tax: 138 },
+      { total: 1100, rate: 10, sales: 1000, tax: 100 }
+    ];
+
+    const tests = document.getElementById("tests");
+
+    for (const item of cases) {
+      const result = SlowlyTax.splitInclusive(item.total, item.rate);
+      const ok = result.sales === item.sales && result.tax === item.tax;
+      const row = document.createElement("div");
+
+      row.className = ok ? "pass" : "fail";
+      row.textContent =
+        `${ok ? "PASS" : "FAIL"}｜${item.total} / ${item.rate}% → ` +
+        `營業額 ${result.sales}、稅額 ${result.tax}`;
+
+      tests.appendChild(row);
+    }
+
+    const totalInput = document.getElementById("total");
+    const rateInput = document.getElementById("rate");
+    const salesOutput = document.getElementById("sales");
+    const taxOutput = document.getElementById("tax");
+
+    function update() {
+      const total = totalInput.value;
+      const rate = rateInput.value;
+
+      if (total === "" || rate === "") {
+        salesOutput.textContent = "";
+        taxOutput.textContent = "";
+        return;
+      }
+
+      try {
+        const result = SlowlyTax.splitInclusive(total, rate);
+        salesOutput.textContent = result.sales;
+        taxOutput.textContent = result.tax;
+      } catch (error) {
+        salesOutput.textContent = "—";
+        taxOutput.textContent = "—";
+      }
+    }
+
+    totalInput.addEventListener("input", update);
+    rateInput.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>
