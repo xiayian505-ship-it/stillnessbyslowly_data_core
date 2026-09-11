@@ -211,6 +211,20 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Fiction Select Or Create",
+        "desc": "從作品探索作者管理拆出的通用「搜尋既有或新增」資料選取模組。支援依名稱或 ID 搜尋、選取既有資料、未選定時解除舊 ID、同名資料優先回用既有 ID，並可由宿主自行接上 localStorage、Supabase 或其他資料來源。",
+        "links": [
+          {
+            "label": "Fiction_SelectOrCreate.js",
+            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_SelectOrCreate.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/fiction/test_select_or_create.html"
+          }
+        ]
+      },
+      {
         "title": "Data Backup",
         "desc": "通用 JSON 備份與匯入工具，提供 JSON 下載、檔案讀取、備份 payload 建立與資料擷取功能。",
         "links": [
