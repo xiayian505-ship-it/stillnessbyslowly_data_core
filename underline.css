@@ -1,0 +1,47 @@
+/* 慢慢的倉庫｜Effects / Line｜Minimal Underline
+   宿主負責顏色與參數，特效只負責線條展開。
+*/
+
+.slowly-underline {
+  --slowly-line-color: currentColor;
+  --slowly-line-speed: 0.25s;
+  --slowly-line-thickness: 1px;
+  --slowly-line-gap: 0.12em;
+  --slowly-line-size: 100%;
+  --slowly-line-opacity: 1;
+  --slowly-line-origin: left;
+  --slowly-line-easing: ease;
+
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.slowly-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: calc(-1 * var(--slowly-line-gap));
+  width: var(--slowly-line-size);
+  height: var(--slowly-line-thickness);
+  background: var(--slowly-line-color);
+  opacity: var(--slowly-line-opacity);
+  transform: scaleX(0);
+  transform-origin: var(--slowly-line-origin) center;
+  transition:
+    transform var(--slowly-line-speed)
+    var(--slowly-line-easing);
+  pointer-events: none;
+}
+
+.slowly-underline:hover::after,
+.slowly-underline:focus-visible::after,
+.slowly-underline.is-active::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-underline::after {
+    transition-duration: 0.01ms;
+  }
+}
