@@ -595,15 +595,194 @@ window.SlowlyLibraryIndex = [
           }
         ]
       },
-      { "id": "light", "title": "Light / 光影", "items": [] },
-      { "id": "hover", "title": "Hover / Pointer", "items": [] },
-      { "id": "reveal", "title": "Reveal / 進退場", "items": [] },
-      { "id": "scroll", "title": "Scroll / 捲動", "items": [] },
-      { "id": "typography", "title": "Typography / 文字", "items": [] },
-      { "id": "background", "title": "Background / 背景", "items": [] },
-      { "id": "spatial", "title": "3D / Spatial", "items": [] },
-      { "id": "particle", "title": "Particle / 粒子", "items": [] },
-      { "id": "feedback", "title": "Feedback / 回饋", "items": [] }
+      {
+        "id": "light",
+        "title": "Light / 光影",
+        "items": [
+          {
+            "title": "Basic Glow",
+            "desc": "基礎光暈特效，預設繼承宿主 currentColor，可控制光暈大小、透明度、速度與 easing；支援 hover、focus-visible 與固定顯示狀態。",
+            "links": [
+              {
+                "label": "glow.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/glow.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_glow.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "hover",
+        "title": "Hover / Pointer",
+        "items": [
+          {
+            "title": "Basic Lift",
+            "desc": "基礎上浮特效，可控制位移距離、速度與 easing；支援 hover、focus-visible 與固定顯示狀態。",
+            "links": [
+              {
+                "label": "lift.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/lift.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_lift.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "reveal",
+        "title": "Reveal / 進退場",
+        "items": [
+          {
+            "title": "Basic Fade Up",
+            "desc": "基礎淡入上移特效，由宿主切換 is-visible 決定進退場，可控制位移距離、速度與 easing。",
+            "links": [
+              {
+                "label": "fade_up.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/fade_up.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_fade_up.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "scroll",
+        "title": "Scroll / 捲動",
+        "items": [
+          {
+            "title": "Basic Scroll Progress",
+            "desc": "基礎頁面捲動進度條，JavaScript 依目前捲動比例更新進度，CSS 負責顯示；可由宿主控制高度、顏色與層級。",
+            "links": [
+              {
+                "label": "progress.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/progress.css"
+              },
+              {
+                "label": "progress.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/progress.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_progress.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "typography",
+        "title": "Typography / 文字",
+        "items": [
+          {
+            "title": "Basic Tracking",
+            "desc": "基礎字距展開特效，可控制起始字距、目標字距、速度與 easing；支援 hover、focus-visible 與固定顯示狀態。",
+            "links": [
+              {
+                "label": "tracking.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/tracking.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_tracking.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "background",
+        "title": "Background / 背景",
+        "items": [
+          {
+            "title": "Basic Gradient Shift",
+            "desc": "基礎流動漸層背景，宿主可自訂漸層角度、三組顏色、背景尺寸與動畫速度；支援 reduced-motion。",
+            "links": [
+              {
+                "label": "gradient_shift.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/gradient_shift.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_gradient_shift.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "spatial",
+        "title": "3D / Spatial",
+        "items": [
+          {
+            "title": "Basic Tilt",
+            "desc": "基礎 3D 指標傾斜特效，JavaScript 依指標位置更新旋轉角度，CSS 負責透視與轉場；可控制最大角度、perspective、速度與 easing。",
+            "links": [
+              {
+                "label": "tilt.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt.css"
+              },
+              {
+                "label": "tilt.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/test_tilt.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "particle",
+        "title": "Particle / 粒子",
+        "items": [
+          {
+            "title": "Basic Particle Float",
+            "desc": "基礎裝飾粒子漂浮特效，預設繼承宿主 currentColor，可控制粒子大小、漂浮距離、動畫時間、延遲與透明度；支援 reduced-motion。",
+            "links": [
+              {
+                "label": "float.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/float.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_float.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "feedback",
+        "title": "Feedback / 回饋",
+        "items": [
+          {
+            "title": "Basic Press",
+            "desc": "基礎按壓回饋特效，按住元素時產生輕微縮放與下沉，可控制縮放比例、位移距離、速度與 easing，並支援固定測試狀態。",
+            "links": [
+              {
+                "label": "press.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/press.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_press.html"
+              }
+            ]
+          }
+        ]
+      }
     ]
   },
   {
