@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Basic Press 功能測試</title>
+<link rel="stylesheet" href="./press.css">
+<style>
+body { font-family: Arial, "Microsoft JhengHei", sans-serif; margin:32px; line-height:2; }
+.test { margin:26px 0; }
+button, a { font:inherit; }
+.box { display:inline-block; padding:10px 14px; border:1px solid #999; color:inherit; text-decoration:none; }
+</style>
+</head>
+<body>
+<h1>Basic Press 功能測試</h1>
+<p>按住元素時產生輕微縮放與下沉回饋。</p>
+<div class="test"><button class="slowly-press">按住我</button></div>
+<div class="test"><a class="box slowly-press" href="#">連結也可以使用</a></div>
+<div class="test">
+  <button class="slowly-press" style="--slowly-press-scale:.9;--slowly-press-y:4px;">
+    較明顯回饋
+  </button>
+</div>
+<div class="test"><span class="box slowly-press is-active">固定測試狀態</span></div>
+</body>
+</html>

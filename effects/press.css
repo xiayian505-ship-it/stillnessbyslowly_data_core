@@ -1,0 +1,24 @@
+/* Slowly Effects | Feedback | Basic Press
+   Host controls scale, distance and speed.
+*/
+.slowly-press {
+  --slowly-press-scale: .97;
+  --slowly-press-y: 1px;
+  --slowly-press-speed: .08s;
+  --slowly-press-easing: ease-out;
+
+  transition: transform var(--slowly-press-speed) var(--slowly-press-easing);
+}
+
+.slowly-press:active,
+.slowly-press.is-active {
+  transform:
+    translateY(var(--slowly-press-y))
+    scale(var(--slowly-press-scale));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-press {
+    transition-duration: .01ms;
+  }
+}
