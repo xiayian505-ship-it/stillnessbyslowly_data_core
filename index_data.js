@@ -69,6 +69,28 @@ window.SlowlyLibraryIndex = [
             "href": "https://lib.stillnessbyslowly.com/component/data/data_search_sort_component_usage.html"
           }
         ]
+      },
+      {
+        "title": "Slowly Tax Calculator",
+        "desc": "可直接嵌入網站使用的含稅金額拆分計算元件，輸入含稅金額與稅率後自動計算營業額與稅額；預設稅率為 5%，可自行修改。核心採用含稅金額 ÷（1＋稅率）的單一百分比稅率模型。",
+        "links": [
+          {
+            "label": "tax_calculator_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/data/tax_calculator_component.js"
+          },
+          {
+            "label": "tax_calculator_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/data/tax_calculator_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/data/tax_calculator_component.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/data/tax_calculator_component_usage.html"
+          }
+        ]
       }
     ]
   },
@@ -241,6 +263,20 @@ window.SlowlyLibraryIndex = [
           {
             "label": "功能測試",
             "href": "https://lib.stillnessbyslowly.com/data/test_currency.html"
+          }
+        ]
+      },
+      {
+        "title": "Tax",
+        "desc": "通用含稅金額拆分核心，依指定稅率以含稅金額 ÷（1＋稅率）反推未稅營業額，再以含稅金額減去營業額取得稅額；不假定所有國家或地區皆採相同稅制與取整規則。",
+        "links": [
+          {
+            "label": "Tax.js",
+            "href": "https://lib.stillnessbyslowly.com/data/Tax.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/data/test_tax.html"
           }
         ]
       }
