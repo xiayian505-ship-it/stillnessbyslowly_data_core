@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Date Overlap 功能測試</title>
+</head>
+<body>
+  <h1>Date Overlap 功能測試</h1>
+
+  <p>測試資料：</p>
+  <pre id="input"></pre>
+
+  <button type="button" id="runBtn">執行測試</button>
+
+  <h2>全部日期</h2>
+  <pre id="all"></pre>
+
+  <h2>重疊日期（至少 2 個）</h2>
+  <pre id="overlaps"></pre>
+
+  <h2>指定日期：2026-09-06</h2>
+  <pre id="oneDate"></pre>
+
+  <h2>最大重疊</h2>
+  <pre id="max"></pre>
+
+  <h2>統計</h2>
+  <pre id="stats"></pre>
+
+  <script src="./Date_overlap.js"></script>
+  <script>
+    const sample = [
+      {
+        id: "A",
+        dates: ["2026-09-01", "2026-09-03", "2026-09-06", "2026-09-06"]
+      },
+      {
+        id: "B",
+        dates: ["2026-09-03", "2026-09-06", "2026-09-08"]
+      },
+      {
+        id: "C",
+        dates: ["2026-09-06", "2026-09-09"]
+      }
+    ];
+
+    document.getElementById("input").textContent =
+      JSON.stringify(sample, null, 2);
+
+    function run() {
+      document.getElementById("all").textContent =
+        JSON.stringify(DateOverlap.byDate(sample), null, 2);
+
+      document.getElementById("overlaps").textContent =
+        JSON.stringify(DateOverlap.overlaps(sample), null, 2);
+
+      document.getElementById("oneDate").textContent =
+        JSON.stringify(
+          DateOverlap.getDate(sample, "2026-09-06"),
+          null,
+          2
+        );
+
+      document.getElementById("max").textContent =
+        JSON.stringify(DateOverlap.max(sample), null, 2);
+
+      document.getElementById("stats").textContent =
+        JSON.stringify(DateOverlap.stats(sample), null, 2);
+    }
+
+    document.getElementById("runBtn").addEventListener("click", run);
+
+    run();
+  </script>
+</body>
+</html>
