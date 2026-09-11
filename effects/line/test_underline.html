@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minimal Underline Test</title>
+<link rel="stylesheet" href="./underline.css">
+<style>
+  body {
+    font-family: Arial, "Microsoft JhengHei", sans-serif;
+    margin: 32px;
+    line-height: 2;
+  }
+
+  .test-row {
+    margin: 18px 0;
+  }
+
+  .host-blue {
+    color: #315f82;
+  }
+
+  .host-red {
+    color: #8a3f3f;
+  }
+
+  button.slowly-underline {
+    border: 0;
+    background: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<h1>Minimal Underline 功能測試</h1>
+<p>滑鼠移入或鍵盤 focus 時顯示底線。顏色預設繼承宿主 currentColor。</p>
+
+<div class="test-row">
+  <a class="slowly-underline" href="#">預設底線</a>
+</div>
+
+<div class="test-row host-blue">
+  <a class="slowly-underline" href="#">繼承宿主藍色</a>
+</div>
+
+<div class="test-row host-red">
+  <button class="slowly-underline" type="button">Button 也可以使用</button>
+</div>
+
+<div class="test-row">
+  <a
+    class="slowly-underline"
+    href="#"
+    style="
+      --slowly-line-speed: .6s;
+      --slowly-line-thickness: 3px;
+      --slowly-line-gap: .25em;
+    "
+  >慢速、粗線、較大間距</a>
+</div>
+
+<div class="test-row">
+  <a
+    class="slowly-underline"
+    href="#"
+    style="
+      --slowly-line-origin: center;
+      --slowly-line-size: 70%;
+    "
+  >從中心展開，線長 70%</a>
+</div>
+
+<div class="test-row">
+  <span class="slowly-underline is-active">固定顯示狀態</span>
+</div>
+
+</body>
+</html>
