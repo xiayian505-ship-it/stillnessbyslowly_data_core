@@ -18,6 +18,7 @@
 <button aria-selected="false" data-page="date" type="button">Date</button>
 <button aria-selected="false" data-page="calendar" type="button">Calendar</button>
 <button aria-selected="false" data-page="ui" type="button">UI</button>
+<button aria-selected="false" data-page="effects" type="button">Effects</button>
 <button aria-selected="false" data-page="image" type="button">Image</button>
 <button aria-selected="false" data-page="comment" type="button">Comment</button>
 <button aria-selected="false" data-page="mail" type="button">Mail</button>
@@ -59,6 +60,10 @@
 <section class="page" data-page-panel="ui">
 <h2 class="section-title">UI</h2>
 <div class="list"></div>
+</section>
+<section class="page" data-page-panel="effects">
+<h2 class="section-title">Effects</h2>
+<div class="effects-groups"></div>
 </section>
 <section class="page" data-page-panel="image">
 <h2 class="section-title">Image</h2>
@@ -107,15 +112,46 @@
 
     function renderLibrary() {
       libraryData.forEach((group) => {
-        const list = document.querySelector(
-          `[data-page-panel="${group.page}"] .list`
+        const panel = document.querySelector(
+          `[data-page-panel="${group.page}"]`
         );
 
-        if (!list) return;
+        if (!panel) return;
 
-        group.items.forEach((item) => {
-          list.appendChild(createItem(item));
-        });
+        if (Array.isArray(group.items)) {
+          const list = panel.querySelector(".list");
+          if (!list) return;
+
+          group.items.forEach((item) => {
+            list.appendChild(createItem(item));
+          });
+          return;
+        }
+
+        if (Array.isArray(group.groups)) {
+          const groupsContainer = panel.querySelector(".effects-groups");
+          if (!groupsContainer) return;
+
+          group.groups.forEach((subgroup) => {
+            const section = document.createElement("section");
+            section.className = "subsection";
+            section.dataset.effectGroup = subgroup.id;
+
+            const title = document.createElement("h3");
+            title.className = "subsection-title";
+            title.textContent = subgroup.title;
+
+            const list = document.createElement("div");
+            list.className = "list";
+
+            subgroup.items.forEach((item) => {
+              list.appendChild(createItem(item));
+            });
+
+            section.append(title, list);
+            groupsContainer.appendChild(section);
+          });
+        }
       });
     }
 

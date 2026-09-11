@@ -144,3 +144,22 @@ h1 {
     gap: 10px 16px;
   }
 }
+
+.effects-groups {
+  display: grid;
+  gap: 28px;
+}
+
+.subsection {
+  display: grid;
+  gap: 12px;
+}
+
+.subsection-title {
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+}

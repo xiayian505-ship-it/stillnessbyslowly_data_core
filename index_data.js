@@ -570,6 +570,23 @@ window.SlowlyLibraryIndex = [
       }
     ]
   },
+
+  {
+    "page": "effects",
+    "title": "Effects",
+    "groups": [
+      { "id": "line", "title": "Line / 線條", "items": [] },
+      { "id": "light", "title": "Light / 光影", "items": [] },
+      { "id": "hover", "title": "Hover / Pointer", "items": [] },
+      { "id": "reveal", "title": "Reveal / 進退場", "items": [] },
+      { "id": "scroll", "title": "Scroll / 捲動", "items": [] },
+      { "id": "typography", "title": "Typography / 文字", "items": [] },
+      { "id": "background", "title": "Background / 背景", "items": [] },
+      { "id": "spatial", "title": "3D / Spatial", "items": [] },
+      { "id": "particle", "title": "Particle / 粒子", "items": [] },
+      { "id": "feedback", "title": "Feedback / 回饋", "items": [] }
+    ]
+  },
   {
     "page": "image",
     "title": "Image",
