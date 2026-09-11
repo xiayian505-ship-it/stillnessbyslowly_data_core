@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slowly Tax Calculator Component｜元件使用</title>
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; line-height: 1.7; }
+    main { max-width: 900px; margin: auto; }
+    pre { overflow-x: auto; padding: 14px; background: #f4f4f4; }
+    code { font-family: ui-monospace, monospace; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; border-bottom: 1px solid #ddd; padding: 8px; vertical-align: top; }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="../../index.html">← 返回慢慢的倉庫</a></p>
+
+  <h1>Slowly Tax Calculator Component</h1>
+
+  <p>
+    純前端含稅金額拆分元件。輸入含稅金額與稅率後，
+    自動顯示營業額與稅額。預設稅率為 5%，可由宿主修改。
+  </p>
+
+  <p>
+    核心採用「未稅金額＝含稅金額 ÷（1＋稅率）」的單一百分比稅率模型，
+    不代表所有國家、地區或稅制皆適用。
+  </p>
+
+  <h2>載入</h2>
+  <pre><code>&lt;link rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/ui/responsive.css"&gt;
+
+&lt;link rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/component/data/tax_calculator_component.css"&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/data/Tax.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/component/data/tax_calculator_component.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>最簡單呼叫</h2>
+  <pre><code>&lt;div id="tax-calculator"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  const calculator = SlowlyTaxCalculator.create({
+    target: "#tax-calculator",
+    defaultRate: 5
+  });
+&lt;/script&gt;</code></pre>
+
+  <h2>Options</h2>
+  <table>
+    <thead>
+      <tr><th>設定</th><th>預設</th><th>說明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>target</code></td><td>無</td><td>必要。selector 或 HTMLElement。</td></tr>
+      <tr><td><code>title</code></td><td>含稅金額計算</td><td>元件標題。傳空字串可隱藏。</td></tr>
+      <tr><td><code>defaultRate</code></td><td>5</td><td>預設稅率百分比，例如 5 代表 5%。</td></tr>
+      <tr><td><code>amountLabel</code></td><td>金額（含稅）</td><td>金額欄位文字。</td></tr>
+      <tr><td><code>rateLabel</code></td><td>稅率</td><td>稅率欄位文字。</td></tr>
+      <tr><td><code>salesLabel</code></td><td>營業額</td><td>未稅金額顯示文字。</td></tr>
+      <tr><td><code>taxLabel</code></td><td>稅額</td><td>稅額顯示文字。</td></tr>
+      <tr><td><code>locale</code></td><td>zh-TW</td><td>結果數字格式使用的 locale。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>核心直接呼叫</h2>
+  <pre><code>const result = SlowlyTax.splitInclusive(2900, 5);
+
+// {
+//   total: 2900,
+//   rate: 5,
+//   sales: 2762,
+//   tax: 138
+// }</code></pre>
+
+  <h2>已 create 後</h2>
+  <pre><code>calculator.calculate();
+calculator.getValue();
+calculator.setAmount(2900);
+calculator.setRate(5);
+calculator.focus();
+calculator.destroy();</code></pre>
+
+  <h2>事件</h2>
+  <p>每次成功重算後，元件會發出 <code>slowlytaxchange</code>。</p>
+
+  <pre><code>document
+  .querySelector("#tax-calculator")
+  .addEventListener("slowlytaxchange", (event) =&gt; {
+    console.log(event.detail);
+  });</code></pre>
+
+  <h2>改色</h2>
+  <p>Component 只負責結構與基本可用性，宿主頁面可覆寫 CSS Variables。</p>
+
+  <pre><code>#tax-calculator .slowly-tax-calculator {
+  --stc-text: var(--text);
+  --stc-muted: var(--muted);
+  --stc-line: var(--line);
+  --stc-surface: var(--surface);
+}</code></pre>
+</main>
+</body>
+</html>
