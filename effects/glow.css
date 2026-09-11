@@ -1,0 +1,28 @@
+/* Slowly Effects | Light | Basic Glow
+   Effect controls the glow; host controls color and strength.
+*/
+.slowly-glow {
+  --slowly-glow-color: currentColor;
+  --slowly-glow-size: 12px;
+  --slowly-glow-opacity: .35;
+  --slowly-glow-speed: .25s;
+  --slowly-glow-easing: ease;
+
+  transition:
+    filter var(--slowly-glow-speed) var(--slowly-glow-easing);
+}
+
+.slowly-glow:hover,
+.slowly-glow:focus-visible,
+.slowly-glow.is-active {
+  filter: drop-shadow(
+    0 0 var(--slowly-glow-size)
+    color-mix(in srgb, var(--slowly-glow-color) calc(var(--slowly-glow-opacity) * 100%), transparent)
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-glow {
+    transition-duration: .01ms;
+  }
+}

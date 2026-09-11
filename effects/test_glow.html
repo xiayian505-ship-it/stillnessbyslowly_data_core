@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Basic Glow 功能測試</title>
+<link rel="stylesheet" href="./glow.css">
+<style>
+body { font-family: Arial, "Microsoft JhengHei", sans-serif; margin: 32px; line-height: 2.2; }
+.test { margin: 22px 0; }
+.blue { color: #315f82; }
+.red { color: #8a3f3f; }
+</style>
+</head>
+<body>
+<h1>Basic Glow 功能測試</h1>
+<p>滑鼠移入或鍵盤 focus 時出現光暈；預設繼承宿主 currentColor。</p>
+<div class="test"><span class="slowly-glow">預設光暈</span></div>
+<div class="test blue"><span class="slowly-glow">繼承宿主藍色</span></div>
+<div class="test red"><span class="slowly-glow" style="--slowly-glow-size:20px;--slowly-glow-opacity:.6;">較強光暈</span></div>
+<div class="test"><span class="slowly-glow is-active">固定顯示狀態</span></div>
+</body>
+</html>
