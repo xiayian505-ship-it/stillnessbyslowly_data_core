@@ -575,7 +575,26 @@ window.SlowlyLibraryIndex = [
     "page": "effects",
     "title": "Effects",
     "groups": [
-      { "id": "line", "title": "Line / 線條", "items": [] },
+      {
+        "id": "line",
+        "title": "Line / 線條",
+        "items": [
+          {
+            "title": "Minimal Underline",
+            "desc": "純 CSS 極簡底線特效，預設以 currentColor 繼承宿主顏色，可由 CSS 變數控制速度、粗細、間距、長度、透明度、展開起點與 easing；支援 hover、focus-visible 與固定顯示狀態。",
+            "links": [
+              {
+                "label": "underline.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/underline.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_underline.html"
+              }
+            ]
+          }
+        ]
+      },
       { "id": "light", "title": "Light / 光影", "items": [] },
       { "id": "hover", "title": "Hover / Pointer", "items": [] },
       { "id": "reveal", "title": "Reveal / 進退場", "items": [] },
