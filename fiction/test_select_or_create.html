@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SelectOrCreate 測試</title>
+  <style>
+    body { font-family: sans-serif; max-width: 720px; margin: 32px auto; padding: 0 16px; }
+    input, button { font: inherit; padding: 8px 10px; }
+    #results { margin-top: 8px; display: grid; gap: 6px; }
+    #results button { text-align: left; }
+    .box { margin-top: 18px; padding: 12px; border: 1px solid #ccc; }
+    .muted { color: #666; }
+  </style>
+</head>
+<body>
+  <h1>SelectOrCreate 測試</h1>
+  <p class="muted">測試：搜尋既有、用 ID 選取、找不到新增、同名防重複。</p>
+
+  <label for="nameInput">姓名 / ID</label><br>
+  <input id="nameInput" type="text" autocomplete="off" placeholder="例如：小明">
+  <button id="addBtn" type="button">＋ 新增目前名稱</button>
+
+  <div id="results"></div>
+
+  <div class="box">
+    <strong>目前選取</strong>
+    <div id="selected">尚未選取</div>
+  </div>
+
+  <div class="box">
+    <strong>目前資料</strong>
+    <pre id="dataView"></pre>
+  </div>
+
+  <script src="SelectOrCreate.js"></script>
+  <script>
+    const initialItems = [
+      { id: "p001", name: "小明" },
+      { id: "p002", name: "小美" },
+      { id: "p003", name: "阿花" }
+    ];
+
+    const input = document.getElementById("nameInput");
+    const results = document.getElementById("results");
+    const selected = document.getElementById("selected");
+    const dataView = document.getElementById("dataView");
+
+    const registry = new SelectOrCreate({
+      items: initialItems,
+      onSelect(item, meta) {
+        input.value = item.name;
+        results.innerHTML = "";
+        selected.textContent = `${item.name} (#${item.id})｜${meta.reason}`;
+        renderData();
+      }
+    });
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderData() {
+      dataView.textContent = JSON.stringify(registry.getItems(), null, 2);
+    }
+
+    function renderResults(keyword) {
+      const matches = registry.search(keyword);
+      selected.textContent = "尚未選取";
+
+      if (!String(keyword).trim()) {
+        results.innerHTML = "";
+        return;
+      }
+
+      if (!matches.length) {
+        results.innerHTML = `<div>找不到「${escapeHTML(keyword)}」，可按新增。</div>`;
+        return;
+      }
+
+      results.innerHTML = matches.map(item => `
+        <button type="button" data-id="${escapeHTML(item.id)}">
+          #${escapeHTML(item.id)}　${escapeHTML(item.name)}
+        </button>
+      `).join("");
+
+      results.querySelectorAll("button[data-id]").forEach(btn => {
+        btn.addEventListener("click", () => registry.selectById(btn.dataset.id));
+      });
+    }
+
+    input.addEventListener("input", () => renderResults(input.value));
+
+    document.getElementById("addBtn").addEventListener("click", async () => {
+      const result = await registry.addOrSelect(input.value);
+
+      if (result.status === "invalid") {
+        alert("請輸入名稱");
+        return;
+      }
+
+      if (result.status === "existing") {
+        alert(`「${result.item.name}」已存在，已直接選取既有 ID：${result.item.id}`);
+      } else {
+        alert(`已新增：${result.item.name}`);
+      }
+
+      renderData();
+    });
+
+    renderData();
+  </script>
+</body>
+</html>
