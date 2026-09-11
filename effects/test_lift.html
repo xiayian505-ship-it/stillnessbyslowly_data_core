@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Basic Lift 功能測試</title>
+<link rel="stylesheet" href="./lift.css">
+<style>
+body { font-family: Arial, "Microsoft JhengHei", sans-serif; margin: 32px; line-height: 2.2; }
+.test { margin: 28px 0; }
+.box { display:inline-block; padding:10px 14px; border:1px solid #999; }
+button { font:inherit; }
+</style>
+</head>
+<body>
+<h1>Basic Lift 功能測試</h1>
+<p>滑鼠移入或鍵盤 focus 時向上位移。</p>
+<div class="test"><span class="box slowly-lift">預設上浮</span></div>
+<div class="test"><button class="slowly-lift">Button 也可以使用</button></div>
+<div class="test"><span class="box slowly-lift" style="--slowly-lift-y:-10px;--slowly-lift-speed:.5s;">較高、較慢</span></div>
+<div class="test"><span class="box slowly-lift is-active">固定顯示狀態</span></div>
+</body>
+</html>
