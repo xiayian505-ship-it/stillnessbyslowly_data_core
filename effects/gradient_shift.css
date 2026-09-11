@@ -1,0 +1,34 @@
+/* Slowly Effects | Background | Basic Gradient Shift
+   Host supplies gradient colors; effect only animates background position.
+*/
+.slowly-gradient-shift {
+  --slowly-bg-angle: 120deg;
+  --slowly-bg-color-1: #d9e7ff;
+  --slowly-bg-color-2: #f3ddff;
+  --slowly-bg-color-3: #fff0d8;
+  --slowly-bg-size: 200% 200%;
+  --slowly-bg-speed: 8s;
+
+  background:
+    linear-gradient(
+      var(--slowly-bg-angle),
+      var(--slowly-bg-color-1),
+      var(--slowly-bg-color-2),
+      var(--slowly-bg-color-3),
+      var(--slowly-bg-color-1)
+    );
+  background-size: var(--slowly-bg-size);
+  animation: slowly-gradient-shift var(--slowly-bg-speed) ease infinite;
+}
+
+@keyframes slowly-gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-gradient-shift {
+    animation: none;
+  }
+}

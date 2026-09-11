@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Basic Gradient Shift 功能測試</title>
+<link rel="stylesheet" href="./gradient_shift.css">
+<style>
+body { font-family: Arial, "Microsoft JhengHei", sans-serif; margin: 32px; line-height: 2; }
+.box {
+  min-height: 140px;
+  margin: 24px 0;
+  padding: 20px;
+  border: 1px solid #aaa;
+}
+</style>
+</head>
+<body>
+<h1>Basic Gradient Shift 功能測試</h1>
+<p>背景漸層會持續緩慢移動；宿主可自行指定三個顏色與速度。</p>
+
+<div class="box slowly-gradient-shift">
+  預設漸層
+</div>
+
+<div
+  class="box slowly-gradient-shift"
+  style="
+    --slowly-bg-color-1:#d8f3dc;
+    --slowly-bg-color-2:#bde0fe;
+    --slowly-bg-color-3:#ffd6a5;
+    --slowly-bg-speed:12s;
+  "
+>
+  自訂顏色與較慢速度
+</div>
+</body>
+</html>
