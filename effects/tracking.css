@@ -1,0 +1,26 @@
+/* Slowly Effects | Typography | Basic Tracking
+   Host controls spacing, speed and easing.
+*/
+.slowly-tracking {
+  --slowly-tracking-from: normal;
+  --slowly-tracking-to: .08em;
+  --slowly-tracking-speed: .25s;
+  --slowly-tracking-easing: ease;
+
+  letter-spacing: var(--slowly-tracking-from);
+  transition:
+    letter-spacing var(--slowly-tracking-speed)
+    var(--slowly-tracking-easing);
+}
+
+.slowly-tracking:hover,
+.slowly-tracking:focus-visible,
+.slowly-tracking.is-active {
+  letter-spacing: var(--slowly-tracking-to);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-tracking {
+    transition-duration: .01ms;
+  }
+}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Basic Tracking 功能測試</title>
+<link rel="stylesheet" href="./tracking.css">
+<style>
+body { font-family: Arial, "Microsoft JhengHei", sans-serif; margin: 32px; line-height: 2.2; }
+.test { margin: 24px 0; }
+button { font:inherit; }
+</style>
+</head>
+<body>
+<h1>Basic Tracking 功能測試</h1>
+<p>滑鼠移入或鍵盤 focus 時增加字距。</p>
+<div class="test"><span class="slowly-tracking">預設字距展開</span></div>
+<div class="test"><button class="slowly-tracking">Button 也可以使用</button></div>
+<div class="test">
+  <span class="slowly-tracking" style="--slowly-tracking-to:.25em;--slowly-tracking-speed:.6s;">
+    大字距、慢速
+  </span>
+</div>
+<div class="test"><span class="slowly-tracking is-active">固定顯示狀態</span></div>
+</body>
+</html>
