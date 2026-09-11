@@ -1,0 +1,23 @@
+/* Slowly Effects | Hover | Basic Lift
+   Host can control distance, speed and easing.
+*/
+.slowly-lift {
+  --slowly-lift-y: -4px;
+  --slowly-lift-speed: .2s;
+  --slowly-lift-easing: ease;
+
+  transition:
+    transform var(--slowly-lift-speed) var(--slowly-lift-easing);
+}
+
+.slowly-lift:hover,
+.slowly-lift:focus-visible,
+.slowly-lift.is-active {
+  transform: translateY(var(--slowly-lift-y));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-lift {
+    transition-duration: .01ms;
+  }
+}
