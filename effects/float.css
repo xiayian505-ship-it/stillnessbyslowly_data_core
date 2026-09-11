@@ -1,0 +1,46 @@
+/* Slowly Effects | Particle | Basic Float
+   Decorative particles; host controls size, distance, duration and delay.
+*/
+.slowly-particle-float {
+  --slowly-particle-size: 8px;
+  --slowly-particle-distance: -24px;
+  --slowly-particle-duration: 2.4s;
+  --slowly-particle-delay: 0s;
+  --slowly-particle-opacity: .65;
+  --slowly-particle-color: currentColor;
+
+  display: inline-block;
+  width: var(--slowly-particle-size);
+  height: var(--slowly-particle-size);
+  border-radius: 50%;
+  background: var(--slowly-particle-color);
+  opacity: 0;
+  pointer-events: none;
+  animation:
+    slowly-particle-float
+    var(--slowly-particle-duration)
+    ease-in-out
+    var(--slowly-particle-delay)
+    infinite;
+}
+
+@keyframes slowly-particle-float {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(.8);
+  }
+  35% {
+    opacity: var(--slowly-particle-opacity);
+  }
+  70% {
+    opacity: 0;
+    transform: translateY(var(--slowly-particle-distance)) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-particle-float {
+    animation: none;
+    opacity: var(--slowly-particle-opacity);
+  }
+}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Basic Particle Float 功能測試</title>
+<link rel="stylesheet" href="./float.css">
+<style>
+body { font-family: Arial, "Microsoft JhengHei", sans-serif; margin:32px; line-height:2; }
+.test { margin:36px 0; color:#315f82; }
+</style>
+</head>
+<body>
+<h1>Basic Particle Float 功能測試</h1>
+<p>基礎裝飾粒子：向上漂浮並淡出。顏色預設繼承 currentColor。</p>
+<div class="test">
+  <span class="slowly-particle-float"></span>
+  <span class="slowly-particle-float" style="--slowly-particle-delay:.5s;"></span>
+  <span class="slowly-particle-float" style="--slowly-particle-delay:1s;--slowly-particle-size:12px;"></span>
+</div>
+<div class="test" style="color:#8a3f3f;">
+  <span class="slowly-particle-float" style="--slowly-particle-distance:-45px;--slowly-particle-duration:4s;"></span>
+  自訂宿主色、距離與速度
+</div>
+</body>
+</html>
