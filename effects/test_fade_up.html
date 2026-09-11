@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Basic Fade Up 功能測試</title>
+<link rel="stylesheet" href="./fade_up.css">
+<style>
+body { font-family: Arial, "Microsoft JhengHei", sans-serif; margin: 32px; line-height: 2.2; }
+.test { margin: 28px 0; }
+.box { display:inline-block; padding:10px 14px; border:1px solid #999; }
+</style>
+</head>
+<body>
+<h1>Basic Fade Up 功能測試</h1>
+<p>這個基礎版不判斷捲動位置；宿主加入或移除 is-visible 決定進退場。</p>
+<button id="toggle">切換顯示</button>
+<div class="test">
+  <div id="target" class="box slowly-fade-up">Fade Up</div>
+</div>
+<script>
+const target = document.querySelector("#target");
+document.querySelector("#toggle").addEventListener("click", () => {
+  target.classList.toggle("is-visible");
+});
+</script>
+</body>
+</html>

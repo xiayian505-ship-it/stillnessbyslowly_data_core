@@ -1,0 +1,26 @@
+/* Slowly Effects | Reveal | Basic Fade Up
+   Add .is-visible when the host decides the element should enter.
+*/
+.slowly-fade-up {
+  --slowly-reveal-y: 16px;
+  --slowly-reveal-speed: .45s;
+  --slowly-reveal-easing: ease;
+  --slowly-reveal-opacity: 0;
+
+  opacity: var(--slowly-reveal-opacity);
+  transform: translateY(var(--slowly-reveal-y));
+  transition:
+    opacity var(--slowly-reveal-speed) var(--slowly-reveal-easing),
+    transform var(--slowly-reveal-speed) var(--slowly-reveal-easing);
+}
+
+.slowly-fade-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-fade-up {
+    transition-duration: .01ms;
+  }
+}
