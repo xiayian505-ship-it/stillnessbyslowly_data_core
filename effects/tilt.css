@@ -1,0 +1,25 @@
+/* Slowly Effects | 3D | Basic Tilt
+   JS supplies pointer position; host controls angle, perspective and speed.
+*/
+.slowly-tilt {
+  --slowly-tilt-x: 0deg;
+  --slowly-tilt-y: 0deg;
+  --slowly-tilt-perspective: 800px;
+  --slowly-tilt-speed: .18s;
+  --slowly-tilt-easing: ease-out;
+
+  transform:
+    perspective(var(--slowly-tilt-perspective))
+    rotateX(var(--slowly-tilt-x))
+    rotateY(var(--slowly-tilt-y));
+  transform-style: preserve-3d;
+  transition: transform var(--slowly-tilt-speed) var(--slowly-tilt-easing);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-tilt {
+    transform: none !important;
+    transition: none;
+  }
+}

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Basic Tilt 功能測試</title>
+<link rel="stylesheet" href="./tilt.css">
+<style>
+body { font-family: Arial, "Microsoft JhengHei", sans-serif; margin:32px; line-height:2; }
+.box { width:220px; padding:28px; margin:28px 0; border:1px solid #999; background:#fff; }
+</style>
+</head>
+<body>
+<h1>Basic Tilt 功能測試</h1>
+<p>在方塊上移動滑鼠或指標，元素會依位置產生基礎 3D 傾斜。</p>
+<div class="box slowly-tilt">預設 Tilt</div>
+<div class="box slowly-tilt" data-tilt-max="15" style="--slowly-tilt-perspective:500px;">
+  較大角度
+</div>
+<script src="./tilt.js"></script>
+</body>
+</html>
