@@ -327,6 +327,20 @@ window.SlowlyLibraryIndex = [
             "href": "https://lib.stillnessbyslowly.com/date/date_test_timestamp.html"
           }
         ]
+      },
+      {
+        "title": "Date Overlap",
+        "desc": "通用日期集合重疊比對核心，將多組「對象 ID＋日期集合」反向整理為「日期 → 對象」，可查詢指定日期、取得重疊日期、設定最低重疊數、找出最大重疊日期並提供基本統計。核心只處理日期 key 與 ID，不綁定 UI、儲存方式或 Calendar Component。",
+        "links": [
+          {
+            "label": "Date_overlap.js",
+            "href": "https://lib.stillnessbyslowly.com/date/Date_overlap.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/date/test_date_overlap.html"
+          }
+        ]
       }
     ]
   },
