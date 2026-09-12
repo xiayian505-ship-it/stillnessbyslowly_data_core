@@ -145,7 +145,7 @@ h1 {
   }
 }
 
-.effects-groups {
+.groups {
   display: grid;
   gap: 28px;
 }

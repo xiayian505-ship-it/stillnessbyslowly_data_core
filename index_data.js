@@ -97,200 +97,242 @@ window.SlowlyLibraryIndex = [
   {
     "page": "data",
     "title": "Data",
-    "items": [
+    "groups": [
       {
-        "title": "Fiction Data",
-        "desc": "從作品探索拆出的完整共用資料處理與本機儲存模組，包含 localStorage、CRUD、搜尋、篩選、排序、隨機與分頁。",
-        "links": [
+        "id": "general",
+        "title": "General / 通用",
+        "items": [
           {
-            "label": "Fiction_data.js",
-            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_data.js"
+            "title": "Fiction Data",
+            "desc": "從作品探索拆出的完整共用資料處理與本機儲存模組，包含 localStorage、CRUD、搜尋、篩選、排序、隨機與分頁。",
+            "links": [
+              {
+                "label": "Fiction_data.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_data.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_data.html"
+              }
+            ]
           },
           {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/fiction/test_data.html"
+            "title": "Fiction Search",
+            "desc": "從 Fiction Data 拆出的獨立搜尋功能，支援關鍵字搜尋、指定欄位與巢狀欄位。",
+            "links": [
+              {
+                "label": "Fiction_search.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_search.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_search.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Filter",
+            "desc": "從 Fiction Data 拆出的獨立篩選功能，支援 equals、boolean、containsAll、containsAny 與自訂 predicate。",
+            "links": [
+              {
+                "label": "Fiction_filter.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_filter.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_filter.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Sort",
+            "desc": "從 Fiction Data 拆出的獨立排序功能，支援數字、日期、字串、自動判定與自訂比較函式。",
+            "links": [
+              {
+                "label": "Fiction_sort.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_sort.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_sort.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Shuffle",
+            "desc": "從 Fiction Data 拆出的獨立隨機排序功能，以新陣列回傳隨機排列結果，不修改原始資料。",
+            "links": [
+              {
+                "label": "Fiction_shuffle.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_shuffle.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_shuffle.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Paginate",
+            "desc": "從 Fiction Data 拆出的獨立分頁功能，提供頁碼、每頁筆數、總頁數、前後頁狀態與資料切片。",
+            "links": [
+              {
+                "label": "Fiction_paginate.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_paginate.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_paginate.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Storage",
+            "desc": "從 Fiction Data 拆出的獨立 localStorage 與 CRUD 資料層，提供 Store、Collection、新增、讀取、修改、刪除、替換與清空功能。",
+            "links": [
+              {
+                "label": "Fiction_storage.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_storage.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Change",
+            "desc": "從 Fiction Data 延伸拆出的獨立資料變更通知功能，提供訂閱、取消訂閱與事件發送，讓資料新增、修改、刪除、替換或清空後可通知其他模組與使用端。",
+            "links": [
+              {
+                "label": "Fiction_change.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_change.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_change.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Select Or Create",
+            "desc": "從作品探索作者管理拆出的通用「搜尋既有或新增」資料選取模組。支援依名稱或 ID 搜尋、選取既有資料、未選定時解除舊 ID、同名資料優先回用既有 ID，並可由宿主自行接上 localStorage、Supabase 或其他資料來源。",
+            "links": [
+              {
+                "label": "Fiction_SelectOrCreate.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_SelectOrCreate.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_select_or_create.html"
+              }
+            ]
+          },
+          {
+            "title": "Realtime Sync",
+            "desc": "通用 Supabase Realtime 資料同步工具，提供 postgres_changes 訂閱與解除訂閱、依 updated_at 判斷遠端版本、忽略相同或較舊事件，並在重新連線後通知使用端重新載入最新資料。登入、資料儲存與 UI 由宿主自行處理。",
+            "links": [
+              {
+                "label": "Realtime_sync.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Realtime_sync.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_realtime_sync.html"
+              }
+            ]
+          },
+          {
+            "title": "Money",
+            "desc": "通用數值與金額處理工具，提供加總、四捨五入、數字正規化與金額格式化功能。",
+            "links": [
+              {
+                "label": "Money.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Money.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_money.html"
+              }
+            ]
+          },
+          {
+            "title": "Currency",
+            "desc": "通用幣別與匯率換算工具，以 TWD 為基準，提供外幣與台幣雙向換算、匯率方向轉換與即時匯率取得。",
+            "links": [
+              {
+                "label": "Currency.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Currency.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_currency.html"
+              }
+            ]
+          },
+          {
+            "title": "Tax",
+            "desc": "通用含稅金額拆分核心，依指定稅率以含稅金額 ÷（1＋稅率）反推未稅營業額，再以含稅金額減去營業額取得稅額；不假定所有國家或地區皆採相同稅制與取整規則。",
+            "links": [
+              {
+                "label": "Tax.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Tax.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_tax.html"
+              }
+            ]
           }
         ]
       },
       {
-        "title": "Fiction Search",
-        "desc": "從 Fiction Data 拆出的獨立搜尋功能，支援關鍵字搜尋、指定欄位與巢狀欄位。",
-        "links": [
+        "id": "json",
+        "title": "JSON",
+        "items": [
           {
-            "label": "Fiction_search.js",
-            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_search.js"
+            "title": "Data Backup",
+            "desc": "通用 JSON 備份與匯入工具，提供 JSON 下載、檔案讀取、備份 payload 建立與資料擷取功能。",
+            "links": [
+              {
+                "label": "Data_backup.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Data_backup.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_backup.html"
+              }
+            ]
           },
           {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/fiction/test_search.html"
-          }
-        ]
-      },
-      {
-        "title": "Fiction Filter",
-        "desc": "從 Fiction Data 拆出的獨立篩選功能，支援 equals、boolean、containsAll、containsAny 與自訂 predicate。",
-        "links": [
-          {
-            "label": "Fiction_filter.js",
-            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_filter.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/fiction/test_filter.html"
-          }
-        ]
-      },
-      {
-        "title": "Fiction Sort",
-        "desc": "從 Fiction Data 拆出的獨立排序功能，支援數字、日期、字串、自動判定與自訂比較函式。",
-        "links": [
-          {
-            "label": "Fiction_sort.js",
-            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_sort.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/fiction/test_sort.html"
-          }
-        ]
-      },
-      {
-        "title": "Fiction Shuffle",
-        "desc": "從 Fiction Data 拆出的獨立隨機排序功能，以新陣列回傳隨機排列結果，不修改原始資料。",
-        "links": [
-          {
-            "label": "Fiction_shuffle.js",
-            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_shuffle.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/fiction/test_shuffle.html"
-          }
-        ]
-      },
-      {
-        "title": "Fiction Paginate",
-        "desc": "從 Fiction Data 拆出的獨立分頁功能，提供頁碼、每頁筆數、總頁數、前後頁狀態與資料切片。",
-        "links": [
-          {
-            "label": "Fiction_paginate.js",
-            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_paginate.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/fiction/test_paginate.html"
-          }
-        ]
-      },
-      {
-        "title": "Fiction Storage",
-        "desc": "從 Fiction Data 拆出的獨立 localStorage 與 CRUD 資料層，提供 Store、Collection、新增、讀取、修改、刪除、替換與清空功能。",
-        "links": [
-          {
-            "label": "Fiction_storage.js",
-            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/fiction/test_storage.html"
-          }
-        ]
-      },
-      {
-        "title": "Fiction Change",
-        "desc": "從 Fiction Data 延伸拆出的獨立資料變更通知功能，提供訂閱、取消訂閱與事件發送，讓資料新增、修改、刪除、替換或清空後可通知其他模組與使用端。",
-        "links": [
-          {
-            "label": "Fiction_change.js",
-            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_change.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/fiction/test_change.html"
-          }
-        ]
-      },
-      {
-        "title": "Fiction Select Or Create",
-        "desc": "從作品探索作者管理拆出的通用「搜尋既有或新增」資料選取模組。支援依名稱或 ID 搜尋、選取既有資料、未選定時解除舊 ID、同名資料優先回用既有 ID，並可由宿主自行接上 localStorage、Supabase 或其他資料來源。",
-        "links": [
-          {
-            "label": "Fiction_SelectOrCreate.js",
-            "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_SelectOrCreate.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/fiction/test_select_or_create.html"
-          }
-        ]
-      },
-      {
-        "title": "Data Backup",
-        "desc": "通用 JSON 備份與匯入工具，提供 JSON 下載、檔案讀取、備份 payload 建立與資料擷取功能。",
-        "links": [
-          {
-            "label": "Data_backup.js",
-            "href": "https://lib.stillnessbyslowly.com/data/Data_backup.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/data/test_backup.html"
-          }
-        ]
-      },
-      {
-        "title": "Realtime Sync",
-        "desc": "通用 Supabase Realtime 資料同步工具，提供 postgres_changes 訂閱與解除訂閱、依 updated_at 判斷遠端版本、忽略相同或較舊事件，並在重新連線後通知使用端重新載入最新資料。登入、資料儲存與 UI 由宿主自行處理。",
-        "links": [
-          {
-            "label": "Realtime_sync.js",
-            "href": "https://lib.stillnessbyslowly.com/data/Realtime_sync.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/data/test_realtime_sync.html"
-          }
-        ]
-      },
-      {
-        "title": "Money",
-        "desc": "通用數值與金額處理工具，提供加總、四捨五入、數字正規化與金額格式化功能。",
-        "links": [
-          {
-            "label": "Money.js",
-            "href": "https://lib.stillnessbyslowly.com/data/Money.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/data/test_money.html"
-          }
-        ]
-      },
-      {
-        "title": "Currency",
-        "desc": "通用幣別與匯率換算工具，以 TWD 為基準，提供外幣與台幣雙向換算、匯率方向轉換與即時匯率取得。",
-        "links": [
-          {
-            "label": "Currency.js",
-            "href": "https://lib.stillnessbyslowly.com/data/Currency.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/data/test_currency.html"
-          }
-        ]
-      },
-      {
-        "title": "Tax",
-        "desc": "通用含稅金額拆分核心，依指定稅率以含稅金額 ÷（1＋稅率）反推未稅營業額，再以含稅金額減去營業額取得稅額；不假定所有國家或地區皆採相同稅制與取整規則。",
-        "links": [
-          {
-            "label": "Tax.js",
-            "href": "https://lib.stillnessbyslowly.com/data/Tax.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/data/test_tax.html"
+            "title": "JSON Viewer",
+            "desc": "通用 JSON 結構化展示工具，不限定 schema、不推測欄位語意；可讀取 JavaScript 資料、JSON 字串、.json 與 JSON 格式 .txt，支援巢狀 Object、Array、各類 primitive 與 null。核心只負責解析與結構顯示，外觀由宿主 CSS 決定。",
+            "links": [
+              {
+                "label": "json_viewer.js",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer.js"
+              },
+              {
+                "label": "json_viewer.css",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer.css"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/json/test_json_viewer.html"
+              },
+              {
+                "label": "API JSON",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer_api.json"
+              },
+              {
+                "label": "API TXT",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer_api.txt"
+              }
+            ]
           }
         ]
       }
@@ -570,7 +612,6 @@ window.SlowlyLibraryIndex = [
       }
     ]
   },
-
   {
     "page": "effects",
     "title": "Effects",
