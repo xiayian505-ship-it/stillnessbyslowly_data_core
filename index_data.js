@@ -373,6 +373,30 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "import",
+        "title": "Import / 匯入",
+        "items": [
+          {
+            "title": "Import Rollback",
+            "desc": "通用匯入回復快照核心，在正式匯入前由宿主保存 snapshot，commit 失敗時呼叫宿主提供的 restore 還原，成功後可釋放快照；不綁定 JSON、localStorage、IndexedDB、Blob、資料 schema 或 UI。",
+            "links": [
+              {
+                "label": "import_rollback.js",
+                "href": "https://lib.stillnessbyslowly.com/data/import/import_rollback.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/import/test_import_rollback.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/import/import_rollback_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "blob",
         "title": "Blob",
         "items": [
