@@ -327,6 +327,20 @@ window.SlowlyLibraryIndex = [
             ]
           },
           {
+            "title": "JSON Safe Import",
+            "desc": "通用安全匯入流程核心，先執行資料準備與驗證，成功後才進入正式提交；提交失敗時可由宿主提供 rollback 復原流程。不綁定 JSON schema、儲存方式或 UI。",
+            "links": [
+              {
+                "label": "json_safe_import.js",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_safe_import.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/json/test_json_safe_import.html"
+              }
+            ]
+          },
+          {
             "title": "JSON Viewer",
             "desc": "通用 JSON 結構化展示工具，不限定 schema、不推測欄位語意；可讀取 JavaScript 資料、JSON 字串、.json 與 JSON 格式 .txt，支援巢狀 Object、Array、各類 primitive 與 null。核心只負責解析與結構顯示，外觀由宿主 CSS 決定。",
             "links": [
