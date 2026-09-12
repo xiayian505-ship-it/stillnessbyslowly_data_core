@@ -413,6 +413,11 @@ window.SlowlyLibraryIndex = [
     ]
   },
   {
+    "page": "state",
+    "title": "State",
+    "items": []
+  },
+  {
     "page": "date",
     "title": "Date",
     "items": [
