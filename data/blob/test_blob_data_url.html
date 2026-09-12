@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blob Data URL 功能測試</title>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 760px;
+      margin: 32px auto;
+      padding: 0 16px;
+      line-height: 1.7;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .test {
+      border-top: 1px solid #ccc;
+      padding: 16px 0;
+    }
+
+    .pass {
+      color: green;
+    }
+
+    .fail {
+      color: crimson;
+    }
+
+    code {
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Blob Data URL 功能測試</h1>
+
+  <p>
+    測試 BlobDataUrl.toDataUrl() 與 BlobDataUrl.toBlob()。
+  </p>
+
+  <div class="test">
+    <h2>1. Blob → Data URL</h2>
+    <button id="testToDataUrl" type="button">執行</button>
+    <p id="resultToDataUrl"></p>
+  </div>
+
+  <div class="test">
+    <h2>2. Data URL → Blob</h2>
+    <button id="testToBlob" type="button">執行</button>
+    <p id="resultToBlob"></p>
+  </div>
+
+  <div class="test">
+    <h2>3. Blob → Data URL → Blob</h2>
+    <button id="testRoundTrip" type="button">執行</button>
+    <p id="resultRoundTrip"></p>
+  </div>
+
+  <div class="test">
+    <h2>4. 非 Base64 Data URL</h2>
+    <button id="testPlainDataUrl" type="button">執行</button>
+    <p id="resultPlainDataUrl"></p>
+  </div>
+
+  <div class="test">
+    <h2>5. 錯誤：toDataUrl 非 Blob</h2>
+    <button id="testInvalidBlob" type="button">執行</button>
+    <p id="resultInvalidBlob"></p>
+  </div>
+
+  <div class="test">
+    <h2>6. 錯誤：toBlob 非 Data URL</h2>
+    <button id="testInvalidDataUrl" type="button">執行</button>
+    <p id="resultInvalidDataUrl"></p>
+  </div>
+
+  <script src="./blob_data_url.js"></script>
+
+  <script>
+    "use strict";
+
+    function showResult(id, pass, message){
+      const element = document.getElementById(id);
+
+      element.className = pass
+        ? "pass"
+        : "fail";
+
+      element.textContent =
+        `${pass ? "PASS" : "FAIL"}｜${message}`;
+    }
+
+    document
+      .getElementById("testToDataUrl")
+      .addEventListener("click", async () => {
+        try{
+          const blob = new Blob(
+            ["hello slowly"],
+            { type: "text/plain" }
+          );
+
+          const dataUrl =
+            await BlobDataUrl.toDataUrl(blob);
+
+          const pass =
+            dataUrl.startsWith(
+              "data:text/plain;base64,"
+            );
+
+          showResult(
+            "resultToDataUrl",
+            pass,
+            dataUrl
+          );
+        }catch(error){
+          showResult(
+            "resultToDataUrl",
+            false,
+            error.message
+          );
+        }
+      });
+
+    document
+      .getElementById("testToBlob")
+      .addEventListener("click", async () => {
+        try{
+          const dataUrl =
+            "data:text/plain;base64,aGVsbG8gc2xvd2x5";
+
+          const blob =
+            BlobDataUrl.toBlob(dataUrl);
+
+          const text = await blob.text();
+
+          const pass =
+            blob.type === "text/plain" &&
+            text === "hello slowly";
+
+          showResult(
+            "resultToBlob",
+            pass,
+            `${blob.type}｜${blob.size} bytes｜${text}`
+          );
+        }catch(error){
+          showResult(
+            "resultToBlob",
+            false,
+            error.message
+          );
+        }
+      });
+
+    document
+      .getElementById("testRoundTrip")
+      .addEventListener("click", async () => {
+        try{
+          const original = new Blob(
+            ["stillness by slowly"],
+            { type: "text/plain" }
+          );
+
+          const dataUrl =
+            await BlobDataUrl.toDataUrl(original);
+
+          const restored =
+            BlobDataUrl.toBlob(dataUrl);
+
+          const text = await restored.text();
+
+          const pass =
+            restored.type === original.type &&
+            text === "stillness by slowly";
+
+          showResult(
+            "resultRoundTrip",
+            pass,
+            `${restored.type}｜${text}`
+          );
+        }catch(error){
+          showResult(
+            "resultRoundTrip",
+            false,
+            error.message
+          );
+        }
+      });
+
+    document
+      .getElementById("testPlainDataUrl")
+      .addEventListener("click", async () => {
+        try{
+          const dataUrl =
+            "data:text/plain;charset=utf-8,Hello%20Slowly";
+
+          const blob =
+            BlobDataUrl.toBlob(dataUrl);
+
+          const text = await blob.text();
+
+          const pass =
+            blob.type === "text/plain" &&
+            text === "Hello Slowly";
+
+          showResult(
+            "resultPlainDataUrl",
+            pass,
+            `${blob.type}｜${text}`
+          );
+        }catch(error){
+          showResult(
+            "resultPlainDataUrl",
+            false,
+            error.message
+          );
+        }
+      });
+
+    document
+      .getElementById("testInvalidBlob")
+      .addEventListener("click", async () => {
+        try{
+          await BlobDataUrl.toDataUrl("not blob");
+
+          showResult(
+            "resultInvalidBlob",
+            false,
+            "沒有拋出錯誤"
+          );
+        }catch(error){
+          showResult(
+            "resultInvalidBlob",
+            error instanceof TypeError,
+            error.message
+          );
+        }
+      });
+
+    document
+      .getElementById("testInvalidDataUrl")
+      .addEventListener("click", () => {
+        try{
+          BlobDataUrl.toBlob("hello");
+
+          showResult(
+            "resultInvalidDataUrl",
+            false,
+            "沒有拋出錯誤"
+          );
+        }catch(error){
+          showResult(
+            "resultInvalidDataUrl",
+            error instanceof TypeError,
+            error.message
+          );
+        }
+      });
+  </script>
+</body>
+</html>
