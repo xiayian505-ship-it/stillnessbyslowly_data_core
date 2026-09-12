@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blob URL Scope｜使用說明</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      line-height: 1.7;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    pre {
+      overflow: auto;
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f7f7f7;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <h1>Blob URL Scope v1.0.0</h1>
+
+  <p>
+    管理 <code>URL.createObjectURL()</code> 建立的暫時 URL，
+    讓一批 Object URL 明確隸屬於同一個 scope，
+    並由 scope 統一回收。
+  </p>
+
+  <p>
+    本模組沒有 UI，因此不需要宿主載入 CSS。
+  </p>
+
+  <h2>引用</h2>
+
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/data/blob/blob_url_scope.js"&gt;&lt;/script&gt;</code></pre>
+
+  <p>全域名稱：<code>window.BlobUrlScope</code></p>
+
+  <h2>基本使用</h2>
+
+  <pre><code>const scope = BlobUrlScope.create();
+
+const blob = new Blob(["hello"], {
+  type: "text/plain"
+});
+
+const url = scope.create(blob);
+
+console.log(scope.size);   // 1
+console.log(scope.has(url)); // true
+
+scope.revoke(url);
+
+console.log(scope.size);   // 0</code></pre>
+
+  <h2>整批回收</h2>
+
+  <pre><code>const scope = BlobUrlScope.create();
+
+const first = scope.create(blobA);
+const second = scope.create(blobB);
+
+scope.clear();
+
+console.log(scope.size); // 0
+console.log(scope.active); // true</code></pre>
+
+  <p>
+    <code>clear()</code> 只會回收目前 scope 內的 URL，
+    scope 本身仍可繼續使用。
+  </p>
+
+  <h2>Destroy</h2>
+
+  <pre><code>const scope = BlobUrlScope.create();
+
+const url = scope.create(blob);
+
+scope.destroy();
+
+console.log(scope.active); // false
+
+// destroy 後不可再建立 URL
+scope.create(blob); // throws</code></pre>
+
+  <p>
+    <code>destroy()</code> 會先回收 scope 內全部 URL，
+    再把 scope 標記為失效。
+  </p>
+
+  <h2>非同步 Render 的使用方式</h2>
+
+  <p>
+    Blob URL Scope 不會自動解決 async race。
+    它只提供清楚的資源歸屬與 <code>active</code> 狀態。
+    宿主仍要自行決定哪一輪 render 才是目前有效的一輪。
+  </p>
+
+  <pre><code>let currentScope = BlobUrlScope.create();
+
+async function render(items) {
+  currentScope.destroy();
+
+  const scope = BlobUrlScope.create();
+  currentScope = scope;
+
+  for (const item of items) {
+    const blob = await loadBlob(item.id);
+
+    // 這一輪已經被下一輪淘汰
+    if (!scope.active) {
+      return;
+    }
+
+    const url = scope.create(blob);
+
+    // 宿主自己決定怎麼把 url 放進 DOM
+    renderImage(item, url);
+  }
+}</code></pre>
+
+  <p>
+    這種寫法的重點是：
+    下一輪 render 開始時先 destroy 舊 scope，
+    舊的非同步流程即使晚回來，也能透過
+    <code>scope.active</code> 知道自己已失效。
+  </p>
+
+  <h2>API</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>API</th>
+        <th>說明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>BlobUrlScope.create(options?)</code></td>
+        <td>建立新的 Object URL scope。</td>
+      </tr>
+      <tr>
+        <td><code>scope.create(blob)</code></td>
+        <td>建立 Object URL 並登記到目前 scope。只接受 Blob / File。</td>
+      </tr>
+      <tr>
+        <td><code>scope.revoke(url)</code></td>
+        <td>回收目前 scope 擁有的指定 URL。成功回傳 true，找不到則 false。</td>
+      </tr>
+      <tr>
+        <td><code>scope.clear()</code></td>
+        <td>回收目前 scope 全部 URL，並回傳回收數量。scope 仍可使用。</td>
+      </tr>
+      <tr>
+        <td><code>scope.destroy()</code></td>
+        <td>回收全部 URL 並永久停用此 scope。重複 destroy 不會報錯。</td>
+      </tr>
+      <tr>
+        <td><code>scope.has(url)</code></td>
+        <td>檢查 URL 是否仍由此 scope 管理。</td>
+      </tr>
+      <tr>
+        <td><code>scope.size</code></td>
+        <td>目前 scope 內尚未回收的 URL 數量。</td>
+      </tr>
+      <tr>
+        <td><code>scope.active</code></td>
+        <td>scope 是否仍可使用。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>設計邊界</h2>
+
+  <ul>
+    <li>不處理 IndexedDB。</li>
+    <li>不處理 Blob 轉 Data URL。</li>
+    <li>不處理圖片 resize。</li>
+    <li>不處理 DOM 元素。</li>
+    <li>不自動取消 fetch / Promise。</li>
+    <li>不自動判斷哪一輪 render 應該勝出。</li>
+  </ul>
+
+  <p>
+    它只負責一件事：
+    <strong>誰建立的 Object URL，由誰負責回收。</strong>
+  </p>
+
+  <script src="./blob_url_scope.js"></script>
+</body>
+</html>

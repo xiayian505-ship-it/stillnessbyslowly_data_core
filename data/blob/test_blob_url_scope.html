@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blob URL Scope｜功能測試</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 820px;
+      margin: 30px auto;
+      padding: 0 18px 50px;
+      line-height: 1.6;
+    }
+
+    button {
+      margin: 4px 6px 4px 0;
+      padding: 7px 10px;
+    }
+
+    .result {
+      margin: 8px 0 18px;
+      padding: 8px;
+      border-left: 3px solid #999;
+      white-space: pre-wrap;
+    }
+
+    img {
+      display: block;
+      max-width: 180px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Blob URL Scope v1.0.0 功能測試</h1>
+  <p>純功能驗證頁，不做元件外觀展示。</p>
+
+  <section>
+    <h2>1. 建立單一 URL</h2>
+    <button id="testCreate">執行</button>
+    <div class="result" id="resultCreate"></div>
+  </section>
+
+  <section>
+    <h2>2. 同一 Scope 建立多個 URL</h2>
+    <button id="testMultiple">執行</button>
+    <div class="result" id="resultMultiple"></div>
+  </section>
+
+  <section>
+    <h2>3. revoke 指定 URL</h2>
+    <button id="testRevoke">執行</button>
+    <div class="result" id="resultRevoke"></div>
+  </section>
+
+  <section>
+    <h2>4. clear 整批回收後仍可繼續使用</h2>
+    <button id="testClear">執行</button>
+    <div class="result" id="resultClear"></div>
+  </section>
+
+  <section>
+    <h2>5. destroy 後不可再建立 URL</h2>
+    <button id="testDestroy">執行</button>
+    <div class="result" id="resultDestroy"></div>
+  </section>
+
+  <section>
+    <h2>6. 重複 revoke / destroy 不爆炸</h2>
+    <button id="testRepeat">執行</button>
+    <div class="result" id="resultRepeat"></div>
+  </section>
+
+  <section>
+    <h2>7. 不同 Scope 互不干擾</h2>
+    <button id="testIsolation">執行</button>
+    <div class="result" id="resultIsolation"></div>
+  </section>
+
+  <section>
+    <h2>8. 模擬舊 Render Scope 被淘汰</h2>
+    <button id="testStale">執行</button>
+    <div class="result" id="resultStale"></div>
+  </section>
+
+  <section>
+    <h2>9. 圖片 Blob 預覽</h2>
+    <button id="testImage">建立預覽</button>
+    <button id="clearImage">清除預覽</button>
+    <div class="result" id="resultImage"></div>
+    <img id="previewImage" alt="">
+  </section>
+
+  <script src="./blob_url_scope.js"></script>
+  <script>
+    "use strict";
+
+    function textBlob(text) {
+      return new Blob([text], {
+        type: "text/plain"
+      });
+    }
+
+    function show(id, lines) {
+      document.querySelector(id).textContent =
+        Array.isArray(lines) ? lines.join("\n") : String(lines);
+    }
+
+    document.querySelector("#testCreate").addEventListener("click", () => {
+      const scope = BlobUrlScope.create();
+      const url = scope.create(textBlob("hello"));
+
+      show("#resultCreate", [
+        `url 建立：${Boolean(url)}`,
+        `size：${scope.size}`,
+        `has(url)：${scope.has(url)}`,
+        `active：${scope.active}`
+      ]);
+
+      scope.destroy();
+    });
+
+    document.querySelector("#testMultiple").addEventListener("click", () => {
+      const scope = BlobUrlScope.create();
+
+      const first = scope.create(textBlob("a"));
+      const second = scope.create(textBlob("b"));
+
+      show("#resultMultiple", [
+        `兩個 URL 不同：${first !== second}`,
+        `size：${scope.size}`
+      ]);
+
+      scope.destroy();
+    });
+
+    document.querySelector("#testRevoke").addEventListener("click", () => {
+      const scope = BlobUrlScope.create();
+      const url = scope.create(textBlob("hello"));
+
+      const first = scope.revoke(url);
+      const second = scope.revoke(url);
+
+      show("#resultRevoke", [
+        `第一次 revoke：${first}`,
+        `第二次 revoke：${second}`,
+        `size：${scope.size}`
+      ]);
+
+      scope.destroy();
+    });
+
+    document.querySelector("#testClear").addEventListener("click", () => {
+      const scope = BlobUrlScope.create();
+
+      scope.create(textBlob("a"));
+      scope.create(textBlob("b"));
+
+      const cleared = scope.clear();
+      const next = scope.create(textBlob("c"));
+
+      show("#resultClear", [
+        `clear 回收數：${cleared}`,
+        `clear 後 active：${scope.active}`,
+        `可再次建立：${scope.has(next)}`,
+        `目前 size：${scope.size}`
+      ]);
+
+      scope.destroy();
+    });
+
+    document.querySelector("#testDestroy").addEventListener("click", () => {
+      const scope = BlobUrlScope.create();
+      scope.create(textBlob("hello"));
+
+      const cleared = scope.destroy();
+
+      let threw = false;
+
+      try {
+        scope.create(textBlob("again"));
+      } catch (error) {
+        threw = true;
+      }
+
+      show("#resultDestroy", [
+        `destroy 回收數：${cleared}`,
+        `active：${scope.active}`,
+        `destroy 後 create 會 throw：${threw}`
+      ]);
+    });
+
+    document.querySelector("#testRepeat").addEventListener("click", () => {
+      const scope = BlobUrlScope.create();
+      const url = scope.create(textBlob("hello"));
+
+      const revoke1 = scope.revoke(url);
+      const revoke2 = scope.revoke(url);
+      const destroy1 = scope.destroy();
+      const destroy2 = scope.destroy();
+
+      show("#resultRepeat", [
+        `revoke #1：${revoke1}`,
+        `revoke #2：${revoke2}`,
+        `destroy #1：${destroy1}`,
+        `destroy #2：${destroy2}`,
+        `完成且未拋錯：true`
+      ]);
+    });
+
+    document.querySelector("#testIsolation").addEventListener("click", () => {
+      const firstScope = BlobUrlScope.create();
+      const secondScope = BlobUrlScope.create();
+
+      const firstUrl = firstScope.create(textBlob("first"));
+      const secondUrl = secondScope.create(textBlob("second"));
+
+      firstScope.destroy();
+
+      show("#resultIsolation", [
+        `第一個 scope active：${firstScope.active}`,
+        `第二個 scope active：${secondScope.active}`,
+        `第二個 URL 仍被第二 scope 管理：${secondScope.has(secondUrl)}`,
+        `第一個 URL 不屬於第二 scope：${secondScope.has(firstUrl)}`
+      ]);
+
+      secondScope.destroy();
+    });
+
+    document.querySelector("#testStale").addEventListener("click", async () => {
+      let currentScope = BlobUrlScope.create();
+
+      const oldScope = currentScope;
+
+      const oldJob = new Promise(resolve => {
+        setTimeout(() => {
+          resolve(textBlob("old render"));
+        }, 80);
+      });
+
+      currentScope.destroy();
+      currentScope = BlobUrlScope.create();
+
+      const newUrl = currentScope.create(textBlob("new render"));
+      const oldBlob = await oldJob;
+
+      let oldCreated = false;
+
+      if (oldScope.active) {
+        oldScope.create(oldBlob);
+        oldCreated = true;
+      }
+
+      show("#resultStale", [
+        `舊 scope active：${oldScope.active}`,
+        `舊工作是否建立 URL：${oldCreated}`,
+        `新 scope active：${currentScope.active}`,
+        `新 URL 仍受管理：${currentScope.has(newUrl)}`
+      ]);
+
+      currentScope.destroy();
+    });
+
+    let imageScope = null;
+
+    document.querySelector("#testImage").addEventListener("click", () => {
+      if (imageScope) {
+        imageScope.destroy();
+      }
+
+      imageScope = BlobUrlScope.create();
+
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="320" height="180">
+          <rect width="100%" height="100%" fill="#eeeeee"/>
+          <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+                font-family="sans-serif" font-size="24">
+            Blob URL Scope
+          </text>
+        </svg>
+      `;
+
+      const blob = new Blob([svg], {
+        type: "image/svg+xml"
+      });
+
+      const url = imageScope.create(blob);
+
+      document.querySelector("#previewImage").src = url;
+
+      show("#resultImage", [
+        `預覽 URL 已建立：${Boolean(url)}`,
+        `size：${imageScope.size}`
+      ]);
+    });
+
+    document.querySelector("#clearImage").addEventListener("click", () => {
+      if (!imageScope) {
+        show("#resultImage", "目前沒有預覽 scope");
+        return;
+      }
+
+      const cleared = imageScope.destroy();
+      imageScope = null;
+
+      document.querySelector("#previewImage").removeAttribute("src");
+
+      show("#resultImage", [
+        `已 destroy`,
+        `回收數：${cleared}`
+      ]);
+    });
+  </script>
+</body>
+</html>
