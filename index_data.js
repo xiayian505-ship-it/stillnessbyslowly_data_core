@@ -415,7 +415,44 @@ window.SlowlyLibraryIndex = [
   {
     "page": "state",
     "title": "State",
-    "items": []
+    "items": [
+      {
+        "title": "Tree Selection",
+        "desc": "通用樹狀選取與展開狀態核心，管理 selected 與 expanded 狀態，支援單選式或多重展開、切換、整批取代與清除；不綁定 DOM、樹狀資料 schema、畫面層級或儲存方式。",
+        "links": [
+          {
+            "label": "tree_selection.js",
+            "href": "https://lib.stillnessbyslowly.com/state/tree_selection.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/state/test_tree_selection.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/state/tree_selection_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Form Draft",
+        "desc": "通用表單草稿狀態核心，保存初始基準與目前草稿，提供欄位設定、批次更新、重設、提交基準、dirty 與單欄位 changed 判斷；不綁定 DOM、欄位 schema、驗證、檔案上傳或儲存方式。",
+        "links": [
+          {
+            "label": "form_draft.js",
+            "href": "https://lib.stillnessbyslowly.com/state/form_draft.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/state/test_form_draft.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/state/form_draft_usage.html"
+          }
+        ]
+      }
+    ]
   },
   {
     "page": "date",
