@@ -631,6 +631,28 @@ window.SlowlyLibraryIndex = [
             "href": "https://lib.stillnessbyslowly.com/ui/custom_file_usage.html"
           }
         ]
+      },
+      {
+        "title": "Favorite",
+        "desc": "通用最愛／收藏 UI 狀態元件，可套用於商品、圖片、文字、卡片或其他具有識別 ID 的項目。負責切換與同步最愛狀態並發送變更事件，不綁定資料內容與儲存方式；是否保存至 localStorage、資料庫或其他資料層由宿主自行處理。",
+        "links": [
+          {
+            "label": "favorite.js",
+            "href": "https://lib.stillnessbyslowly.com/ui/favorite.js"
+          },
+          {
+            "label": "favorite.css",
+            "href": "https://lib.stillnessbyslowly.com/ui/favorite.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/ui/test_favorite.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/ui/favorite_usage.html"
+          }
+        ]
       }
     ]
   },
