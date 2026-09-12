@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Draft｜使用說明</title>
+  <style>
+    body {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.7;
+    }
+
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    pre {
+      overflow: auto;
+      padding: 14px;
+      border: 1px solid #ccc;
+      background: #f7f7f7;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: left;
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <h1>Form Draft v1.0.0</h1>
+
+  <p>
+    管理表單或編輯流程中的暫存草稿，
+    並保留初始 snapshot 供 dirty / changed 判斷。
+  </p>
+
+  <p>
+    本模組不讀 DOM、不知道 input ID，也不處理欄位型別轉換。
+    宿主只把整理好的值交給 Draft。
+  </p>
+
+  <p>本模組沒有 UI，因此不需要宿主載入 CSS。</p>
+
+  <h2>引用</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/state/form_draft.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>基本使用</h2>
+  <pre><code>const draft = FormDraft.create({
+  name: "",
+  price: "",
+  tags: []
+});
+
+draft.set("name", "鍵盤");
+
+draft.patch({
+  price: 1200,
+  tags: ["3C", "鍵盤"]
+});
+
+console.log(draft.get());
+console.log(draft.dirty);
+console.log(draft.changed("name"));</code></pre>
+
+  <h2>宿主同步表單</h2>
+  <pre><code>draft.patch({
+  name: nameInput.value.trim(),
+  price:
+    priceInput.value === ""
+      ? ""
+      : Number(priceInput.value),
+  note: noteInput.value.trim()
+});</code></pre>
+
+  <p>
+    trim、Number、日期格式、tags parser 等規則仍由宿主決定，
+    Form Draft 不推測 schema。
+  </p>
+
+  <h2>reset / commit</h2>
+  <pre><code>draft.set("name", "新名稱");
+
+draft.reset();
+// 回到建立 Draft 時的初始資料
+
+draft.set("name", "確定的新名稱");
+draft.commit();
+// 把目前草稿設成新的基準
+// dirty 重新變成 false</code></pre>
+
+  <h2>API</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>API</th>
+        <th>說明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>FormDraft.create(initialData)</code></td><td>建立草稿。</td></tr>
+      <tr><td><code>get()</code></td><td>取得目前草稿的新物件。</td></tr>
+      <tr><td><code>getValue(key)</code></td><td>取得單一欄位值。</td></tr>
+      <tr><td><code>set(key, value)</code></td><td>設定單一欄位。</td></tr>
+      <tr><td><code>patch(values)</code></td><td>合併更新多個欄位。</td></tr>
+      <tr><td><code>replace(values)</code></td><td>整份取代目前草稿，不改初始基準。</td></tr>
+      <tr><td><code>remove(key)</code></td><td>移除欄位。</td></tr>
+      <tr><td><code>reset()</code></td><td>回復初始基準。</td></tr>
+      <tr><td><code>commit()</code></td><td>把目前草稿設成新的初始基準。</td></tr>
+      <tr><td><code>snapshot()</code></td><td>取得 initial、current、dirty 快照。</td></tr>
+      <tr><td><code>changed(key)</code></td><td>判斷指定欄位是否相對初始基準改變。</td></tr>
+      <tr><td><code>has(key)</code></td><td>判斷目前草稿是否存在欄位。</td></tr>
+      <tr><td><code>dirty</code></td><td>整份草稿是否已改變。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>設計邊界</h2>
+  <ul>
+    <li>不操作 DOM。</li>
+    <li>不綁 input / select / textarea。</li>
+    <li>不自動 trim 或 Number 轉換。</li>
+    <li>不處理檔案上傳與圖片 Blob。</li>
+    <li>不負責 localStorage / database。</li>
+    <li>不做表單驗證。</li>
+  </ul>
+
+  <script src="./form_draft.js"></script>
+</body>
+</html>

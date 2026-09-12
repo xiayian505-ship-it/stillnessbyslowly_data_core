@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tree Selection｜功能測試</title>
+  <style>
+    body {
+      max-width: 820px;
+      margin: 30px auto;
+      padding: 0 18px 50px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    button {
+      margin: 4px 6px 4px 0;
+      padding: 7px 10px;
+    }
+
+    .result {
+      margin: 8px 0 18px;
+      padding: 8px;
+      border-left: 3px solid #999;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tree Selection v1.0.0 功能測試</h1>
+  <p>純功能驗證頁。</p>
+
+  <div id="tests"></div>
+
+  <script src="./tree_selection.js"></script>
+  <script>
+    "use strict";
+
+    const tests = [
+      ["選取 / 取消", () => {
+        const tree = TreeSelection.create();
+        tree.select("A");
+        tree.select("B");
+        tree.unselect("A");
+        return {
+          selected: tree.getSelected(),
+          count: tree.selectedCount,
+          pass: !tree.has("A") && tree.has("B")
+        };
+      }],
+
+      ["toggle", () => {
+        const tree = TreeSelection.create();
+        const first = tree.toggle("A");
+        const second = tree.toggle("A");
+        return {
+          first,
+          second,
+          pass: first === true && second === false
+        };
+      }],
+
+      ["multiple 展開", () => {
+        const tree = TreeSelection.create({
+          expansion: "multiple"
+        });
+        tree.expand("A");
+        tree.expand("B");
+        return {
+          expanded: tree.getExpanded(),
+          pass: tree.expandedCount === 2
+        };
+      }],
+
+      ["single 展開", () => {
+        const tree = TreeSelection.create({
+          expansion: "single"
+        });
+        tree.expand("A");
+        tree.expand("B");
+        return {
+          expanded: tree.getExpanded(),
+          pass:
+            tree.expandedCount === 1 &&
+            tree.isExpanded("B")
+        };
+      }],
+
+      ["replaceSelected 去重", () => {
+        const tree = TreeSelection.create();
+        tree.replaceSelected(["A", "A", "B"]);
+        return {
+          selected: tree.getSelected(),
+          pass: tree.selectedCount === 2
+        };
+      }],
+
+      ["replaceExpanded / single 只留最後一個", () => {
+        const tree = TreeSelection.create({
+          expansion: "single"
+        });
+        tree.replaceExpanded(["A", "B", "C"]);
+        return {
+          expanded: tree.getExpanded(),
+          pass:
+            tree.expandedCount === 1 &&
+            tree.isExpanded("C")
+        };
+      }],
+
+      ["clearSelection / collapseAll", () => {
+        const tree = TreeSelection.create({
+          selected: ["A", "B"],
+          expanded: ["G1", "G2"]
+        });
+        const selectedCount = tree.clearSelection();
+        const expandedCount = tree.collapseAll();
+        return {
+          selectedCount,
+          expandedCount,
+          pass:
+            tree.selectedCount === 0 &&
+            tree.expandedCount === 0
+        };
+      }],
+
+      ["不同實例互不干擾", () => {
+        const first = TreeSelection.create();
+        const second = TreeSelection.create();
+        first.select("A");
+        second.select("B");
+        return {
+          first: first.getSelected(),
+          second: second.getSelected(),
+          pass:
+            first.has("A") &&
+            !first.has("B") &&
+            second.has("B") &&
+            !second.has("A")
+        };
+      }]
+    ];
+
+    const box = document.querySelector("#tests");
+
+    tests.forEach(([title, run], index) => {
+      const section = document.createElement("section");
+      const heading = document.createElement("h2");
+      const button = document.createElement("button");
+      const result = document.createElement("div");
+
+      heading.textContent = `${index + 1}. ${title}`;
+      button.type = "button";
+      button.textContent = "執行";
+      result.className = "result";
+
+      button.addEventListener("click", () => {
+        try {
+          result.textContent =
+            JSON.stringify(run(), null, 2);
+        } catch (error) {
+          result.textContent = `ERROR: ${error.message}`;
+        }
+      });
+
+      section.append(heading, button, result);
+      box.appendChild(section);
+    });
+  </script>
+</body>
+</html>

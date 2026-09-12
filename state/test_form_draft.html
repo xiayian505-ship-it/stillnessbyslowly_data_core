@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Draft｜功能測試</title>
+  <style>
+    body {
+      max-width: 820px;
+      margin: 30px auto;
+      padding: 0 18px 50px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    button {
+      margin: 4px 6px 4px 0;
+      padding: 7px 10px;
+    }
+
+    .result {
+      margin: 8px 0 18px;
+      padding: 8px;
+      border-left: 3px solid #999;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Form Draft v1.0.0 功能測試</h1>
+  <p>純功能驗證頁。</p>
+
+  <div id="tests"></div>
+
+  <script src="./form_draft.js"></script>
+  <script>
+    "use strict";
+
+    const tests = [
+      ["set / get", () => {
+        const draft = FormDraft.create({ name: "" });
+        draft.set("name", "鍵盤");
+        return {
+          value: draft.getValue("name"),
+          dirty: draft.dirty,
+          pass:
+            draft.getValue("name") === "鍵盤" &&
+            draft.dirty === true
+        };
+      }],
+
+      ["patch", () => {
+        const draft = FormDraft.create({
+          name: "",
+          price: ""
+        });
+
+        draft.patch({
+          name: "鍵盤",
+          price: 1200
+        });
+
+        return {
+          current: draft.get(),
+          pass:
+            draft.getValue("name") === "鍵盤" &&
+            draft.getValue("price") === 1200
+        };
+      }],
+
+      ["changed 單欄位", () => {
+        const draft = FormDraft.create({
+          name: "A",
+          note: ""
+        });
+
+        draft.set("name", "B");
+
+        return {
+          nameChanged: draft.changed("name"),
+          noteChanged: draft.changed("note"),
+          pass:
+            draft.changed("name") === true &&
+            draft.changed("note") === false
+        };
+      }],
+
+      ["reset", () => {
+        const draft = FormDraft.create({
+          name: "原始"
+        });
+
+        draft.set("name", "修改");
+        draft.reset();
+
+        return {
+          current: draft.get(),
+          dirty: draft.dirty,
+          pass:
+            draft.getValue("name") === "原始" &&
+            draft.dirty === false
+        };
+      }],
+
+      ["commit", () => {
+        const draft = FormDraft.create({
+          name: "原始"
+        });
+
+        draft.set("name", "新版");
+        draft.commit();
+
+        return {
+          snapshot: draft.snapshot(),
+          dirty: draft.dirty,
+          pass:
+            draft.getValue("name") === "新版" &&
+            draft.dirty === false
+        };
+      }],
+
+      ["remove", () => {
+        const draft = FormDraft.create({
+          name: "A",
+          note: "B"
+        });
+
+        const removed = draft.remove("note");
+
+        return {
+          removed,
+          current: draft.get(),
+          pass:
+            removed === true &&
+            draft.has("note") === false &&
+            draft.dirty === true
+        };
+      }],
+
+      ["回傳值不污染內部", () => {
+        const draft = FormDraft.create({
+          nested: {
+            tags: ["A"]
+          }
+        });
+
+        const external = draft.get();
+        external.nested.tags.push("B");
+
+        return {
+          internal: draft.get(),
+          pass:
+            draft.get().nested.tags.length === 1
+        };
+      }],
+
+      ["replace 不改 initial", () => {
+        const draft = FormDraft.create({
+          name: "A"
+        });
+
+        draft.replace({
+          name: "B"
+        });
+
+        return {
+          snapshot: draft.snapshot(),
+          pass:
+            draft.dirty === true &&
+            draft.changed("name") === true
+        };
+      }]
+    ];
+
+    const box = document.querySelector("#tests");
+
+    tests.forEach(([title, run], index) => {
+      const section = document.createElement("section");
+      const heading = document.createElement("h2");
+      const button = document.createElement("button");
+      const result = document.createElement("div");
+
+      heading.textContent = `${index + 1}. ${title}`;
+      button.type = "button";
+      button.textContent = "執行";
+      result.className = "result";
+
+      button.addEventListener("click", () => {
+        try {
+          result.textContent =
+            JSON.stringify(run(), null, 2);
+        } catch (error) {
+          result.textContent = `ERROR: ${error.message}`;
+        }
+      });
+
+      section.append(heading, button, result);
+      box.appendChild(section);
+    });
+  </script>
+</body>
+</html>

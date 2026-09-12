@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tree Selection｜使用說明</title>
+  <style>
+    body {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.7;
+    }
+
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    pre {
+      overflow: auto;
+      padding: 14px;
+      border: 1px solid #ccc;
+      background: #f7f7f7;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: left;
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tree Selection v1.0.0</h1>
+
+  <p>
+    管理樹狀介面常見的「選取」與「展開」狀態。
+    模組不碰 DOM，也不要求特定 tree schema。
+  </p>
+
+  <p>本模組沒有 UI，因此不需要宿主載入 CSS。</p>
+
+  <h2>引用</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/state/tree_selection.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>基本使用</h2>
+  <pre><code>const tree = TreeSelection.create();
+
+tree.select("keyboard/mechanical");
+tree.toggle("keyboard/folding");
+
+tree.expand("digital");
+tree.toggleExpanded("games");
+
+console.log(tree.getSelected());
+console.log(tree.getExpanded());</code></pre>
+
+  <h2>單一展開</h2>
+  <pre><code>const tree = TreeSelection.create({
+  expansion: "single"
+});
+
+tree.expand("digital");
+tree.expand("games");
+
+// 只保留 games
+console.log(tree.getExpanded());</code></pre>
+
+  <h2>帶入既有狀態</h2>
+  <pre><code>const tree = TreeSelection.create({
+  selected: ["A", "B"],
+  expanded: ["group-1", "group-2"],
+  expansion: "multiple"
+});</code></pre>
+
+  <h2>API</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>API</th>
+        <th>說明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>select(value)</code></td><td>加入選取。</td></tr>
+      <tr><td><code>unselect(value)</code></td><td>移除選取。</td></tr>
+      <tr><td><code>toggle(value)</code></td><td>切換選取狀態，回傳切換後是否選取。</td></tr>
+      <tr><td><code>has(value)</code></td><td>查詢是否選取。</td></tr>
+      <tr><td><code>clearSelection()</code></td><td>清除全部選取並回傳清除數量。</td></tr>
+      <tr><td><code>replaceSelected(values)</code></td><td>整批取代選取值。</td></tr>
+      <tr><td><code>getSelected()</code></td><td>取得選取值的新陣列。</td></tr>
+      <tr><td><code>expand(value)</code></td><td>展開指定 key。</td></tr>
+      <tr><td><code>collapse(value)</code></td><td>收合指定 key。</td></tr>
+      <tr><td><code>toggleExpanded(value)</code></td><td>切換展開狀態。</td></tr>
+      <tr><td><code>isExpanded(value)</code></td><td>查詢是否展開。</td></tr>
+      <tr><td><code>collapseAll()</code></td><td>全部收合並回傳收合數量。</td></tr>
+      <tr><td><code>replaceExpanded(values)</code></td><td>整批取代展開 key。</td></tr>
+      <tr><td><code>getExpanded()</code></td><td>取得展開 key 的新陣列。</td></tr>
+      <tr><td><code>selectedCount</code></td><td>目前選取數量。</td></tr>
+      <tr><td><code>expandedCount</code></td><td>目前展開數量。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>設計邊界</h2>
+  <ul>
+    <li>不建立分類樹。</li>
+    <li>不解析 parent / child 關係。</li>
+    <li>不操作 DOM。</li>
+    <li>不儲存 localStorage。</li>
+    <li>不決定選取後畫面如何呈現。</li>
+  </ul>
+
+  <script src="./tree_selection.js"></script>
+</body>
+</html>
