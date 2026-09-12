@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HTML Escape 功能測試</title>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 760px;
+      margin: 32px auto;
+      padding: 0 16px;
+      line-height: 1.7;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .test {
+      border-top: 1px solid #ccc;
+      padding: 16px 0;
+    }
+
+    .pass {
+      color: green;
+    }
+
+    .fail {
+      color: crimson;
+    }
+
+    code {
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>HTML Escape 功能測試</h1>
+
+  <p>
+    測試 HtmlEscape.escape()。
+  </p>
+
+  <div class="test">
+    <h2>1. 五種 HTML 特殊字元</h2>
+    <button id="testSpecial" type="button">執行</button>
+    <p id="resultSpecial"></p>
+  </div>
+
+  <div class="test">
+    <h2>2. 一般文字保持不變</h2>
+    <button id="testPlain" type="button">執行</button>
+    <p id="resultPlain"></p>
+  </div>
+
+  <div class="test">
+    <h2>3. null / undefined</h2>
+    <button id="testEmpty" type="button">執行</button>
+    <p id="resultEmpty"></p>
+  </div>
+
+  <div class="test">
+    <h2>4. 數字與布林值</h2>
+    <button id="testPrimitive" type="button">執行</button>
+    <p id="resultPrimitive"></p>
+  </div>
+
+  <div class="test">
+    <h2>5. HTML 字串只顯示文字</h2>
+    <button id="testHtml" type="button">執行</button>
+    <p id="resultHtml"></p>
+    <div id="htmlPreview"></div>
+  </div>
+
+  <div class="test">
+    <h2>6. 常見 XSS 字串不被當成標籤</h2>
+    <button id="testXss" type="button">執行</button>
+    <p id="resultXss"></p>
+    <div id="xssPreview"></div>
+  </div>
+
+  <script src="./html_escape.js"></script>
+
+  <script>
+    "use strict";
+
+    function showResult(id, pass, message){
+      const element = document.getElementById(id);
+
+      element.className = pass
+        ? "pass"
+        : "fail";
+
+      element.textContent =
+        `${pass ? "PASS" : "FAIL"}｜${message}`;
+    }
+
+    document
+      .getElementById("testSpecial")
+      .addEventListener("click", () => {
+        const actual =
+          HtmlEscape.escape(`&<>"'`);
+
+        const expected =
+          "&amp;&lt;&gt;&quot;&#039;";
+
+        showResult(
+          "resultSpecial",
+          actual === expected,
+          actual
+        );
+      });
+
+    document
+      .getElementById("testPlain")
+      .addEventListener("click", () => {
+        const input = "慢慢的倉庫 123 ABC";
+        const actual = HtmlEscape.escape(input);
+
+        showResult(
+          "resultPlain",
+          actual === input,
+          actual
+        );
+      });
+
+    document
+      .getElementById("testEmpty")
+      .addEventListener("click", () => {
+        const nullResult =
+          HtmlEscape.escape(null);
+
+        const undefinedResult =
+          HtmlEscape.escape(undefined);
+
+        const pass =
+          nullResult === "" &&
+          undefinedResult === "";
+
+        showResult(
+          "resultEmpty",
+          pass,
+          `null="${nullResult}" undefined="${undefinedResult}"`
+        );
+      });
+
+    document
+      .getElementById("testPrimitive")
+      .addEventListener("click", () => {
+        const numberResult =
+          HtmlEscape.escape(123);
+
+        const booleanResult =
+          HtmlEscape.escape(false);
+
+        const pass =
+          numberResult === "123" &&
+          booleanResult === "false";
+
+        showResult(
+          "resultPrimitive",
+          pass,
+          `${numberResult}｜${booleanResult}`
+        );
+      });
+
+    document
+      .getElementById("testHtml")
+      .addEventListener("click", () => {
+        const input = "<b>限定版</b>";
+        const escaped =
+          HtmlEscape.escape(input);
+
+        const preview =
+          document.getElementById("htmlPreview");
+
+        preview.innerHTML = escaped;
+
+        const pass =
+          preview.textContent === input &&
+          preview.querySelector("b") === null;
+
+        showResult(
+          "resultHtml",
+          pass,
+          escaped
+        );
+      });
+
+    document
+      .getElementById("testXss")
+      .addEventListener("click", () => {
+        const input =
+          '<img src=x onerror="window.__htmlEscapeTest=true">';
+
+        window.__htmlEscapeTest = false;
+
+        const escaped =
+          HtmlEscape.escape(input);
+
+        const preview =
+          document.getElementById("xssPreview");
+
+        preview.innerHTML = escaped;
+
+        const pass =
+          preview.textContent === input &&
+          preview.querySelector("img") === null &&
+          window.__htmlEscapeTest === false;
+
+        showResult(
+          "resultXss",
+          pass,
+          escaped
+        );
+      });
+  </script>
+</body>
+</html>
