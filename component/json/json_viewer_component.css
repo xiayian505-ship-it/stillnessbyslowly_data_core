@@ -1,0 +1,61 @@
+/* Slowly JSON Viewer Component v1.0.0
+   只處理完成品必要結構；視覺交給宿主頁面。
+*/
+.slowly-json-component *{box-sizing:border-box}
+
+.sjc-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:8px;
+}
+
+.sjc-editor{
+  width:100%;
+  min-height:180px;
+  resize:vertical;
+}
+
+.sjc-row{
+  display:flex;
+  gap:8px;
+  margin:8px 0;
+}
+
+.sjc-row input{min-width:0;flex:1}
+
+.sjc-workspace{
+  display:grid;
+  grid-template-columns:200px minmax(0,1fr);
+  gap:16px;
+}
+
+.sjc-saved-list{display:grid;gap:4px}
+
+.sjc-saved-item{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:4px;
+}
+
+.sjc-open{text-align:left;overflow-wrap:anywhere}
+
+.sjc-viewer{
+  min-width:0;
+  overflow:auto;
+}
+
+.sjc-hit{background:#fff2a8}
+
+.sjc-file{
+  position:absolute;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  clip:rect(0 0 0 0);
+}
+
+@media(max-width:640px){
+  .sjc-workspace{grid-template-columns:1fr}
+  .sjc-row{flex-wrap:wrap}
+}

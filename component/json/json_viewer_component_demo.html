@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slowly JSON Viewer Demo</title>
+
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/data/json/json_viewer.css">
+<link rel="stylesheet" href="./json_viewer_component.css">
+
+<style>
+body{
+  max-width:900px;
+  margin:40px auto;
+  padding:0 16px;
+  font-family:system-ui,"Noto Sans TC",sans-serif;
+}
+</style>
+</head>
+<body>
+
+<h1>Slowly JSON Viewer</h1>
+<p>完成品展示頁</p>
+
+<div id="json-viewer"></div>
+
+<script src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"></script>
+<script src="https://lib.stillnessbyslowly.com/data/json/json_viewer.js"></script>
+<script src="./json_viewer_component.js"></script>
+
+<script>
+SlowlyJSONViewerComponent.mount(
+  "#json-viewer",
+  {
+    initialValue:{
+      project:"stillness by slowly",
+      type:"JSON Viewer",
+      ready:true,
+      items:[
+        "paste",
+        "file",
+        "search",
+        "storage"
+      ]
+    }
+  }
+);
+</script>
+
+</body>
+</html>

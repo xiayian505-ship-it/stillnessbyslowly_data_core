@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slowly JSON Viewer Usage</title>
+</head>
+<body>
+
+<h1>Slowly JSON Viewer</h1>
+
+<p>
+JSON Viewer 是底層結構顯示工具。
+Slowly JSON Viewer Component 是可直接使用的完成品。
+</p>
+
+<h2>依賴</h2>
+
+<pre><code>&lt;link rel="stylesheet"
+href="https://lib.stillnessbyslowly.com/data/json/json_viewer.css"&gt;
+
+&lt;link rel="stylesheet"
+href="https://lib.stillnessbyslowly.com/component/data/json_viewer_component.css"&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"&gt;&lt;/script&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/data/json/json_viewer.js"&gt;&lt;/script&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/component/data/json_viewer_component.js"&gt;&lt;/script&gt;</code></pre>
+
+<h2>使用</h2>
+
+<pre><code>&lt;div id="json-viewer"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+const viewer =
+  SlowlyJSONViewerComponent.mount(
+    "#json-viewer"
+  );
+&lt;/script&gt;</code></pre>
+
+<h2>Options</h2>
+
+<pre><code>{
+  namespace:"slowly-json-viewer",
+  collection:"documents",
+  initialValue:null,
+  rootLabel:"root",
+  showTypes:true,
+  collapsedDepth:Infinity,
+  sortKeys:false
+}</code></pre>
+
+<h2>功能</h2>
+
+<ul>
+<li>貼上 JSON</li>
+<li>匯入 JSON / TXT</li>
+<li>JSON Viewer 結構顯示</li>
+<li>搜尋與標亮</li>
+<li>全部展開 / 收合</li>
+<li>使用 Fiction Storage 儲存、開啟、更新、刪除</li>
+</ul>
+
+<p>
+Component 不使用 Fiction Change。
+目前資料操作皆由同一個完成品發起，
+儲存後直接刷新自己的清單。
+</p>
+
+</body>
+</html>
