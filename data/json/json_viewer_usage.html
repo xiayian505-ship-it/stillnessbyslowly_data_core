@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slowly JSON Viewer Usage</title>
+<link rel="stylesheet" href="./json_viewer.css">
+<style>
+body{
+  margin:0;
+  padding:24px;
+  font-family:system-ui,-apple-system,"Noto Sans TC","Segoe UI",sans-serif;
+  background:#f5f5f2;
+  color:#222;
+}
+main{max-width:1000px;margin:auto}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+button,label{
+  border:1px solid #ccc;
+  background:#fff;
+  padding:8px 10px;
+  border-radius:8px;
+  font:inherit;
+}
+label{cursor:pointer}
+input[type=file]{display:none}
+
+/* 宿主頁自行決定外觀 */
+.slowly-json-viewer{
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:16px;
+}
+.sjv-children{
+  border-left:1px solid #ddd;
+}
+.sjv-key{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-weight:600;
+}
+.sjv-type{
+  color:#888;
+  font-size:12px;
+}
+.sjv-count{
+  color:#aaa;
+  font-size:12px;
+}
+.sjv-value{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.sjv-node[data-type="string"] .sjv-value{color:#176b3a}
+.sjv-node[data-type="number"] .sjv-value{color:#8a4f08}
+.sjv-node[data-type="boolean"] .sjv-value{color:#6d3fa0}
+.sjv-node[data-type="null"] .sjv-value{color:#999}
+.sjv-status[data-type="error"]{
+  margin-top:12px;
+  color:#a22;
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Slowly JSON Viewer</h1>
+  <p>通用 JSON 結構化展示。外觀由宿主頁決定。</p>
+
+  <div class="toolbar">
+    <label>
+      選擇 .json / .txt
+      <input id="file" type="file" accept=".json,.txt,application/json,text/plain">
+    </label>
+    <button id="sample" type="button">載入範例</button>
+    <button id="expand" type="button">全部展開</button>
+    <button id="collapse" type="button">全部收合</button>
+    <button id="clear" type="button">清空</button>
+  </div>
+
+  <div id="viewer"></div>
+</main>
+
+<script src="./json_viewer.js"></script>
+<script>
+const viewer = SlowlyJSONViewer.mount("#viewer", {
+  rootLabel: "JSON",
+  showTypes: true
+});
+
+document.querySelector("#file").addEventListener("change", async event=>{
+  const file = event.target.files[0];
+  if(file) await viewer.loadFile(file);
+});
+
+document.querySelector("#sample").onclick = ()=>{
+  viewer.load({
+    name: "Slowly JSON Viewer",
+    version: "1.0.0",
+    enabled: true,
+    count: 3,
+    note: null,
+    tags: ["json", "viewer", "utility"],
+    config: {
+      showTypes: true,
+      collapsedDepth: 2
+    }
+  });
+};
+
+document.querySelector("#expand").onclick = ()=>viewer.expandAll();
+document.querySelector("#collapse").onclick = ()=>viewer.collapseAll();
+document.querySelector("#clear").onclick = ()=>viewer.clear();
+</script>
+</body>
+</html>

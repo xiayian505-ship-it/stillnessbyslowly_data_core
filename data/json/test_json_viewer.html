@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>test_json_viewer</title>
+<link rel="stylesheet" href="./json_viewer.css">
+<style>
+body{font-family:sans-serif;margin:20px}
+button{margin:0 6px 8px 0}
+#viewer{border:1px solid #ccc;padding:10px;margin-top:12px}
+#result{white-space:pre-wrap;margin:12px 0}
+</style>
+</head>
+<body>
+<h1>test_json_viewer.html</h1>
+
+<button id="object">1. Object</button>
+<button id="array">2. Array</button>
+<button id="primitive">3. Primitive</button>
+<button id="text">4. JSON text</button>
+<button id="invalid">5. Invalid JSON</button>
+<button id="empty">6. Empty structures</button>
+<button id="expand">7. Expand all</button>
+<button id="collapse">8. Collapse all</button>
+
+<input id="file" type="file" accept=".json,.txt">
+<button id="fileBtn">9. File</button>
+
+<div id="result">尚未測試</div>
+<div id="viewer"></div>
+
+<script src="./json_viewer.js"></script>
+<script>
+const result = document.querySelector("#result");
+const viewer = SlowlyJSONViewer.mount("#viewer");
+
+function ok(name){
+  result.textContent = "測試：" + name;
+}
+
+document.querySelector("#object").onclick=()=>{
+  viewer.load({a:1,b:"two",c:true,d:null,nested:{x:[1,2,3]}});
+  ok("Object");
+};
+
+document.querySelector("#array").onclick=()=>{
+  viewer.load([1,"two",false,null,{x:1}]);
+  ok("Array");
+};
+
+document.querySelector("#primitive").onclick=()=>{
+  viewer.load("hello");
+  ok("Primitive root");
+};
+
+document.querySelector("#text").onclick=()=>{
+  viewer.loadText('{"hello":"world","items":[1,2]}');
+  ok("JSON text");
+};
+
+document.querySelector("#invalid").onclick=()=>{
+  viewer.loadText('{ bad json }');
+  ok("Invalid JSON");
+};
+
+document.querySelector("#empty").onclick=()=>{
+  viewer.load({object:{},array:[]});
+  ok("Empty structures");
+};
+
+document.querySelector("#expand").onclick=()=>{
+  viewer.expandAll();
+  ok("Expand all");
+};
+
+document.querySelector("#collapse").onclick=()=>{
+  viewer.collapseAll();
+  ok("Collapse all");
+};
+
+document.querySelector("#fileBtn").onclick=async()=>{
+  const file=document.querySelector("#file").files[0];
+  if(!file){
+    result.textContent="請先選檔案";
+    return;
+  }
+  await viewer.loadFile(file);
+  ok("File: " + file.name);
+};
+</script>
+</body>
+</html>

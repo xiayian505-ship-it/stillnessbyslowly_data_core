@@ -1,0 +1,59 @@
+/* =========================================================
+   Slowly JSON Viewer
+   v1.0.0
+
+   必要結構 CSS。
+   顏色、字體、尺寸等視覺風格建議由宿主頁自行覆寫。
+========================================================= */
+
+.slowly-json-viewer,
+.slowly-json-viewer *{
+  box-sizing:border-box;
+}
+
+.sjv-content{
+  min-width:0;
+}
+
+.sjv-node{
+  min-width:0;
+}
+
+.sjv-summary{
+  display:flex;
+  align-items:baseline;
+  gap:.5em;
+  cursor:pointer;
+  min-width:0;
+}
+
+.sjv-children{
+  margin-left:1.25em;
+  padding-left:.75em;
+}
+
+.sjv-leaf{
+  display:grid;
+  grid-template-columns:minmax(0,auto) auto minmax(0,1fr);
+  align-items:baseline;
+  gap:.5em;
+}
+
+.sjv-key,
+.sjv-value{
+  overflow-wrap:anywhere;
+  min-width:0;
+}
+
+.sjv-type,
+.sjv-count{
+  white-space:nowrap;
+}
+
+.sjv-empty{
+  margin-left:.25em;
+}
+
+.sjv-status[hidden]{
+  display:none;
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "module": {
+    "name": "Slowly JSON Viewer",
+    "version": "1.0.0",
+    "type": "utility",
+    "category": "data/json",
+    "status": "stable",
+    "description": "通用 JSON 結構化展示元件，不限定 schema、不推測欄位語意。"
+  },
+  "files": {
+    "javascript": "json_viewer.js",
+    "stylesheet": "json_viewer.css",
+    "usage": "json_viewer_usage.html",
+    "test": "test_json_viewer.html"
+  },
+  "api": {
+    "global": "SlowlyJSONViewer",
+    "entry": {
+      "method": "mount",
+      "signature": "SlowlyJSONViewer.mount(target, options)",
+      "returns": "JSONViewer"
+    },
+    "options": {
+      "rootLabel": {
+        "type": "string",
+        "default": "root"
+      },
+      "showTypes": {
+        "type": "boolean",
+        "default": true
+      },
+      "showRoot": {
+        "type": "boolean",
+        "default": true
+      },
+      "collapsedDepth": {
+        "type": "number",
+        "default": "Infinity"
+      },
+      "sortKeys": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "methods": {
+      "load": {
+        "arguments": [
+          "value"
+        ],
+        "returns": "JSONViewer"
+      },
+      "loadText": {
+        "arguments": [
+          "text"
+        ],
+        "returns": "JSONViewer"
+      },
+      "loadFile": {
+        "arguments": [
+          "file"
+        ],
+        "returns": "Promise<JSONViewer>"
+      },
+      "update": {
+        "arguments": [
+          "options"
+        ],
+        "returns": "JSONViewer"
+      },
+      "expandAll": {
+        "arguments": [],
+        "returns": "JSONViewer"
+      },
+      "collapseAll": {
+        "arguments": [],
+        "returns": "JSONViewer"
+      },
+      "clear": {
+        "arguments": [],
+        "returns": "JSONViewer"
+      },
+      "destroy": {
+        "arguments": [],
+        "returns": "void"
+      }
+    }
+  },
+  "behavior": {
+    "schema_specific": false,
+    "infer_field_meaning": false,
+    "upload_data": false,
+    "persist_data": false,
+    "accepted_file_content": "Valid JSON text",
+    "accepted_file_extensions": [
+      ".json",
+      ".txt"
+    ]
+  }
+}
