@@ -687,6 +687,20 @@ window.SlowlyLibraryIndex = [
             "href": "https://lib.stillnessbyslowly.com/ui/favorite_usage.html"
           }
         ]
+      },
+      {
+        "title": "HTML Escape",
+        "desc": "通用 HTML 文字轉義工具，將 &, <, >, 雙引號與單引號轉成安全的 HTML 實體字串，適合將一般文字內容放入 innerHTML 或 HTML 樣板字串時使用；不負責 HTML 清洗、允許部分標籤或 DOM 建立。",
+        "links": [
+          {
+            "label": "html_escape.js",
+            "href": "https://lib.stillnessbyslowly.com/ui/html_escape.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/ui/test_html_escape.html"
+          }
+        ]
       }
     ]
   },
