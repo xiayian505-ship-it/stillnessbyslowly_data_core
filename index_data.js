@@ -27,6 +27,28 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Slowly JSON Viewer",
+        "desc": "可直接使用的 JSON 檢視完成品，組合 JSON Viewer 與 Fiction Storage，支援貼上或匯入 JSON、結構顯示、搜尋標亮、全部展開／收合，以及將常用 JSON 儲存於 localStorage。",
+        "links": [
+          {
+            "label": "json_viewer_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component.js"
+          },
+          {
+            "label": "json_viewer_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly Data CRUD",
         "desc": "可直接嵌入網站使用的純前端 CRUD 元件，依欄位設定自動建立資料列表、查看、新增、修改與刪除介面，使用 Timestamp 產生資料 ID，並透過 Fiction Storage 儲存於 localStorage。",
         "links": [
