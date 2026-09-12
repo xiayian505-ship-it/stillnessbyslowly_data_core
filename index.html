@@ -26,6 +26,13 @@
 <section class="page active" data-page-panel="directory">
   <h2 class="section-title">使用前，慢慢看一下。</h2>
 
+  <div class="library-search">
+    <label class="search-label" for="library-search-input">搜尋倉庫</label>
+    <input id="library-search-input" class="search-input" type="search" placeholder="輸入名稱、檔名、描述或關鍵字…" autocomplete="off" spellcheck="false">
+    <div id="search-status" class="search-status" aria-live="polite"></div>
+    <div id="search-results" class="search-results"></div>
+  </div>
+
   <div class="directory-note">
     <ul>
       <li>這裡的東西，各長各的，路徑、命名、API 與回報方式可能不一樣。</li>
@@ -84,9 +91,12 @@
     const navButtons = document.querySelectorAll("[data-page]");
     const pages = document.querySelectorAll("[data-page-panel]");
 
-    function createItem(item) {
+    function createItem(item, meta = {}) {
       const card = document.createElement("div");
       card.className = "item";
+      if (meta.page) card.dataset.itemPage = meta.page;
+      if (meta.group) card.dataset.itemGroup = meta.group;
+      if (meta.index !== undefined) card.dataset.itemIndex = String(meta.index);
 
       const title = document.createElement("div");
       title.className = "item-title";
@@ -122,8 +132,8 @@
           const list = panel.querySelector(".list");
           if (!list) return;
 
-          group.items.forEach((item) => {
-            list.appendChild(createItem(item));
+          group.items.forEach((item, index) => {
+            list.appendChild(createItem(item, { page: group.page, index }));
           });
           return;
         }
@@ -144,8 +154,8 @@
             const list = document.createElement("div");
             list.className = "list";
 
-            subgroup.items.forEach((item) => {
-              list.appendChild(createItem(item));
+            subgroup.items.forEach((item, index) => {
+              list.appendChild(createItem(item, { page: group.page, group: subgroup.id, index }));
             });
 
             section.append(title, list);
@@ -171,7 +181,110 @@
       });
     }
 
+    const searchInput = document.getElementById("library-search-input");
+    const searchStatus = document.getElementById("search-status");
+    const searchResults = document.getElementById("search-results");
+
+    function normalizeSearchText(value) {
+      return String(value ?? "").toLocaleLowerCase();
+    }
+
+    function buildSearchIndex() {
+      const entries = [];
+      libraryData.forEach((group) => {
+        const addItems = (items, subgroup = null) => {
+          items.forEach((item, index) => {
+            const linkText = (item.links || [])
+              .flatMap((link) => [link.label, link.href])
+              .join(" ");
+            const text = [
+              group.title,
+              group.page,
+              subgroup?.title,
+              subgroup?.id,
+              item.title,
+              item.desc,
+              linkText
+            ].filter(Boolean).join(" ");
+
+            entries.push({
+              page: group.page,
+              pageTitle: group.title,
+              group: subgroup?.id || "",
+              groupTitle: subgroup?.title || "",
+              index,
+              item,
+              searchText: normalizeSearchText(text)
+            });
+          });
+        };
+
+        if (Array.isArray(group.items)) addItems(group.items);
+        if (Array.isArray(group.groups)) {
+          group.groups.forEach((subgroup) => addItems(subgroup.items || [], subgroup));
+        }
+      });
+      return entries;
+    }
+
+    function locateItem(entry) {
+      showPage(entry.page);
+      const selector = `.item[data-item-page="${CSS.escape(entry.page)}"][data-item-index="${entry.index}"]` +
+        (entry.group ? `[data-item-group="${CSS.escape(entry.group)}"]` : ":not([data-item-group])");
+      const card = document.querySelector(selector);
+      if (!card) return;
+
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+      card.classList.remove("search-target");
+      void card.offsetWidth;
+      card.classList.add("search-target");
+      window.setTimeout(() => card.classList.remove("search-target"), 1800);
+    }
+
+    function renderSearchResults(query, searchIndex) {
+      searchResults.replaceChildren();
+      const terms = normalizeSearchText(query).trim().split(/\s+/).filter(Boolean);
+
+      if (!terms.length) {
+        searchStatus.textContent = "";
+        return;
+      }
+
+      const matches = searchIndex.filter((entry) =>
+        terms.every((term) => entry.searchText.includes(term))
+      );
+
+      searchStatus.textContent = matches.length ? `找到 ${matches.length} 個` : "沒有找到符合的軍火。";
+
+      matches.forEach((entry) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "search-result";
+
+        const title = document.createElement("span");
+        title.className = "search-result-title";
+        title.textContent = entry.item.title;
+
+        const path = document.createElement("span");
+        path.className = "search-result-path";
+        path.textContent = [entry.pageTitle, entry.groupTitle].filter(Boolean).join(" · ");
+
+        const desc = document.createElement("span");
+        desc.className = "search-result-desc";
+        desc.textContent = entry.item.desc || "";
+
+        button.append(title, path, desc);
+        button.addEventListener("click", () => locateItem(entry));
+        searchResults.appendChild(button);
+      });
+    }
+
     renderLibrary();
+    const searchIndex = buildSearchIndex();
+
+    searchInput?.addEventListener("input", () => {
+      renderSearchResults(searchInput.value, searchIndex);
+    });
 
     navButtons.forEach((button) => {
       button.addEventListener(
