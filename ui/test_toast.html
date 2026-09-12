@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Toast 功能測試</title>
+
+  <link rel="stylesheet" href="./toast.css">
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 760px;
+      margin: 32px auto;
+      padding: 0 16px;
+      line-height: 1.7;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .test {
+      border-top: 1px solid #ccc;
+      padding: 16px 0;
+    }
+
+    .pass {
+      color: green;
+    }
+
+    .fail {
+      color: crimson;
+    }
+
+    .demo-toast {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Toast 功能測試</h1>
+
+  <p>
+    測試 SlowlyToast.create()、show()、hide() 與 toast.css。
+  </p>
+
+  <div class="test">
+    <h2>1. 建立實例</h2>
+    <button id="testCreate" type="button">執行</button>
+    <p id="resultCreate"></p>
+  </div>
+
+  <div class="test">
+    <h2>2. 顯示訊息</h2>
+    <button id="testShow" type="button">執行</button>
+    <p id="resultShow"></p>
+  </div>
+
+  <div class="test">
+    <h2>3. 自動隱藏</h2>
+    <button id="testAutoHide" type="button">執行</button>
+    <p id="resultAutoHide"></p>
+  </div>
+
+  <div class="test">
+    <h2>4. 重複 show() 重設計時器</h2>
+    <button id="testResetTimer" type="button">執行</button>
+    <p id="resultResetTimer"></p>
+  </div>
+
+  <div class="test">
+    <h2>5. 手動 hide()</h2>
+    <button id="testHide" type="button">執行</button>
+    <p id="resultHide"></p>
+  </div>
+
+  <div class="test">
+    <h2>6. 同元素 create() 不重複建立</h2>
+    <button id="testIdempotent" type="button">執行</button>
+    <p id="resultIdempotent"></p>
+  </div>
+
+  <div
+    id="demoToast"
+    class="slowly-toast demo-toast"
+    role="status"
+  >
+    Toast 預覽
+  </div>
+
+  <script src="./toast.js"></script>
+
+  <script>
+    "use strict";
+
+    const toast =
+      SlowlyToast.create("#demoToast", {
+        duration: 300
+      });
+
+    function showResult(id, pass, message){
+      const element =
+        document.getElementById(id);
+
+      element.className =
+        pass ? "pass" : "fail";
+
+      element.textContent =
+        `${pass ? "PASS" : "FAIL"}｜${message}`;
+    }
+
+    function wait(ms){
+      return new Promise(resolve => {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    document
+      .getElementById("testCreate")
+      .addEventListener("click", () => {
+        const pass =
+          toast &&
+          typeof toast.show === "function" &&
+          typeof toast.hide === "function" &&
+          typeof toast.destroy === "function";
+
+        showResult(
+          "resultCreate",
+          pass,
+          pass ? "建立成功" : "API 不完整"
+        );
+      });
+
+    document
+      .getElementById("testShow")
+      .addEventListener("click", () => {
+        toast.show("測試訊息", {
+          duration: 0
+        });
+
+        const element =
+          document.getElementById("demoToast");
+
+        const pass =
+          element.textContent === "測試訊息" &&
+          element.classList.contains("show");
+
+        showResult(
+          "resultShow",
+          pass,
+          element.textContent
+        );
+      });
+
+    document
+      .getElementById("testAutoHide")
+      .addEventListener("click", async () => {
+        toast.show("會自動隱藏", {
+          duration: 120
+        });
+
+        await wait(180);
+
+        const pass =
+          !document
+            .getElementById("demoToast")
+            .classList
+            .contains("show");
+
+        showResult(
+          "resultAutoHide",
+          pass,
+          pass ? "已自動隱藏" : "仍在顯示"
+        );
+      });
+
+    document
+      .getElementById("testResetTimer")
+      .addEventListener("click", async () => {
+        toast.show("第一次", {
+          duration: 140
+        });
+
+        await wait(80);
+
+        toast.show("第二次", {
+          duration: 140
+        });
+
+        await wait(90);
+
+        const middlePass =
+          document
+            .getElementById("demoToast")
+            .classList
+            .contains("show");
+
+        await wait(90);
+
+        const endPass =
+          !document
+            .getElementById("demoToast")
+            .classList
+            .contains("show");
+
+        showResult(
+          "resultResetTimer",
+          middlePass && endPass,
+          middlePass && endPass
+            ? "計時器已重設"
+            : "計時器行為異常"
+        );
+      });
+
+    document
+      .getElementById("testHide")
+      .addEventListener("click", () => {
+        toast.show("手動隱藏", {
+          duration: 0
+        });
+
+        toast.hide();
+
+        const pass =
+          !document
+            .getElementById("demoToast")
+            .classList
+            .contains("show");
+
+        showResult(
+          "resultHide",
+          pass,
+          pass ? "hide() 成功" : "hide() 失敗"
+        );
+      });
+
+    document
+      .getElementById("testIdempotent")
+      .addEventListener("click", () => {
+        const second =
+          SlowlyToast.create("#demoToast");
+
+        showResult(
+          "resultIdempotent",
+          second === toast,
+          second === toast
+            ? "同一元素回傳同一實例"
+            : "重複建立了新實例"
+        );
+      });
+  </script>
+</body>
+</html>

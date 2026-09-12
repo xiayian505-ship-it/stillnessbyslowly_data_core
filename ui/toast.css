@@ -1,0 +1,22 @@
+/* =========================================================
+   慢慢的倉庫｜Toast v1.0.0
+   必要基礎樣式
+
+   只提供 Toast 正常顯示 / 隱藏需要的基礎規則。
+   宿主可自行覆寫位置、背景、顏色、圓角、陰影與動畫。
+========================================================= */
+
+.slowly-toast {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity var(--slowly-toast-duration, 180ms) ease,
+    visibility var(--slowly-toast-duration, 180ms) ease;
+}
+
+.slowly-toast.show {
+  opacity: 1;
+  visibility: visible;
+}

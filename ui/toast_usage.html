@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Toast 使用說明</title>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 820px;
+      margin: 32px auto;
+      padding: 0 16px;
+      line-height: 1.8;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, monospace;
+    }
+
+    pre {
+      overflow: auto;
+      padding: 14px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Toast 使用說明</h1>
+
+  <h2>載入</h2>
+
+  <pre><code>&lt;link
+  rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/ui/toast.css"
+&gt;
+
+&lt;script
+  src="https://lib.stillnessbyslowly.com/ui/toast.js"
+&gt;&lt;/script&gt;</code></pre>
+
+  <h2>HTML</h2>
+
+  <pre><code>&lt;div
+  id="toast"
+  class="slowly-toast"
+  role="status"
+&gt;&lt;/div&gt;</code></pre>
+
+  <p>
+    toast.css 只提供必要的顯示 / 隱藏狀態。
+    位置、背景、字色、圓角、陰影等視覺由宿主自行設定。
+  </p>
+
+  <h2>JavaScript</h2>
+
+  <pre><code>const toast =
+  SlowlyToast.create("#toast", {
+    duration: 1800
+  });
+
+toast.show("儲存完成");</code></pre>
+
+  <h2>單次覆寫 duration</h2>
+
+  <pre><code>toast.show("顯示久一點", {
+  duration: 3000
+});</code></pre>
+
+  <h2>手動隱藏</h2>
+
+  <pre><code>toast.hide();</code></pre>
+
+  <h2>不自動隱藏</h2>
+
+  <pre><code>toast.show("持續顯示", {
+  duration: 0
+});</code></pre>
+
+  <h2>宿主自訂外觀</h2>
+
+  <pre><code>.slowly-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #222;
+  color: #fff;
+}</code></pre>
+
+  <h2>CSS 變數</h2>
+
+  <pre><code>.slowly-toast {
+  --slowly-toast-duration: 220ms;
+}</code></pre>
+
+  <h2>API</h2>
+
+  <pre><code>SlowlyToast.create(target, options)
+
+instance.show(message, options)
+instance.hide()
+instance.destroy()</code></pre>
+
+  <p>
+    同一個元素重複呼叫 SlowlyToast.create()
+    會回傳同一個既有實例。
+  </p>
+</body>
+</html>
