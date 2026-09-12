@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Import Rollback｜使用說明</title>
+  <style>
+    body {
+      max-width: 920px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.7;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    pre {
+      overflow: auto;
+      padding: 14px;
+      border: 1px solid #ccc;
+      background: #f7f7f7;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: left;
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <h1>Import Rollback v1.0.0</h1>
+
+  <p>
+    Import Rollback 只管理匯入前快照的生命週期。
+    真正要保存什麼、如何恢復，由宿主透過
+    <code>capture</code> 與 <code>restore</code> 決定。
+  </p>
+
+  <p>本模組沒有 UI，因此不需要宿主載入 CSS。</p>
+
+  <h2>引用</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/data/import/import_rollback.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>基本使用</h2>
+  <pre><code>const rollback = ImportRollback.create({
+  capture: async () => {
+    return {
+      records: await collection.all()
+    };
+  },
+
+  restore: async snapshot => {
+    await collection.clear();
+
+    for (const record of snapshot.records) {
+      await collection.add(record);
+    }
+  }
+});
+
+await rollback.capture();
+
+const result = await SafeImport.run({
+  prepare,
+  validate,
+  commit,
+
+  rollback: async context => {
+    await rollback.rollback(context);
+  }
+});
+
+if (result.ok) {
+  rollback.release();
+}</code></pre>
+
+  <h2>含 Blob / 圖片的宿主</h2>
+  <pre><code>const importedImageIds = new Set();
+
+const rollback = ImportRollback.create({
+  capture: async () => {
+    const records = await collection.all();
+    const images = [];
+
+    for (const record of records) {
+      if (!record.imageId) continue;
+
+      const blob = await imageStore.getBlob(record.imageId);
+
+      if (blob) {
+        images.push({
+          id: record.imageId,
+          blob
+        });
+      }
+    }
+
+    return { records, images };
+  },
+
+  restore: async snapshot => {
+    for (const id of importedImageIds) {
+      await imageStore.remove(id).catch(() => {});
+    }
+
+    await collection.clear();
+
+    const restoredIds = new Map();
+
+    for (const image of snapshot.images) {
+      const id = await imageStore.save(image.blob, {
+        id: image.id
+      });
+
+      restoredIds.set(image.id, id);
+    }
+
+    for (const record of snapshot.records) {
+      const restored = { ...record };
+
+      if (restored.imageId && restoredIds.has(restored.imageId)) {
+        restored.imageId = restoredIds.get(restored.imageId);
+      }
+
+      await collection.add(restored);
+    }
+  }
+});</code></pre>
+
+  <h2>API</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>API</th>
+        <th>說明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>ImportRollback.create({ capture, restore })</code></td>
+        <td>建立一個匯入 rollback scope。</td>
+      </tr>
+      <tr>
+        <td><code>capture(context)</code></td>
+        <td>執行宿主提供的 capture，保存匯入前快照。</td>
+      </tr>
+      <tr>
+        <td><code>rollback(context)</code></td>
+        <td>用已保存的快照呼叫 restore；沒有快照時不執行恢復。</td>
+      </tr>
+      <tr>
+        <td><code>release()</code></td>
+        <td>匯入成功後丟棄快照。</td>
+      </tr>
+      <tr>
+        <td><code>ready</code></td>
+        <td>目前是否已保存快照。</td>
+      </tr>
+      <tr>
+        <td><code>restoring</code></td>
+        <td>目前是否正在恢復。</td>
+      </tr>
+      <tr>
+        <td><code>restored</code></td>
+        <td>最近一次 rollback 是否成功完成。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>設計邊界</h2>
+  <ul>
+    <li>不解析 JSON。</li>
+    <li>不讀寫 localStorage 或 IndexedDB。</li>
+    <li>不假設 snapshot 的資料格式。</li>
+    <li>不自動清除宿主資料。</li>
+    <li>不處理 UI、confirm 或 toast。</li>
+    <li>不取代 Safe Import；它只補上 rollback 快照生命週期。</li>
+  </ul>
+
+  <script src="./import_rollback.js"></script>
+</body>
+</html>

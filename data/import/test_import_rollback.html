@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Import Rollback｜功能測試</title>
+  <style>
+    body {
+      max-width: 820px;
+      margin: 30px auto;
+      padding: 0 18px 50px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    button {
+      margin: 4px 6px 4px 0;
+      padding: 7px 10px;
+    }
+
+    .result {
+      margin: 8px 0 18px;
+      padding: 8px;
+      border-left: 3px solid #999;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Import Rollback v1.0.0 功能測試</h1>
+  <p>純功能驗證頁。</p>
+
+  <div id="tests"></div>
+
+  <script src="./import_rollback.js"></script>
+  <script>
+    "use strict";
+
+    const tests = [
+      ["capture 保存快照", async () => {
+        let source = ["old"];
+
+        const scope = ImportRollback.create({
+          capture: async () => [...source],
+          restore: async snapshot => {
+            source = [...snapshot];
+          }
+        });
+
+        await scope.capture();
+        source = ["new"];
+
+        return {
+          ready: scope.ready,
+          source,
+          pass:
+            scope.ready === true &&
+            source[0] === "new"
+        };
+      }],
+
+      ["rollback 還原", async () => {
+        let source = ["old"];
+
+        const scope = ImportRollback.create({
+          capture: async () => [...source],
+          restore: async snapshot => {
+            source = [...snapshot];
+          }
+        });
+
+        await scope.capture();
+        source = ["broken"];
+
+        const result = await scope.rollback();
+
+        return {
+          result,
+          source,
+          restored: scope.restored,
+          pass:
+            result.restored === true &&
+            source[0] === "old" &&
+            scope.restored === true
+        };
+      }],
+
+      ["沒有 snapshot 不執行 restore", async () => {
+        let restoreCount = 0;
+
+        const scope = ImportRollback.create({
+          capture: async () => [],
+          restore: async () => {
+            restoreCount += 1;
+          }
+        });
+
+        const result = await scope.rollback();
+
+        return {
+          result,
+          restoreCount,
+          pass:
+            result.restored === false &&
+            result.reason === "no-snapshot" &&
+            restoreCount === 0
+        };
+      }],
+
+      ["release 丟棄快照", async () => {
+        const scope = ImportRollback.create({
+          capture: async () => ["old"],
+          restore: async () => {}
+        });
+
+        await scope.capture();
+        const released = scope.release();
+
+        return {
+          released,
+          ready: scope.ready,
+          pass:
+            released === true &&
+            scope.ready === false
+        };
+      }],
+
+      ["capture context 傳入宿主", async () => {
+        let received = "";
+
+        const scope = ImportRollback.create({
+          capture: async context => {
+            received = context.id;
+            return [];
+          },
+          restore: async () => {}
+        });
+
+        await scope.capture({ id: "before-import" });
+
+        return {
+          received,
+          pass: received === "before-import"
+        };
+      }],
+
+      ["rollback context 傳入宿主", async () => {
+        let received = "";
+
+        const scope = ImportRollback.create({
+          capture: async () => [],
+          restore: async (snapshot, context) => {
+            received = context.reason;
+          }
+        });
+
+        await scope.capture();
+        await scope.rollback({
+          reason: "commit-failed"
+        });
+
+        return {
+          received,
+          pass: received === "commit-failed"
+        };
+      }],
+
+      ["rollback 失敗時 restoring 仍回復 false", async () => {
+        const scope = ImportRollback.create({
+          capture: async () => [],
+          restore: async () => {
+            throw new Error("restore failed");
+          }
+        });
+
+        await scope.capture();
+
+        let message = "";
+
+        try {
+          await scope.rollback();
+        } catch (error) {
+          message = error.message;
+        }
+
+        return {
+          message,
+          restoring: scope.restoring,
+          restored: scope.restored,
+          pass:
+            message === "restore failed" &&
+            scope.restoring === false &&
+            scope.restored === false
+        };
+      }],
+
+      ["不同 scope 互不干擾", async () => {
+        const first = ImportRollback.create({
+          capture: async () => ["first"],
+          restore: async () => {}
+        });
+
+        const second = ImportRollback.create({
+          capture: async () => ["second"],
+          restore: async () => {}
+        });
+
+        await first.capture();
+
+        return {
+          firstReady: first.ready,
+          secondReady: second.ready,
+          pass:
+            first.ready === true &&
+            second.ready === false
+        };
+      }]
+    ];
+
+    const box = document.querySelector("#tests");
+
+    tests.forEach(([title, run], index) => {
+      const section = document.createElement("section");
+      const heading = document.createElement("h2");
+      const button = document.createElement("button");
+      const result = document.createElement("div");
+
+      heading.textContent = `${index + 1}. ${title}`;
+      button.type = "button";
+      button.textContent = "執行";
+      result.className = "result";
+
+      button.addEventListener("click", async () => {
+        try {
+          result.textContent =
+            JSON.stringify(await run(), null, 2);
+        } catch (error) {
+          result.textContent = `ERROR: ${error.message}`;
+        }
+      });
+
+      section.append(heading, button, result);
+      box.appendChild(section);
+    });
+  </script>
+</body>
+</html>
