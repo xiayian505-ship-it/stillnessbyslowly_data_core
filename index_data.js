@@ -371,6 +371,26 @@ window.SlowlyLibraryIndex = [
             ]
           }
         ]
+      },
+      {
+        "id": "blob",
+        "title": "Blob",
+        "items": [
+          {
+            "title": "Blob Data URL",
+            "desc": "通用 Blob 與 Data URL 雙向轉換工具，提供 Blob → Data URL 與 Data URL → Blob；支援 base64 與一般 percent-encoded Data URL，不綁定圖片、JSON 備份、IndexedDB 或 UI。",
+            "links": [
+              {
+                "label": "blob_data_url.js",
+                "href": "https://lib.stillnessbyslowly.com/data/blob/blob_data_url.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/blob/test_blob_data_url.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
