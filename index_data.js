@@ -701,6 +701,28 @@ window.SlowlyLibraryIndex = [
             "href": "https://lib.stillnessbyslowly.com/ui/test_html_escape.html"
           }
         ]
+      },
+      {
+        "title": "Toast",
+        "desc": "通用 Toast UI 元件，提供訊息顯示、手動隱藏、自動隱藏、重複顯示時重設計時器與同元素實例重用；核心負責顯示狀態與行為，必要基礎 CSS 僅處理顯示／隱藏，位置、背景、顏色、圓角、陰影等視覺由宿主自行決定。",
+        "links": [
+          {
+            "label": "toast.js",
+            "href": "https://lib.stillnessbyslowly.com/ui/toast.js"
+          },
+          {
+            "label": "toast.css",
+            "href": "https://lib.stillnessbyslowly.com/ui/toast.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/ui/test_toast.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/ui/toast_usage.html"
+          }
+        ]
       }
     ]
   },
