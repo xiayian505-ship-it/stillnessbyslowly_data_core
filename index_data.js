@@ -389,6 +389,24 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/blob/test_blob_data_url.html"
               }
             ]
+          },
+          {
+            "title": "Blob URL Scope",
+            "desc": "通用 Object URL 生命週期管理工具，將 URL.createObjectURL() 建立的暫時 URL 綁定到獨立 scope，提供單筆回收、整批清除、scope 銷毀、持有狀態與有效狀態查詢；不綁定圖片、IndexedDB、DOM 或非同步 render。",
+            "links": [
+              {
+                "label": "blob_url_scope.js",
+                "href": "https://lib.stillnessbyslowly.com/data/blob/blob_url_scope.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/blob/test_blob_url_scope.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/blob/blob_url_scope_usage.html"
+              }
+            ]
           }
         ]
       }
