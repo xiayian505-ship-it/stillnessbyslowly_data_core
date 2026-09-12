@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>test_favorite</title>
+  <link rel="stylesheet" href="./favorite.css">
+</head>
+<body>
+  <h1>Slowly Favorite test</h1>
+
+  <p>
+    <button id="a" class="slowly-favorite" data-slowly-favorite data-favorite-id="a" aria-pressed="false">★ A</button>
+    <button id="b" class="slowly-favorite" data-slowly-favorite data-favorite-id="b" aria-pressed="true">★ B</button>
+  </p>
+
+  <p>
+    <button id="setA">A = true</button>
+    <button id="unsetA">A = false</button>
+    <button id="toggleB">toggle B</button>
+  </p>
+
+  <pre id="log"></pre>
+
+  <script src="./favorite.js"></script>
+  <script>
+    const instances = SlowlyFavorite.createAll();
+    const a = instances[0];
+    const b = instances[1];
+    const log = document.querySelector('#log');
+
+    function print(text) {
+      log.textContent += text + '\n';
+    }
+
+    document.addEventListener('slowlyfavoritechange', (event) => {
+      print(event.detail.id + ': ' + event.detail.active);
+    });
+
+    document.querySelector('#setA').onclick = () => a.set(true);
+    document.querySelector('#unsetA').onclick = () => a.set(false);
+    document.querySelector('#toggleB').onclick = () => b.toggle();
+  </script>
+</body>
+</html>

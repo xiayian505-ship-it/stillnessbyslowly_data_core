@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Slowly Favorite｜使用說明</title>
+  <link rel="stylesheet" href="./favorite.css">
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 16px; line-height: 1.7; }
+    code, pre { background: #f4f4f4; }
+    pre { padding: 12px; overflow: auto; }
+    section { margin: 32px 0; }
+  </style>
+</head>
+<body>
+  <h1>Slowly Favorite</h1>
+  <p>通用「最愛／收藏／釘選」UI 狀態積木。只負責互動狀態，不負責儲存資料。</p>
+
+  <section>
+    <h2>載入</h2>
+    <pre><code>&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/favorite.css"&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/ui/favorite.js"&gt;&lt;/script&gt;</code></pre>
+  </section>
+
+  <section>
+    <h2>最小用法</h2>
+    <button class="slowly-favorite" data-slowly-favorite data-favorite-id="product-001" aria-pressed="false">
+      <span aria-hidden="true">★</span>
+      <span data-favorite-label>最愛</span>
+    </button>
+
+    <pre><code>const favorite = SlowlyFavorite.create('[data-favorite-id="product-001"]', {
+  inactiveLabel: '最愛',
+  activeLabel: '已最愛'
+});</code></pre>
+  </section>
+
+  <section>
+    <h2>由宿主寫入既有資料</h2>
+    <pre><code>const favorite = SlowlyFavorite.create('#favoriteButton', {
+  initial: product.favorite,
+  onChange({ active }) {
+    product.favorite = active;
+    // 這裡交給宿主自己的 Storage / CRUD 儲存
+  }
+});</code></pre>
+  </section>
+
+  <section>
+    <h2>同步外部狀態</h2>
+    <pre><code>favorite.set(true);              // 會觸發 change
+favorite.set(false, { silent: true }); // 只更新 UI
+favorite.toggle();
+console.log(favorite.active);</code></pre>
+  </section>
+
+  <section>
+    <h2>批次初始化</h2>
+    <pre><code>SlowlyFavorite.createAll();
+// 預設尋找 [data-slowly-favorite]</code></pre>
+  </section>
+
+  <section>
+    <h2>事件</h2>
+    <pre><code>document.addEventListener('slowlyfavoritechange', (event) =&gt; {
+  console.log(event.detail.id);
+  console.log(event.detail.active);
+});</code></pre>
+  </section>
+
+  <section>
+    <h2>設計原則</h2>
+    <ul>
+      <li>不綁商品、圖片、文字或任何資料類型。</li>
+      <li>宿主只要能提供一個 ID，就能掛上 Favorite UI。</li>
+      <li>不自行寫 localStorage；持久化交給宿主既有資料層。</li>
+      <li>CSS 只提供必要互動骨架，外觀由宿主決定。</li>
+    </ul>
+  </section>
+
+  <script src="./favorite.js"></script>
+  <script>
+    SlowlyFavorite.createAll(null, {
+      inactiveLabel: '最愛',
+      activeLabel: '已最愛'
+    });
+  </script>
+</body>
+</html>

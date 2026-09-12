@@ -1,0 +1,23 @@
+/* Slowly Favorite | essential UI only */
+.slowly-favorite {
+  --sfav-size: 2rem;
+  --sfav-gap: .35rem;
+  --sfav-radius: .5rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sfav-gap);
+  min-width: var(--sfav-size);
+  min-height: var(--sfav-size);
+  padding: 0 .5rem;
+  border-radius: var(--sfav-radius);
+  cursor: pointer;
+  user-select: none;
+}
+
+.slowly-favorite[disabled],
+.slowly-favorite[aria-disabled="true"] {
+  cursor: default;
+  opacity: .55;
+}
