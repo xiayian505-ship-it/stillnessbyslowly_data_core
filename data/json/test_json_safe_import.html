@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Safe Import 功能測試</title>
+</head>
+<body>
+  <h1>Safe Import 功能測試</h1>
+  <p>只測流程，不做外觀。</p>
+
+  <button type="button" data-test="success">1. 全部成功</button>
+  <button type="button" data-test="prepare-error">2. Prepare 失敗</button>
+  <button type="button" data-test="validate-false">3. Validate 不通過</button>
+  <button type="button" data-test="commit-error">4. Commit 失敗／無 Rollback</button>
+  <button type="button" data-test="rollback-success">5. Commit 失敗／Rollback 成功</button>
+  <button type="button" data-test="rollback-error">6. Rollback 失敗</button>
+
+  <pre id="output">請選擇測試。</pre>
+
+  <script src="./json_safe_import.js"></script>
+  <script>
+    "use strict";
+
+    const output = document.querySelector("#output");
+
+    function show(name, result, log){
+      output.textContent = [
+        name,
+        "",
+        "執行順序：",
+        log.join(" → "),
+        "",
+        "結果：",
+        JSON.stringify({
+          ok: result.ok,
+          stage: result.stage,
+          prepared: result.prepared,
+          value: result.value,
+          error: result.error?.message || null,
+          rolledBack: result.rolledBack,
+          rollbackValue: result.rollbackValue,
+          rollbackError: result.rollbackError?.message || null
+        }, null, 2)
+      ].join("\n");
+    }
+
+    async function runTest(type){
+      const log = [];
+
+      const common = {
+        prepare: async () => {
+          log.push("prepare");
+          return { items: [1, 2, 3] };
+        },
+        validate: async prepared => {
+          log.push("validate");
+          return Array.isArray(prepared.items);
+        },
+        commit: async prepared => {
+          log.push("commit");
+          return { saved: prepared.items.length };
+        }
+      };
+
+      let name = "";
+      let options = common;
+
+      if(type === "success"){
+        name = "1. 全部成功";
+      }
+
+      if(type === "prepare-error"){
+        name = "2. Prepare 失敗";
+        options = {
+          ...common,
+          prepare: async () => {
+            log.push("prepare");
+            throw new Error("prepare boom");
+          }
+        };
+      }
+
+      if(type === "validate-false"){
+        name = "3. Validate 不通過";
+        options = {
+          ...common,
+          validate: async () => {
+            log.push("validate");
+            return false;
+          }
+        };
+      }
+
+      if(type === "commit-error"){
+        name = "4. Commit 失敗／無 Rollback";
+        options = {
+          ...common,
+          commit: async () => {
+            log.push("commit");
+            throw new Error("commit boom");
+          }
+        };
+      }
+
+      if(type === "rollback-success"){
+        name = "5. Commit 失敗／Rollback 成功";
+        options = {
+          ...common,
+          commit: async () => {
+            log.push("commit");
+            throw new Error("commit boom");
+          },
+          rollback: async (error, prepared) => {
+            log.push("rollback");
+            return {
+              restored: true,
+              reason: error.message,
+              itemCount: prepared.items.length
+            };
+          }
+        };
+      }
+
+      if(type === "rollback-error"){
+        name = "6. Rollback 失敗";
+        options = {
+          ...common,
+          commit: async () => {
+            log.push("commit");
+            throw new Error("commit boom");
+          },
+          rollback: async () => {
+            log.push("rollback");
+            throw new Error("rollback boom");
+          }
+        };
+      }
+
+      const result = await SafeImport.run(options);
+      show(name, result, log);
+    }
+
+    document.addEventListener("click", event => {
+      const button = event.target.closest("[data-test]");
+      if(button){
+        runTest(button.dataset.test);
+      }
+    });
+  </script>
+</body>
+</html>
