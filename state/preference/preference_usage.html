@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preference 使用說明</title>
+</head>
+<body>
+  <h1>Preference</h1>
+
+  <p>
+    通用 boolean 偏好狀態核心，使用 localStorage 保存使用者選擇。
+    不綁定 DOM、Switch、Checkbox、Effects 或特定功能。
+  </p>
+
+  <h2>載入</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/state/preference.js"&gt;&lt;/script&gt;</code></pre>
+
+  <p>載入後使用 <code>window.Preference</code>。</p>
+
+  <h2>建立</h2>
+  <pre><code>const effectPreference = Preference.create({
+  key: "impulse-list:effects",
+  defaultValue: true
+});</code></pre>
+
+  <h2>API</h2>
+
+  <h3>get()</h3>
+  <p>讀取目前偏好。若尚未儲存，回傳 <code>defaultValue</code>。</p>
+  <pre><code>effectPreference.get(); // true / false</code></pre>
+
+  <h3>set(value)</h3>
+  <p>寫入偏好並回傳寫入後的 boolean 值。</p>
+  <pre><code>effectPreference.set(false);</code></pre>
+
+  <h3>toggle()</h3>
+  <p>反轉目前偏好、保存並回傳新值。</p>
+  <pre><code>effectPreference.toggle();</code></pre>
+
+  <h2>搭配 Electric Border</h2>
+  <pre><code>const rgbPreference = Preference.create({
+  key: "impulse-list:electric-border",
+  defaultValue: true
+});
+
+card.classList.toggle(
+  "is-active",
+  rgbPreference.get()
+);</code></pre>
+
+  <p>
+    Preference 只決定「使用者選了什麼」；
+    Electric Border 仍只負責效果本身。
+  </p>
+
+  <h2>自訂 storage</h2>
+  <p>
+    預設使用 <code>window.localStorage</code>。
+    若宿主提供具有 <code>getItem()</code> 與 <code>setItem()</code> 的 storage，
+    可透過 <code>storage</code> 傳入。
+  </p>
+
+  <pre><code>const memoryPreference = Preference.create({
+  key: "demo",
+  defaultValue: false,
+  storage: customStorage
+});</code></pre>
+
+  <h2>注意</h2>
+  <ul>
+    <li><code>key</code> 必填，且必須是非空字串。</li>
+    <li><code>defaultValue</code> 未設定時預設為 <code>false</code>。</li>
+    <li>只處理 boolean 偏好，不處理文字、數字或複合設定。</li>
+    <li>不建立 UI；Checkbox、Switch、按鈕等由宿主自行決定。</li>
+  </ul>
+</body>
+</html>

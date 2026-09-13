@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preference 功能測試</title>
+</head>
+<body>
+  <h1>Preference 功能測試</h1>
+
+  <p>測試 key：<code>slowly-test-preference</code></p>
+  <p>目前值：<strong id="value"></strong></p>
+
+  <button id="setTrue" type="button">set(true)</button>
+  <button id="setFalse" type="button">set(false)</button>
+  <button id="toggle" type="button">toggle()</button>
+
+  <h2>測試結果</h2>
+  <pre id="result"></pre>
+
+  <script src="./preference.js"></script>
+  <script>
+    const pref = Preference.create({
+      key: "slowly-test-preference",
+      defaultValue: true
+    });
+
+    const valueEl = document.getElementById("value");
+    const resultEl = document.getElementById("result");
+
+    function render() {
+      valueEl.textContent = String(pref.get());
+    }
+
+    function runTests() {
+      const testKey = "slowly-test-preference-auto";
+      localStorage.removeItem(testKey);
+
+      const testPref = Preference.create({
+        key: testKey,
+        defaultValue: true
+      });
+
+      const results = [];
+
+      results.push([
+        "defaultValue",
+        testPref.get() === true
+      ]);
+
+      results.push([
+        "set(false)",
+        testPref.set(false) === false && testPref.get() === false
+      ]);
+
+      results.push([
+        "toggle()",
+        testPref.toggle() === true && testPref.get() === true
+      ]);
+
+      const sameKey = Preference.create({
+        key: testKey,
+        defaultValue: false
+      });
+
+      results.push([
+        "same key persistence",
+        sameKey.get() === true
+      ]);
+
+      localStorage.removeItem(testKey);
+
+      resultEl.textContent = results
+        .map(([name, passed]) => `${passed ? "PASS" : "FAIL"}  ${name}`)
+        .join("\n");
+    }
+
+    document.getElementById("setTrue").addEventListener("click", () => {
+      pref.set(true);
+      render();
+    });
+
+    document.getElementById("setFalse").addEventListener("click", () => {
+      pref.set(false);
+      render();
+    });
+
+    document.getElementById("toggle").addEventListener("click", () => {
+      pref.toggle();
+      render();
+    });
+
+    render();
+    runTests();
+  </script>
+</body>
+</html>
