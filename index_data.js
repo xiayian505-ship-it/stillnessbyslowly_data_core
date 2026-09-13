@@ -5,6 +5,28 @@ window.SlowlyLibraryIndex = [
     "title": "完成品使用",
     "items": [
       {
+        "title": "Slowly QRCode Print",
+        "desc": "可直接嵌入網站使用的 QRCode 列印完成品，支援一般 QRCode／Wi-Fi QRCode、多尺寸預覽、高解析 QR 內容正規化、固定 quiet zone、A4 排版與實際尺寸列印；列印尺寸曾以實體尺規校正。",
+        "links": [
+          {
+            "label": "QRCode Print Component",
+            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/qrcode_print_component.html"
+          },
+          {
+            "label": "qrcode_print_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/qrcode_print_component.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/test_qrcode_print_component.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/qrcode_print_component_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly Calendar",
         "desc": "可直接嵌入網站使用的完整萬年曆元件，整合西曆、農曆、節慶與二十四節氣，支援一個月、三週、兩週與一週顯示，並依容器寬度調整資訊密度。",
         "links": [
