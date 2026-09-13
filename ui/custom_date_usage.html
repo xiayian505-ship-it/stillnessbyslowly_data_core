@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Slowly Custom Date｜使用說明</title>
+  <link rel="stylesheet" href="./custom_date.css">
+</head>
+<body>
+  <h1>Slowly Custom Date v1</h1>
+
+  <p>
+    取代瀏覽器原生 date 的可見介面，但保留原生
+    <code>&lt;input type="date"&gt;</code> 作為真正資料欄位。
+  </p>
+
+  <h2>載入順序</h2>
+  <pre><code>&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/custom_date.css"&gt;
+
+&lt;input type="date" id="myDate" data-slowly-date&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/ui/custom_date.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  SlowlyDate.create("#myDate");
+&lt;/script&gt;</code></pre>
+
+  <h2>功能範圍</h2>
+  <ul>
+    <li>年月切換</li>
+    <li>日期選取</li>
+    <li>今天提示與「今天」按鈕</li>
+    <li>已選日期</li>
+    <li>清除</li>
+    <li>同步原生 input value</li>
+    <li>觸發原生 input / change 事件</li>
+    <li>支援 min / max / disabled</li>
+  </ul>
+
+  <h2>單一實例</h2>
+  <pre><code>const myDate = SlowlyDate.create("#myDate");</code></pre>
+
+  <h2>批次建立</h2>
+  <pre><code>const dates = SlowlyDate.createAll(
+  'input[type="date"][data-slowly-date]'
+);</code></pre>
+
+  <h2>API</h2>
+  <pre><code>instance.sync();
+instance.open();
+instance.close();
+instance.destroy();</code></pre>
+
+  <h2>宿主覆寫顏色</h2>
+  <pre><code>#dateArea .slowly-date{
+  --sd-bg:var(--panel);
+  --sd-text:var(--ink);
+  --sd-border:var(--line);
+  --sd-hover:var(--surface-soft);
+  --sd-selected-bg:var(--accent-soft);
+  --sd-selected-text:var(--accent);
+  --sd-focus:var(--accent);
+}</code></pre>
+
+  <p>
+    Custom Date 只負責結構與互動；圓角、陰影、字級、網站配色等視覺風格由宿主決定。
+  </p>
+</body>
+</html>
