@@ -1,0 +1,34 @@
+慢慢的倉庫｜External / 外部
+QRCode 外部工具
+
+目前主力：QRious
+版本：4.0.2
+角色：primary
+狀態：active
+最後確認：2026-09-14
+
+用途：
+- 一般 QRCode
+- Wi-Fi QRCode
+- Canvas 輸出
+- PNG 圖片
+- A4 排版列印
+
+CDN：
+https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js
+
+最小使用：
+<script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+
+new QRious({
+    element: canvas,
+    value: text,
+    size: 200,
+    level: "H"
+});
+
+備註：
+- 目前 QRCode 工具優先使用 QRious。
+- 兩週前的 Wi-Fi QRCode／A4 排版列印工具仍使用 QRious 4.0.2。
+- TXT 給人閱讀；JSON 作為機器可讀的 External 資料來源。
+- 外部套件本體不收進軍火庫，只保存已驗證的版本、入口與使用紀錄。
