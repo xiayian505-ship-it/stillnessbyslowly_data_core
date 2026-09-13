@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Biquad Filter Test</title>
+</head>
+<body>
+<h1>Biquad Filter Test</h1>
+<p>功能驗證頁，不做額外美化。</p>
+<button id="play">播放 lowpass 測試</button>
+<pre id="out"></pre>
+<script src="../context/audio_context.js"></script>
+<script src="../source/oscillator.js"></script>
+<script src="../gain/gain.js"></script>
+<script src="./biquad_filter.js"></script>
+<script>
+"use strict";
+const out = document.getElementById("out");
+
+document.getElementById("play").onclick = async () => {
+  const ctx = await SlowlyAudioContext.resume();
+  const osc = SlowlyAudioOscillator.create(ctx, { type: "sawtooth", frequency: 220 });
+  const gain = SlowlyAudioGain.create(ctx, 0.04);
+  const filter = SlowlyAudioBiquadFilter.create(ctx, {
+    type: "lowpass",
+    frequency: 900,
+    Q: 1
+  });
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.2);
+
+  out.textContent = `type: ${filter.type}\nfrequency: ${filter.frequency.value}\nQ: ${filter.Q.value}`;
+};
+
+</script>
+</body>
+</html>
