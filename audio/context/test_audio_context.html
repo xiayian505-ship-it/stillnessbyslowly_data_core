@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audio Context Test</title></head><body>
+<h1>Audio Context Test</h1>
+<p>功能驗證頁，不做額外美化。</p>
+<button id="create">create</button> <button id="resume">resume</button> <button id="suspend">suspend</button> <button id="close">close</button>
+<pre id="out"></pre>
+<script src="../context/audio_context.js"></script>
+<script>"use strict"; const out=document.querySelector("#out"); 
+const A = SlowlyAudioContext;
+document.querySelector("#out").textContent = `supported: ${A.isSupported()}\nstate: ${A.state()}`;
+document.querySelector("#create").onclick = () => { A.create(); out.textContent = `state: ${A.state()}`; };
+document.querySelector("#resume").onclick = async () => { await A.resume(); out.textContent = `state: ${A.state()}\ntime: ${A.currentTime()}`; };
+document.querySelector("#suspend").onclick = async () => { await A.suspend(); out.textContent = `state: ${A.state()}`; };
+document.querySelector("#close").onclick = async () => { await A.close(); out.textContent = `state: ${A.state()}`; };
+</script>
+</body></html>
