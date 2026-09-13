@@ -1365,6 +1365,54 @@ window.SlowlyLibraryIndex = [
     ]
   },
   {
+    "page": "audio",
+    "title": "Audio",
+    "groups": [
+      {
+        "id": "context",
+        "title": "Context / 音訊環境",
+        "subpage": true,
+        "desc": "AudioContext 建立、啟用、暫停、關閉與狀態管理等音訊環境核心。",
+        "items": []
+      },
+      {
+        "id": "pitch",
+        "title": "Pitch / 音高",
+        "subpage": true,
+        "desc": "音名、MIDI 與頻率之間的純資料與數值轉換工具。",
+        "items": []
+      },
+      {
+        "id": "source",
+        "title": "Source / 音源",
+        "subpage": true,
+        "desc": "Oscillator 等聲音來源的建立與基礎控制。",
+        "items": []
+      },
+      {
+        "id": "gain",
+        "title": "Gain / 增益",
+        "subpage": true,
+        "desc": "音量增益與 attack、release 等包絡控制工具。",
+        "items": []
+      },
+      {
+        "id": "filter",
+        "title": "Filter / 濾波",
+        "subpage": true,
+        "desc": "BiquadFilter 等通用音訊濾波處理工具。",
+        "items": []
+      },
+      {
+        "id": "tone",
+        "title": "Tone / 單音",
+        "subpage": true,
+        "desc": "以頻率、波形、時長、增益與滑音等參數播放單一合成音的組合工具。",
+        "items": []
+      }
+    ]
+  },
+  {
     "page": "comment",
     "title": "Comment",
     "items": [
