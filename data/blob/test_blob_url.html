@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>Blob URL 功能測試</title>
+</head>
+<body>
+  <h1>Blob URL 功能測試</h1>
+
+  <button id="createBtn" type="button">建立 Blob URL</button>
+  <button id="revokeBtn" type="button" disabled>回收 Blob URL</button>
+
+  <p id="status">尚未建立</p>
+  <a id="preview" target="_blank" rel="noopener"></a>
+
+  <script src="./blob_url.js"></script>
+  <script>
+    let currentUrl = "";
+
+    document.getElementById("createBtn").addEventListener("click", () => {
+      if (currentUrl) {
+        SlowlyBlobURL.revoke(currentUrl);
+      }
+
+      const blob = new Blob(
+        ["慢慢的倉庫｜Blob URL 測試"],
+        { type: "text/plain;charset=utf-8" }
+      );
+
+      currentUrl = SlowlyBlobURL.create(blob);
+
+      const preview = document.getElementById("preview");
+      preview.href = currentUrl;
+      preview.textContent = "開啟暫時 URL";
+
+      document.getElementById("status").textContent = currentUrl;
+      document.getElementById("revokeBtn").disabled = false;
+    });
+
+    document.getElementById("revokeBtn").addEventListener("click", () => {
+      if (!currentUrl) return;
+
+      SlowlyBlobURL.revoke(currentUrl);
+      currentUrl = "";
+
+      const preview = document.getElementById("preview");
+      preview.removeAttribute("href");
+      preview.textContent = "";
+
+      document.getElementById("status").textContent = "已回收";
+      document.getElementById("revokeBtn").disabled = true;
+    });
+
+    window.addEventListener("beforeunload", () => {
+      if (currentUrl) SlowlyBlobURL.revoke(currentUrl);
+    });
+  </script>
+</body>
+</html>

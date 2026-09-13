@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>Blob URL 使用說明</title>
+</head>
+<body>
+  <h1>Blob URL</h1>
+  <p>將 Blob / File 建立為瀏覽器暫時 Object URL，並在使用完畢後回收。</p>
+
+  <h2>載入</h2>
+  <pre>&lt;script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"&gt;&lt;/script&gt;</pre>
+
+  <h2>建立 URL</h2>
+  <pre>const url = SlowlyBlobURL.create(blob);</pre>
+
+  <h2>回收 URL</h2>
+  <pre>SlowlyBlobURL.revoke(url);</pre>
+
+  <h2>搭配 Canvas PNG</h2>
+  <pre>const blob = await SlowlyCanvasPNG.toBlob(canvas);
+const url = SlowlyBlobURL.create(blob);
+
+previewImage.src = url;
+
+// 確定不再使用後
+SlowlyBlobURL.revoke(url);</pre>
+
+  <h2>API</h2>
+  <pre>SlowlyBlobURL.version
+SlowlyBlobURL.create(blob)
+SlowlyBlobURL.revoke(url)</pre>
+
+  <p>不負責建立 Blob，也不負責預覽、下載或儲存。</p>
+</body>
+</html>
