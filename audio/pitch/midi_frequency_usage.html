@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIDI Frequency 使用說明</title>
+</head>
+<body>
+<h1>MIDI Frequency</h1>
+<p>MIDI 音高編號與頻率之間的純函式換算，不依賴 AudioContext。</p>
+<h2>最小使用</h2>
+<pre><code>const hz = SlowlyAudioMidiFrequency.midiToFrequency(69);
+// 440
+
+const midi = SlowlyAudioMidiFrequency.frequencyToMidi(440, { round: true });
+// 69</code></pre>
+<p>版本：1.0.0</p>
+</body>
+</html>

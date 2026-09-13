@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Note Frequency Test</title>
+</head>
+<body>
+<h1>Note Frequency Test</h1>
+<p>功能驗證頁，不做額外美化。</p>
+<button id="run">測試音名</button>
+<pre id="out"></pre>
+<script src="./note_frequency.js"></script>
+<script>
+"use strict";
+const out = document.getElementById("out");
+
+document.getElementById("run").onclick = () => {
+  const notes = ["C4", "A4", "F#5", "Bb3"];
+  out.textContent = notes.map(note => {
+    const parsed = SlowlyAudioNoteFrequency.parse(note);
+    const hz = SlowlyAudioNoteFrequency.toFrequency(note);
+    return `${note} -> MIDI ${parsed.midi} -> ${hz.toFixed(2)} Hz`;
+  }).join("\n");
+};
+
+</script>
+</body>
+</html>

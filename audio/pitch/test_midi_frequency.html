@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIDI Frequency Test</title>
+</head>
+<body>
+<h1>MIDI Frequency Test</h1>
+<p>功能驗證頁，不做額外美化。</p>
+<button id="run">測試換算</button>
+<pre id="out"></pre>
+<script src="./midi_frequency.js"></script>
+<script>
+"use strict";
+const out = document.getElementById("out");
+
+document.getElementById("run").onclick = () => {
+  const a4 = SlowlyAudioMidiFrequency.midiToFrequency(69);
+  const c4 = SlowlyAudioMidiFrequency.midiToFrequency(60);
+  const midi = SlowlyAudioMidiFrequency.frequencyToMidi(440, { round: true });
+  out.textContent =
+    `MIDI 69 -> ${a4.toFixed(2)} Hz\n` +
+    `MIDI 60 -> ${c4.toFixed(2)} Hz\n` +
+    `440 Hz -> MIDI ${midi}`;
+};
+
+</script>
+</body>
+</html>
