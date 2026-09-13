@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>PNG Download 使用說明</title>
+</head>
+<body>
+  <h1>PNG Download</h1>
+  <p>下載 PNG Blob 或 PNG Data URL。Blob 下載會自動建立並釋放 Object URL。</p>
+
+  <h2>載入</h2>
+  <pre>&lt;script src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"&gt;&lt;/script&gt;</pre>
+
+  <h2>Blob</h2>
+  <pre>SlowlyPNGDownload.fromBlob(blob, "card.png");</pre>
+
+  <h2>Data URL</h2>
+  <pre>SlowlyPNGDownload.fromDataURL(dataURL, "card.png");</pre>
+
+  <h2>檔名</h2>
+  <pre>const safe = SlowlyPNGDownload.sanitizeFilename('作品:01');</pre>
+
+  <h2>API</h2>
+  <pre>
+SlowlyPNGDownload.version
+SlowlyPNGDownload.sanitizeFilename(name, fallback?)
+SlowlyPNGDownload.fromBlob(blob, filename?)
+SlowlyPNGDownload.fromDataURL(dataURL, filename?)
+  </pre>
+</body>
+</html>

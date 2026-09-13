@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>Canvas PNG 功能測試</title>
+</head>
+<body>
+  <h1>Canvas PNG 功能測試</h1>
+  <canvas id="canvas" width="320" height="180" style="border:1px solid #ccc"></canvas>
+  <p>
+    <button id="blobBtn">Canvas → PNG Blob</button>
+    <button id="urlBtn">Canvas → PNG Data URL</button>
+  </p>
+  <pre id="output"></pre>
+
+  <script src="./canvas_png.js"></script>
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const output = document.getElementById("output");
+
+    ctx.fillStyle = "#edf5f6";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#1f2c30";
+    ctx.font = "24px sans-serif";
+    ctx.fillText("慢慢 Canvas PNG", 34, 95);
+
+    document.getElementById("blobBtn").onclick = async () => {
+      const blob = await SlowlyCanvasPNG.toBlob(canvas);
+      output.textContent = `Blob: ${blob.type} / ${blob.size} bytes`;
+    };
+
+    document.getElementById("urlBtn").onclick = () => {
+      const url = SlowlyCanvasPNG.toDataURL(canvas);
+      output.textContent = url.slice(0, 80) + "...";
+    };
+  </script>
+</body>
+</html>
