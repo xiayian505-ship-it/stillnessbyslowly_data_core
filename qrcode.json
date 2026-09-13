@@ -1,0 +1,27 @@
+{
+  "category": "qrcode",
+  "title": "QRCode",
+  "preferred": "qrious",
+  "updatedAt": "2026-09-14",
+  "items": [
+    {
+      "id": "qrious",
+      "name": "QRious",
+      "version": "4.0.2",
+      "role": "primary",
+      "status": "active",
+      "checkedAt": "2026-09-14",
+      "used": true,
+      "usage": [
+        "一般 QRCode",
+        "Wi-Fi QRCode",
+        "Canvas 輸出",
+        "PNG 圖片",
+        "A4 排版列印"
+      ],
+      "cdn": "https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js",
+      "example": "new QRious({ element: canvas, value: text, size: 200, level: \"H\" });",
+      "note": "目前 QRCode 工具主力。兩週前的 Wi-Fi QRCode／A4 排版列印工具仍使用此版本。"
+    }
+  ]
+}
