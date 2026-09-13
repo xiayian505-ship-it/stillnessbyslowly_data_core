@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Electric Border</title>
+<link rel="stylesheet" href="./electric_border.css">
+<style>
+body{font-family:sans-serif;padding:24px}
+.row{display:flex;flex-wrap:wrap;gap:34px;margin:28px 0 44px}
+.box{width:180px;min-height:90px;padding:16px;border-radius:16px;border:1px solid #bbb;background:white}
+.square{border-radius:0;--slowly-electric-radius:0}
+.fast{--slowly-electric-speed:.8s}
+.thick{--slowly-electric-width:5px;--slowly-electric-blur:16px}
+.custom{--slowly-electric-color-1:rgb(255,30,30);--slowly-electric-color-2:rgb(255,220,0);--slowly-electric-color-3:rgb(0,210,255);--slowly-electric-color-4:rgb(120,50,255)}
+</style>
+</head>
+<body>
+<h1>Electric Border 功能測試</h1>
+<p>此頁只做功能驗證，不代表宿主視覺。</p>
+<h2>1. 未啟用</h2><div class="row"><div class="box slowly-electric-border">inactive</div></div>
+<h2>2. 啟用</h2><div class="row"><div class="box slowly-electric-border is-active">active</div></div>
+<h2>3. 速度</h2><div class="row"><div class="box slowly-electric-border is-active">2.4s</div><div class="box slowly-electric-border is-active fast">0.8s</div></div>
+<h2>4. 厚度與 blur</h2><div class="row"><div class="box slowly-electric-border is-active">預設</div><div class="box slowly-electric-border is-active thick">厚 / 大 blur</div></div>
+<h2>5. 自訂 RGB</h2><div class="row"><div class="box slowly-electric-border is-active custom">custom</div></div>
+<h2>6. 圓角</h2><div class="row"><div class="box slowly-electric-border is-active">圓角</div><div class="box square slowly-electric-border is-active">直角</div></div>
+<h2>7. 動態切換 active</h2>
+<button id="toggle" type="button">切換</button>
+<div class="row"><div id="toggleBox" class="box slowly-electric-border">target</div></div>
+<h2>8. Reduced Motion</h2><p>系統啟用「減少動態效果」時，光效保留但不旋轉。</p>
+<script>
+const box=document.getElementById("toggleBox");
+document.getElementById("toggle").addEventListener("click",()=>box.classList.toggle("is-active"));
+</script>
+</body></html>

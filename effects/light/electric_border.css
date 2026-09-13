@@ -1,0 +1,97 @@
+/* Slowly Effects | Light | Electric Border
+   Animated light travels around the host boundary.
+   Effect controls motion; host controls colors and strength.
+*/
+@property --slowly-electric-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.slowly-electric-border {
+  --slowly-electric-color-1: rgb(255, 70, 120);
+  --slowly-electric-color-2: rgb(80, 210, 255);
+  --slowly-electric-color-3: rgb(175, 90, 255);
+  --slowly-electric-color-4: rgb(90, 255, 180);
+  --slowly-electric-speed: 2.4s;
+  --slowly-electric-width: 2px;
+  --slowly-electric-blur: 10px;
+  --slowly-electric-opacity: .9;
+  --slowly-electric-radius: inherit;
+  --slowly-electric-angle: 0deg;
+  position: relative;
+  isolation: isolate;
+}
+
+.slowly-electric-border::before,
+.slowly-electric-border::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: var(--slowly-electric-radius);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+.slowly-electric-border::before {
+  z-index: 1;
+  inset: calc(var(--slowly-electric-width) * -1);
+  padding: var(--slowly-electric-width);
+  background: conic-gradient(
+    from var(--slowly-electric-angle),
+    transparent 0deg 32deg,
+    var(--slowly-electric-color-1) 50deg,
+    var(--slowly-electric-color-2) 82deg,
+    transparent 104deg 138deg,
+    var(--slowly-electric-color-3) 158deg,
+    var(--slowly-electric-color-4) 192deg,
+    transparent 214deg 258deg,
+    var(--slowly-electric-color-2) 278deg,
+    var(--slowly-electric-color-1) 312deg,
+    transparent 334deg 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.slowly-electric-border::after {
+  z-index: -1;
+  inset: calc((var(--slowly-electric-width) + var(--slowly-electric-blur)) * -1);
+  background: conic-gradient(
+    from var(--slowly-electric-angle),
+    transparent 0deg 28deg,
+    var(--slowly-electric-color-1) 50deg,
+    var(--slowly-electric-color-2) 84deg,
+    transparent 108deg 136deg,
+    var(--slowly-electric-color-3) 160deg,
+    var(--slowly-electric-color-4) 194deg,
+    transparent 218deg 256deg,
+    var(--slowly-electric-color-2) 280deg,
+    var(--slowly-electric-color-1) 314deg,
+    transparent 338deg 360deg
+  );
+  filter: blur(var(--slowly-electric-blur));
+}
+
+.slowly-electric-border.is-active::before,
+.slowly-electric-border.is-active::after {
+  opacity: var(--slowly-electric-opacity);
+  animation: slowly-electric-border-spin var(--slowly-electric-speed) linear infinite;
+}
+
+@keyframes slowly-electric-border-spin {
+  to { --slowly-electric-angle: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-electric-border.is-active::before,
+  .slowly-electric-border.is-active::after {
+    animation: none;
+  }
+}

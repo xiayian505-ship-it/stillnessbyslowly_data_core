@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Electric Border 使用說明</title>
+<link rel="stylesheet" href="./electric_border.css">
+<style>
+body{font-family:sans-serif;line-height:1.7;max-width:760px;margin:32px auto;padding:0 16px}
+pre{padding:12px;overflow:auto;background:#f3f3f3}
+.demo{width:240px;min-height:120px;padding:20px;margin:28px 14px;border-radius:18px;background:white;border:1px solid #ddd}
+</style>
+</head>
+<body>
+<h1>Electric Border v1.0.0</h1>
+<p>沿宿主外圍持續移動的彩色光帶。零件只負責光效與動畫；宿主負責尺寸、背景、內容、顏色與強度。</p>
+<h2>基本使用</h2>
+<pre>&lt;article class="slowly-electric-border is-active"&gt;...&lt;/article&gt;</pre>
+<div class="demo slowly-electric-border is-active">active：彩色光沿外圍移動</div>
+<h2>啟用 / 停用</h2>
+<p>加入 <code>.is-active</code> 啟用；移除即停用。零件不綁 Favorite 或任何業務狀態。</p>
+<h2>宿主可調變數</h2>
+<pre>--slowly-electric-color-1
+--slowly-electric-color-2
+--slowly-electric-color-3
+--slowly-electric-color-4
+--slowly-electric-speed
+--slowly-electric-width
+--slowly-electric-blur
+--slowly-electric-opacity
+--slowly-electric-radius</pre>
+<h2>宿主覆寫範例</h2>
+<pre>.my-card {
+  --slowly-electric-color-1: rgb(255, 0, 90);
+  --slowly-electric-color-2: rgb(0, 210, 255);
+  --slowly-electric-color-3: rgb(170, 70, 255);
+  --slowly-electric-color-4: rgb(80, 255, 160);
+  --slowly-electric-speed: 1.8s;
+  --slowly-electric-width: 3px;
+  --slowly-electric-blur: 14px;
+  --slowly-electric-opacity: .95;
+  --slowly-electric-radius: 20px;
+}</pre>
+<h2>邊界</h2>
+<p>不控制宿主背景、不控制尺寸、不判斷 Favorite、不操作 DOM、不保存狀態。宿主自行決定何時切換 <code>.is-active</code>。</p>
+<p>使用者偏好減少動態效果時，動畫停止並保留靜態光效。</p>
+</body></html>
