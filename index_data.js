@@ -435,6 +435,24 @@ window.SlowlyLibraryIndex = [
             ]
           },
           {
+            "title": "Blob URL",
+            "desc": "通用 Blob / File 暫時 Object URL 工具，提供 URL.createObjectURL() 建立與 URL.revokeObjectURL() 回收；不負責建立 Blob，也不綁定圖片、PNG、PDF、JSON、ZIP、預覽、下載或儲存。",
+            "links": [
+              {
+                "label": "blob_url.js",
+                "href": "https://lib.stillnessbyslowly.com/data/blob/blob_url.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/blob/test_blob_url.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/blob/blob_url_usage.html"
+              }
+            ]
+          },
+          {
             "title": "Blob URL Scope",
             "desc": "通用 Object URL 生命週期管理工具，將 URL.createObjectURL() 建立的暫時 URL 綁定到獨立 scope，提供單筆回收、整批清除、scope 銷毀、持有狀態與有效狀態查詢；不綁定圖片、IndexedDB、DOM 或非同步 render。",
             "links": [
