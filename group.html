@@ -31,6 +31,7 @@
   const params = new URLSearchParams(window.location.search);
   const pageName = params.get("page");
   const groupId = params.get("group");
+  const targetCategory = params.get("category");
   const targetItem = params.get("item");
   const libraryData = window.SlowlyLibraryIndex || [];
 
@@ -75,19 +76,78 @@
     document.getElementById("group-crumb").textContent = group.title;
     document.getElementById("group-title").textContent = group.title;
     document.getElementById("group-desc").textContent = group.desc || "";
-    document.getElementById("group-count").textContent = `${group.items?.length || 0} 個積木`;
-
     const list = document.getElementById("group-list");
-    (group.items || []).forEach((item, index) => list.appendChild(createItem(item, index)));
 
-    if (targetItem !== null) {
-      const card = list.querySelector(`[data-item-index="${CSS.escape(targetItem)}"]`);
-      if (card) {
-        requestAnimationFrame(() => {
-          card.scrollIntoView({ behavior: "smooth", block: "center" });
-          card.classList.add("search-target");
-          window.setTimeout(() => card.classList.remove("search-target"), 1800);
+    if (Array.isArray(group.groups)) {
+      const total = group.groups.reduce((sum, category) => sum + (category.items?.length || 0), 0);
+      document.getElementById("group-count").textContent =
+        `${group.groups.length} 個分類 · ${total} 個外部工具`;
+
+      group.groups.forEach((category) => {
+        const section = document.createElement("section");
+        section.className = "subsection";
+        section.dataset.category = category.id;
+
+        const title = document.createElement("h2");
+        title.className = "subsection-title";
+        title.textContent = category.title;
+
+        section.appendChild(title);
+
+        if (category.desc) {
+          const desc = document.createElement("p");
+          desc.className = "intro";
+          desc.textContent = category.desc;
+          section.appendChild(desc);
+        }
+
+        const categoryList = document.createElement("div");
+        categoryList.className = "list";
+
+        (category.items || []).forEach((item, index) => {
+          categoryList.appendChild(createItem(item, index));
         });
+
+        if (!(category.items || []).length) {
+          const empty = document.createElement("p");
+          empty.className = "subsection-empty";
+          empty.textContent = "尚未收錄外部工具。";
+          categoryList.appendChild(empty);
+        }
+
+        section.appendChild(categoryList);
+        list.appendChild(section);
+      });
+
+      if (targetCategory) {
+        const section = list.querySelector(
+          `[data-category="${CSS.escape(targetCategory)}"]`
+        );
+        const card = section?.querySelector(
+          `[data-item-index="${CSS.escape(targetItem || "")}"]`
+        );
+
+        requestAnimationFrame(() => {
+          (card || section)?.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (card) {
+            card.classList.add("search-target");
+            window.setTimeout(() => card.classList.remove("search-target"), 1800);
+          }
+        });
+      }
+    } else {
+      document.getElementById("group-count").textContent = `${group.items?.length || 0} 個積木`;
+      (group.items || []).forEach((item, index) => list.appendChild(createItem(item, index)));
+
+      if (targetItem !== null) {
+        const card = list.querySelector(`[data-item-index="${CSS.escape(targetItem)}"]`);
+        if (card) {
+          requestAnimationFrame(() => {
+            card.scrollIntoView({ behavior: "smooth", block: "center" });
+            card.classList.add("search-target");
+            window.setTimeout(() => card.classList.remove("search-target"), 1800);
+          });
+        }
       }
     }
   }

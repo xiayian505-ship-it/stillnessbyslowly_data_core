@@ -316,3 +316,12 @@ h1 {
   }
 }
 
+
+
+/* 空子分類 */
+.subsection-empty {
+  margin: 0;
+  padding: 14px 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}

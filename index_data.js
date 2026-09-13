@@ -1370,45 +1370,243 @@ window.SlowlyLibraryIndex = [
     "groups": [
       {
         "id": "context",
-        "title": "Context / 音訊環境",
+        "title": "Context",
         "subpage": true,
         "desc": "AudioContext 建立、啟用、暫停、關閉與狀態管理等音訊環境核心。",
-        "items": []
+        "items": [
+          {
+            "title": "Audio Context",
+            "desc": "通用 Web Audio 音訊環境核心，集中處理 AudioContext 的建立、啟用、暫停、關閉與狀態取得；不綁定音源、音高、UI 或播放流程。",
+            "links": [
+              {
+                "label": "audio_context.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/context/audio_context.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/context/test_audio_context.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/context/audio_context_usage.html"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "pitch",
-        "title": "Pitch / 音高",
+        "title": "Pitch",
         "subpage": true,
         "desc": "音名、MIDI 與頻率之間的純資料與數值轉換工具。",
-        "items": []
+        "items": [
+          {
+            "title": "Note Frequency",
+            "desc": "通用音名轉頻率工具，將含升降記號與八度的音名轉為 Hz；不建立 AudioContext，也不播放聲音。",
+            "links": [
+              {
+                "label": "note_frequency.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/note_frequency.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/test_note_frequency.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/note_frequency_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "MIDI Frequency",
+            "desc": "通用 MIDI 音高編號與頻率轉換工具，可在 MIDI note number 與 Hz 之間換算；不綁定樂譜或播放流程。",
+            "links": [
+              {
+                "label": "midi_frequency.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/midi_frequency.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/test_midi_frequency.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/midi_frequency_usage.html"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "source",
-        "title": "Source / 音源",
+        "title": "Source",
         "subpage": true,
         "desc": "Oscillator 等聲音來源的建立與基礎控制。",
-        "items": []
+        "items": [
+          {
+            "title": "Oscillator",
+            "desc": "通用 OscillatorNode 音源核心，負責建立振盪器、設定波形與頻率，以及開始、停止等基礎控制；不綁定音量、包絡或音樂流程。",
+            "links": [
+              {
+                "label": "oscillator.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/oscillator.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/test_oscillator.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/oscillator_usage.html"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "gain",
-        "title": "Gain / 增益",
+        "title": "Gain",
         "subpage": true,
         "desc": "音量增益與 attack、release 等包絡控制工具。",
-        "items": []
+        "items": [
+          {
+            "title": "Gain",
+            "desc": "通用 GainNode 增益核心，負責建立增益節點、設定音量與連接節點；不處理時間包絡或播放流程。",
+            "links": [
+              {
+                "label": "gain.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/gain.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/test_gain.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/gain_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Envelope",
+            "desc": "通用 AudioParam 包絡排程工具，集中處理 attack、release 與線性／指數漸變；不建立音源，也不綁定特定音效。",
+            "links": [
+              {
+                "label": "envelope.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/envelope.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/test_envelope.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/envelope_usage.html"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "filter",
-        "title": "Filter / 濾波",
+        "title": "Filter",
         "subpage": true,
         "desc": "BiquadFilter 等通用音訊濾波處理工具。",
-        "items": []
+        "items": [
+          {
+            "title": "Biquad Filter",
+            "desc": "通用 BiquadFilterNode 濾波核心，負責建立濾波節點並設定類型、頻率與 Q 等基礎參數；不綁定特定音效預設。",
+            "links": [
+              {
+                "label": "biquad_filter.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/filter/biquad_filter.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/filter/test_biquad_filter.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/filter/biquad_filter_usage.html"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "tone",
-        "title": "Tone / 單音",
+        "title": "Tone",
         "subpage": true,
         "desc": "以頻率、波形、時長、增益與滑音等參數播放單一合成音的組合工具。",
-        "items": []
+        "items": [
+          {
+            "title": "Tone",
+            "desc": "通用單音播放組合工具，以頻率、波形、時長、增益與滑音等參數建立一次性的合成音；不綁定音樂、遊戲或 UI。",
+            "links": [
+              {
+                "label": "tone.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/tone.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/test_tone.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/tone_usage.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "external",
+    "title": "External / 外部",
+    "groups": [
+      {
+        "id": "document",
+        "title": "Document / 文件",
+        "subpage": true,
+        "desc": "文件產生、解析、轉換與輸出相關的外部工具。",
+        "groups": [
+          {
+            "id": "pdf",
+            "title": "PDF",
+            "desc": "PDF 產生、讀取、處理與輸出相關外部工具。",
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "code",
+        "title": "Code / 編碼",
+        "subpage": true,
+        "desc": "QR Code、條碼與其他編碼相關的外部工具。",
+        "groups": [
+          {
+            "id": "qr-code",
+            "title": "QR Code",
+            "desc": "QR Code 產生、解析與處理相關外部工具。",
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "image-tools",
+        "title": "Image Tools / 圖像工具",
+        "subpage": true,
+        "desc": "圖片產生、轉換、壓縮與格式處理相關的外部工具。",
+        "groups": [
+          {
+            "id": "png",
+            "title": "PNG",
+            "desc": "PNG 產生、轉換與處理相關外部工具。",
+            "items": []
+          }
+        ]
       }
     ]
   },

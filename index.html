@@ -22,6 +22,7 @@
 <button aria-selected="false" data-page="effects" type="button">Effects</button>
 <button aria-selected="false" data-page="image" type="button">Image</button>
 <button aria-selected="false" data-page="audio" type="button">Audio</button>
+<button aria-selected="false" data-page="external" type="button">External / 外部</button>
 <button aria-selected="false" data-page="comment" type="button">Comment</button>
 <button aria-selected="false" data-page="mail" type="button">Mail</button>
 </nav>
@@ -86,6 +87,10 @@
 <h2 class="section-title">Audio</h2>
 <div class="groups"></div>
 </section>
+<section class="page" data-page-panel="external">
+<h2 class="section-title">External / 外部</h2>
+<p class="directory-placeholder">外部工具索引預留區。只收實際確認過、值得再次使用的外部函式庫與工具。</p>
+</section>
 <section class="page" data-page-panel="comment">
 <h2 class="section-title">Comment</h2>
 <div class="list"></div>
@@ -101,8 +106,9 @@
     const navButtons = document.querySelectorAll("[data-page]");
     const pages = document.querySelectorAll("[data-page-panel]");
 
-    function childPageHref(page, group, itemIndex = null) {
+    function childPageHref(page, group, itemIndex = null, category = null) {
       const params = new URLSearchParams({ page, group });
+      if (category) params.set("category", category);
       if (itemIndex !== null && itemIndex !== undefined) params.set("item", String(itemIndex));
       return `./group.html?${params.toString()}`;
     }
@@ -223,44 +229,64 @@
 
     function buildSearchIndex() {
       const entries = [];
-      libraryData.forEach((group) => {
-        const addItems = (items, subgroup = null) => {
-          items.forEach((item, index) => {
-            const linkText = (item.links || []).flatMap((link) => [link.label, link.href]).join(" ");
-            const text = [
-              group.title,
-              group.page,
-              subgroup?.title,
-              subgroup?.id,
-              item.title,
-              item.desc,
-              linkText
-            ].filter(Boolean).join(" ");
 
-            entries.push({
-              page: group.page,
-              pageTitle: group.title,
-              group: subgroup?.id || "",
-              groupTitle: subgroup?.title || "",
-              subpage: Boolean(subgroup?.subpage),
-              index,
-              item,
-              searchText: normalizeSearchText(text)
-            });
+      function addItems(group, items, subgroup = null, category = null) {
+        items.forEach((item, index) => {
+          const linkText = (item.links || []).flatMap((link) => [link.label, link.href]).join(" ");
+          const text = [
+            group.title,
+            group.page,
+            subgroup?.title,
+            subgroup?.id,
+            category?.title,
+            category?.id,
+            item.title,
+            item.desc,
+            linkText
+          ].filter(Boolean).join(" ");
+
+          entries.push({
+            page: group.page,
+            pageTitle: group.title,
+            group: subgroup?.id || "",
+            groupTitle: subgroup?.title || "",
+            category: category?.id || "",
+            categoryTitle: category?.title || "",
+            subpage: Boolean(subgroup?.subpage),
+            index,
+            item,
+            searchText: normalizeSearchText(text)
           });
-        };
+        });
+      }
 
-        if (Array.isArray(group.items)) addItems(group.items);
+      libraryData.forEach((group) => {
+        if (Array.isArray(group.items)) addItems(group, group.items);
+
         if (Array.isArray(group.groups)) {
-          group.groups.forEach((subgroup) => addItems(subgroup.items || [], subgroup));
+          group.groups.forEach((subgroup) => {
+            addItems(group, subgroup.items || [], subgroup);
+
+            if (Array.isArray(subgroup.groups)) {
+              subgroup.groups.forEach((category) => {
+                addItems(group, category.items || [], subgroup, category);
+              });
+            }
+          });
         }
       });
+
       return entries;
     }
 
     function locateItem(entry) {
       if (entry.subpage) {
-        window.location.href = childPageHref(entry.page, entry.group, entry.index);
+        window.location.href = childPageHref(
+          entry.page,
+          entry.group,
+          entry.index,
+          entry.category || null
+        );
         return;
       }
 
@@ -299,7 +325,7 @@
 
         const path = document.createElement("span");
         path.className = "search-result-path";
-        path.textContent = [entry.pageTitle, entry.groupTitle].filter(Boolean).join(" · ");
+        path.textContent = [entry.pageTitle, entry.groupTitle, entry.categoryTitle].filter(Boolean).join(" · ");
 
         const desc = document.createElement("span");
         desc.className = "search-result-desc";
