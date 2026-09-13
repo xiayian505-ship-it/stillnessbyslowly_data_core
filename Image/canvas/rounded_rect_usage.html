@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>Canvas Rounded Rect 使用說明</title>
+</head>
+<body>
+  <h1>Canvas Rounded Rect</h1>
+  <p>建立 Canvas 2D 圓角矩形 path，不自動 fill 或 stroke。</p>
+
+  <h2>載入</h2>
+  <pre>&lt;script src="https://lib.stillnessbyslowly.com/Image/canvas/rounded_rect.js"&gt;&lt;/script&gt;</pre>
+
+  <h2>使用</h2>
+  <pre>
+SlowlyCanvasRoundedRect.createPath(ctx, 24, 24, 300, 180, 28);
+ctx.fillStyle = "#edf5f6";
+ctx.fill();
+  </pre>
+
+  <h2>API</h2>
+  <pre>SlowlyCanvasRoundedRect.createPath(ctx, x, y, width, height, radius)</pre>
+</body>
+</html>

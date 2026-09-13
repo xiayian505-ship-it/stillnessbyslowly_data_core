@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>Canvas Wrapped Text 使用說明</title>
+</head>
+<body>
+  <h1>Canvas Wrapped Text</h1>
+  <p>依照目前 Canvas 字型的 measureText() 結果逐字換行，可限制最大行數。</p>
+
+  <h2>載入</h2>
+  <pre>&lt;script src="https://lib.stillnessbyslowly.com/Image/canvas/wrapped_text.js"&gt;&lt;/script&gt;</pre>
+
+  <h2>直接繪製</h2>
+  <pre>
+ctx.font = '700 40px "Noto Serif TC", serif';
+
+const result = SlowlyCanvasWrappedText.draw(
+  ctx,
+  title,
+  58,
+  88,
+  704,
+  58,
+  2
+);
+
+console.log(result.lines);
+console.log(result.endY);
+  </pre>
+
+  <h2>只計算行</h2>
+  <pre>
+const lines = SlowlyCanvasWrappedText.buildLines(
+  ctx,
+  text,
+  704,
+  2
+);
+  </pre>
+
+  <h2>API</h2>
+  <pre>
+SlowlyCanvasWrappedText.buildLines(ctx, text, maxWidth, maxLines?)
+SlowlyCanvasWrappedText.draw(ctx, text, x, y, maxWidth, lineHeight, maxLines?)
+  </pre>
+</body>
+</html>

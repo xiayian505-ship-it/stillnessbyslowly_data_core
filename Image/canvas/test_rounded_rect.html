@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>Canvas Rounded Rect 功能測試</title>
+</head>
+<body>
+  <h1>Canvas Rounded Rect 功能測試</h1>
+  <canvas id="canvas" width="320" height="180" style="border:1px solid #ccc"></canvas>
+
+  <script src="./rounded_rect.js"></script>
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    SlowlyCanvasRoundedRect.createPath(ctx, 40, 35, 240, 110, 24);
+    ctx.fillStyle = "#edf5f6";
+    ctx.fill();
+    ctx.strokeStyle = "#60747A";
+    ctx.stroke();
+  </script>
+</body>
+</html>

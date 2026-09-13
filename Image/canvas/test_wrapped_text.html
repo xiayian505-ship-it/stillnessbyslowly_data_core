@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>Canvas Wrapped Text 功能測試</title>
+</head>
+<body>
+  <h1>Canvas Wrapped Text 功能測試</h1>
+  <canvas id="canvas" width="360" height="220" style="border:1px solid #ccc"></canvas>
+  <pre id="output"></pre>
+
+  <script src="./wrapped_text.js"></script>
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.font = "24px sans-serif";
+    ctx.fillStyle = "#1f2c30";
+
+    const result = SlowlyCanvasWrappedText.draw(
+      ctx,
+      "這是一段用來測試 Canvas 中文逐字換行與最大行數省略號的文字。",
+      24,
+      48,
+      310,
+      34,
+      3
+    );
+
+    document.getElementById("output").textContent =
+      JSON.stringify(result, null, 2);
+  </script>
+</body>
+</html>
