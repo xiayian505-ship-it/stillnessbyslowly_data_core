@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation Hash 使用說明</title>
+<style>
+body {
+  font-family: Arial, "Microsoft JhengHei", sans-serif;
+  max-width: 760px;
+  margin: 40px auto;
+  padding: 0 16px;
+  line-height: 1.7;
+}
+pre {
+  overflow-x: auto;
+  padding: 12px;
+  background: #f3f3f3;
+}
+code { font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+<h1>Navigation Hash</h1>
+<p>慢慢的倉庫｜stillness by slowly</p>
+
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/state/navigation/hash.js"&gt;&lt;/script&gt;</code></pre>
+<h2>API</h2>
+<pre><code>SlowlyNavigationHash.normalizeHash("chapter-2");
+SlowlyNavigationHash.get();
+SlowlyNavigationHash.value();
+SlowlyNavigationHash.set("/page.html", "chapter-2");
+SlowlyNavigationHash.remove("/page.html#chapter-2");
+SlowlyNavigationHash.matches("chapter-2", "#chapter-2");
+SlowlyNavigationHash.go("chapter-2");
+SlowlyNavigationHash.clear();</code></pre>
+<p><code>go()</code> 只設定 location.hash；不查找或操作 DOM 元素。</p>
+
+</body>
+</html>

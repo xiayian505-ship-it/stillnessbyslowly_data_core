@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation 功能測試</title>
+<style>
+body {
+  font-family: Arial, "Microsoft JhengHei", sans-serif;
+  margin: 24px;
+  line-height: 1.6;
+}
+button, input {
+  margin: 4px 4px 4px 0;
+  padding: 6px 10px;
+}
+pre {
+  padding: 12px;
+  background: #f3f3f3;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+</style>
+</head>
+<body>
+<h1>Navigation 功能測試</h1>
+
+<p>注意：跳轉、上一頁、下一頁與重新整理會真的改變目前頁面。</p>
+<p>
+  <button id="show-current">current()</button>
+  <button id="go-self">go() 到本頁</button>
+  <button id="replace-self">replace() 到本頁</button>
+  <button id="back">back()</button>
+  <button id="forward">forward()</button>
+  <button id="reload">reload()</button>
+</p>
+<pre id="output"></pre>
+
+<script src="./navigation.js"></script>
+<script>
+
+const output = document.getElementById("output");
+
+document.getElementById("show-current").onclick = () => {
+  output.textContent = SlowlyNavigation.current();
+};
+
+document.getElementById("go-self").onclick = () => {
+  SlowlyNavigation.go("./test_navigation.html?mode=go");
+};
+
+document.getElementById("replace-self").onclick = () => {
+  SlowlyNavigation.replace("./test_navigation.html?mode=replace");
+};
+
+document.getElementById("back").onclick = () => SlowlyNavigation.back();
+document.getElementById("forward").onclick = () => SlowlyNavigation.forward();
+document.getElementById("reload").onclick = () => SlowlyNavigation.reload();
+
+output.textContent = JSON.stringify({
+  version: SlowlyNavigation.version,
+  current: SlowlyNavigation.current()
+}, null, 2);
+
+</script>
+</body>
+</html>

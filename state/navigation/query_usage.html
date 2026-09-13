@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation Query 使用說明</title>
+<style>
+body {
+  font-family: Arial, "Microsoft JhengHei", sans-serif;
+  max-width: 760px;
+  margin: 40px auto;
+  padding: 0 16px;
+  line-height: 1.7;
+}
+pre {
+  overflow-x: auto;
+  padding: 12px;
+  background: #f3f3f3;
+}
+code { font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+<h1>Navigation Query</h1>
+<p>慢慢的倉庫｜stillness by slowly</p>
+
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/state/navigation/query.js"&gt;&lt;/script&gt;</code></pre>
+<h2>API</h2>
+<pre><code>SlowlyNavigationQuery.get("?a=1", "a");
+SlowlyNavigationQuery.getAll("?tag=a&amp;tag=b", "tag");
+SlowlyNavigationQuery.has("?a=1", "a");
+SlowlyNavigationQuery.set("?a=1", "a", 2);
+SlowlyNavigationQuery.append("?a=1", "tag", "x");
+SlowlyNavigationQuery.remove("?a=1&amp;b=2", "a");
+SlowlyNavigationQuery.toObject("?tag=a&amp;tag=b");
+SlowlyNavigationQuery.fromObject({ page: 2, tag: ["a", "b"] });</code></pre>
+<p>輸出 query 時預設保留開頭的 <code>?</code>。</p>
+
+</body>
+</html>

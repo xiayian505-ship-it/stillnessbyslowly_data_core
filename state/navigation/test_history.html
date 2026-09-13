@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation History 功能測試</title>
+<style>
+body {
+  font-family: Arial, "Microsoft JhengHei", sans-serif;
+  margin: 24px;
+  line-height: 1.6;
+}
+button, input {
+  margin: 4px 4px 4px 0;
+  padding: 6px 10px;
+}
+pre {
+  padding: 12px;
+  background: #f3f3f3;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+</style>
+</head>
+<body>
+<h1>Navigation History 功能測試</h1>
+
+<p>push / replace 不重新載入頁面，但會改變網址與 history state。</p>
+<p>
+  <button id="push">push()</button>
+  <button id="replace">replace()</button>
+  <button id="show">讀取 state / length</button>
+  <button id="back">back()</button>
+  <button id="forward">forward()</button>
+</p>
+<pre id="output"></pre>
+
+<script src="./history.js"></script>
+<script>
+
+const output = document.getElementById("output");
+
+function show() {
+  output.textContent = JSON.stringify({
+    version: SlowlyNavigationHistory.version,
+    href: location.href,
+    state: SlowlyNavigationHistory.state(),
+    length: SlowlyNavigationHistory.length()
+  }, null, 2);
+}
+
+document.getElementById("push").onclick = () => {
+  SlowlyNavigationHistory.push(
+    { source: "push", time: Date.now() },
+    "?history=push"
+  );
+  show();
+};
+
+document.getElementById("replace").onclick = () => {
+  SlowlyNavigationHistory.replace(
+    { source: "replace", time: Date.now() },
+    "?history=replace"
+  );
+  show();
+};
+
+document.getElementById("show").onclick = show;
+document.getElementById("back").onclick = () => SlowlyNavigationHistory.back();
+document.getElementById("forward").onclick = () => SlowlyNavigationHistory.forward();
+
+show();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation 使用說明</title>
+<style>
+body {
+  font-family: Arial, "Microsoft JhengHei", sans-serif;
+  max-width: 760px;
+  margin: 40px auto;
+  padding: 0 16px;
+  line-height: 1.7;
+}
+pre {
+  overflow-x: auto;
+  padding: 12px;
+  background: #f3f3f3;
+}
+code { font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+<h1>Navigation</h1>
+<p>慢慢的倉庫｜stillness by slowly</p>
+
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/state/navigation/navigation.js"&gt;&lt;/script&gt;</code></pre>
+<h2>API</h2>
+<pre><code>SlowlyNavigation.go("chapter2.html");
+SlowlyNavigation.replace("chapter2.html");
+SlowlyNavigation.back();
+SlowlyNavigation.back(2);
+SlowlyNavigation.forward();
+SlowlyNavigation.reload();
+SlowlyNavigation.current();</code></pre>
+<p>這顆只負責實際跳轉，不負責 query、hash、SPA Router 或遊戲章節規則。</p>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation URL 功能測試</title>
+<style>
+body {
+  font-family: Arial, "Microsoft JhengHei", sans-serif;
+  margin: 24px;
+  line-height: 1.6;
+}
+button, input {
+  margin: 4px 4px 4px 0;
+  padding: 6px 10px;
+}
+pre {
+  padding: 12px;
+  background: #f3f3f3;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+</style>
+</head>
+<body>
+<h1>Navigation URL 功能測試</h1>
+
+<input id="value" value="../demo/page.html?x=1#demo">
+<button id="run">測試</button>
+<pre id="output"></pre>
+
+<script src="./url.js"></script>
+<script>
+
+const input = document.getElementById("value");
+const output = document.getElementById("output");
+
+function run() {
+  const value = input.value;
+  output.textContent = JSON.stringify({
+    version: SlowlyNavigationURL.version,
+    resolved: SlowlyNavigationURL.resolve(value),
+    absolute: SlowlyNavigationURL.isAbsolute(value),
+    external: SlowlyNavigationURL.isExternal(value),
+    info: SlowlyNavigationURL.info(value)
+  }, null, 2);
+}
+
+document.getElementById("run").onclick = run;
+run();
+
+</script>
+</body>
+</html>
