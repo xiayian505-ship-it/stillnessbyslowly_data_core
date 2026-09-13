@@ -81,7 +81,7 @@
 </section>
 <section class="page" data-page-panel="image">
 <h2 class="section-title">Image</h2>
-<div class="list"></div>
+<div class="groups"></div>
 </section>
 <section class="page" data-page-panel="audio">
 <h2 class="section-title">Audio</h2>
@@ -89,7 +89,7 @@
 </section>
 <section class="page" data-page-panel="external">
 <h2 class="section-title">External / 外部</h2>
-<p class="directory-placeholder">外部工具索引預留區。只收實際確認過、值得再次使用的外部函式庫與工具。</p>
+<div class="groups"></div>
 </section>
 <section class="page" data-page-panel="comment">
 <h2 class="section-title">Comment</h2>
@@ -157,7 +157,8 @@
 
       const meta = document.createElement("span");
       meta.className = "subpage-entry-meta";
-      meta.textContent = `${subgroup.items?.length || 0} 個積木 →`;
+      const itemCount = subgroup.items?.length || 0;
+      meta.textContent = itemCount > 0 ? `${itemCount} 個積木 →` : "→";
 
       card.append(title, desc, meta);
       return card;

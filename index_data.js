@@ -1319,46 +1319,92 @@ window.SlowlyLibraryIndex = [
   {
     "page": "image",
     "title": "Image",
-    "items": [
+    "groups": [
       {
-        "title": "Lineart",
-        "desc": "圖片轉黑白線稿模組，使用灰階、輕微降噪與 Sobel Edge 擷取圖片線條，並可調整邊緣判定門檻。",
-        "links": [
+        "id": "canvas",
+        "title": "Canvas",
+        "subpage": true,
+        "desc": "Canvas 繪圖與文字排版相關的小型積木。",
+        "items": [
           {
-            "label": "lineart.js",
-            "href": "https://lib.stillnessbyslowly.com/Image/lineart.js"
+            "title": "Rounded Rect",
+            "desc": "Canvas 圓角矩形繪製工具，提供圓角路徑建立，方便宿主自行決定填色、描邊與其他樣式。",
+            "links": [
+              {
+                "label": "rounded_rect.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/rounded_rect.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/rounded_rect_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/test_rounded_rect.html"
+              }
+            ]
           },
           {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/Image/test_lineart.html"
+            "title": "Wrapped Text",
+            "desc": "Canvas 多行文字換行工具，依最大寬度切分並繪製文字，供卡片與圖片輸出等情境組合使用。",
+            "links": [
+              {
+                "label": "wrapped_text.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/wrapped_text.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/wrapped_text_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/test_wrapped_text.html"
+              }
+            ]
           }
         ]
       },
       {
-        "title": "Image Resize",
-        "desc": "通用圖片縮放與壓縮模組，將 File 或 Blob 經 Canvas 等比例縮小後輸出為 Blob，可限制最大尺寸、輸出格式、品質與原始檔案大小。",
-        "links": [
+        "id": "png",
+        "title": "PNG",
+        "subpage": true,
+        "desc": "Canvas 轉 PNG 與 PNG 下載相關工具。",
+        "items": [
           {
-            "label": "image_resize.js",
-            "href": "https://lib.stillnessbyslowly.com/Image/image_resize.js"
+            "title": "Canvas PNG",
+            "desc": "將 Canvas 轉為 PNG Blob / 圖片資料的通用工具，供預覽、下載或其他後續流程使用。",
+            "links": [
+              {
+                "label": "canvas_png.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/canvas_png_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/test_canvas_png.html"
+              }
+            ]
           },
           {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/Image/test_image_resize.html"
-          }
-        ]
-      },
-      {
-        "title": "Image Storage",
-        "desc": "通用 IndexedDB 圖片儲存模組，以 Blob 保存圖片，提供新增、讀取、刪除、清空與數量查詢，可讓文字資料只保存 imageId。",
-        "links": [
-          {
-            "label": "image_storage.js",
-            "href": "https://lib.stillnessbyslowly.com/Image/image_storage.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/Image/test_image_storage.html"
+            "title": "PNG Download",
+            "desc": "將 PNG Blob 或可下載來源交給瀏覽器下載的通用工具，處理下載連結與 Object URL 回收。",
+            "links": [
+              {
+                "label": "png_download.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/png_download.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/png_download_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/test_png_download.html"
+              }
+            ]
           }
         ]
       }
@@ -1567,44 +1613,46 @@ window.SlowlyLibraryIndex = [
     "title": "External / 外部",
     "groups": [
       {
-        "id": "document",
-        "title": "Document / 文件",
+        "id": "qrcode",
+        "title": "QRCode",
         "subpage": true,
-        "desc": "文件產生、解析、轉換與輸出相關的外部工具。",
-        "groups": [
+        "desc": "實際使用與確認過的 QRCode 外部工具紀錄。",
+        "items": [
           {
-            "id": "pdf",
-            "title": "PDF",
-            "desc": "PDF 產生、讀取、處理與輸出相關外部工具。",
-            "items": []
+            "title": "QRious 4.0.2",
+            "desc": "目前 QRCode 工具主力。用於一般 QRCode、Wi-Fi QRCode、Canvas 輸出、PNG 圖片與 A4 排版列印。",
+            "links": [
+              {
+                "label": "qrcode.json",
+                "href": "https://lib.stillnessbyslowly.com/external/qrcode/qrcode.json"
+              },
+              {
+                "label": "qrcode.txt",
+                "href": "https://lib.stillnessbyslowly.com/external/qrcode/qrcode.txt"
+              }
+            ]
           }
         ]
       },
       {
-        "id": "code",
-        "title": "Code / 編碼",
+        "id": "image",
+        "title": "Image",
         "subpage": true,
-        "desc": "QR Code、條碼與其他編碼相關的外部工具。",
-        "groups": [
+        "desc": "曾實際使用過的圖片處理外部工具與保留紀錄。",
+        "items": [
           {
-            "id": "qr-code",
-            "title": "QR Code",
-            "desc": "QR Code 產生、解析與處理相關外部工具。",
-            "items": []
-          }
-        ]
-      },
-      {
-        "id": "image-tools",
-        "title": "Image Tools / 圖像工具",
-        "subpage": true,
-        "desc": "圖片產生、轉換、壓縮與格式處理相關的外部工具。",
-        "groups": [
-          {
-            "id": "png",
-            "title": "PNG",
-            "desc": "PNG 產生、轉換與處理相關外部工具。",
-            "items": []
+            "title": "html2canvas 1.4.1",
+            "desc": "曾用於 DOM / HTML 轉 Canvas；2026-08-31 的作品探索之後已不再使用。Canvas → PNG → Download 後半段已有自有零件，DOM → Canvas 本身目前沒有自有替代。",
+            "links": [
+              {
+                "label": "html2canvas.json",
+                "href": "https://lib.stillnessbyslowly.com/external/image/html2canvas.json"
+              },
+              {
+                "label": "html2canvas.txt",
+                "href": "https://lib.stillnessbyslowly.com/external/image/html2canvas.txt"
+              }
+            ]
           }
         ]
       }
