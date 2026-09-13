@@ -759,6 +759,28 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Custom Date",
+        "desc": "自訂日期選擇 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 date 選擇器，同時保留原生 input[type=date] 作為真正的 value 與 change 資料來源。支援年月切換、日期選取、今天提示、清除、min／max／disabled、同頁多實例與程式同步，視覺可由宿主頁面透過 CSS 變數覆寫。",
+        "links": [
+          {
+            "label": "custom_date.js",
+            "href": "https://lib.stillnessbyslowly.com/ui/custom_date.js"
+          },
+          {
+            "label": "custom_date.css",
+            "href": "https://lib.stillnessbyslowly.com/ui/custom_date.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/ui/test_custom_date.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/ui/custom_date_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Custom File",
         "desc": "自訂檔案選擇 UI 元件，以自訂介面取代瀏覽器原生 file input 的顯示方式，同時保留原生 input 作為真正的 files 與 change 資料來源。支援不同檔案類型、同頁多實例與宿主頁面 CSS 變數覆寫，可用於 JSON、圖片、文字、程式檔與其他檔案選擇情境。",
         "links": [
