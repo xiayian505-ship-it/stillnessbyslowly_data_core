@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audio Tone Test</title></head><body>
+<h1>Audio Tone Test</h1>
+<p>功能驗證頁，不做額外美化。</p>
+<button id="beep">beep</button> <button id="bad">low slide</button>
+<pre id="out"></pre>
+<script src="../context/audio_context.js"></script>
+<script src="../source/oscillator.js"></script>
+<script src="../gain/gain.js"></script>
+<script src="../gain/envelope.js"></script>
+<script src="./tone.js"></script>
+<script>"use strict"; const out=document.querySelector("#out"); 
+document.querySelector("#beep").onclick = async () => {
+ await SlowlyAudioTone.play({freq:660,dur:.08,type:"triangle",gain:.06,slide:1.2});
+ out.textContent="beep";
+};
+document.querySelector("#bad").onclick = async () => {
+ await SlowlyAudioTone.play({freq:180,dur:.10,type:"sawtooth",gain:.06,slide:.7});
+ out.textContent="bad-swap style tone";
+};
+</script>
+</body></html>

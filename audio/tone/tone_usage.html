@@ -1,0 +1,13 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Audio Tone 使用說明</title></head>
+<body><h1>Audio Tone</h1><p>把四顆底層零件組成一次性單音。適合 beep、提示聲、簡單效果音；不包含遊戲或音樂語意。</p><h2>依賴順序</h2><pre>&lt;script src="https://lib.stillnessbyslowly.com/audio/context/audio_context.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/audio/source/oscillator.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/audio/gain/gain.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/audio/gain/envelope.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/audio/tone/tone.js"&gt;&lt;/script&gt;</pre><h2>最小使用</h2><pre><code>await SlowlyAudioTone.play({
+  freq: 520,
+  dur: 0.06,
+  type: "triangle",
+  gain: 0.10,
+  slide: 0.8
+});</code></pre>
+<p>版本：1.0.0</p></body></html>
