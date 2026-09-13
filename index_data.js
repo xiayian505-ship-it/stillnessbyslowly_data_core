@@ -511,46 +511,114 @@ window.SlowlyLibraryIndex = [
   {
     "page": "date",
     "title": "Date",
-    "items": [
+    "groups": [
       {
-        "title": "Date Time",
-        "desc": "一般網站常用的日期與時間處理模組，提供本地日期鍵、日期解析、日期加減、日期差、日期格式化與時間差拆分。",
-        "links": [
+        "id": "general",
+        "title": "General / 通用",
+        "items": [
           {
-            "label": "datetime.js",
-            "href": "https://lib.stillnessbyslowly.com/date/datetime.js"
+            "title": "Date Time",
+            "desc": "一般網站常用的日期與時間處理模組，提供本地日期鍵、日期解析、日期加減、日期差、日期格式化與時間差拆分。",
+            "links": [
+              {
+                "label": "datetime.js",
+                "href": "https://lib.stillnessbyslowly.com/date/datetime.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/date_test_datetime.html"
+              }
+            ]
           },
           {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/date/date_test_datetime.html"
+            "title": "Timestamp",
+            "desc": "通用本地時間戳產生模組，輸出 YYYYMMDDHHmmssSSS 格式，可用於資料識別、建立時間標記與需要可排序時間字串的情境。",
+            "links": [
+              {
+                "label": "timestamp.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timestamp.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/date_test_timestamp.html"
+              }
+            ]
+          },
+          {
+            "title": "Date Overlap",
+            "desc": "通用日期集合重疊比對核心，將多組「對象 ID＋日期集合」反向整理為「日期 → 對象」，可查詢指定日期、取得重疊日期、設定最低重疊數、找出最大重疊日期並提供基本統計。核心只處理日期 key 與 ID，不綁定 UI、儲存方式或 Calendar Component。",
+            "links": [
+              {
+                "label": "Date_overlap.js",
+                "href": "https://lib.stillnessbyslowly.com/date/Date_overlap.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/test_date_overlap.html"
+              }
+            ]
           }
         ]
       },
       {
-        "title": "Timestamp",
-        "desc": "通用本地時間戳產生模組，輸出 YYYYMMDDHHmmssSSS 格式，可用於資料識別、建立時間標記與需要可排序時間字串的情境。",
-        "links": [
+        "id": "timer",
+        "title": "Timer / 計時",
+        "items": [
           {
-            "label": "timestamp.js",
-            "href": "https://lib.stillnessbyslowly.com/date/timestamp.js"
+            "title": "Timer",
+            "desc": "通用經過時間計時核心，提供開始、暫停、繼續、停止、歸零與 elapsed 狀態；不綁定 UI、遊戲或儲存方式。",
+            "links": [
+              {
+                "label": "timer.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/timer.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_timer.html"
+              }
+            ]
           },
           {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/date/date_test_timestamp.html"
-          }
-        ]
-      },
-      {
-        "title": "Date Overlap",
-        "desc": "通用日期集合重疊比對核心，將多組「對象 ID＋日期集合」反向整理為「日期 → 對象」，可查詢指定日期、取得重疊日期、設定最低重疊數、找出最大重疊日期並提供基本統計。核心只處理日期 key 與 ID，不綁定 UI、儲存方式或 Calendar Component。",
-        "links": [
-          {
-            "label": "Date_overlap.js",
-            "href": "https://lib.stillnessbyslowly.com/date/Date_overlap.js"
+            "title": "Countdown",
+            "desc": "通用倒數狀態核心，以毫秒管理 duration、remaining、elapsed 與 progress，支援開始、暫停、繼續、停止與重設；不綁定 UI、遊戲或更新迴圈。",
+            "links": [
+              {
+                "label": "countdown.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/countdown.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_countdown.html"
+              }
+            ]
           },
           {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/date/test_date_overlap.html"
+            "title": "Stopwatch",
+            "desc": "通用碼表狀態核心，提供開始、暫停、繼續、停止、歸零與 lap 分段紀錄；所有時間值皆以毫秒回傳，不綁定 UI 或特定用途。",
+            "links": [
+              {
+                "label": "stopwatch.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/stopwatch.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_stopwatch.html"
+              }
+            ]
+          },
+          {
+            "title": "Ticker",
+            "desc": "通用固定週期觸發核心，由宿主提供 callback 與 interval，支援開始、暫停、繼續、停止、歸零與手動 tick；不綁定 UI、倒數或特定用途。",
+            "links": [
+              {
+                "label": "ticker.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/ticker.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_ticker.html"
+              }
+            ]
           }
         ]
       }
