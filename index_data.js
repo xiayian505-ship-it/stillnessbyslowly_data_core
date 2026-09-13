@@ -851,6 +851,24 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/light/test_glow.html"
               }
             ]
+          },
+          {
+            "title": "Electric Border",
+            "desc": "純 CSS 動態彩色邊框光效，以多組 RGB 色彩沿宿主外圍持續流動；宿主可控制顏色、速度、線寬、模糊、透明度與圓角，透過 is-active 啟用固定效果，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "electric_border.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/electric_border.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_electric_border.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/electric_border_usage.html"
+              }
+            ]
           }
         ]
       },
