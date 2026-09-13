@@ -71,7 +71,7 @@
 </section>
 <section class="page" data-page-panel="ui">
 <h2 class="section-title">UI</h2>
-<div class="list"></div>
+<div class="groups"></div>
 </section>
 <section class="page" data-page-panel="effects">
 <h2 class="section-title">Effects</h2>
@@ -96,6 +96,12 @@
     const navButtons = document.querySelectorAll("[data-page]");
     const pages = document.querySelectorAll("[data-page-panel]");
 
+    function childPageHref(page, group, itemIndex = null) {
+      const params = new URLSearchParams({ page, group });
+      if (itemIndex !== null && itemIndex !== undefined) params.set("item", String(itemIndex));
+      return `./group.html?${params.toString()}`;
+    }
+
     function createItem(item, meta = {}) {
       const card = document.createElement("div");
       card.className = "item";
@@ -114,7 +120,7 @@
       const links = document.createElement("div");
       links.className = "item-links";
 
-      item.links.forEach((link) => {
+      (item.links || []).forEach((link) => {
         const a = document.createElement("a");
         a.href = link.href;
         a.textContent = link.label;
@@ -125,18 +131,35 @@
       return card;
     }
 
+    function createSubpageEntry(page, subgroup) {
+      const card = document.createElement("a");
+      card.className = "subpage-entry";
+      card.href = childPageHref(page, subgroup.id);
+
+      const title = document.createElement("span");
+      title.className = "subpage-entry-title";
+      title.textContent = subgroup.title;
+
+      const desc = document.createElement("span");
+      desc.className = "subpage-entry-desc";
+      desc.textContent = subgroup.desc || `${subgroup.items?.length || 0} 個積木`;
+
+      const meta = document.createElement("span");
+      meta.className = "subpage-entry-meta";
+      meta.textContent = `${subgroup.items?.length || 0} 個積木 →`;
+
+      card.append(title, desc, meta);
+      return card;
+    }
+
     function renderLibrary() {
       libraryData.forEach((group) => {
-        const panel = document.querySelector(
-          `[data-page-panel="${group.page}"]`
-        );
-
+        const panel = document.querySelector(`[data-page-panel="${group.page}"]`);
         if (!panel) return;
 
         if (Array.isArray(group.items)) {
           const list = panel.querySelector(".list");
           if (!list) return;
-
           group.items.forEach((item, index) => {
             list.appendChild(createItem(item, { page: group.page, index }));
           });
@@ -152,6 +175,12 @@
             section.className = "subsection";
             section.dataset.group = subgroup.id;
 
+            if (subgroup.subpage) {
+              section.appendChild(createSubpageEntry(group.page, subgroup));
+              groupsContainer.appendChild(section);
+              return;
+            }
+
             const title = document.createElement("h3");
             title.className = "subsection-title";
             title.textContent = subgroup.title;
@@ -159,7 +188,7 @@
             const list = document.createElement("div");
             list.className = "list";
 
-            subgroup.items.forEach((item, index) => {
+            (subgroup.items || []).forEach((item, index) => {
               list.appendChild(createItem(item, { page: group.page, group: subgroup.id, index }));
             });
 
@@ -172,17 +201,10 @@
 
     function showPage(pageName) {
       navButtons.forEach((button) => {
-        button.setAttribute(
-          "aria-selected",
-          button.dataset.page === pageName ? "true" : "false"
-        );
+        button.setAttribute("aria-selected", button.dataset.page === pageName ? "true" : "false");
       });
-
       pages.forEach((page) => {
-        page.classList.toggle(
-          "active",
-          page.dataset.pagePanel === pageName
-        );
+        page.classList.toggle("active", page.dataset.pagePanel === pageName);
       });
     }
 
@@ -199,9 +221,7 @@
       libraryData.forEach((group) => {
         const addItems = (items, subgroup = null) => {
           items.forEach((item, index) => {
-            const linkText = (item.links || [])
-              .flatMap((link) => [link.label, link.href])
-              .join(" ");
+            const linkText = (item.links || []).flatMap((link) => [link.label, link.href]).join(" ");
             const text = [
               group.title,
               group.page,
@@ -217,6 +237,7 @@
               pageTitle: group.title,
               group: subgroup?.id || "",
               groupTitle: subgroup?.title || "",
+              subpage: Boolean(subgroup?.subpage),
               index,
               item,
               searchText: normalizeSearchText(text)
@@ -233,6 +254,11 @@
     }
 
     function locateItem(entry) {
+      if (entry.subpage) {
+        window.location.href = childPageHref(entry.page, entry.group, entry.index);
+        return;
+      }
+
       showPage(entry.page);
       const selector = `.item[data-item-page="${CSS.escape(entry.page)}"][data-item-index="${entry.index}"]` +
         (entry.group ? `[data-item-group="${CSS.escape(entry.group)}"]` : ":not([data-item-group])");
@@ -249,16 +275,12 @@
     function renderSearchResults(query, searchIndex) {
       searchResults.replaceChildren();
       const terms = normalizeSearchText(query).trim().split(/\s+/).filter(Boolean);
-
       if (!terms.length) {
         searchStatus.textContent = "";
         return;
       }
 
-      const matches = searchIndex.filter((entry) =>
-        terms.every((term) => entry.searchText.includes(term))
-      );
-
+      const matches = searchIndex.filter((entry) => terms.every((term) => entry.searchText.includes(term)));
       searchStatus.textContent = matches.length ? `找到 ${matches.length} 個` : "沒有找到符合的軍火。";
 
       matches.forEach((entry) => {
@@ -287,15 +309,14 @@
     renderLibrary();
     const searchIndex = buildSearchIndex();
 
-    searchInput?.addEventListener("input", () => {
-      renderSearchResults(searchInput.value, searchIndex);
-    });
+    const initialPage = decodeURIComponent(window.location.hash.slice(1));
+    if (initialPage && document.querySelector(`[data-page-panel="${CSS.escape(initialPage)}"]`)) {
+      showPage(initialPage);
+    }
 
+    searchInput?.addEventListener("input", () => renderSearchResults(searchInput.value, searchIndex));
     navButtons.forEach((button) => {
-      button.addEventListener(
-        "click",
-        () => showPage(button.dataset.page)
-      );
+      button.addEventListener("click", () => showPage(button.dataset.page));
     });
   </script></body>
 </html>

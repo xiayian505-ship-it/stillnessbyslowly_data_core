@@ -121,8 +121,10 @@ window.SlowlyLibraryIndex = [
     "title": "Data",
     "groups": [
       {
-        "id": "general",
-        "title": "General / 通用",
+        "id": "fiction",
+        "title": "Fiction / 資料操作",
+        "subpage": true,
+        "desc": "搜尋、篩選、排序、隨機、分頁、儲存、變更通知與選取建立等通用資料操作。",
         "items": [
           {
             "title": "Fiction Data",
@@ -249,7 +251,13 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/fiction/test_select_or_create.html"
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "id": "realtime",
+        "title": "Realtime / 即時同步",
+        "items": [
           {
             "title": "Realtime Sync",
             "desc": "通用 Supabase Realtime 資料同步工具，提供 postgres_changes 訂閱與解除訂閱、依 updated_at 判斷遠端版本、忽略相同或較舊事件，並在重新連線後通知使用端重新載入最新資料。登入、資料儲存與 UI 由宿主自行處理。",
@@ -263,7 +271,15 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/test_realtime_sync.html"
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "id": "money",
+        "title": "Money / 金額",
+        "subpage": true,
+        "desc": "金額、幣別、匯率與稅額相關的通用資料處理。",
+        "items": [
           {
             "title": "Money",
             "desc": "通用數值與金額處理工具，提供加總、四捨五入、數字正規化與金額格式化功能。",
@@ -311,6 +327,8 @@ window.SlowlyLibraryIndex = [
       {
         "id": "json",
         "title": "JSON",
+        "subpage": true,
+        "desc": "JSON 備份、匯入與結構檢視相關工具。",
         "items": [
           {
             "title": "Data Backup",
@@ -399,6 +417,8 @@ window.SlowlyLibraryIndex = [
       {
         "id": "blob",
         "title": "Blob",
+        "subpage": true,
+        "desc": "Blob、Data URL 與 Object URL 生命週期相關工具。",
         "items": [
           {
             "title": "Blob Data URL",
@@ -620,7 +640,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "經過時間、倒數、碼表與固定週期觸發等計時核心。"
       }
     ]
   },
@@ -771,160 +793,174 @@ window.SlowlyLibraryIndex = [
   {
     "page": "ui",
     "title": "UI",
-    "items": [
+    "groups": [
       {
-        "title": "Responsive Base",
-        "desc": "共用基礎自適應樣式，只處理跨裝置的基本安全規則，不定義專案視覺。",
-        "links": [
+        "id": "general",
+        "title": "General / 通用",
+        "items": [
           {
-            "label": "responsive.css",
-            "href": "https://lib.stillnessbyslowly.com/ui/responsive.css"
+            "title": "Responsive Base",
+            "desc": "共用基礎自適應樣式，只處理跨裝置的基本安全規則，不定義專案視覺。",
+            "links": [
+              {
+                "label": "responsive.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/responsive.css"
+              }
+            ]
+          },
+          {
+            "title": "Auth Permission UI",
+            "desc": "共用登入、登出、身份與權限 UI 狀態模組。登入驗證、Session、角色與資料存取權限由後端／資料庫負責；前端模組只依已確認的 Auth／Permission 狀態切換介面，不把隱藏按鈕當成安全機制。",
+            "links": [
+              {
+                "label": "Auth_permission_ui.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.js"
+              },
+              {
+                "label": "Auth_permission_ui.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_Auth_permission_ui.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui_guide.html"
+              }
+            ]
+          },
+          {
+            "title": "Favorite",
+            "desc": "通用最愛／收藏 UI 狀態元件，可套用於商品、圖片、文字、卡片或其他具有識別 ID 的項目。負責切換與同步最愛狀態並發送變更事件，不綁定資料內容與儲存方式；是否保存至 localStorage、資料庫或其他資料層由宿主自行處理。",
+            "links": [
+              {
+                "label": "favorite.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/favorite.js"
+              },
+              {
+                "label": "favorite.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/favorite.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_favorite.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/favorite_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "HTML Escape",
+            "desc": "通用 HTML 文字轉義工具，將 &, <, >, 雙引號與單引號轉成安全的 HTML 實體字串，適合將一般文字內容放入 innerHTML 或 HTML 樣板字串時使用；不負責 HTML 清洗、允許部分標籤或 DOM 建立。",
+            "links": [
+              {
+                "label": "html_escape.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/html_escape.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_html_escape.html"
+              }
+            ]
+          },
+          {
+            "title": "Toast",
+            "desc": "通用 Toast UI 元件，提供訊息顯示、手動隱藏、自動隱藏、重複顯示時重設計時器與同元素實例重用；核心負責顯示狀態與行為，必要基礎 CSS 僅處理顯示／隱藏，位置、背景、顏色、圓角、陰影等視覺由宿主自行決定。",
+            "links": [
+              {
+                "label": "toast.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/toast.js"
+              },
+              {
+                "label": "toast.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/toast.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_toast.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/toast_usage.html"
+              }
+            ]
           }
         ]
       },
       {
-        "title": "Auth Permission UI",
-        "desc": "共用登入、登出、身份與權限 UI 狀態模組。登入驗證、Session、角色與資料存取權限由後端／資料庫負責；前端模組只依已確認的 Auth／Permission 狀態切換介面，不把隱藏按鈕當成安全機制。",
-        "links": [
+        "id": "custom-input",
+        "title": "Custom Input / 自訂輸入",
+        "subpage": true,
+        "desc": "以自訂介面包裝原生輸入控制，同時保留原生 value／files 作為資料來源。",
+        "items": [
           {
-            "label": "Auth_permission_ui.js",
-            "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.js"
+            "title": "Custom Select",
+            "desc": "自訂下拉選單 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 select 展開樣式，同時保留原生 select 作為真正的 value 與 change 資料來源。支援同頁多實例、程式同步、點外部與 Escape 關閉，視覺可由宿主頁面透過 CSS 變數覆寫。",
+            "links": [
+              {
+                "label": "custom_select.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_select.js"
+              },
+              {
+                "label": "custom_select.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_select.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_custom_select.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_select_usage.html"
+              }
+            ]
           },
           {
-            "label": "Auth_permission_ui.css",
-            "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.css"
+            "title": "Custom Date",
+            "desc": "自訂日期選擇 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 date 選擇器，同時保留原生 input[type=date] 作為真正的 value 與 change 資料來源。支援年月切換、日期選取、今天提示、清除、min／max／disabled、同頁多實例與程式同步，視覺可由宿主頁面透過 CSS 變數覆寫。",
+            "links": [
+              {
+                "label": "custom_date.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_date.js"
+              },
+              {
+                "label": "custom_date.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_date.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_custom_date.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_date_usage.html"
+              }
+            ]
           },
           {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/ui/test_Auth_permission_ui.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui_guide.html"
-          }
-        ]
-      },
-      {
-        "title": "Custom Select",
-        "desc": "自訂下拉選單 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 select 展開樣式，同時保留原生 select 作為真正的 value 與 change 資料來源。支援同頁多實例、程式同步、點外部與 Escape 關閉，視覺可由宿主頁面透過 CSS 變數覆寫。",
-        "links": [
-          {
-            "label": "custom_select.js",
-            "href": "https://lib.stillnessbyslowly.com/ui/custom_select.js"
-          },
-          {
-            "label": "custom_select.css",
-            "href": "https://lib.stillnessbyslowly.com/ui/custom_select.css"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/ui/test_custom_select.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/ui/custom_select_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Custom Date",
-        "desc": "自訂日期選擇 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 date 選擇器，同時保留原生 input[type=date] 作為真正的 value 與 change 資料來源。支援年月切換、日期選取、今天提示、清除、min／max／disabled、同頁多實例與程式同步，視覺可由宿主頁面透過 CSS 變數覆寫。",
-        "links": [
-          {
-            "label": "custom_date.js",
-            "href": "https://lib.stillnessbyslowly.com/ui/custom_date.js"
-          },
-          {
-            "label": "custom_date.css",
-            "href": "https://lib.stillnessbyslowly.com/ui/custom_date.css"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/ui/test_custom_date.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/ui/custom_date_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Custom File",
-        "desc": "自訂檔案選擇 UI 元件，以自訂介面取代瀏覽器原生 file input 的顯示方式，同時保留原生 input 作為真正的 files 與 change 資料來源。支援不同檔案類型、同頁多實例與宿主頁面 CSS 變數覆寫，可用於 JSON、圖片、文字、程式檔與其他檔案選擇情境。",
-        "links": [
-          {
-            "label": "custom_file.js",
-            "href": "https://lib.stillnessbyslowly.com/ui/custom_file.js"
-          },
-          {
-            "label": "custom_file.css",
-            "href": "https://lib.stillnessbyslowly.com/ui/custom_file.css"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/ui/test_custom_file.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/ui/custom_file_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Favorite",
-        "desc": "通用最愛／收藏 UI 狀態元件，可套用於商品、圖片、文字、卡片或其他具有識別 ID 的項目。負責切換與同步最愛狀態並發送變更事件，不綁定資料內容與儲存方式；是否保存至 localStorage、資料庫或其他資料層由宿主自行處理。",
-        "links": [
-          {
-            "label": "favorite.js",
-            "href": "https://lib.stillnessbyslowly.com/ui/favorite.js"
-          },
-          {
-            "label": "favorite.css",
-            "href": "https://lib.stillnessbyslowly.com/ui/favorite.css"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/ui/test_favorite.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/ui/favorite_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "HTML Escape",
-        "desc": "通用 HTML 文字轉義工具，將 &, <, >, 雙引號與單引號轉成安全的 HTML 實體字串，適合將一般文字內容放入 innerHTML 或 HTML 樣板字串時使用；不負責 HTML 清洗、允許部分標籤或 DOM 建立。",
-        "links": [
-          {
-            "label": "html_escape.js",
-            "href": "https://lib.stillnessbyslowly.com/ui/html_escape.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/ui/test_html_escape.html"
-          }
-        ]
-      },
-      {
-        "title": "Toast",
-        "desc": "通用 Toast UI 元件，提供訊息顯示、手動隱藏、自動隱藏、重複顯示時重設計時器與同元素實例重用；核心負責顯示狀態與行為，必要基礎 CSS 僅處理顯示／隱藏，位置、背景、顏色、圓角、陰影等視覺由宿主自行決定。",
-        "links": [
-          {
-            "label": "toast.js",
-            "href": "https://lib.stillnessbyslowly.com/ui/toast.js"
-          },
-          {
-            "label": "toast.css",
-            "href": "https://lib.stillnessbyslowly.com/ui/toast.css"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/ui/test_toast.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/ui/toast_usage.html"
+            "title": "Custom File",
+            "desc": "自訂檔案選擇 UI 元件，以自訂介面取代瀏覽器原生 file input 的顯示方式，同時保留原生 input 作為真正的 files 與 change 資料來源。支援不同檔案類型、同頁多實例與宿主頁面 CSS 變數覆寫，可用於 JSON、圖片、文字、程式檔與其他檔案選擇情境。",
+            "links": [
+              {
+                "label": "custom_file.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_file.js"
+              },
+              {
+                "label": "custom_file.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_file.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_custom_file.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_file_usage.html"
+              }
+            ]
           }
         ]
       }
@@ -952,7 +988,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "Line / 線條 特效積木。"
       },
       {
         "id": "light",
@@ -990,7 +1028,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "Light / 光影 特效積木。"
       },
       {
         "id": "hover",
@@ -1010,7 +1050,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "Hover / Pointer 特效積木。"
       },
       {
         "id": "reveal",
@@ -1030,7 +1072,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "Reveal / 進退場 特效積木。"
       },
       {
         "id": "scroll",
@@ -1054,7 +1098,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "Scroll / 捲動 特效積木。"
       },
       {
         "id": "typography",
@@ -1074,7 +1120,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "Typography / 文字 特效積木。"
       },
       {
         "id": "background",
@@ -1094,7 +1142,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "Background / 背景 特效積木。"
       },
       {
         "id": "spatial",
@@ -1118,7 +1168,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "3D / Spatial 特效積木。"
       },
       {
         "id": "particle",
@@ -1138,7 +1190,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "Particle / 粒子 特效積木。"
       },
       {
         "id": "feedback",
@@ -1158,7 +1212,9 @@ window.SlowlyLibraryIndex = [
               }
             ]
           }
-        ]
+        ],
+        "subpage": true,
+        "desc": "Feedback / 回饋 特效積木。"
       }
     ]
   },
