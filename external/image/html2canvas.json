@@ -1,0 +1,25 @@
+{
+  "category": "image",
+  "title": "Image",
+  "preferred": null,
+  "updatedAt": "2026-09-14",
+  "items": [
+    {
+      "id": "html2canvas",
+      "name": "html2canvas",
+      "version": "1.4.1",
+      "role": "legacy",
+      "status": "inactive",
+      "checkedAt": "2026-09-14",
+      "used": true,
+      "usage": [
+        "DOM / HTML 轉 Canvas",
+        "卡片畫面輸出",
+        "HTML 畫面截圖"
+      ],
+      "cdn": "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",
+      "example": "const canvas = await html2canvas(element);",
+      "note": "曾實際用於舊專案。2026-08-31 的作品探索之後已不再使用，後續圖片輸出改以原生 Canvas 為主。DOM 轉 Canvas 時曾遇過 transform / scale / layout 導致文字擠壓或尺寸跑掉的問題。Canvas → PNG → Download 後半段目前已有自有零件 canvas_png.js 與 png_download.js；DOM → Canvas 本身目前沒有自有替代。"
+    }
+  ]
+}
