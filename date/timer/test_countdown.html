@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countdown 功能測試</title>
+<style>
+body{font-family:sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.7}
+button{margin:4px;padding:8px 12px}
+pre{background:#f5f5f5;padding:12px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<h1>Countdown 功能測試</h1>
+<p>預設 10 秒。核心不主動建立更新迴圈，測試頁每 100ms 讀取狀態。</p>
+<div>
+<button id="start">start</button>
+<button id="pause">pause</button>
+<button id="resume">resume</button>
+<button id="stop">stop</button>
+<button id="reset">reset</button>
+</div>
+<pre id="out"></pre>
+<script src="./countdown.js"></script>
+<script>
+const countdown = Countdown.create({ duration: 10000 });
+const out = document.getElementById("out");
+
+function render(){
+  const s = countdown.getState();
+  out.textContent = JSON.stringify({
+    ...s,
+    remaining: Math.round(s.remaining),
+    elapsed: Math.round(s.elapsed),
+    progress: Number(s.progress.toFixed(3))
+  }, null, 2);
+}
+
+["start","pause","resume","stop","reset"].forEach(name => {
+  document.getElementById(name).onclick = () => {
+    countdown[name]();
+    render();
+  };
+});
+
+setInterval(render, 100);
+render();
+</script>
+</body>
+</html>

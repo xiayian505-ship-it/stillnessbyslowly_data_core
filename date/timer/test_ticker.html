@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ticker 功能測試</title>
+<style>
+body{font-family:sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.7}
+button{margin:4px;padding:8px 12px}
+pre{background:#f5f5f5;padding:12px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<h1>Ticker 功能測試</h1>
+<p>每 1 秒觸發一次 callback；tick 可手動觸發一次。</p>
+<div>
+<button id="start">start</button>
+<button id="pause">pause</button>
+<button id="resume">resume</button>
+<button id="tick">tick</button>
+<button id="stop">stop</button>
+<button id="reset">reset</button>
+</div>
+<pre id="out"></pre>
+<script src="./ticker.js"></script>
+<script>
+const out = document.getElementById("out");
+
+const ticker = Ticker.create({
+  interval: 1000,
+  callback(info){
+    render("callback #" + info.count);
+  }
+});
+
+function render(message){
+  out.textContent = JSON.stringify({
+    message: message || "",
+    ...ticker.getState()
+  }, null, 2);
+}
+
+["start","pause","resume","tick","stop","reset"].forEach(name => {
+  document.getElementById(name).onclick = () => {
+    ticker[name]();
+    render(name);
+  };
+});
+
+render();
+</script>
+</body>
+</html>

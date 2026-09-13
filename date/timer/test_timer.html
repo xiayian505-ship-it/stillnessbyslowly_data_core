@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timer 功能測試</title>
+<style>
+body{font-family:sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.7}
+button{margin:4px;padding:8px 12px}
+pre{background:#f5f5f5;padding:12px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<h1>Timer 功能測試</h1>
+<p>通用經過時間核心，不綁 UI。</p>
+<div>
+<button id="start">start</button>
+<button id="pause">pause</button>
+<button id="resume">resume</button>
+<button id="stop">stop</button>
+<button id="reset">reset</button>
+</div>
+<pre id="out"></pre>
+<script src="./timer.js"></script>
+<script>
+const timer = Timer.create();
+const out = document.getElementById("out");
+
+function render(){
+  const s = timer.getState();
+  out.textContent = JSON.stringify({
+    ...s,
+    elapsed: Math.round(s.elapsed)
+  }, null, 2);
+}
+
+["start","pause","resume","stop","reset"].forEach(name => {
+  document.getElementById(name).onclick = () => {
+    timer[name]();
+    render();
+  };
+});
+
+setInterval(render, 100);
+render();
+</script>
+</body>
+</html>

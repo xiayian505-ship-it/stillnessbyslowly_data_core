@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch 功能測試</title>
+<style>
+body{font-family:sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.7}
+button{margin:4px;padding:8px 12px}
+pre{background:#f5f5f5;padding:12px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<h1>Stopwatch 功能測試</h1>
+<p>測試開始、暫停、繼續、停止、歸零與 lap。</p>
+<div>
+<button id="start">start</button>
+<button id="pause">pause</button>
+<button id="resume">resume</button>
+<button id="lap">lap</button>
+<button id="stop">stop</button>
+<button id="reset">reset</button>
+</div>
+<pre id="out"></pre>
+<script src="./stopwatch.js"></script>
+<script>
+const stopwatch = Stopwatch.create();
+const out = document.getElementById("out");
+
+function render(){
+  const s = stopwatch.getState();
+  out.textContent = JSON.stringify({
+    ...s,
+    elapsed: Math.round(s.elapsed),
+    laps: s.laps.map(item => ({
+      ...item,
+      total: Math.round(item.total),
+      split: Math.round(item.split)
+    }))
+  }, null, 2);
+}
+
+["start","pause","resume","stop","reset"].forEach(name => {
+  document.getElementById(name).onclick = () => {
+    stopwatch[name]();
+    render();
+  };
+});
+
+document.getElementById("lap").onclick = () => {
+  stopwatch.lap();
+  render();
+};
+
+setInterval(render, 100);
+render();
+</script>
+</body>
+</html>
