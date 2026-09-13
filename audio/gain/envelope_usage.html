@@ -1,0 +1,14 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Audio Envelope 使用說明</title></head>
+<body><h1>Audio Envelope</h1><p>排程 AudioParam 的線性／指數變化，可用於 GainParam，也不限定只能處理音量。</p><h2>最小使用</h2><pre><code>SlowlyAudioEnvelope.attack(gain.gain, {
+  startAt: ctx.currentTime,
+  duration: 0.01,
+  from: 0.0001,
+  to: 0.12
+});
+SlowlyAudioEnvelope.release(gain.gain, {
+  startAt: ctx.currentTime + 0.01,
+  duration: 0.08,
+  from: 0.12,
+  to: 0.0001
+});</code></pre>
+<p>版本：1.0.0</p></body></html>

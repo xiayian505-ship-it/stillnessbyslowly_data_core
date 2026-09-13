@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audio Gain Test</title></head><body>
+<h1>Audio Gain Test</h1>
+<p>功能驗證頁，不做額外美化。</p>
+<button id="play">play</button>
+<pre id="out"></pre>
+<script src="../context/audio_context.js"></script>
+<script src="../source/oscillator.js"></script>
+<script src="./gain.js"></script>
+<script>"use strict"; const out=document.querySelector("#out"); 
+document.querySelector("#play").onclick = async () => {
+ const ctx=await SlowlyAudioContext.resume();
+ const o=SlowlyAudioOscillator.create(ctx,{frequency:440});
+ const g=SlowlyAudioGain.create(ctx,0.05);
+ o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+0.15);
+ out.textContent=`gain: ${SlowlyAudioGain.value(g)}`;
+};
+</script>
+</body></html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audio Envelope Test</title></head><body>
+<h1>Audio Envelope Test</h1>
+<p>功能驗證頁，不做額外美化。</p>
+<button id="play">play</button>
+<pre id="out"></pre>
+<script src="../context/audio_context.js"></script>
+<script src="../source/oscillator.js"></script>
+<script src="./gain.js"></script>
+<script src="./envelope.js"></script>
+<script>"use strict"; const out=document.querySelector("#out"); 
+document.querySelector("#play").onclick = async () => {
+ const ctx=await SlowlyAudioContext.resume(), t=ctx.currentTime;
+ const o=SlowlyAudioOscillator.create(ctx,{frequency:440});
+ const g=SlowlyAudioGain.create(ctx,SlowlyAudioEnvelope.floor);
+ o.connect(g); g.connect(ctx.destination);
+ SlowlyAudioEnvelope.attack(g.gain,{startAt:t,duration:.02,to:.12});
+ SlowlyAudioEnvelope.release(g.gain,{startAt:t+.02,duration:.18,from:.12});
+ o.start(t); o.stop(t+.22); out.textContent="attack + release";
+};
+</script>
+</body></html>
