@@ -1,0 +1,7 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Audio Oscillator 使用說明</title></head>
+<body><h1>Audio Oscillator</h1><p>只負責 OscillatorNode；AudioContext 與輸出鏈由宿主決定。</p><h2>最小使用</h2><pre><code>const ctx = SlowlyAudioContext.create();
+const osc = SlowlyAudioOscillator.create(ctx, { type: "triangle", frequency: 440 });
+osc.connect(ctx.destination);
+SlowlyAudioOscillator.start(osc);
+SlowlyAudioOscillator.stop(osc, ctx.currentTime + 0.2);</code></pre>
+<p>版本：1.0.0</p></body></html>

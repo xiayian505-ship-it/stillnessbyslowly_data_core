@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audio Oscillator Test</title></head><body>
+<h1>Audio Oscillator Test</h1>
+<p>功能驗證頁，不做額外美化。</p>
+<button id="play">play</button>
+<pre id="out"></pre>
+<script src="../context/audio_context.js"></script>
+<script src="./oscillator.js"></script>
+<script>"use strict"; const out=document.querySelector("#out"); 
+document.querySelector("#play").onclick = async () => {
+ const ctx = await SlowlyAudioContext.resume();
+ const o = SlowlyAudioOscillator.create(ctx,{type:"sine",frequency:440});
+ o.connect(ctx.destination);
+ SlowlyAudioOscillator.start(o);
+ SlowlyAudioOscillator.stop(o,ctx.currentTime+0.15);
+ out.textContent="played 440 Hz sine";
+};
+</script>
+</body></html>
