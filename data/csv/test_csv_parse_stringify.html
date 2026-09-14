@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CSV Parse / Stringify 功能測試</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
+    .pass { color: #087a32; }
+    .fail { color: #b42318; }
+    pre { white-space: pre-wrap; word-break: break-word; padding: 16px; border: 1px solid #ccc; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>CSV Parse / Stringify 功能測試</h1>
+  <div id="results"></div>
+
+  <script src="./csv_parse_stringify.js"></script>
+  <script>
+    const results = document.getElementById("results");
+
+    function assert(name, condition) {
+      const p = document.createElement("p");
+      p.className = condition ? "pass" : "fail";
+      p.textContent = `${condition ? "PASS" : "FAIL"}｜${name}`;
+      results.appendChild(p);
+    }
+
+    const basic = SlowlyCSV.parse("name,age\\r\\nSlowly,20");
+    assert(
+      "基本 parse",
+      basic.length === 2 &&
+      basic[1][0] === "Slowly" &&
+      basic[1][1] === "20"
+    );
+
+    const quoted = SlowlyCSV.parse(
+      'name,note\\r\\nSlowly,"hello, world"\\r\\nTest,"line1\\nline2"'
+    );
+
+    assert(
+      "欄位內逗號",
+      quoted[1][1] === "hello, world"
+    );
+
+    assert(
+      "欄位內換行",
+      quoted[2][1] === "line1\\nline2"
+    );
+
+    const escapedQuote = SlowlyCSV.parse(
+      'name,note\\r\\nSlowly,"say ""hello"""'
+    );
+
+    assert(
+      "雙引號跳脫",
+      escapedQuote[1][1] === 'say "hello"'
+    );
+
+    const bom = SlowlyCSV.parse(
+      '\\uFEFFname,age\\r\\nSlowly,20',
+      { header: true }
+    );
+
+    assert(
+      "BOM + header object",
+      bom[0].name === "Slowly" &&
+      bom[0].age === "20"
+    );
+
+    const customDelimiter = SlowlyCSV.parse(
+      "a;b\\r\\n1;2",
+      { delimiter: ";" }
+    );
+
+    assert(
+      "自訂 delimiter",
+      customDelimiter[1][1] === "2"
+    );
+
+    const stringified = SlowlyCSV.stringify(
+      [
+        ["name", "note"],
+        ["Slowly", "hello, world"],
+        ["Test", 'say "hello"']
+      ]
+    );
+
+    assert(
+      "stringify 自動引號",
+      stringified.includes('"hello, world"') &&
+      stringified.includes('"say ""hello"""')
+    );
+
+    const objectCSV = SlowlyCSV.stringify(
+      [
+        { name: "Slowly", age: 20 },
+        { name: "Test", age: 30 }
+      ],
+      { header: true }
+    );
+
+    assert(
+      "object → CSV",
+      objectCSV.startsWith("name,age") &&
+      objectCSV.includes("Slowly,20")
+    );
+
+    const roundTrip = SlowlyCSV.parse(objectCSV, {
+      header: true
+    });
+
+    assert(
+      "object round trip",
+      roundTrip[1].name === "Test" &&
+      roundTrip[1].age === "30"
+    );
+
+    const bomOutput = SlowlyCSV.stringify(
+      [["a", "b"]],
+      { bom: true }
+    );
+
+    assert(
+      "輸出 BOM",
+      bomOutput.charCodeAt(0) === 0xFEFF
+    );
+
+    const safeFail = SlowlyCSV.parse(
+      'a,"broken',
+      { safe: true }
+    );
+
+    assert(
+      "safe parse error",
+      safeFail.ok === false &&
+      safeFail.error &&
+      typeof safeFail.error.message === "string"
+    );
+
+    const emptySkipped = SlowlyCSV.parse(
+      "a,b\\r\\n\\r\\n1,2",
+      { skipEmptyLines: true }
+    );
+
+    assert(
+      "skipEmptyLines",
+      emptySkipped.length === 2
+    );
+
+    const output = document.createElement("pre");
+    output.textContent =
+      "Stringify:\\n" + stringified +
+      "\\n\\nObject CSV:\\n" + objectCSV;
+    results.appendChild(output);
+  </script>
+</body>
+</html>

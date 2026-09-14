@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CSV Parse / Stringify 使用說明</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.7; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { overflow-x: auto; padding: 16px; border: 1px solid #ccc; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>CSV Parse / Stringify 使用說明</h1>
+
+  <h2>用途</h2>
+  <p>
+    CSV Parse / Stringify 是通用 CSV 資料轉換核心，
+    處理 CSV 文字與 JavaScript 二維陣列／物件陣列之間的轉換。
+  </p>
+
+  <p>
+    支援 BOM、引號、欄位內逗號、欄位內換行與雙引號跳脫。
+  </p>
+
+  <h2>載入</h2>
+  <pre><code>&lt;script src="csv_parse_stringify.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>CSV → 二維陣列</h2>
+  <pre><code>const rows = SlowlyCSV.parse(csvText);</code></pre>
+
+  <h2>CSV → 物件陣列</h2>
+  <pre><code>const data = SlowlyCSV.parse(csvText, {
+  header: true
+});</code></pre>
+
+  <p>第一列會作為欄位名稱。</p>
+
+  <h2>自訂分隔符</h2>
+  <pre><code>const rows = SlowlyCSV.parse(text, {
+  delimiter: ";"
+});</code></pre>
+
+  <h2>略過空白列</h2>
+  <pre><code>const rows = SlowlyCSV.parse(text, {
+  skipEmptyLines: true
+});</code></pre>
+
+  <h2>Safe Parse</h2>
+  <pre><code>const result = SlowlyCSV.parse(text, {
+  safe: true
+});
+
+if (result.ok) {
+  console.log(result.value);
+} else {
+  console.error(result.error);
+}</code></pre>
+
+  <h2>二維陣列 → CSV</h2>
+  <pre><code>const text = SlowlyCSV.stringify([
+  ["name", "age"],
+  ["Slowly", 20]
+]);</code></pre>
+
+  <h2>物件陣列 → CSV</h2>
+  <pre><code>const text = SlowlyCSV.stringify(
+  [
+    { name: "Slowly", age: 20 },
+    { name: "Test", age: 30 }
+  ],
+  {
+    header: true
+  }
+);</code></pre>
+
+  <p>若未指定 headers，會依物件中出現的 key 建立欄位。</p>
+
+  <h2>指定欄位順序</h2>
+  <pre><code>const text = SlowlyCSV.stringify(data, {
+  header: true,
+  headers: ["id", "name", "age"]
+});</code></pre>
+
+  <h2>輸出 BOM</h2>
+  <pre><code>const text = SlowlyCSV.stringify(data, {
+  header: true,
+  bom: true
+});</code></pre>
+
+  <p>可用於部分試算表軟體需要 BOM 才能正確辨識 UTF-8 的情境。</p>
+
+  <h2>責任邊界</h2>
+  <p>這組不處理：</p>
+  <ul>
+    <li>File / Blob 讀取。</li>
+    <li>檔案下載。</li>
+    <li>Excel XLS/XLSX。</li>
+    <li>資料型態自動推論。</li>
+    <li>Schema 驗證。</li>
+    <li>DOM 預覽與表格 UI。</li>
+    <li>localStorage 或後端儲存。</li>
+  </ul>
+
+  <h2>組合方式</h2>
+  <pre><code>Custom File
+    ↓
+File Reader.text()
+    ↓
+SlowlyCSV.parse()
+    ↓
+Data Validation / Data Diff / Data CRUD</code></pre>
+
+  <p>反向則可：</p>
+
+  <pre><code>JavaScript Data
+    ↓
+SlowlyCSV.stringify()
+    ↓
+Blob / Download 積木</code></pre>
+</body>
+</html>
