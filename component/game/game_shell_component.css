@@ -1,0 +1,82 @@
+/* =========================================================
+   慢慢的倉庫｜Slowly Game Shell v1.0.0
+   必要結構樣式
+
+   只提供：
+   - Shell 基本排列
+   - 控制列
+   - 狀態列
+   - 暫停時的必要互動狀態
+
+   不提供：
+   - 專案配色
+   - 字體
+   - 按鈕皮膚
+   - 陰影
+   - 裝飾動畫
+========================================================= */
+
+.slowly-game-shell,
+.slowly-game-shell * {
+  box-sizing: border-box;
+}
+
+.slowly-game-shell {
+  display: grid;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.sgs-game-slot {
+  min-width: 0;
+}
+
+.sgs-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sgs-controls button {
+  min-height: 2.25rem;
+}
+
+.sgs-message {
+  min-height: 1.4em;
+  margin: 0;
+}
+
+.sgs-footer {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.sgs-footer-item {
+  min-width: 0;
+}
+
+.sgs-footer-label {
+  display: block;
+  font-size: 0.78em;
+}
+
+.sgs-phase,
+.sgs-time {
+  display: block;
+}
+
+.slowly-game-shell.is-paused
+.sgs-game-slot {
+  opacity: 0.65;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 520px) {
+  .sgs-footer {
+    grid-template-columns: 1fr;
+  }
+}

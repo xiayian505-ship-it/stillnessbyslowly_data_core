@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>
+    Slowly Game Shell｜使用說明
+  </title>
+
+  <style>
+    body {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 32px 18px 64px;
+
+      color: #202426;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans TC",
+        sans-serif;
+
+      line-height: 1.7;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.3;
+    }
+
+    code {
+      font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Consolas,
+        monospace;
+    }
+
+    pre {
+      overflow-x: auto;
+
+      padding: 14px;
+
+      border: 1px solid #d7dcdf;
+      border-radius: 8px;
+
+      background: #f7f8f8;
+    }
+
+    .note {
+      padding: 12px 14px;
+
+      border-left: 4px solid #77838c;
+
+      background: #f4f5f5;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    Slowly Game Shell v1.0.0
+  </h1>
+
+  <p>
+    通用遊戲外殼。
+    Game Shell 不知道裡面是哪一款遊戲；
+    它只透過 Game Adapter
+    管理開始、暫停、重新開始、
+    遊戲時間與可選存檔。
+  </p>
+
+  <h2>
+    檔案
+  </h2>
+
+  <pre><code>game_shell_component.js
+game_shell_component.css
+game_shell_component_demo.html
+game_shell_component_usage.html</code></pre>
+
+  <h2>
+    必要依賴
+  </h2>
+
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/date/timer/timer.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/date/timer/ticker.js"&gt;&lt;/script&gt;
+
+&lt;link rel="stylesheet" href="game_shell_component.css"&gt;
+&lt;script src="game_shell_component.js"&gt;&lt;/script&gt;</code></pre>
+
+  <p>
+    FictionStorage、Toast、Audio、
+    Effects、Preference
+    都不是 Game Shell 的硬依賴。
+    宿主需要時再接。
+  </p>
+
+  <h2>
+    最小使用方式
+  </h2>
+
+  <pre><code>const shell = SlowlyGameShell.mount("#game", {
+  game: {
+    mount(target, hooks) {
+      return MyGame.mount(target, {
+        autoStart: false,
+
+        onChange(state) {
+          hooks.stateChange({ state });
+        },
+
+        onFinish(result) {
+          hooks.finish({ result });
+        }
+      });
+    },
+
+    start(game) {
+      game.start();
+    },
+
+    restart(game) {
+      game.restart();
+    },
+
+    destroy(game) {
+      game.destroy();
+    }
+  }
+});</code></pre>
+
+  <h2>
+    Game Adapter
+  </h2>
+
+  <p>
+    唯一必要方法是
+    <code>mount(target, hooks)</code>。
+  </p>
+
+  <p>
+    其餘能力全部依遊戲實際功能決定。
+    遊戲沒有
+    <code>pause()</code>
+    也能使用 Shell：
+    Shell 仍會暫停自己的計時，
+    並把 Game Slot 設為 inert。
+  </p>
+
+  <pre><code>{
+  mount(target, hooks), // 必要
+
+  start(game),          // 可選
+  pause(game),          // 可選
+  resume(game),         // 可選
+  restart(game),        // 可選
+
+  snapshot(game),       // 使用儲存時需要
+  restore(game, data),  // 使用載入時需要
+
+  destroy(game)         // 可選
+}</code></pre>
+
+  <h3>
+    hooks
+  </h3>
+
+  <pre><code>hooks.stateChange(meta)
+
+hooks.finish({
+  result,
+  ...
+})
+
+hooks.notify(message)</code></pre>
+
+  <p>
+    Shell 不解析遊戲自己的 state 結構，
+    也不規定勝負字串。
+    Adapter 只需要在適當時間通知 Shell。
+  </p>
+
+  <h2>
+    手動 / 自動開始
+  </h2>
+
+  <pre><code>SlowlyGameShell.mount("#game", {
+  lifecycle: {
+    autoStart: false
+  },
+
+  game
+});</code></pre>
+
+  <p>
+    <code>false</code>：
+    使用者按「開始」後才 mount / start。
+  </p>
+
+  <p>
+    <code>true</code>：
+    Shell 建立後立即開始。
+  </p>
+
+  <h2>
+    Save Adapter
+  </h2>
+
+  <p>
+    Game Shell 不知道資料存在
+    localStorage、Supabase、
+    REST API 或其他後端。
+  </p>
+
+  <p>
+    只要求三個 async 方法：
+  </p>
+
+  <pre><code>const saveAdapter = {
+  async get(id) {
+    // 讀取一筆存檔
+  },
+
+  async save(record) {
+    // 新增或覆寫存檔
+  },
+
+  async remove(id) {
+    // 刪除存檔
+  }
+};</code></pre>
+
+  <pre><code>const shell = SlowlyGameShell.mount("#game", {
+  game,
+
+  save: {
+    adapter: saveAdapter,
+
+    id: "slot-1",
+
+    auto: true,
+
+    resumePlayingOnLoad: true
+  }
+});</code></pre>
+
+  <p class="note">
+    Save Adapter 就是後端預留接口。
+    現在可以接 FictionStorage，
+    未來可換成 Save Manager、
+    Supabase 或自訂 API，
+    Game Shell 本體不需要改。
+  </p>
+
+  <h3>
+    存檔格式
+  </h3>
+
+  <pre><code>{
+  id: "slot-1",
+
+  version: 1,
+
+  savedAt: "...",
+
+  shell: {
+    phase: "playing",
+    result: null,
+    elapsedMs: 12345
+  },
+
+  game: {
+    // gameAdapter.snapshot()
+  }
+}</code></pre>
+
+  <h2>
+    自動存檔
+  </h2>
+
+  <pre><code>shell.setAutoSave(true);
+shell.setAutoSave(false);</code></pre>
+
+  <p>
+    自動存檔只在
+    Save Adapter 與
+    <code>game.snapshot()</code>
+    都可用時生效。
+  </p>
+
+  <h2>
+    通知
+  </h2>
+
+  <p>
+    沒有設定
+    <code>notify</code>
+    時，
+    Shell 會把訊息顯示在自己的
+    message 區。
+  </p>
+
+  <p>
+    若宿主要使用 Toast：
+  </p>
+
+  <pre><code>SlowlyGameShell.mount("#game", {
+  game,
+
+  notify(message) {
+    toast.show(message);
+  }
+});</code></pre>
+
+  <h2>
+    主要 API
+  </h2>
+
+  <pre><code>shell.start()
+
+shell.pause()
+shell.resume()
+
+shell.restart()
+
+shell.save()
+shell.load()
+shell.removeSave()
+
+shell.setAutoSave(true)
+
+shell.getState()
+
+shell.destroy()</code></pre>
+
+  <h2>
+    Callback
+  </h2>
+
+  <pre><code>callbacks: {
+  onReady(payload) {},
+
+  onStart(payload) {},
+  onPause(payload) {},
+  onResume(payload) {},
+  onRestart(payload) {},
+
+  onFinish(payload) {},
+  onStateChange(payload) {},
+
+  onSave(payload) {},
+  onLoad(payload) {},
+  onRemoveSave(payload) {},
+
+  onDestroy(payload) {}
+}</code></pre>
+
+  <h2>
+    CSS 原則
+  </h2>
+
+  <p>
+    Game Shell CSS
+    只提供基本排列、
+    控制列、狀態列，
+    以及暫停時的必要互動狀態。
+  </p>
+
+  <p>
+    顏色、字體、按鈕皮膚、
+    陰影與動畫全部交給宿主。
+  </p>
+
+  <h2>
+    刻意不包進 Shell 的功能
+  </h2>
+
+  <p>
+    排行榜規則、
+    音效語意、
+    特效語意與遊戲內容，
+    都留在宿主或其他完成品。
+  </p>
+
+  <p>
+    例如「最快通關 TOP 3」
+    和「最高分 TOP 3」
+    是不同規則，
+    不應由 Game Shell 猜測。
+  </p>
+</body>
+</html>

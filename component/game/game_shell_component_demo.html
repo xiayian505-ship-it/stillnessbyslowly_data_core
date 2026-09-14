@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>
+    Slowly Game Shell｜Card Battle Demo
+  </title>
+
+  <!-- ==============================================
+       Game Shell
+  =============================================== -->
+
+  <link
+    rel="stylesheet"
+    href="./game_shell_component.css"
+  >
+
+  <!-- ==============================================
+       Demo 內部遊戲：Slowly Card Battle
+  =============================================== -->
+
+  <link
+    rel="stylesheet"
+    href="https://lib.stillnessbyslowly.com/component/game/card_battle_component.css"
+  >
+
+  <!-- ==============================================
+       Demo 額外整合：Toast
+  =============================================== -->
+
+  <link
+    rel="stylesheet"
+    href="https://lib.stillnessbyslowly.com/ui/toast.css"
+  >
+
+  <style>
+    /* ==============================================
+       頁面基礎
+    =============================================== */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 28px 16px 44px;
+
+      background: #10151d;
+      color: #e9eef4;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans TC",
+        sans-serif;
+
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(100%, 920px);
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+
+      font-size:
+        clamp(1.3rem, 4vw, 1.75rem);
+    }
+
+    .intro {
+      margin: 0 0 18px;
+
+      color: #9da8b5;
+      font-size: 0.92rem;
+    }
+
+    /* ==============================================
+       Demo 額外控制
+    =============================================== */
+
+    .demo-extra {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+
+      margin-bottom: 12px;
+
+      color: #aeb8c4;
+      font-size: 0.85rem;
+
+      user-select: none;
+    }
+
+    .demo-extra input {
+      margin: 0;
+    }
+
+    /* ==============================================
+       Game Shell 宿主皮膚
+       Component CSS 只負責結構。
+    =============================================== */
+
+    #shell .sgs-controls button {
+      min-height: 2.35rem;
+
+      padding: 0.48rem 0.82rem;
+
+      border: 1px solid #455365;
+      border-radius: 8px;
+
+      background: #18212c;
+      color: #edf2f7;
+
+      cursor: pointer;
+    }
+
+    #shell .sgs-controls button:hover {
+      background: #202c39;
+    }
+
+    #shell .sgs-controls button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    #shell .sgs-message {
+      color: #8f9ba8;
+      font-size: 0.85rem;
+    }
+
+    #shell .sgs-footer-item {
+      padding: 0.72rem 0.82rem;
+
+      border: 1px solid #34404e;
+      border-radius: 8px;
+
+      background: #141b24;
+    }
+
+    #shell .sgs-footer-label {
+      color: #7f8c9a;
+    }
+
+    #shell .sgs-phase,
+    #shell .sgs-time {
+      margin-top: 0.15rem;
+      font-size: 0.95rem;
+    }
+
+    /* ==============================================
+       Card Battle Demo 外觀
+       只讓 Demo 緊湊一點。
+    =============================================== */
+
+    #shell .scb-arena {
+      grid-template-columns:
+        150px minmax(60px, 1fr) 150px;
+
+      grid-template-areas:
+        "enemy center player";
+
+      gap: 18px;
+    }
+
+    #shell .scb-enemy-panel {
+      grid-area: enemy;
+    }
+
+    #shell .scb-player-panel {
+      grid-area: player;
+    }
+
+    #shell .scb-center {
+      grid-area: center;
+    }
+
+    #shell .scb-combatant {
+      width: 150px;
+    }
+
+    #shell .scb-hand {
+      display: flex;
+      flex-wrap: nowrap;
+
+      gap: 0.55rem;
+
+      overflow-x: auto;
+    }
+
+    #shell .scb-card {
+      flex: 0 0 96px;
+      min-width: 96px;
+    }
+
+    /* ==============================================
+       Toast
+    =============================================== */
+
+    .host-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      z-index: 9999;
+
+      max-width:
+        min(calc(100% - 32px), 420px);
+
+      padding: 0.72rem 0.95rem;
+
+      border: 1px solid #4a5869;
+      border-radius: 9px;
+
+      background: #1b2531;
+      color: #edf2f7;
+
+      transform:
+        translate(-50%, 8px);
+
+      transition:
+        opacity 180ms ease,
+        visibility 180ms ease,
+        transform 180ms ease;
+    }
+
+    .host-toast.show {
+      transform:
+        translate(-50%, 0);
+    }
+
+    /* ==============================================
+       RWD
+    =============================================== */
+
+    @media (max-width: 520px) {
+      #shell .scb-arena {
+        grid-template-columns:
+          128px minmax(24px, 1fr) 128px;
+
+        gap: 8px;
+      }
+
+      #shell .scb-combatant {
+        width: 128px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>
+      Slowly Game Shell｜Card Battle Demo
+    </h1>
+
+    <p class="intro">
+      Game Shell 只管理遊戲外殼；
+      這裡把 Slowly Card Battle
+      當第一個 Game Adapter。
+    </p>
+
+    <label class="demo-extra">
+      <input
+        id="auto-save"
+        type="checkbox"
+        checked
+      >
+
+      自動存檔
+    </label>
+
+    <div id="shell"></div>
+
+    <div
+      id="toast"
+      class="slowly-toast host-toast"
+      role="status"
+      aria-live="polite"
+    ></div>
+  </main>
+
+  <!-- ==============================================
+       Game Shell 必要依賴
+  =============================================== -->
+
+  <script
+    src="https://lib.stillnessbyslowly.com/date/timer/timer.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/date/timer/ticker.js"
+  ></script>
+
+  <!-- ==============================================
+       Demo 額外整合
+       非 Game Shell 硬依賴
+  =============================================== -->
+
+  <script
+    src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/ui/toast.js"
+  ></script>
+
+  <!-- ==============================================
+       Card Battle 必要依賴
+  =============================================== -->
+
+  <script
+    src="https://lib.stillnessbyslowly.com/game/card/deck.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/game/combat/combat_stats.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/game/combat/damage_roll.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/game/combat/charge_state.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/game/combat/combatant_config.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/game/ai/action_pattern.js"
+  ></script>
+
+  <!-- ==============================================
+       Card Battle 完成品
+  =============================================== -->
+
+  <script
+    src="https://lib.stillnessbyslowly.com/component/game/card_battle_config.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/component/game/card_battle_component.js"
+  ></script>
+
+  <!-- ==============================================
+       Game Shell 完成品
+  =============================================== -->
+
+  <script
+    src="./game_shell_component.js"
+  ></script>
+
+  <script>
+    /* ==============================================
+       1. Toast
+    =============================================== */
+
+    const toast = SlowlyToast.create(
+      "#toast",
+      {
+        duration: 1800
+      }
+    );
+
+    /* ==============================================
+       2. Save Adapter
+
+       Demo 使用 FictionStorage。
+       Game Shell 本身完全不知道資料存在哪裡。
+    =============================================== */
+
+    const store = FictionStorage.create({
+      namespace:
+        "slowly-game-shell-demo"
+    });
+
+    const saves =
+      store.collection(
+        "game-saves"
+      );
+
+    const saveAdapter = {
+      async get(id) {
+        return saves.get(id);
+      },
+
+      async save(record) {
+        return saves.upsert(
+          record
+        );
+      },
+
+      async remove(id) {
+        return saves.remove(id);
+      }
+    };
+
+    /* ==============================================
+       3. Card Battle Adapter
+
+       Adapter 是 Game Shell
+       與 Card Battle 之間唯一的接點。
+    =============================================== */
+
+    function createCardBattleAdapter(
+      config
+    ) {
+      return {
+        mount(target, hooks) {
+          const originalCallbacks =
+            config.callbacks || {};
+
+          return SlowlyCardBattle.mount(
+            target,
+            {
+              ...config,
+
+              /*
+               * Shell 決定何時開始。
+               * 所以內部遊戲 mount 後先保持 idle。
+               */
+              autoStart: false,
+
+              callbacks: {
+                ...originalCallbacks,
+
+                onStateChange(payload) {
+                  hooks.stateChange({
+                    state:
+                      payload.state
+                  });
+
+                  originalCallbacks
+                    .onStateChange
+                    ?.(
+                      payload
+                    );
+                },
+
+                onFinish(payload) {
+                  hooks.finish({
+                    result:
+                      payload.result,
+
+                    state:
+                      payload.state
+                  });
+
+                  originalCallbacks
+                    .onFinish
+                    ?.(
+                      payload
+                    );
+                }
+              }
+            }
+          );
+        },
+
+        start(game) {
+          game.start();
+        },
+
+        restart(game) {
+          game.restart();
+        },
+
+        snapshot(game) {
+          return game.snapshot();
+        },
+
+        restore(game, data) {
+          game.restore(data);
+        },
+
+        destroy(game) {
+          game.destroy();
+        }
+      };
+    }
+
+    /* ==============================================
+       4. Game Shell
+    =============================================== */
+
+    const shell =
+      SlowlyGameShell.mount(
+        "#shell",
+        {
+          lifecycle: {
+            autoStart: false
+          },
+
+          game:
+            createCardBattleAdapter(
+              window
+                .SlowlyCardBattleConfig
+            ),
+
+          save: {
+            adapter:
+              saveAdapter,
+
+            id:
+              "card-battle",
+
+            auto:
+              true,
+
+            resumePlayingOnLoad:
+              true
+          },
+
+          notify(message) {
+            toast.show(message);
+          },
+
+          callbacks: {
+            onStart() {
+              toast.show(
+                "Game Shell：遊戲開始。"
+              );
+            },
+
+            onPause() {
+              toast.show(
+                "Game Shell：遊戲暫停。"
+              );
+            },
+
+            onResume() {
+              toast.show(
+                "Game Shell：繼續遊戲。"
+              );
+            },
+
+            onFinish({
+              detail,
+              elapsedMs
+            }) {
+              const result =
+                detail?.result ||
+                "ended";
+
+              const time =
+                SlowlyGameShell
+                  .formatElapsed(
+                    elapsedMs
+                  );
+
+              toast.show(
+                `Game Shell：${result}｜${time}`,
+                {
+                  duration: 2400
+                }
+              );
+            }
+          }
+        }
+      );
+
+    /* ==============================================
+       5. Demo 額外控制
+    =============================================== */
+
+    const autoSaveInput =
+      document.getElementById(
+        "auto-save"
+      );
+
+    autoSaveInput.addEventListener(
+      "change",
+      () => {
+        shell.setAutoSave(
+          autoSaveInput.checked
+        );
+
+        toast.show(
+          autoSaveInput.checked
+            ? "自動存檔已開啟。"
+            : "自動存檔已關閉。"
+        );
+      }
+    );
+  </script>
+</body>
+</html>
