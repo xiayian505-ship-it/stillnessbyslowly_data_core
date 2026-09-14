@@ -97,6 +97,28 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Slowly Game Shell",
+        "desc": "可直接嵌入網站使用的通用遊戲外殼完成品，透過 Game Adapter 將遊戲內容與外殼生命週期解耦，提供手動／自動開始、暫停／繼續、重新開始、遊戲時間、可選存檔 Adapter 與自動存檔；不綁定特定遊戲、Storage、後端、排行榜、音效或視覺皮膚。",
+        "links": [
+          {
+            "label": "game_shell_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component.js"
+          },
+          {
+            "label": "game_shell_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly JSON Viewer",
         "desc": "可直接使用的 JSON 檢視完成品，組合 JSON Viewer 與 Fiction Storage，支援貼上或匯入 JSON、結構顯示、搜尋標亮、全部展開／收合，以及將常用 JSON 儲存於 localStorage。",
         "links": [
