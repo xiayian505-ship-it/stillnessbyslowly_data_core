@@ -1,0 +1,1452 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slowly API Explorer</title>
+
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/responsive.css">
+
+<style>
+body {
+  font-family: sans-serif;
+  padding: 1rem;
+}
+
+main {
+  max-width: 960px;
+  margin: auto;
+}
+
+input {
+  width: 100%;
+}
+
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+</style>
+</head>
+
+<body>
+<main>
+  <h1>Slowly API Explorer</h1>
+
+  <form id="form">
+    <p>
+      <label for="url">倉庫 JS / CSS / Usage URL</label>
+    </p>
+
+    <p>
+      <input
+        id="url"
+        type="url"
+        required
+        placeholder="https://lib.stillnessbyslowly.com/..."
+      >
+    </p>
+
+    <p>
+      <button id="run" type="submit">解析</button>
+    </p>
+  </form>
+
+  <p id="status" aria-live="polite"></p>
+
+  <div id="result" hidden>
+
+    <hr>
+
+    <section>
+      <h2>基本資料</h2>
+      <div id="meta"></div>
+    </section>
+
+    <section>
+      <h2>載入 / 依賴</h2>
+      <div id="loads"></div>
+    </section>
+
+    <section>
+      <h2>初始化 / 使用方式</h2>
+      <div id="usage"></div>
+    </section>
+
+    <section>
+      <h2>Options</h2>
+      <div id="options"></div>
+    </section>
+
+    <section>
+      <h2>Public API</h2>
+      <div id="apis"></div>
+    </section>
+
+    <section>
+      <h2>其他 Class Methods</h2>
+      <div id="classMethods"></div>
+    </section>
+
+    <section>
+      <h2>Source 另外發現</h2>
+      <div id="sourceOnly"></div>
+    </section>
+
+    <section>
+      <h2>文件 / 原始碼差異</h2>
+      <div id="diff"></div>
+    </section>
+
+    <section>
+      <h2>原始擷取內容</h2>
+
+      <details>
+        <summary>Usage 擷取</summary>
+        <div id="rawUsage"></div>
+      </details>
+
+      <details>
+        <summary>Source 摘要</summary>
+        <pre id="rawSource"></pre>
+      </details>
+    </section>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  const BASE = "https://lib.stillnessbyslowly.com/";
+  const INDEX = BASE + "index_data.js";
+
+  const form = document.querySelector("#form");
+  const input = document.querySelector("#url");
+  const run = document.querySelector("#run");
+  const status = document.querySelector("#status");
+  const result = document.querySelector("#result");
+
+  function setStatus(message) {
+    status.textContent = message || "";
+  }
+
+  function clear(element) {
+    element.replaceChildren();
+  }
+
+  function addText(parent, value, tagName = "p") {
+    const element = document.createElement(tagName);
+    element.textContent = value == null ? "" : String(value);
+    parent.appendChild(element);
+    return element;
+  }
+
+  function addLink(parent, url) {
+    const p = document.createElement("p");
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = url;
+
+    p.appendChild(a);
+    parent.appendChild(p);
+  }
+
+  function addCode(parent, value) {
+    const pre = document.createElement("pre");
+    const code = document.createElement("code");
+
+    code.textContent = value;
+    pre.appendChild(code);
+    parent.appendChild(pre);
+  }
+
+  function addList(parent, items) {
+    if (!items.length) {
+      addText(parent, "未找到。");
+      return;
+    }
+
+    const ul = document.createElement("ul");
+
+    items.forEach((item) => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      ul.appendChild(li);
+    });
+
+    parent.appendChild(ul);
+  }
+
+  function unique(items) {
+    return [...new Set(items.filter(Boolean))];
+  }
+
+  function absoluteUrl(url, base = BASE) {
+    try {
+      return new URL(url, base).href;
+    } catch {
+      return "";
+    }
+  }
+
+  function getFilename(url) {
+    try {
+      return new URL(url).pathname.split("/").pop() || "";
+    } catch {
+      return "";
+    }
+  }
+
+  function getStem(url) {
+    return getFilename(url)
+      .replace(/\.(?:js|css|html?)$/i, "")
+      .replace(/_usage$/i, "");
+  }
+
+  async function fetchText(url) {
+    const response = await fetch(url, {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        response.status + " " +
+        response.statusText + "： " +
+        url
+      );
+    }
+
+    return response.text();
+  }
+
+  async function exists(url) {
+    try {
+      const response = await fetch(url, {
+        cache: "no-store"
+      });
+
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  async function loadIndex() {
+    const source = await fetchText(INDEX);
+
+    const sandbox = {
+      SlowlyLibraryIndex: null
+    };
+
+    try {
+      Function(
+        "window",
+        source + "\nreturn window.SlowlyLibraryIndex;"
+      )(sandbox);
+
+      if (Array.isArray(sandbox.SlowlyLibraryIndex)) {
+        return sandbox.SlowlyLibraryIndex;
+      }
+    } catch {}
+
+    return [];
+  }
+
+  function flatten(value, output = []) {
+    if (Array.isArray(value)) {
+      value.forEach((item) => flatten(item, output));
+      return output;
+    }
+
+    if (!value || typeof value !== "object") {
+      return output;
+    }
+
+    const values = Object.values(value);
+
+    const looksLikeFileItem = values.some((item) => {
+      return (
+        typeof item === "string" &&
+        /\.(js|css|html?)(?:$|\?)/i.test(item)
+      );
+    });
+
+    if (looksLikeFileItem) {
+      output.push(value);
+    }
+
+    values.forEach((item) => {
+      if (item && typeof item === "object") {
+        flatten(item, output);
+      }
+    });
+
+    return output;
+  }
+
+  function collectStrings(value, output = []) {
+    if (typeof value === "string") {
+      output.push(value);
+      return output;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => collectStrings(item, output));
+      return output;
+    }
+
+    if (value && typeof value === "object") {
+      Object.values(value).forEach((item) => {
+        collectStrings(item, output);
+      });
+    }
+
+    return output;
+  }
+
+  function findIndexItem(index, targetUrl) {
+    const target = new URL(targetUrl);
+    const items = flatten(index);
+
+    return (
+      items.find((item) => {
+        return collectStrings(item).some((value) => {
+          if (!/\.(js|css|html?)(?:$|\?)/i.test(value)) {
+            return false;
+          }
+
+          const candidate = absoluteUrl(value);
+
+          if (!candidate) {
+            return false;
+          }
+
+          const parsed = new URL(candidate);
+
+          return (
+            parsed.pathname === target.pathname ||
+            getFilename(candidate) === getFilename(targetUrl)
+          );
+        });
+      }) || null
+    );
+  }
+
+  function getItemUrls(item) {
+    if (!item) {
+      return [];
+    }
+
+    return unique(
+      collectStrings(item)
+        .filter((value) => {
+          return /\.(js|css|html?)(?:$|\?)/i.test(value);
+        })
+        .map((value) => absoluteUrl(value))
+    );
+  }
+
+  function getItemName(item) {
+    if (!item) {
+      return "";
+    }
+
+    const keys = [
+      "name",
+      "title",
+      "label",
+      "名稱"
+    ];
+
+    for (const key of keys) {
+      if (typeof item[key] === "string") {
+        return item[key];
+      }
+    }
+
+    return "";
+  }
+
+  async function resolveFiles(targetUrl, index) {
+    const item = findIndexItem(index, targetUrl);
+    const urls = getItemUrls(item);
+
+    const extension = getFilename(targetUrl)
+      .split(".")
+      .pop()
+      .toLowerCase();
+
+    let usage = "";
+    let source = "";
+
+    if (
+      extension === "html" &&
+      /_usage\.html?$/i.test(targetUrl)
+    ) {
+      usage = targetUrl;
+    } else {
+      usage =
+        urls.find((url) => /_usage\.html?$/i.test(url)) ||
+        "";
+    }
+
+    if (extension === "js" || extension === "css") {
+      source = targetUrl;
+    } else {
+      source =
+        urls.find((url) => {
+          return (
+            /\.js(?:$|\?)/i.test(url) &&
+            !/_data\.js/i.test(url)
+          );
+        }) ||
+        urls.find((url) => /\.css(?:$|\?)/i.test(url)) ||
+        "";
+    }
+
+    const directory = new URL("./", targetUrl).href;
+
+    const baseStem = getStem(targetUrl)
+      .replace(/_component$/i, "")
+      .replace(/_test$/i, "");
+
+    if (!usage) {
+      const guesses = unique([
+        absoluteUrl(
+          getStem(targetUrl) + "_usage.html",
+          directory
+        ),
+        absoluteUrl(
+          baseStem + "_usage.html",
+          directory
+        ),
+        absoluteUrl(
+          getStem(source) + "_usage.html",
+          directory
+        )
+      ]);
+
+      for (const guess of guesses) {
+        if (guess && await exists(guess)) {
+          usage = guess;
+          break;
+        }
+      }
+    }
+
+    if (!source && usage) {
+      const usageStem = getStem(usage);
+      const usageDirectory = new URL("./", usage).href;
+
+      for (const extension of [".js", ".css"]) {
+        const guess = absoluteUrl(
+          usageStem + extension,
+          usageDirectory
+        );
+
+        if (await exists(guess)) {
+          source = guess;
+          break;
+        }
+      }
+    }
+
+    return {
+      usage,
+      source,
+      name:
+        getItemName(item) ||
+        getStem(source || usage || targetUrl)
+    };
+  }
+
+  function parseUsage(html, usageUrl) {
+    const documentObject = new DOMParser()
+      .parseFromString(html, "text/html");
+
+    const blocks = [];
+
+    const headings = [
+      ...documentObject.querySelectorAll(
+        "h1, h2, h3, h4"
+      )
+    ];
+
+    headings.forEach((heading) => {
+      const title = (
+        heading.textContent || ""
+      ).trim();
+
+      const nodes = [];
+      let node = heading.nextElementSibling;
+
+      while (
+        node &&
+        !/^H[1-4]$/.test(node.tagName)
+      ) {
+        nodes.push(node);
+        node = node.nextElementSibling;
+      }
+
+      const plain = nodes
+        .map((item) => {
+          return (
+            item.innerText ||
+            item.textContent ||
+            ""
+          );
+        })
+        .join("\n")
+        .trim();
+
+      const codes = [];
+
+      nodes.forEach((item) => {
+        if (item.matches("pre")) {
+          const value = (
+            item.innerText ||
+            item.textContent ||
+            ""
+          ).trim();
+
+          if (value) {
+            codes.push(value);
+          }
+
+          return;
+        }
+
+        item.querySelectorAll("pre")
+          .forEach((pre) => {
+            const value = (
+              pre.innerText ||
+              pre.textContent ||
+              ""
+            ).trim();
+
+            if (value) {
+              codes.push(value);
+            }
+          });
+      });
+
+      blocks.push({
+        title,
+        plain,
+        codes
+      });
+    });
+
+    const allCodes = unique(
+      [
+        ...documentObject.querySelectorAll("pre")
+      ]
+        .map((pre) => {
+          return (
+            pre.innerText ||
+            pre.textContent ||
+            ""
+          ).trim();
+        })
+        .filter(Boolean)
+    );
+
+    const assetUrls = [];
+
+    allCodes.forEach((code) => {
+      for (
+        const match of code.matchAll(
+          /(?:src|href)\s*=\s*["']([^"']+)["']/gi
+        )
+      ) {
+        assetUrls.push(
+          absoluteUrl(
+            match[1],
+            usageUrl
+          )
+        );
+      }
+    });
+
+    return {
+      blocks,
+      assetUrls: unique(assetUrls)
+    };
+  }
+
+  function pickBlocks(parsed, pattern) {
+    return parsed.blocks.filter((block) => {
+      return pattern.test(block.title);
+    });
+  }
+
+  function findMethodNames(text) {
+    const output = [];
+
+    for (
+      const match of text.matchAll(
+        /\b([A-Za-z_$][\w$]*)\s*\.\s*([A-Za-z_$][\w$]*)\s*\(/g
+      )
+    ) {
+      output.push(match[2]);
+    }
+
+    return unique(output);
+  }
+
+  function findUsageApi(parsed) {
+    const blocks = pickBlocks(
+      parsed,
+      /API|mount|初始化|使用方式|呼叫|已 mount 後|方法|操作/i
+    );
+
+    return unique(
+      blocks.flatMap((block) => {
+        return findMethodNames(
+          block.plain + "\n" +
+          block.codes.join("\n")
+        );
+      })
+    );
+  }
+
+  function findUsageOptions(parsed) {
+    const blocks = pickBlocks(
+      parsed,
+      /Options?|選項|設定/i
+    );
+
+    const output = [];
+
+    blocks.forEach((block) => {
+      const text =
+        block.plain + "\n" +
+        block.codes.join("\n");
+
+      for (
+        const match of text.matchAll(
+          /^\s*([A-Za-z_$][\w$]*)\s*:/gm
+        )
+      ) {
+        output.push(match[1]);
+      }
+    });
+
+    return unique(output);
+  }
+
+  function extractClassMethods(source) {
+    const methods = [];
+
+    const classMatch = source.match(
+      /class\s+[A-Za-z_$][\w$]*\s*\{([\s\S]*?)\n\}/
+    );
+
+    if (!classMatch) {
+      return methods;
+    }
+
+    const body = classMatch[1];
+
+    for (
+      const match of body.matchAll(
+        /^\s{2}([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{/gm
+      )
+    ) {
+      methods.push(match[1]);
+    }
+
+    return unique(methods);
+  }
+
+  function extractGlobalNames(source) {
+    const output = [];
+
+    for (
+      const match of source.matchAll(
+        /\b(?:global|window)\.([A-Za-z_$][\w$]*)\s*=/g
+      )
+    ) {
+      output.push(match[1]);
+    }
+
+    return unique(output);
+  }
+
+  function findBalancedObjectBody(source, openIndex) {
+    let depth = 0;
+    let quote = "";
+    let escaped = false;
+
+    for (
+      let index = openIndex;
+      index < source.length;
+      index++
+    ) {
+      const char = source[index];
+
+      if (quote) {
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+
+        if (char === "\\") {
+          escaped = true;
+          continue;
+        }
+
+        if (char === quote) {
+          quote = "";
+        }
+
+        continue;
+      }
+
+      if (
+        char === "'" ||
+        char === '"' ||
+        char === "`"
+      ) {
+        quote = char;
+        continue;
+      }
+
+      if (char === "{") {
+        depth++;
+        continue;
+      }
+
+      if (char === "}") {
+        depth--;
+
+        if (depth === 0) {
+          return source.slice(
+            openIndex + 1,
+            index
+          );
+        }
+      }
+    }
+
+    return "";
+  }
+
+  function extractTopLevelObjectMethods(body) {
+    const output = [];
+
+    let depth = 0;
+    let quote = "";
+    let escaped = false;
+    let lineStart = 0;
+
+    function inspectLine(endIndex) {
+      if (depth !== 0) {
+        return;
+      }
+
+      const line = body
+        .slice(lineStart, endIndex)
+        .trim();
+
+      if (!line) {
+        return;
+      }
+
+      const methodMatch = line.match(
+        /^([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{?$/
+      );
+
+      if (methodMatch) {
+        const name = methodMatch[1];
+
+        if (
+          ![
+            "if",
+            "for",
+            "while",
+            "switch",
+            "catch",
+            "function"
+          ].includes(name)
+        ) {
+          output.push(name);
+        }
+
+        return;
+      }
+
+      const functionProperty = line.match(
+        /^([A-Za-z_$][\w$]*)\s*:\s*function\b/
+      );
+
+      if (functionProperty) {
+        output.push(functionProperty[1]);
+        return;
+      }
+
+      const arrowProperty = line.match(
+        /^([A-Za-z_$][\w$]*)\s*:\s*(?:async\s*)?(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>/
+      );
+
+      if (arrowProperty) {
+        output.push(arrowProperty[1]);
+      }
+    }
+
+    for (
+      let index = 0;
+      index < body.length;
+      index++
+    ) {
+      const char = body[index];
+
+      if (quote) {
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+
+        if (char === "\\") {
+          escaped = true;
+          continue;
+        }
+
+        if (char === quote) {
+          quote = "";
+        }
+
+        continue;
+      }
+
+      if (
+        char === "'" ||
+        char === '"' ||
+        char === "`"
+      ) {
+        quote = char;
+        continue;
+      }
+
+      if (
+        char === "\n" &&
+        depth === 0
+      ) {
+        inspectLine(index);
+        lineStart = index + 1;
+        continue;
+      }
+
+      if (char === "{") {
+        if (depth === 0) {
+          inspectLine(index);
+        }
+
+        depth++;
+        continue;
+      }
+
+      if (char === "}") {
+        depth--;
+        continue;
+      }
+
+      if (
+        char === "," &&
+        depth === 0
+      ) {
+        inspectLine(index);
+        lineStart = index + 1;
+      }
+    }
+
+    inspectLine(body.length);
+
+    return unique(output);
+  }
+
+  function extractExposedMethods(source) {
+    const output = [];
+
+    const assignmentPattern =
+      /\b(?:global|window)\.[A-Za-z_$][\w$]*\s*=\s*\{/g;
+
+    let match;
+
+    while (
+      (match = assignmentPattern.exec(source))
+    ) {
+      const openIndex =
+        source.indexOf(
+          "{",
+          match.index
+        );
+
+      if (openIndex === -1) {
+        continue;
+      }
+
+      const body =
+        findBalancedObjectBody(
+          source,
+          openIndex
+        );
+
+      output.push(
+        ...extractTopLevelObjectMethods(
+          body
+        )
+      );
+
+      /*
+        補強：global/window 對外物件常寫成
+        global.SomeAPI = {
+          mount(target, options) { ... }
+        };
+
+        某些壓縮／排版形式會讓逐行掃描漏掉第一層 method。
+        這裡只在「已確認是對外物件的 body」內補掃 method shorthand，
+        並排除控制流程關鍵字，不把 if / for 之類誤認成 API。
+      */
+      for (
+        const method of body.matchAll(
+          /(?:^|[\n,])\s*([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{/g
+        )
+      ) {
+        const name = method[1];
+
+        if (
+          ![
+            "if",
+            "for",
+            "while",
+            "switch",
+            "catch",
+            "function"
+          ].includes(name)
+        ) {
+          output.push(name);
+        }
+      }
+    }
+
+    return unique(output);
+  }
+
+  function extractDefaults(source) {
+    const output = [];
+
+    const match = source.match(
+      /\b(?:DEFAULTS?|defaults?)\s*=\s*\{([\s\S]{0,5000}?)\n\};/
+    );
+
+    if (!match) {
+      return output;
+    }
+
+    for (
+      const item of match[1].matchAll(
+        /^\s*([A-Za-z_$][\w$]*)\s*:/gm
+      )
+    ) {
+      output.push(item[1]);
+    }
+
+    return unique(output);
+  }
+
+  function extractDependencies(
+    source,
+    exposedGlobals
+  ) {
+    const output = [];
+
+    for (
+      const match of source.matchAll(
+        /\bglobal\.([A-Za-z_$][\w$]*)/g
+      )
+    ) {
+      if (!exposedGlobals.includes(match[1])) {
+        output.push(match[1]);
+      }
+    }
+
+    return unique(output);
+  }
+
+  function parseSource(source) {
+    const globals = extractGlobalNames(source);
+    const publicMethods =
+      extractExposedMethods(source);
+
+    const classMethods =
+      extractClassMethods(source);
+
+    return {
+      globals,
+      publicMethods,
+      classMethods,
+      defaults: extractDefaults(source),
+      dependencies:
+        extractDependencies(source, globals)
+    };
+  }
+
+  function renderMeta(info, targetUrl) {
+    const element =
+      document.querySelector("#meta");
+
+    clear(element);
+
+    addText(element, "名稱", "strong");
+    addText(element, info.name);
+
+    addText(element, "輸入", "strong");
+    addLink(element, targetUrl);
+
+    addText(element, "Usage", "strong");
+
+    if (info.usage) {
+      addLink(element, info.usage);
+    } else {
+      addText(element, "未找到。");
+    }
+
+    addText(element, "Source", "strong");
+
+    if (info.source) {
+      addLink(element, info.source);
+    } else {
+      addText(element, "未找到。");
+    }
+  }
+
+  function renderBlocks(element, blocks) {
+    clear(element);
+
+    if (!blocks.length) {
+      addText(
+        element,
+        "未從 Usage 找到對應區塊。"
+      );
+      return;
+    }
+
+    blocks.forEach((block) => {
+      if (block.title) {
+        addText(
+          element,
+          block.title,
+          "strong"
+        );
+      }
+
+      if (block.codes.length) {
+        block.codes.forEach((code) => {
+          addCode(element, code);
+        });
+      } else if (block.plain) {
+        addText(element, block.plain);
+      }
+    });
+  }
+
+  function renderRawUsage(parsed) {
+    const element =
+      document.querySelector("#rawUsage");
+
+    clear(element);
+
+    if (!parsed) {
+      addText(element, "無 Usage。");
+      return;
+    }
+
+    parsed.blocks.forEach((block) => {
+      addText(
+        element,
+        block.title || "(無標題)",
+        "strong"
+      );
+
+      if (block.plain) {
+        addCode(
+          element,
+          block.plain
+        );
+      }
+    });
+  }
+
+  async function analyze(targetUrl) {
+    const resolved =
+      absoluteUrl(targetUrl);
+
+    if (
+      !resolved ||
+      !/^https?:/.test(resolved)
+    ) {
+      throw new Error(
+        "請輸入有效的 http / https 網址。"
+      );
+    }
+
+    setStatus("讀取索引…");
+
+    const index =
+      await loadIndex();
+
+    const info =
+      await resolveFiles(
+        resolved,
+        index
+      );
+
+    let parsedUsage = null;
+    let sourceText = "";
+
+    let sourceInfo = {
+      globals: [],
+      publicMethods: [],
+      classMethods: [],
+      defaults: [],
+      dependencies: []
+    };
+
+    if (info.usage) {
+      setStatus("讀取 Usage…");
+
+      try {
+        const html =
+          await fetchText(info.usage);
+
+        parsedUsage =
+          parseUsage(
+            html,
+            info.usage
+          );
+      } catch {}
+    }
+
+    if (
+      info.source &&
+      /\.js(?:$|\?)/i.test(info.source)
+    ) {
+      setStatus("讀取 Source…");
+
+      try {
+        sourceText =
+          await fetchText(info.source);
+
+        sourceInfo =
+          parseSource(sourceText);
+      } catch {}
+    }
+
+    renderMeta(
+      info,
+      resolved
+    );
+
+    const loads =
+      document.querySelector("#loads");
+
+    clear(loads);
+
+    const dependencyBlocks =
+      parsedUsage
+        ? pickBlocks(
+            parsedUsage,
+            /載入|依賴|Load|Dependency/i
+          )
+        : [];
+
+    if (dependencyBlocks.length) {
+      renderBlocks(
+        loads,
+        dependencyBlocks
+      );
+    } else {
+      addText(
+        loads,
+        "Usage 中偵測到的資源：",
+        "strong"
+      );
+
+      addList(
+        loads,
+        parsedUsage
+          ? parsedUsage.assetUrls
+          : []
+      );
+    }
+
+    if (sourceInfo.dependencies.length) {
+      addText(
+        loads,
+        "Source 中偵測到的 global 依賴：",
+        "strong"
+      );
+
+      addList(
+        loads,
+        sourceInfo.dependencies
+      );
+    }
+
+    renderBlocks(
+      document.querySelector("#usage"),
+      parsedUsage
+        ? pickBlocks(
+            parsedUsage,
+            /最簡單|初始化|使用方式|呼叫|已 mount 後|JavaScript/i
+          )
+        : []
+    );
+
+    renderBlocks(
+      document.querySelector("#options"),
+      parsedUsage
+        ? pickBlocks(
+            parsedUsage,
+            /Options?|選項|設定/i
+          )
+        : []
+    );
+
+    const usageApis =
+      parsedUsage
+        ? findUsageApi(parsedUsage)
+        : [];
+
+    const sourceOnly =
+      sourceInfo.publicMethods.filter(
+        (name) => !usageApis.includes(name)
+      );
+
+    const apiElement =
+      document.querySelector("#apis");
+
+    clear(apiElement);
+
+    addText(
+      apiElement,
+      "Usage 偵測：",
+      "strong"
+    );
+
+    addList(
+      apiElement,
+      usageApis
+    );
+
+    addText(
+      apiElement,
+      "Source 對外暴露：",
+      "strong"
+    );
+
+    addList(
+      apiElement,
+      sourceInfo.publicMethods
+    );
+
+    if (sourceInfo.globals.length) {
+      addText(
+        apiElement,
+        "對外 global：",
+        "strong"
+      );
+
+      addList(
+        apiElement,
+        sourceInfo.globals
+      );
+    }
+
+    const classMethodsElement =
+      document.querySelector(
+        "#classMethods"
+      );
+
+    clear(classMethodsElement);
+
+    addList(
+      classMethodsElement,
+      sourceInfo.classMethods
+    );
+
+    const sourceOnlyElement =
+      document.querySelector(
+        "#sourceOnly"
+      );
+
+    clear(sourceOnlyElement);
+
+    addText(
+      sourceOnlyElement,
+      "Source 對外暴露、Usage 未偵測到：",
+      "strong"
+    );
+
+    addList(
+      sourceOnlyElement,
+      sourceOnly
+    );
+
+    if (sourceInfo.defaults.length) {
+      addText(
+        sourceOnlyElement,
+        "Source defaults / options：",
+        "strong"
+      );
+
+      addList(
+        sourceOnlyElement,
+        sourceInfo.defaults
+      );
+    }
+
+    const diffElement =
+      document.querySelector("#diff");
+
+    clear(diffElement);
+
+    if (!sourceText) {
+      addText(
+        diffElement,
+        "沒有可比對的 JS Source。"
+      );
+    } else {
+      const both =
+        usageApis.filter(
+          (name) =>
+            sourceInfo.publicMethods.includes(name) ||
+            sourceInfo.classMethods.includes(name)
+        );
+
+      const usageOnly =
+        usageApis.filter(
+          (name) =>
+            !sourceInfo.publicMethods.includes(name) &&
+            !sourceInfo.classMethods.includes(name)
+        );
+
+      addText(
+        diffElement,
+        "Usage 與 Source 都確認：",
+        "strong"
+      );
+
+      addList(
+        diffElement,
+        both
+      );
+
+      addText(
+        diffElement,
+        "Usage 有、Source 掃描未確認：",
+        "strong"
+      );
+
+      addList(
+        diffElement,
+        usageOnly
+      );
+
+      addText(
+        diffElement,
+        "Source 對外暴露、Usage 未偵測到：",
+        "strong"
+      );
+
+      addList(
+        diffElement,
+        sourceOnly
+      );
+
+      const usageOptions =
+        parsedUsage
+          ? findUsageOptions(parsedUsage)
+          : [];
+
+      if (
+        usageOptions.length ||
+        sourceInfo.defaults.length
+      ) {
+        addText(
+          diffElement,
+          "Options 比對：",
+          "strong"
+        );
+
+        addCode(
+          diffElement,
+          "Usage: " +
+          (
+            usageOptions.join(", ") ||
+            "未找到"
+          ) +
+          "\nSource: " +
+          (
+            sourceInfo.defaults.join(", ") ||
+            "未找到"
+          )
+        );
+      }
+    }
+
+    renderRawUsage(parsedUsage);
+
+    document.querySelector(
+      "#rawSource"
+    ).textContent =
+      sourceText
+        ? sourceText.slice(0, 12000)
+        : "無 JS Source。";
+
+    result.hidden = false;
+    setStatus("解析完成。");
+  }
+
+  form.addEventListener(
+    "submit",
+    async (event) => {
+      event.preventDefault();
+
+      run.disabled = true;
+      result.hidden = true;
+
+      try {
+        await analyze(
+          input.value.trim()
+        );
+      } catch (error) {
+        setStatus(
+          error.message ||
+          String(error)
+        );
+      } finally {
+        run.disabled = false;
+      }
+    }
+  );
+
+  const queryUrl =
+    new URLSearchParams(
+      location.search
+    ).get("url");
+
+  if (queryUrl) {
+    input.value = queryUrl;
+    form.requestSubmit();
+  }
+})();
+</script>
+</body>
+</html>
