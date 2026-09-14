@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Combatant Config 使用說明</title>
+</head>
+<body>
+  <h1>Combatant Config</h1>
+
+  <p>
+    通用戰鬥單位基礎數值正規化工具。
+    將不同寫法的 HP、Shield 與攻擊範圍整理成固定格式。
+  </p>
+
+  <p>
+    不負責 ID 查表、EnemyData、玩家／敵人身份、AI Pattern、傷害計算、回合或 UI。
+  </p>
+
+  <h2>引入</h2>
+  <pre><code>&lt;script src="./combatant_config.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>輸出格式</h2>
+  <pre><code>{
+  maxHP: 25,
+  hp: 25,
+  shield: 0,
+  attackMin: 3,
+  attackMax: 6
+}</code></pre>
+
+  <h2>接受不同輸入寫法</h2>
+  <pre><code>const config = CombatantConfig.normalize({
+  hp: 25,
+  atk: [3, 6]
+});</code></pre>
+
+  <p>也可以使用較明確的欄位：</p>
+
+  <pre><code>const config = CombatantConfig.normalize({
+  maxHP: 25,
+  currentHP: 18,
+  shield: 4,
+  attackMin: 3,
+  attackMax: 6
+});</code></pre>
+
+  <h2>宿主提供預設值</h2>
+  <pre><code>const defaults = {
+  maxHP: 20,
+  shield: 0,
+  attackMin: 1,
+  attackMax: 3
+};
+
+const config = CombatantConfig.normalize(source, defaults);</code></pre>
+
+  <h2>資料來源由宿主處理</h2>
+  <pre><code>const source = EnemyData[id];
+
+const enemy = CombatantConfig.normalize(
+  source,
+  defaultEnemyStats
+);</code></pre>
+
+  <p>
+    Combatant Config 不知道 <code>EnemyData</code> 是什麼，也不會自行查 ID。
+  </p>
+
+  <h2>簡單操作</h2>
+  <textarea id="input" rows="10" cols="50">{
+  "hp": 25,
+  "atk": [3, 6],
+  "shield": 2
+}</textarea>
+  <br>
+  <button id="normalize" type="button">Normalize</button>
+  <pre id="output"></pre>
+
+  <script src="./combatant_config.js"></script>
+  <script>
+    document.getElementById("normalize").addEventListener("click", () => {
+      const output = document.getElementById("output");
+
+      try {
+        const source = JSON.parse(document.getElementById("input").value);
+        output.textContent = JSON.stringify(
+          CombatantConfig.normalize(source),
+          null,
+          2
+        );
+      } catch (error) {
+        output.textContent = String(error);
+      }
+    });
+  </script>
+</body>
+</html>

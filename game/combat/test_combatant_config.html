@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Combatant Config 功能測試</title>
+</head>
+<body>
+  <h1>Combatant Config 功能測試</h1>
+  <pre id="result"></pre>
+
+  <script src="./combatant_config.js"></script>
+  <script>
+    const result = document.getElementById("result");
+    let pass = 0;
+    let fail = 0;
+
+    function assert(name, condition, detail) {
+      if (condition) {
+        pass += 1;
+        result.textContent += "PASS | " + name + "\n";
+      } else {
+        fail += 1;
+        result.textContent += "FAIL | " + name;
+        if (detail) result.textContent += " | " + detail;
+        result.textContent += "\n";
+      }
+    }
+
+    let config = CombatantConfig.normalize({
+      hp: 25,
+      atk: [3, 6]
+    });
+
+    assert("hp 可作為 maxHP", config.maxHP === 25);
+    assert("未提供 currentHP 時回滿", config.hp === 25);
+    assert("atk[0] 轉 attackMin", config.attackMin === 3);
+    assert("atk[1] 轉 attackMax", config.attackMax === 6);
+    assert("shield 預設 0", config.shield === 0);
+
+    config = CombatantConfig.normalize({
+      maxHP: 30,
+      currentHP: 18,
+      shield: 5,
+      atkMin: 8,
+      atkMax: 2
+    });
+
+    assert("支援 currentHP", config.hp === 18);
+    assert("支援 shield", config.shield === 5);
+    assert(
+      "攻擊上下限自動交換",
+      config.attackMin === 2 && config.attackMax === 8
+    );
+
+    config = CombatantConfig.normalize(
+      {},
+      {
+        maxHP: 20,
+        shield: 1,
+        attackMin: 4,
+        attackMax: 7
+      }
+    );
+
+    assert("可使用宿主 defaults maxHP", config.maxHP === 20);
+    assert("可使用宿主 defaults shield", config.shield === 1);
+    assert(
+      "可使用宿主 defaults attack",
+      config.attackMin === 4 && config.attackMax === 7
+    );
+
+    config = CombatantConfig.normalize({
+      maxHP: 10,
+      currentHP: 99,
+      shield: -5,
+      attack: [6, 6]
+    });
+
+    assert("currentHP 不超過 maxHP", config.hp === 10);
+    assert("shield 不小於 0", config.shield === 0);
+    assert(
+      "支援 attack 陣列",
+      config.attackMin === 6 && config.attackMax === 6
+    );
+
+    result.textContent += "\n";
+    result.textContent += "TOTAL PASS: " + pass + "\n";
+    result.textContent += "TOTAL FAIL: " + fail + "\n";
+  </script>
+</body>
+</html>
