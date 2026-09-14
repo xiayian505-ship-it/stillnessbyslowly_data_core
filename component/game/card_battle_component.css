@@ -1,0 +1,271 @@
+/* =========================================================
+   Slowly Card Battle Component v1.0.0
+   必要結構 CSS：只負責排版、狀態、自適應與基本可操作性。
+   宿主視覺請覆寫 .slowly-card-battle 的 --scb-* 變數。
+========================================================= */
+
+.slowly-card-battle {
+  --scb-gap: 0.75rem;
+  --scb-border: color-mix(in srgb, currentColor 28%, transparent);
+  --scb-muted: color-mix(in srgb, currentColor 62%, transparent);
+  --scb-surface: transparent;
+  --scb-meter-track: color-mix(in srgb, currentColor 14%, transparent);
+  --scb-hp: currentColor;
+  --scb-shield: currentColor;
+  --scb-energy: currentColor;
+  --scb-card-bg: transparent;
+  --scb-card-text: inherit;
+
+  container-type: inline-size;
+  width: 100%;
+  min-width: 0;
+  color: inherit;
+  background: var(--scb-surface);
+  line-height: 1.45;
+}
+
+.slowly-card-battle,
+.slowly-card-battle *,
+.slowly-card-battle *::before,
+.slowly-card-battle *::after {
+  box-sizing: border-box;
+}
+
+.slowly-card-battle button {
+  max-width: 100%;
+  font: inherit;
+}
+
+.slowly-card-battle button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.scb-arena {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: var(--scb-gap);
+  align-items: stretch;
+}
+
+.scb-combatant {
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--scb-border);
+}
+
+.scb-combatant-header,
+.scb-stat-row,
+.scb-resource-row,
+.scb-controls,
+.scb-piles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.scb-name,
+.scb-shield-label,
+.scb-stat-row,
+.scb-piles,
+.scb-status,
+.scb-charge {
+  overflow-wrap: anywhere;
+}
+
+.scb-shield-label,
+.scb-piles,
+.scb-charge,
+.scb-card-cost,
+.scb-card-description {
+  color: var(--scb-muted);
+}
+
+.scb-visual {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 6rem;
+  margin: 0.6rem 0;
+  overflow: hidden;
+}
+
+.scb-visual > :where(img, picture, video, svg, canvas) {
+  display: block;
+  max-width: 100%;
+}
+
+.scb-center {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.25rem;
+  min-width: 5.5rem;
+  text-align: center;
+}
+
+.scb-round {
+  font-weight: 700;
+}
+
+.scb-meter {
+  width: 100%;
+  height: 0.5rem;
+  overflow: hidden;
+  background: var(--scb-meter-track);
+}
+
+.scb-meter-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--scb-hp);
+}
+
+.scb-energy-fill {
+  background: var(--scb-energy);
+}
+
+.scb-resource-row {
+  margin-top: var(--scb-gap);
+  align-items: end;
+}
+
+.scb-energy-block {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.scb-piles {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+.scb-hand-section {
+  min-width: 0;
+  margin-top: var(--scb-gap);
+}
+
+.scb-hand {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.scb-card {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+  min-height: 7rem;
+  padding: 0.75rem;
+  border: 1px solid var(--scb-border);
+  background: var(--scb-card-bg);
+  color: var(--scb-card-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.scb-card:disabled,
+.scb-end-turn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.scb-card-name {
+  overflow-wrap: anywhere;
+}
+
+.scb-card-cost,
+.scb-card-description {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.scb-controls {
+  margin-top: var(--scb-gap);
+  justify-content: flex-end;
+}
+
+.scb-end-turn {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--scb-border);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.scb-status {
+  min-height: 1.5em;
+  margin: var(--scb-gap) 0 0;
+}
+
+@container (max-width: 620px) {
+  .scb-arena {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .scb-center {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  .scb-player-panel,
+  .scb-enemy-panel {
+    grid-row: 2;
+  }
+
+  .scb-visual {
+    min-height: 4.5rem;
+  }
+}
+
+@container (max-width: 430px) {
+  .scb-arena {
+    grid-template-columns: 1fr;
+  }
+
+  .scb-center,
+  .scb-player-panel,
+  .scb-enemy-panel {
+    grid-column: 1;
+  }
+
+  .scb-center { grid-row: 1; }
+  .scb-enemy-panel { grid-row: 2; }
+  .scb-player-panel { grid-row: 3; }
+
+  .scb-resource-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scb-piles {
+    justify-content: flex-start;
+  }
+
+  .scb-hand {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline proximity;
+    padding-bottom: 0.25rem;
+  }
+
+  .scb-card {
+    flex: 0 0 min(78cqi, 14rem);
+    scroll-snap-align: start;
+  }
+
+  .scb-end-turn {
+    width: 100%;
+  }
+}

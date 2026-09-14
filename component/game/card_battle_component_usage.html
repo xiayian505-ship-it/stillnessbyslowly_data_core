@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slowly Card Battle Component｜使用說明</title>
+<style>
+body{margin:0;padding:24px;color:#222;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;line-height:1.72}
+main{max-width:920px;margin:auto}
+h1{margin-top:0}
+section{margin:32px 0}
+pre{overflow:auto;padding:14px;background:#f6f6f6;border:1px solid #ddd}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;border:1px solid #ccc;text-align:left;vertical-align:top}
+.note{padding:12px;border-left:4px solid #999;background:#f8f8f8}
+</style>
+</head>
+<body><main>
+<h1>Slowly Card Battle Component</h1>
+<p>可直接嵌入網站使用的通用卡牌戰鬥完成品。Component 組合 Deck、Combat Stats、Damage Roll、Charge State、Combatant Config 與 Action Pattern，提供預設可玩戰鬥；宿主可只改設定檔，也可進一步擴充卡牌效果、敵人行動、Renderer、Formatter 與 Callback。</p>
+
+<section>
+<h2>1. 檔案</h2>
+<pre><code>component/game/
+├─ card_battle_component.js
+├─ card_battle_component.css
+├─ card_battle_config.js
+├─ card_battle_component_demo.html
+└─ card_battle_component_usage.html</code></pre>
+<p><code>card_battle_config.js</code> 是方便宿主直接修改數值與內容的純資料模板，不是必要依賴；Component 本身已有可玩的預設值。</p>
+</section>
+
+<section>
+<h2>2. 必要依賴與載入順序</h2>
+<p>六顆 Game 核心為必要依賴。建議先載入核心，再載入設定檔與 Component。</p>
+<pre><code>&lt;link rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/component/game/card_battle_component.css"&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/deck.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/combat/combat_stats.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/combat/damage_roll.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/combat/charge_state.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/combat/combatant_config.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/ai/action_pattern.js"&gt;&lt;/script&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/component/game/card_battle_config.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/component/game/card_battle_component.js"&gt;&lt;/script&gt;</code></pre>
+<p class="note">Deck 需使用 1.1.0 或更新版本，因為戰鬥 restore 會使用 <code>Deck.restore()</code>。缺少任何必要核心時，mount 會直接指出缺少哪個 dependency。</p>
+</section>
+
+<section>
+<h2>3. 最簡單呼叫</h2>
+<p>完全不提供 options 也能直接開始一場基本戰鬥：</p>
+<pre><code>&lt;div id="battle"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  const battle = SlowlyCardBattle.mount("#battle");
+&lt;/script&gt;</code></pre>
+<p>若有載入附贈設定檔：</p>
+<pre><code>const battle = SlowlyCardBattle.mount(
+  "#battle",
+  SlowlyCardBattleConfig
+);</code></pre>
+</section>
+
+<section>
+<h2>4. 一般宿主：直接改設定檔</h2>
+<p>如果只是要換數值、角色名稱、Boss 行動或卡牌內容，優先修改 <code>card_battle_config.js</code>，不需要碰 Component。</p>
+<pre><code>window.SlowlyCardBattleConfig = {
+  player: {
+    name: "玩家",
+    maxHP: 100,
+    energyMax: 5
+  },
+
+  enemy: {
+    name: "Boss",
+    maxHP: 1000000,
+    attackMin: 50000,
+    attackMax: 300000,
+    guardValue: 100000,
+    chargeBonus: 200000,
+    pattern: ["attack", "guard", "charge", "attack"]
+  },
+
+  cards: [/* ... */],
+
+  rules: {
+    handSize: 4,
+    resetEnergyEachTurn: true
+  }
+};</code></pre>
+<p>Component 不替宿主做數值平衡，也不設定遊戲應該使用多大的 HP 或傷害值。</p>
+</section>
+
+<section>
+<h2>5. player</h2>
+<table>
+<tr><th>欄位</th><th>用途</th></tr>
+<tr><td><code>name</code></td><td>顯示名稱。</td></tr>
+<tr><td><code>maxHP</code></td><td>最大 HP。</td></tr>
+<tr><td><code>currentHP</code></td><td>初始 HP；省略時由 Combatant Config 使用 maxHP。</td></tr>
+<tr><td><code>shield</code></td><td>初始護盾。</td></tr>
+<tr><td><code>energyMax</code></td><td>玩家最大能量。</td></tr>
+<tr><td><code>energy</code></td><td>初始能量；會限制在 0～energyMax。</td></tr>
+<tr><td><code>meta</code></td><td>宿主附加資料，例如 avatar、characterId。Component 不解讀。</td></tr>
+</table>
+</section>
+
+<section>
+<h2>6. enemy</h2>
+<table>
+<tr><th>欄位</th><th>用途</th></tr>
+<tr><td><code>name</code></td><td>顯示名稱。</td></tr>
+<tr><td><code>maxHP / currentHP / shield</code></td><td>戰鬥數值。</td></tr>
+<tr><td><code>attackMin / attackMax</code></td><td>敵人 attack 行動的整數擲值範圍。</td></tr>
+<tr><td><code>guardValue</code></td><td>敵人 guard 行動增加的護盾。</td></tr>
+<tr><td><code>chargeBonus</code></td><td>敵人 charge 每次累積的 bonus；下一次 attack 會全部消耗。</td></tr>
+<tr><td><code>pattern</code></td><td>Action Pattern 行動循環。內建 action：attack / guard / charge。</td></tr>
+<tr><td><code>meta</code></td><td>宿主附加資料，Component 不解讀。</td></tr>
+</table>
+<p>Damage Roll 的 attackMin / attackMax 會依核心規則轉為整數；大型正數可直接使用。</p>
+</section>
+
+<section>
+<h2>7. cards</h2>
+<p>每張牌必須有唯一 <code>id</code>。卡牌保持純資料，不在卡牌物件內放 function，方便 snapshot / JSON / Storage。</p>
+<pre><code>{
+  id: "strike",
+  name: "攻擊",
+  cost: 1,
+  description: "造成 8 點傷害。",
+  effects: [
+    { type: "attack", amount: 8 }
+  ],
+  meta: {
+    image: "./strike.webp",
+    rarity: "SSR"
+  }
+}</code></pre>
+<p><code>meta</code> 是宿主資料；<code>effects</code> 才是戰鬥機制資料。</p>
+</section>
+
+<section>
+<h2>8. 複合卡牌效果</h2>
+<p><code>effects</code> 是陣列，會依順序執行，因此一張牌可以同時做多件事：</p>
+<pre><code>{
+  id: "drain",
+  name: "吸血斬",
+  cost: 2,
+  effects: [
+    { type: "attack", amount: 8 },
+    { type: "heal", amount: 3 }
+  ]
+}</code></pre>
+<p>內建卡牌 effect：</p>
+<table>
+<tr><th>type</th><th>行為</th></tr>
+<tr><td><code>attack</code></td><td>對敵人造成 amount 傷害，使用 Combat Stats 處理護盾與 HP。</td></tr>
+<tr><td><code>guard</code></td><td>玩家增加 amount 護盾。</td></tr>
+<tr><td><code>heal</code></td><td>玩家恢復 amount HP，不超過 maxHP。</td></tr>
+<tr><td><code>energy</code></td><td>玩家恢復 amount 能量，不超過 energyMax。</td></tr>
+</table>
+</section>
+
+<section>
+<h2>9. 自訂卡牌效果</h2>
+<p>特殊遊戲規則放在 mount 的 <code>effects</code>，不要塞進純資料設定檔。</p>
+<pre><code>const battle = SlowlyCardBattle.mount("#battle", {
+  ...SlowlyCardBattleConfig,
+
+  effects: {
+    poison(context, effect) {
+      // effect.amount / effect.turns 等欄位由宿主決定。
+      // context 提供 player、enemy、deck、charge、pattern、stats 等。
+    }
+  }
+});</code></pre>
+<p>對應卡牌仍然只是純資料：</p>
+<pre><code>{
+  id: "poison-card",
+  name: "毒擊",
+  cost: 2,
+  effects: [
+    { type: "poison", amount: 5, turns: 3 }
+  ]
+}</code></pre>
+</section>
+
+<section>
+<h2>10. 自訂敵人 action</h2>
+<p>Action Pattern 只回傳行動名稱；Component 內建 attack / guard / charge。其他名稱由宿主在 <code>actions</code> 實作。</p>
+<pre><code>SlowlyCardBattle.mount("#battle", {
+  ...SlowlyCardBattleConfig,
+
+  enemy: {
+    ...SlowlyCardBattleConfig.enemy,
+    pattern: ["attack", "rage", "attack"]
+  },
+
+  actions: {
+    rage(context) {
+      context.setMessage("Boss 進入狂暴狀態。");
+      // 宿主自行定義真正效果。
+    }
+  }
+});</code></pre>
+</section>
+
+<section>
+<h2>11. rules</h2>
+<table>
+<tr><th>欄位</th><th>預設</th><th>用途</th></tr>
+<tr><td><code>handSize</code></td><td>4</td><td>每個玩家回合以 Deck.drawToHand() 補到的手牌數。</td></tr>
+<tr><td><code>resetEnergyEachTurn</code></td><td>true</td><td>每個玩家回合開始時是否把 energy 回復到 energyMax。</td></tr>
+</table>
+<p>第一版沒有把所有內部流程都公開成 options，避免設定檔變成難以使用的規則控制台。</p>
+</section>
+
+<section>
+<h2>12. 實例 API</h2>
+<pre><code>const battle = SlowlyCardBattle.mount("#battle");
+
+battle.start();
+battle.restart();
+
+battle.playCard(0);
+battle.endTurn();
+
+const state = battle.getState();
+const save = battle.snapshot();
+battle.restore(save);
+
+battle.destroy();</code></pre>
+<table>
+<tr><th>API</th><th>用途</th></tr>
+<tr><td><code>start()</code></td><td>以 mount 時設定重新建立戰鬥。</td></tr>
+<tr><td><code>restart()</code></td><td>start() 的語意別名。</td></tr>
+<tr><td><code>playCard(index)</code></td><td>使用目前手牌 index 的卡牌。</td></tr>
+<tr><td><code>endTurn()</code></td><td>結束玩家回合，執行一次敵人行動並進入下一玩家回合。</td></tr>
+<tr><td><code>getState()</code></td><td>取得目前完整狀態快照。</td></tr>
+<tr><td><code>snapshot()</code></td><td>取得可保存的戰鬥快照。</td></tr>
+<tr><td><code>restore(snapshot)</code></td><td>還原戰鬥快照。</td></tr>
+<tr><td><code>destroy()</code></td><td>清空 mount 內容並結束實例。</td></tr>
+</table>
+<p>目前沒有 pause()。這個 Component 沒有持續時間軸或自動 ticker；玩家不操作時，本來就不會自行推進。</p>
+</section>
+
+<section>
+<h2>13. snapshot / restore</h2>
+<p>snapshot 會保存戰鬥需要恢復的資料：玩家／敵人狀態、能量、回合、Charge、Action Pattern index，以及 Deck 的 drawPile / hand / discardPile / sourceItems / handSize。</p>
+<pre><code>const save = battle.snapshot();
+
+// 之後
+battle.restore(save);</code></pre>
+<p>Renderer、Callback、自訂 effect / action function 不會進入 snapshot。restore 後仍然沿用目前 mount 實例的宿主函式。</p>
+</section>
+
+<section>
+<h2>14. 可選：Fiction Storage 本機存檔</h2>
+<p>Card Battle 本身不依賴 localStorage。若宿主要保存戰鬥，可自行把 snapshot 交給 FictionStorage、IndexedDB、Supabase 或其他資料層。</p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+const store = FictionStorage.create({
+  namespace: "my-game"
+});
+
+const saves = store.collection("battle-saves");
+
+await saves.upsert({
+  id: "current",
+  state: battle.snapshot()
+});
+
+const save = await saves.get("current");
+if (save) battle.restore(save.state);
+&lt;/script&gt;</code></pre>
+<p>FictionChange 不是必要依賴；只有當其他模組也需要訂閱存檔變更時，宿主才需要另外接上。</p>
+</section>
+
+<section>
+<h2>15. renderers</h2>
+<p>Component 有最低限度 HTML Renderer；宿主可替換 player、enemy、card 的內容，因此圖片、SVG、Canvas、Three.js、Live2D、video 等都可以由宿主自行掛進容器。</p>
+<pre><code>SlowlyCardBattle.mount("#battle", {
+  ...SlowlyCardBattleConfig,
+
+  renderers: {
+    player(container, context) {
+      container.replaceChildren();
+      const img = new Image();
+      img.src = context.combatant.meta.avatar;
+      container.appendChild(img);
+    },
+
+    enemy(container, context) {
+      // 宿主自己的 Renderer
+    },
+
+    card(button, context) {
+      button.textContent = context.card.name;
+    }
+  }
+});</code></pre>
+<p>Renderer 出錯時 Component 會在 console 明確報錯，並回退到預設顯示，避免單純的視覺 Renderer 讓整場戰鬥失效。</p>
+</section>
+
+<section>
+<h2>16. formatters</h2>
+<p>預設數字使用 <code>toLocaleString()</code>。宿主可決定 1000000 要顯示成 1,000,000、100萬、1M 或其他格式。</p>
+<pre><code>formatters: {
+  number(value) {
+    return value >= 1000000
+      ? (value / 1000000) + "M"
+      : String(value);
+  }
+}</code></pre>
+</section>
+
+<section>
+<h2>17. callbacks</h2>
+<pre><code>callbacks: {
+  onStart({ battle, state }) {},
+  onTurnStart({ battle, state, turn }) {},
+  onCardPlay({ battle, state, card, results }) {},
+  onEnemyAction({ battle, state, action, result }) {},
+  onStateChange({ battle, state, reason }) {},
+  onWin({ battle, state }) {},
+  onLose({ battle, state }) {},
+  onFinish({ battle, state, result }) {}
+}</code></pre>
+<p>勝負後 Component 不自行跳頁。若宿主要切換頁面，可在 onWin / onLose / onFinish 中自行接 Navigation 或其他 Router。</p>
+</section>
+
+<section>
+<h2>18. CSS 與外觀</h2>
+<p><code>card_battle_component.css</code> 只保留必要結構、狀態、可操作性與自適應，不提供遊戲專屬皮膚、背景、發光、粒子、稀有度配色或動畫。</p>
+<p>宿主可覆寫：</p>
+<pre><code>#battle .slowly-card-battle {
+  --scb-gap: 0.8rem;
+  --scb-border: var(--line);
+  --scb-muted: var(--muted);
+  --scb-surface: var(--panel);
+  --scb-meter-track: var(--surface-soft);
+  --scb-hp: var(--danger);
+  --scb-shield: var(--accent-secondary);
+  --scb-energy: var(--accent);
+  --scb-card-bg: var(--card-bg);
+  --scb-card-text: var(--ink);
+}</code></pre>
+<p>元件 CSS 不修改 body 或全站 button；所有規則都限制在 <code>.slowly-card-battle</code> 範圍內。</p>
+</section>
+
+<section>
+<h2>19. Responsive</h2>
+<p>Card Battle 自己使用 Container Query，依元件實際獲得的寬度調整版面，而不是依整台裝置 viewport。桌機可並排顯示玩家與 Boss；窄容器會重新排列，手機寬度下手牌改為可水平捲動。</p>
+<p><code>https://lib.stillnessbyslowly.com/ui/responsive.css</code> 可作為宿主網站的共用自適應地基，但不是 Card Battle 的必要依賴。</p>
+</section>
+
+<section>
+<h2>20. 其他可選整合</h2>
+<p>Card Battle 保留 callback 與純資料邊界，因此可以由宿主另外整合：</p>
+<pre><code>FictionStorage   → 本機戰鬥存檔
+FictionChange    → 多模組資料變更通知
+Preference       → 音效 / 動畫等玩家偏好
+Navigation       → 勝負後頁面跳轉
+Audio / Tone     → 出牌、受傷、勝負音效</code></pre>
+<p>以上都不是第一版硬依賴。</p>
+</section>
+
+<section>
+<h2>21. 設計邊界</h2>
+<p>Component 負責戰鬥流程；宿主負責世界規則與視覺。卡牌資料不帶 function，遊戲數值不由 Component 平衡，永久儲存位置不由 Component 決定，勝負後導航也不由 Component 決定。</p>
+</section>
+
+</main></body>
+</html>
