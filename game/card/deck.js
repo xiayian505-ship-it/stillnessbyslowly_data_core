@@ -1,11 +1,11 @@
 // deck.js
-// 慢慢的倉庫｜Game / Card｜Deck 1.0.0
+// 慢慢的倉庫｜Game / Card｜Deck 1.1.0
 // 通用牌庫循環核心：draw pile / hand / discard pile。
 // 不處理 DOM、卡牌效果、戰鬥規則、能量或宿主資料格式。
 (function (global) {
   "use strict";
 
-  const VERSION = "1.0.0";
+  const VERSION = "1.1.0";
 
   function cloneArray(value) {
     return Array.isArray(value) ? value.slice() : [];
@@ -52,6 +52,48 @@
       discardPile = [];
 
       if (shuffleOnReset) shuffle();
+      return api;
+    }
+
+    function restore(snapshot) {
+      if (!snapshot || typeof snapshot !== "object") {
+        throw new TypeError("Deck restore snapshot must be an object.");
+      }
+
+      if (!Array.isArray(snapshot.drawPile)) {
+        throw new TypeError("Deck restore snapshot.drawPile must be an array.");
+      }
+
+      if (!Array.isArray(snapshot.hand)) {
+        throw new TypeError("Deck restore snapshot.hand must be an array.");
+      }
+
+      if (!Array.isArray(snapshot.discardPile)) {
+        throw new TypeError("Deck restore snapshot.discardPile must be an array.");
+      }
+
+      const hasSourceItems = Object.prototype.hasOwnProperty.call(snapshot, "sourceItems");
+      if (hasSourceItems && !Array.isArray(snapshot.sourceItems)) {
+        throw new TypeError("Deck restore snapshot.sourceItems must be an array.");
+      }
+
+      const nextDrawPile = snapshot.drawPile.slice();
+      const nextHand = snapshot.hand.slice();
+      const nextDiscardPile = snapshot.discardPile.slice();
+      const nextHandSize = toNonNegativeInt(snapshot.handSize, handSize);
+      const nextSourceItems = hasSourceItems ? snapshot.sourceItems.slice() : null;
+
+      drawPile = nextDrawPile;
+      hand = nextHand;
+      discardPile = nextDiscardPile;
+      handSize = nextHandSize;
+
+      // 1.1.0 之後的 snapshot 會保存 sourceItems，讓 restore 後再 reset()
+      // 仍可回到原始牌組。舊版 snapshot 沒有此欄位時，保留目前實例的 sourceItems。
+      if (hasSourceItems) {
+        sourceItems = nextSourceItems;
+      }
+
       return api;
     }
 
@@ -127,6 +169,7 @@
 
     function snapshot() {
       return {
+        sourceItems: sourceItems.slice(),
         drawPile: drawPile.slice(),
         hand: hand.slice(),
         discardPile: discardPile.slice(),
@@ -137,6 +180,7 @@
     const api = {
       version: VERSION,
       reset,
+      restore,
       shuffle,
       recycle,
       draw,

@@ -20,6 +20,12 @@
       lines.push(`${pass ? "PASS" : "FAIL"}  ${name}`);
     }
 
+    function sameArray(actual, expected) {
+      return JSON.stringify(actual) === JSON.stringify(expected);
+    }
+
+    test("版本為 1.1.0", Deck.version === "1.1.0");
+
     // 關閉洗牌，固定抽牌順序：C → B → A。
     const deck = Deck.create({
       items: ["A", "B", "C"],
@@ -39,14 +45,69 @@
     const discarded = deck.discardAt(0);
     test("discardAt() 會由 hand 移到 discardPile", discarded === "C" && deck.snapshot().discardPile[0] === "C");
 
+    const saved = deck.snapshot();
+    test("snapshot() 會保存 sourceItems", sameArray(saved.sourceItems, ["A", "B", "C"]));
+
     deck.drawToHand(3);
-    test("drawPile 空時會自動回收 discardPile", deck.snapshot().hand.length === 3 && deck.snapshot().discardPile.length === 0);
-
     deck.discardAll();
-    test("discardAll() 會清空 hand", deck.snapshot().hand.length === 0 && deck.snapshot().discardPile.length === 3);
+    deck.setHandSize(9);
+    deck.reset(["X", "Y"]);
 
-    deck.reset([1, 2]);
-    test("reset(items) 可替換宿主資料", deck.snapshot().drawPile.length === 2 && deck.snapshot().discardPile.length === 0);
+    deck.restore(saved);
+    const restored = deck.snapshot();
+
+    test("restore() 會還原 drawPile", sameArray(restored.drawPile, saved.drawPile));
+    test("restore() 會還原 hand", sameArray(restored.hand, saved.hand));
+    test("restore() 會還原 discardPile", sameArray(restored.discardPile, saved.discardPile));
+    test("restore() 會還原 handSize", restored.handSize === saved.handSize);
+    test("restore() 會還原 sourceItems", sameArray(restored.sourceItems, saved.sourceItems));
+
+    deck.reset();
+    test("restore() 後 reset() 仍使用存檔的 sourceItems", sameArray(deck.snapshot().drawPile, ["A", "B", "C"]));
+
+    const legacyDeck = Deck.create({
+      items: [1, 2, 3],
+      handSize: 1,
+      shuffleOnReset: false
+    });
+
+    legacyDeck.restore({
+      drawPile: [7, 8],
+      hand: [9],
+      discardPile: [6],
+      handSize: 3
+    });
+
+    test("restore() 可讀取沒有 sourceItems 的 1.0.0 型快照", sameArray(legacyDeck.snapshot().hand, [9]));
+    legacyDeck.reset();
+    test("舊版快照沒有 sourceItems 時保留目前實例原始項目", sameArray(legacyDeck.snapshot().drawPile, [1, 2, 3]));
+
+    let invalidSnapshotThrows = false;
+    try {
+      deck.restore({ drawPile: [], hand: null, discardPile: [] });
+    } catch (error) {
+      invalidSnapshotThrows = error instanceof TypeError;
+    }
+    test("restore() 遇到無效快照會明確丟出 TypeError", invalidSnapshotThrows);
+
+    const recycleDeck = Deck.create({
+      items: ["A", "B", "C"],
+      handSize: 2,
+      shuffleOnReset: false,
+      shuffleOnRecycle: false
+    });
+
+    recycleDeck.draw(1);
+    recycleDeck.drawToHand();
+    recycleDeck.discardAt(0);
+    recycleDeck.drawToHand(3);
+    test("drawPile 空時會自動回收 discardPile", recycleDeck.snapshot().hand.length === 3 && recycleDeck.snapshot().discardPile.length === 0);
+
+    recycleDeck.discardAll();
+    test("discardAll() 會清空 hand", recycleDeck.snapshot().hand.length === 0 && recycleDeck.snapshot().discardPile.length === 3);
+
+    recycleDeck.reset([1, 2]);
+    test("reset(items) 可替換宿主資料", recycleDeck.snapshot().drawPile.length === 2 && recycleDeck.snapshot().discardPile.length === 0);
 
     test("模組不依賴 Game", typeof window.Game === "undefined");
 

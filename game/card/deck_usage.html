@@ -35,7 +35,10 @@
   deck.drawToHand();
   deck.discardAt(0);
 
-  console.log(deck.snapshot());
+  const savedDeck = deck.snapshot();
+
+  // 之後可把同一份快照還原回 Deck。
+  deck.restore(savedDeck);
 &lt;/script&gt;</code></pre>
   </section>
 
@@ -58,7 +61,8 @@
     <h2>API</h2>
     <table>
       <tbody>
-        <tr><th><code>reset(items?)</code></th><td>重建抽牌堆並清空手牌、棄牌堆。</td></tr>
+        <tr><th><code>reset(items?)</code></th><td>重建抽牌堆並清空手牌、棄牌堆；未傳入新資料時使用目前保存的原始項目。</td></tr>
+        <tr><th><code>restore(snapshot)</code></th><td>還原 <code>snapshot()</code> 產生的牌庫狀態，不洗牌、不抽牌、不回收棄牌堆；回傳 Deck 實例。</td></tr>
         <tr><th><code>shuffle()</code></th><td>洗目前的抽牌堆。</td></tr>
         <tr><th><code>recycle()</code></th><td>手動把棄牌堆移回抽牌堆。</td></tr>
         <tr><th><code>draw(count)</code></th><td>抽指定數量到手牌，回傳實際抽到的項目。</td></tr>
@@ -67,9 +71,24 @@
         <tr><th><code>discardItem(item)</code></th><td>依項目參照找到手牌並棄掉。</td></tr>
         <tr><th><code>discardAll()</code></th><td>把全部手牌移到棄牌堆。</td></tr>
         <tr><th><code>setHandSize(size)</code></th><td>修改預設手牌數。</td></tr>
-        <tr><th><code>snapshot()</code></th><td>取得 drawPile、hand、discardPile、handSize 的快照。</td></tr>
+        <tr><th><code>snapshot()</code></th><td>取得 <code>sourceItems</code>、<code>drawPile</code>、<code>hand</code>、<code>discardPile</code>、<code>handSize</code> 的快照。</td></tr>
       </tbody>
     </table>
+  </section>
+
+  <section>
+    <h2>存檔與還原</h2>
+    <p><code>snapshot()</code> 只建立牌庫狀態快照，Deck 本身不決定存到 localStorage、IndexedDB、資料庫或其他儲存層。</p>
+<pre><code>const saved = deck.snapshot();
+
+// 儲存方式由宿主決定。
+localStorage.setItem("battle-deck", JSON.stringify(saved));
+
+// 讀回後再交給 Deck 還原。
+const restored = JSON.parse(localStorage.getItem("battle-deck"));
+deck.restore(restored);</code></pre>
+    <p>Deck 1.1.0 的快照會另外保存 <code>sourceItems</code>。因此還原後再次呼叫 <code>reset()</code>，仍可回到存檔時所屬的原始牌組。舊版 1.0.0 快照若沒有 <code>sourceItems</code>，仍可還原 draw pile、hand、discard pile 與 handSize，但之後的 <code>reset()</code> 會沿用目前 Deck 實例既有的原始項目。</p>
+    <p>快照採陣列淺拷貝；項目本身的資料格式與序列化能力仍由宿主負責。</p>
   </section>
 
   <section>
@@ -81,6 +100,8 @@
       <button id="fillHand">補到 4 張</button>
       <button id="discardFirst">棄掉第一張</button>
       <button id="discardAll">棄掉全部手牌</button>
+      <button id="saveState">暫存快照</button>
+      <button id="restoreState">還原快照</button>
     </div>
     <div class="zones">
       <div class="zone"><strong>Draw pile <span id="drawCount"></span></strong><div class="items" id="drawPile"></div></div>
@@ -102,6 +123,7 @@
     ];
 
     const deck = Deck.create({ items: demoItems, handSize: 4 });
+    let savedState = null;
 
     function itemNode(item) {
       const node = document.createElement("span");
@@ -129,6 +151,12 @@
     document.getElementById("fillHand").addEventListener("click", () => { deck.drawToHand(); render(); });
     document.getElementById("discardFirst").addEventListener("click", () => { deck.discardAt(0); render(); });
     document.getElementById("discardAll").addEventListener("click", () => { deck.discardAll(); render(); });
+    document.getElementById("saveState").addEventListener("click", () => { savedState = deck.snapshot(); });
+    document.getElementById("restoreState").addEventListener("click", () => {
+      if (!savedState) return;
+      deck.restore(savedState);
+      render();
+    });
 
     render();
   </script>
