@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slowly Card Battle Component｜展示</title>
+<link rel="stylesheet" href="./card_battle_component.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:24px;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;line-height:1.6}
+main{max-width:1100px;margin:auto}
+h1{margin:0 0 8px;font-size:1.45rem}
+.intro{margin:0 0 18px}
+.demo-tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.demo-tools button{min-height:38px;padding:7px 11px;font:inherit}
+.width{display:grid;gap:6px;margin-bottom:12px}
+.width input{width:100%}
+.shell{width:100%;max-width:900px;margin:auto;border:1px solid #aaa;padding:14px}
+.demo-note{margin-top:14px;font-size:.9rem}
+.demo-message{min-height:1.5em;margin:10px 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Slowly Card Battle Component｜展示</h1>
+  <p class="intro">一個可直接玩的通用卡牌戰鬥完成品。Demo 使用泛用的「玩家 / Boss」資料，並示範容器自適應與可選本機存檔。</p>
+
+  <div class="demo-tools">
+    <button id="restart" type="button">重新開始</button>
+    <button id="save" type="button">儲存戰鬥</button>
+    <button id="load" type="button">讀取戰鬥</button>
+    <button id="clear" type="button">清除存檔</button>
+  </div>
+
+  <div class="width">
+    <label>展示容器寬度：<span id="widthValue">900</span>px</label>
+    <input id="width" type="range" min="280" max="900" value="900">
+  </div>
+
+  <p id="demoMessage" class="demo-message" aria-live="polite"></p>
+
+  <div id="shell" class="shell">
+    <div id="battle"></div>
+  </div>
+
+  <p class="demo-note">戰鬥元件本身不依賴 localStorage。這個展示頁另外載入 FictionStorage，只用來示範 snapshot / restore 可以交給宿主保存。</p>
+</main>
+
+<script src="https://lib.stillnessbyslowly.com/game/card/deck.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/combat/combat_stats.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/combat/damage_roll.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/combat/charge_state.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/combat/combatant_config.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/ai/action_pattern.js"></script>
+
+<script src="https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"></script>
+
+<script src="./card_battle_config.js"></script>
+<script src="./card_battle_component.js"></script>
+
+<script>
+const battle = SlowlyCardBattle.mount(
+  "#battle",
+  SlowlyCardBattleConfig
+);
+
+const store = FictionStorage.create({
+  namespace: "slowly-card-battle-demo"
+});
+const saves = store.collection("battle-saves");
+const SAVE_ID = "current";
+const demoMessage = document.getElementById("demoMessage");
+
+function message(text){
+  demoMessage.textContent = text;
+}
+
+document.getElementById("restart").addEventListener("click", () => {
+  battle.restart();
+  message("已重新開始。");
+});
+
+document.getElementById("save").addEventListener("click", async () => {
+  await saves.upsert({
+    id: SAVE_ID,
+    state: battle.snapshot()
+  });
+  message("已儲存目前戰鬥。");
+});
+
+document.getElementById("load").addEventListener("click", async () => {
+  const save = await saves.get(SAVE_ID);
+
+  if (!save) {
+    message("目前沒有存檔。");
+    return;
+  }
+
+  battle.restore(save.state);
+  message("已讀取戰鬥存檔。");
+});
+
+document.getElementById("clear").addEventListener("click", async () => {
+  await saves.remove(SAVE_ID);
+  message("已清除存檔。");
+});
+
+const width = document.getElementById("width");
+const widthValue = document.getElementById("widthValue");
+const shell = document.getElementById("shell");
+
+width.addEventListener("input", () => {
+  widthValue.textContent = width.value;
+  shell.style.maxWidth = width.value + "px";
+});
+</script>
+</body>
+</html>
