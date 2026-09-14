@@ -119,6 +119,32 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Slowly Piano",
+        "desc": "可直接嵌入網站使用的觸控鋼琴完成品，整合音名轉頻率、AudioContext、Oscillator、Gain 與 Envelope，支援多指按鍵、按住持續發聲、音色切換、自訂音域（含標準 88 鍵 A0～C8）、垂直／水平捲動、每排白鍵數與可見排數設定；基礎 CSS 提供可覆寫變數，宿主可自行決定琴鍵顏色、尺寸與整體外觀。",
+        "links": [
+          {
+            "label": "piano_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component.js"
+          },
+          {
+            "label": "piano_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component.css"
+          },
+          {
+            "label": "piano_config.js",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_config.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly JSON Viewer",
         "desc": "可直接使用的 JSON 檢視完成品，組合 JSON Viewer 與 Fiction Storage，支援貼上或匯入 JSON、結構顯示、搜尋標亮、全部展開／收合，以及將常用 JSON 儲存於 localStorage。",
         "links": [
