@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSON Parse / Stringify 使用說明</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.7; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { overflow-x: auto; padding: 16px; border: 1px solid #ccc; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>JSON Parse / Stringify 使用說明</h1>
+
+  <h2>用途</h2>
+  <p>
+    這組提供可重用的 JSON 解析與輸出核心，
+    統一處理 BOM、錯誤模式與輸出縮排。
+  </p>
+
+  <p>
+    它不是 JSON Viewer，也不負責讀檔、Storage、Schema 驗證或 UI。
+  </p>
+
+  <h2>載入</h2>
+  <pre><code>&lt;script src="json_parse_stringify.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>Parse</h2>
+  <pre><code>const data = SlowlyJSON.parse(jsonText);</code></pre>
+
+  <p>預設維持原生行為：解析失敗直接 throw。</p>
+
+  <h2>Safe Parse</h2>
+  <pre><code>const result = SlowlyJSON.parse(jsonText, {
+  safe: true
+});
+
+if (result.ok) {
+  console.log(result.value);
+} else {
+  console.error(result.error);
+}</code></pre>
+
+  <p>safe 模式不會靜默回傳空值，而是明確回傳成功／失敗狀態。</p>
+
+  <h2>Stringify</h2>
+  <pre><code>const text = SlowlyJSON.stringify(data);</code></pre>
+
+  <p>預設使用 2 spaces，方便人類閱讀。</p>
+
+  <pre><code>const compact = SlowlyJSON.stringify(data, {
+  space: 0
+});</code></pre>
+
+  <h2>Safe Stringify</h2>
+  <pre><code>const result = SlowlyJSON.stringify(data, {
+  safe: true
+});
+
+if (result.ok) {
+  console.log(result.value);
+} else {
+  console.error(result.error);
+}</code></pre>
+
+  <h2>原生選項</h2>
+  <p>Parse 可傳入 reviver：</p>
+
+  <pre><code>SlowlyJSON.parse(text, {
+  reviver(key, value) {
+    return value;
+  }
+});</code></pre>
+
+  <p>Stringify 可傳入 replacer 與 space：</p>
+
+  <pre><code>SlowlyJSON.stringify(data, {
+  replacer: ["id", "name"],
+  space: 2
+});</code></pre>
+
+  <h2>BOM</h2>
+  <p>
+    解析前會移除字串開頭的 UTF-8 BOM 字元，
+    避免從某些文字檔取得的 JSON 因 BOM 而失敗。
+  </p>
+
+  <h2>責任邊界</h2>
+  <p>這組不處理：</p>
+  <ul>
+    <li>File / Blob 讀取。</li>
+    <li>JSON 結構 Viewer。</li>
+    <li>JSON Schema 驗證。</li>
+    <li>資料匯入 commit / rollback。</li>
+    <li>localStorage 或 Supabase。</li>
+    <li>CSV。</li>
+    <li>循環參照自動修復。</li>
+  </ul>
+
+  <h2>與既有積木的組合</h2>
+  <pre><code>Custom File
+    ↓
+File Reader.text()
+    ↓
+SlowlyJSON.parse()
+    ↓
+Data Validation / JSON Safe Import / JSON Viewer</code></pre>
+</body>
+</html>

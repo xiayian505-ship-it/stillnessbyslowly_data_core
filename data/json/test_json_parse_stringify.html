@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSON Parse / Stringify 功能測試</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
+    .pass { color: #087a32; }
+    .fail { color: #b42318; }
+    pre { white-space: pre-wrap; word-break: break-word; padding: 16px; border: 1px solid #ccc; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>JSON Parse / Stringify 功能測試</h1>
+  <div id="results"></div>
+
+  <script src="./json_parse_stringify.js"></script>
+  <script>
+    const results = document.getElementById("results");
+
+    function assert(name, condition, detail = "") {
+      const p = document.createElement("p");
+      p.className = condition ? "pass" : "fail";
+      p.textContent = `${condition ? "PASS" : "FAIL"}｜${name}${detail ? `｜${detail}` : ""}`;
+      results.appendChild(p);
+    }
+
+    const parsed = SlowlyJSON.parse('{"name":"Slowly","count":2}');
+    assert(
+      "parse() 基本解析",
+      parsed.name === "Slowly" && parsed.count === 2
+    );
+
+    const bomParsed = SlowlyJSON.parse('\uFEFF{"ok":true}');
+    assert("自動移除 BOM", bomParsed.ok === true);
+
+    const safeFail = SlowlyJSON.parse('{"broken":}', {
+      safe: true
+    });
+
+    assert(
+      "safe parse 失敗不吞錯",
+      safeFail.ok === false &&
+      safeFail.error &&
+      typeof safeFail.error.message === "string"
+    );
+
+    let throwPassed = false;
+
+    try {
+      SlowlyJSON.parse('{"broken":}');
+    } catch (error) {
+      throwPassed = error instanceof SyntaxError;
+    }
+
+    assert("非 safe 模式維持 throw", throwPassed);
+
+    const pretty = SlowlyJSON.stringify({
+      name: "Slowly",
+      count: 2
+    });
+
+    assert(
+      "stringify() 預設 2 spaces",
+      pretty.includes('\n  "name"')
+    );
+
+    const compact = SlowlyJSON.stringify(
+      { a: 1 },
+      { space: 0 }
+    );
+
+    assert("可輸出壓縮 JSON", compact === '{"a":1}');
+
+    const safeStringify = SlowlyJSON.stringify(
+      { a: 1 },
+      { safe: true, space: 0 }
+    );
+
+    assert(
+      "safe stringify 成功格式",
+      safeStringify.ok === true &&
+      safeStringify.value === '{"a":1}'
+    );
+
+    const circular = {};
+    circular.self = circular;
+
+    const circularResult = SlowlyJSON.stringify(circular, {
+      safe: true
+    });
+
+    assert(
+      "循環參照回傳明確錯誤",
+      circularResult.ok === false &&
+      circularResult.error &&
+      typeof circularResult.error.message === "string"
+    );
+
+    const undefinedResult = SlowlyJSON.stringify(undefined, {
+      safe: true
+    });
+
+    assert(
+      "頂層 undefined 明確失敗",
+      undefinedResult.ok === false &&
+      undefinedResult.error.name === "TypeError"
+    );
+
+    let typePassed = false;
+
+    try {
+      SlowlyJSON.parse({ not: "text" });
+    } catch (error) {
+      typePassed = error instanceof TypeError;
+    }
+
+    assert("拒絕非字串 JSON 輸入", typePassed);
+
+    const output = document.createElement("pre");
+    output.textContent =
+      "parse safe fail:\\n" +
+      JSON.stringify(safeFail, null, 2) +
+      "\\n\\nstringify:\\n" +
+      pretty;
+    results.appendChild(output);
+  </script>
+</body>
+</html>
