@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Damage Roll 使用說明</title>
+</head>
+<body>
+  <h1>Damage Roll</h1>
+
+  <p>
+    通用整數擲值核心。依指定 min / max 產生包含上下限的隨機整數，
+    並可額外加入 bonus。
+  </p>
+
+  <p>
+    只負責「數值怎麼擲出來」，不管理角色、HP、護盾、Charge、回合、卡牌或 UI。
+  </p>
+
+  <h2>引入</h2>
+  <pre><code>&lt;script src="./damage_roll.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>取得完整結果</h2>
+  <pre><code>const result = DamageRoll.roll(3, 6, {
+  bonus: 4
+});
+
+console.log(result);
+// {
+//   base: 3 ~ 6,
+//   bonus: 4,
+//   total: base + 4,
+//   min: 3,
+//   max: 6
+// }</code></pre>
+
+  <h2>只取得最後數值</h2>
+  <pre><code>const damage = DamageRoll.value(3, 6, {
+  bonus: 4
+});</code></pre>
+
+  <h2>宿主自行決定 bonus 是什麼</h2>
+  <pre><code>const charge = 4;
+
+const damage = DamageRoll.value(
+  enemy.atkMin,
+  enemy.atkMax,
+  { bonus: charge }
+);
+
+// 是否消耗 charge，由宿主自己處理。
+charge = 0;</code></pre>
+
+  <h2>可注入 rng</h2>
+  <p>
+    測試或需要固定結果時，可自行傳入回傳 0～1 數值的函式。
+  </p>
+
+  <pre><code>const result = DamageRoll.roll(3, 6, {
+  rng: () =&gt; 0,
+  bonus: 2
+});
+
+// base = 3
+// total = 5</code></pre>
+
+  <h2>主要 API</h2>
+  <ul>
+    <li><code>DamageRoll.roll(min, max, options)</code>：回傳 base、bonus、total 與正規化後的範圍。</li>
+    <li><code>DamageRoll.value(min, max, options)</code>：只回傳最後 total。</li>
+    <li><code>DamageRoll.normalizeRange(min, max)</code>：整理整數範圍；min 大於 max 時會自動交換。</li>
+  </ul>
+
+  <h2>簡單操作</h2>
+
+  <label>
+    Min
+    <input id="min" type="number" value="3">
+  </label>
+
+  <label>
+    Max
+    <input id="max" type="number" value="6">
+  </label>
+
+  <label>
+    Bonus
+    <input id="bonus" type="number" value="4">
+  </label>
+
+  <button id="roll" type="button">Roll</button>
+
+  <pre id="output"></pre>
+
+  <script src="./damage_roll.js"></script>
+  <script>
+    const output = document.getElementById("output");
+
+    document.getElementById("roll").addEventListener("click", () => {
+      const result = DamageRoll.roll(
+        document.getElementById("min").value,
+        document.getElementById("max").value,
+        {
+          bonus: document.getElementById("bonus").value
+        }
+      );
+
+      output.textContent = JSON.stringify(result, null, 2);
+    });
+  </script>
+</body>
+</html>
