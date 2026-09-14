@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Charge State 功能測試</title>
+</head>
+<body>
+  <h1>Charge State 功能測試</h1>
+  <pre id="result"></pre>
+
+  <script src="./charge_state.js"></script>
+  <script>
+    const result = document.getElementById("result");
+    let pass = 0;
+    let fail = 0;
+
+    function assert(name, condition, detail) {
+      if (condition) {
+        pass += 1;
+        result.textContent += "PASS | " + name + "\n";
+      } else {
+        fail += 1;
+        result.textContent += "FAIL | " + name;
+        if (detail) result.textContent += " | " + detail;
+        result.textContent += "\n";
+      }
+    }
+
+    const charge = ChargeState.create();
+
+    assert("初始為 0", charge.get() === 0);
+    assert("初始 isEmpty", charge.isEmpty() === true);
+
+    assert("add(4)", charge.add(4) === 4);
+    assert("再次 add(2)", charge.add(2) === 6);
+    assert("has(6)", charge.has(6) === true);
+    assert("has(7) false", charge.has(7) === false);
+
+    assert("consume(2) 回傳消耗值", charge.consume(2) === 2);
+    assert("部分消耗後剩 4", charge.get() === 4);
+
+    assert("consume 超過目前值只消耗現有值", charge.consume(10) === 4);
+    assert("消耗完歸零", charge.get() === 0);
+
+    charge.set(8);
+    assert("set(8)", charge.get() === 8);
+
+    assert("consume() 取出全部", charge.consume() === 8);
+    assert("consume() 後歸零", charge.get() === 0);
+
+    charge.set(5);
+    assert("clear() 回傳舊值", charge.clear() === 5);
+    assert("clear() 後為 0", charge.get() === 0);
+
+    charge.set(-3);
+    assert("負值正規化為 0", charge.get() === 0);
+
+    charge.add(-5);
+    assert("負 add 不降低目前值", charge.get() === 0);
+
+    const initial = ChargeState.create({ initial: 3 });
+    assert("支援 initial", initial.get() === 3);
+
+    result.textContent += "\n";
+    result.textContent += "TOTAL PASS: " + pass + "\n";
+    result.textContent += "TOTAL FAIL: " + fail + "\n";
+  </script>
+</body>
+</html>

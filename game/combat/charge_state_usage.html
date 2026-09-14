@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Charge State 使用說明</title>
+</head>
+<body>
+  <h1>Charge State</h1>
+
+  <p>
+    通用 Charge / Bonus 累積狀態核心。
+    只負責保存一個非負數值，並提供累積、設定、消耗與清除。
+  </p>
+
+  <p>
+    不負責角色、敵人、傷害計算、攻擊流程、回合、卡牌或 UI。
+  </p>
+
+  <h2>引入</h2>
+  <pre><code>&lt;script src="./charge_state.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>基本使用</h2>
+  <pre><code>const charge = ChargeState.create();
+
+charge.add(4);
+charge.add(2);
+
+console.log(charge.get()); // 6
+
+const bonus = charge.consume();
+
+console.log(bonus);        // 6
+console.log(charge.get()); // 0</code></pre>
+
+  <h2>與 Damage Roll 組合</h2>
+  <pre><code>const charge = ChargeState.create();
+
+charge.add(4);
+
+const bonus = charge.consume();
+
+const damage = DamageRoll.value(
+  enemy.atkMin,
+  enemy.atkMax,
+  { bonus }
+);</code></pre>
+
+  <p>
+    Charge State 不知道這個 bonus 最後是拿去加傷害、技能倍率、移動距離或其他用途。
+    實際用途由宿主決定。
+  </p>
+
+  <h2>部分消耗</h2>
+  <pre><code>charge.set(10);
+
+const used = charge.consume(3);
+
+console.log(used);         // 3
+console.log(charge.get()); // 7</code></pre>
+
+  <h2>主要 API</h2>
+  <ul>
+    <li><code>ChargeState.create(options)</code>：建立狀態，可傳 <code>initial</code>。</li>
+    <li><code>get()</code>：取得目前值。</li>
+    <li><code>set(value)</code>：直接設定值。</li>
+    <li><code>add(amount)</code>：累積數值。</li>
+    <li><code>consume()</code>：取出全部數值並歸零。</li>
+    <li><code>consume(amount)</code>：只消耗指定數量。</li>
+    <li><code>clear()</code>：清空並回傳清除前的值。</li>
+    <li><code>has(amount)</code>：判斷目前值是否足夠。</li>
+    <li><code>isEmpty()</code>：判斷是否為 0。</li>
+    <li><code>getState()</code>：取得目前狀態。</li>
+  </ul>
+
+  <h2>簡單操作</h2>
+
+  <p>目前 Charge：<strong id="value">0</strong></p>
+
+  <button id="add4" type="button">add(4)</button>
+  <button id="consume2" type="button">consume(2)</button>
+  <button id="consumeAll" type="button">consume()</button>
+  <button id="clear" type="button">clear()</button>
+
+  <pre id="output"></pre>
+
+  <script src="./charge_state.js"></script>
+  <script>
+    const charge = ChargeState.create();
+    const value = document.getElementById("value");
+    const output = document.getElementById("output");
+
+    function render(message) {
+      value.textContent = String(charge.get());
+      if (message) output.textContent += message + "\n";
+    }
+
+    document.getElementById("add4").addEventListener("click", () => {
+      render("add(4) => " + charge.add(4));
+    });
+
+    document.getElementById("consume2").addEventListener("click", () => {
+      render("consume(2) => " + charge.consume(2));
+    });
+
+    document.getElementById("consumeAll").addEventListener("click", () => {
+      render("consume() => " + charge.consume());
+    });
+
+    document.getElementById("clear").addEventListener("click", () => {
+      render("clear() => " + charge.clear());
+    });
+
+    render();
+  </script>
+</body>
+</html>
