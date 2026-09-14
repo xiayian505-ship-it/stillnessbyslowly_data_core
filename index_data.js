@@ -1909,6 +1909,144 @@ window.SlowlyLibraryIndex = [
     ]
   },
   {
+    "page": "game",
+    "title": "Game",
+    "groups": [
+      {
+        "id": "card",
+        "title": "Card / 卡牌",
+        "subpage": true,
+        "desc": "牌庫、手牌、棄牌與抽牌循環等通用卡牌機制。",
+        "items": [
+          {
+            "title": "Deck",
+            "desc": "通用牌庫循環核心，管理抽牌堆、手牌與棄牌堆，提供洗牌、抽牌、補滿手牌、棄牌與棄牌堆回收；不綁定卡牌資料格式、戰鬥規則、能量、UI 或特定遊戲。",
+            "links": [
+              {
+                "label": "deck.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/deck.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/test_deck.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/deck_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "combat",
+        "title": "Combat / 戰鬥",
+        "subpage": true,
+        "desc": "HP、護盾、傷害擲值、蓄力與戰鬥單位設定等通用戰鬥核心。",
+        "items": [
+          {
+            "title": "Combat Stats",
+            "desc": "通用戰鬥數值核心，提供傷害與護盾吸收、回復、HP 設定、護盾增減，以及倒下與滿血判斷；不綁定玩家／敵人身份、回合、卡牌、AI 或 UI。",
+            "links": [
+              {
+                "label": "combat_stats.js",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/combat_stats.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/test_combat_stats.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/combat_stats_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Damage Roll",
+            "desc": "通用整數傷害擲值核心，依指定範圍產生包含上下限的隨機整數，可加入額外 bonus，並可注入 rng 以固定測試結果；不管理角色、HP、護盾、Charge、回合或 UI。",
+            "links": [
+              {
+                "label": "damage_roll.js",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/damage_roll.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/test_damage_roll.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/damage_roll_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Charge State",
+            "desc": "通用 Charge／Bonus 累積狀態核心，提供設定、累積、全部或部分消耗、清空與狀態判斷；不負責傷害計算、角色、回合或 UI。",
+            "links": [
+              {
+                "label": "charge_state.js",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/charge_state.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/test_charge_state.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/charge_state_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Combatant Config",
+            "desc": "通用戰鬥單位基礎數值正規化工具，將 hp／maxHP／currentHP、shield 與 atk／attack 範圍整理為固定格式，並可由宿主提供 defaults；不負責資料查表、AI、回合、傷害或 UI。",
+            "links": [
+              {
+                "label": "combatant_config.js",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/combatant_config.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/test_combatant_config.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/combatant_config_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ai",
+        "title": "AI / 行動模式",
+        "subpage": true,
+        "desc": "循環行動模式與由宿主自行解讀的遊戲行為決策積木。",
+        "items": [
+          {
+            "title": "Action Pattern",
+            "desc": "通用循環行動模式核心，管理 pattern 與目前索引，提供 next、peek、reset、替換 pattern 與 fallback；只回傳 action，不執行攻擊、防禦、蓄力或任何遊戲效果。",
+            "links": [
+              {
+                "label": "action_pattern.js",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/action_pattern.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/test_action_pattern.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/action_pattern_usage.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "page": "external",
     "title": "External / 外部",
     "groups": [
