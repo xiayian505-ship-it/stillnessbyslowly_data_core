@@ -1029,6 +1029,50 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "iframe",
+        "title": "Iframe / 嵌入頁面",
+        "subpage": true,
+        "desc": "Iframe 建立與來源切換相關的小型 UI 積木；建立與 src 操作分開，各自只負責一件事。",
+        "items": [
+          {
+            "title": "Iframe Create",
+            "desc": "通用 iframe 建立工具，只負責建立 iframe 元素並回傳，可設定 id、className 與 title；不設定 src、不插入 DOM、不處理顯示／隱藏或頁面導航。",
+            "links": [
+              {
+                "label": "iframe_create.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_create.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/test_iframe_create.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_create_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Iframe Source",
+            "desc": "通用 iframe 來源操作工具，只負責讀取、設定與清除既有 iframe 的 src；不建立 iframe、不處理顯示／隱藏、History 或 postMessage。",
+            "links": [
+              {
+                "label": "iframe_source.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_source.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/test_iframe_source.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_source_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "custom-input",
         "title": "Custom Input / 自訂輸入",
         "subpage": true,
