@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>File Reader 使用說明</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.7; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { overflow-x: auto; padding: 16px; border: 1px solid #ccc; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>File Reader 使用說明</h1>
+
+  <h2>用途</h2>
+  <p>
+    File Reader 是通用 File / Blob 讀取核心，
+    將瀏覽器中的 File 或 Blob 讀為文字、ArrayBuffer 或 Data URL。
+  </p>
+
+  <p>
+    它不負責選擇檔案，也不解析 JSON、CSV、圖片或其他內容格式。
+  </p>
+
+  <h2>載入</h2>
+  <pre><code>&lt;script src="file_reader.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>讀為文字</h2>
+  <pre><code>const text = await SlowlyFileReader.text(file);</code></pre>
+
+  <p>需要指定文字編碼時：</p>
+
+  <pre><code>const text = await SlowlyFileReader.text(file, "utf-8");</code></pre>
+
+  <h2>讀為 ArrayBuffer</h2>
+  <pre><code>const buffer = await SlowlyFileReader.arrayBuffer(file);</code></pre>
+
+  <h2>讀為 Data URL</h2>
+  <pre><code>const dataURL = await SlowlyFileReader.dataURL(file);</code></pre>
+
+  <h2>統一 read() 介面</h2>
+  <pre><code>const text = await SlowlyFileReader.read(file, {
+  mode: "text",
+  encoding: "utf-8"
+});
+
+const buffer = await SlowlyFileReader.read(file, {
+  mode: "arrayBuffer"
+});
+
+const dataURL = await SlowlyFileReader.read(file, {
+  mode: "dataURL"
+});</code></pre>
+
+  <h2>與 Custom File 的關係</h2>
+  <p>
+    Custom File 負責「讓使用者選檔」；
+    File Reader 負責「讀取已取得的 File / Blob」。
+    兩者責任分開。
+  </p>
+
+  <h2>責任邊界</h2>
+  <p>File Reader 不處理：</p>
+  <ul>
+    <li>建立 file input 或檔案選擇 UI。</li>
+    <li>檔案類型 accept 限制。</li>
+    <li>JSON.parse() 或 CSV 解析。</li>
+    <li>圖片解碼與尺寸處理。</li>
+    <li>DOM 預覽。</li>
+    <li>下載與 Object URL。</li>
+    <li>localStorage、IndexedDB 或後端儲存。</li>
+  </ul>
+
+  <h2>錯誤</h2>
+  <p>
+    輸入不是 File / Blob、讀取失敗、讀取被取消或指定未知 mode 時，
+    Promise 會 reject；宿主自行決定如何顯示錯誤。
+  </p>
+</body>
+</html>

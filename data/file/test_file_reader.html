@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>File Reader 功能測試</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
+    .pass { color: #087a32; }
+    .fail { color: #b42318; }
+    pre { white-space: pre-wrap; word-break: break-word; padding: 16px; border: 1px solid #ccc; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>File Reader 功能測試</h1>
+  <div id="results"></div>
+
+  <script src="./file_reader.js"></script>
+  <script>
+    const results = document.getElementById("results");
+
+    function assert(name, condition, detail = "") {
+      const p = document.createElement("p");
+      p.className = condition ? "pass" : "fail";
+      p.textContent = `${condition ? "PASS" : "FAIL"}｜${name}${detail ? `｜${detail}` : ""}`;
+      results.appendChild(p);
+    }
+
+    async function run() {
+      const textBlob = new Blob(["Slowly 慢慢"], {
+        type: "text/plain;charset=utf-8"
+      });
+
+      const text = await SlowlyFileReader.text(textBlob);
+      assert("text()", text === "Slowly 慢慢");
+
+      const textByRead = await SlowlyFileReader.read(textBlob, {
+        mode: "text"
+      });
+      assert("read() text mode", textByRead === "Slowly 慢慢");
+
+      const buffer = await SlowlyFileReader.arrayBuffer(
+        new Blob([new Uint8Array([1, 2, 3, 255])])
+      );
+
+      const bytes = Array.from(new Uint8Array(buffer));
+      assert(
+        "arrayBuffer()",
+        JSON.stringify(bytes) === JSON.stringify([1, 2, 3, 255])
+      );
+
+      const dataURL = await SlowlyFileReader.dataURL(
+        new Blob(["abc"], { type: "text/plain" })
+      );
+
+      assert(
+        "dataURL()",
+        typeof dataURL === "string" &&
+        dataURL.startsWith("data:text/plain;base64,")
+      );
+
+      const dataURLByRead = await SlowlyFileReader.read(
+        new Blob(["abc"], { type: "text/plain" }),
+        { mode: "dataURL" }
+      );
+
+      assert(
+        "read() dataURL mode",
+        dataURLByRead.startsWith("data:text/plain;base64,")
+      );
+
+      let invalidInputPassed = false;
+
+      try {
+        await SlowlyFileReader.text("not a blob");
+      } catch (error) {
+        invalidInputPassed = error instanceof TypeError;
+      }
+
+      assert("拒絕非 File / Blob", invalidInputPassed);
+
+      let invalidModePassed = false;
+
+      try {
+        await SlowlyFileReader.read(textBlob, { mode: "unknown" });
+      } catch (error) {
+        invalidModePassed = error instanceof TypeError;
+      }
+
+      assert("拒絕未知 mode", invalidModePassed);
+
+      const output = document.createElement("pre");
+      output.textContent =
+        "text:\\n" + text +
+        "\\n\\nbytes:\\n" + JSON.stringify(bytes) +
+        "\\n\\ndataURL:\\n" + dataURL;
+      results.appendChild(output);
+    }
+
+    run().catch(function (error) {
+      assert("測試執行", false, error.message);
+      console.error(error);
+    });
+  </script>
+</body>
+</html>
