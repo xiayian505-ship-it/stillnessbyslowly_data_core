@@ -326,6 +326,42 @@ h1 {
   font-size: 0.95rem;
 }
 
+/* 完成品｜分頁 */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.pagination[hidden] {
+  display: none;
+}
+
+.pagination-button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.pagination-button:hover,
+.pagination-button:focus-visible,
+.pagination-button[aria-current="page"] {
+  border-color: var(--accent);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.pagination-button[aria-current="page"] {
+  background: var(--bg);
+}
+
 /* 慢慢看｜API Explorer */
 .api-explorer-panel {
   margin: -8px 0 28px;

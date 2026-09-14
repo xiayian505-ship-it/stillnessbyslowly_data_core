@@ -372,8 +372,26 @@ window.SlowlyLibraryIndex = [
         "id": "json",
         "title": "JSON",
         "subpage": true,
-        "desc": "JSON 備份、匯入與結構檢視相關工具。",
+        "desc": "JSON 解析、輸出、備份、匯入與結構檢視相關工具。",
         "items": [
+          {
+            "title": "JSON Parse / Stringify",
+            "desc": "通用 JSON 解析與輸出核心，提供 BOM 處理、輸入正規化、safe 成功／失敗結果，以及 reviver、replacer 與輸出縮排；不負責檔案讀取、Viewer、Storage 或 Schema 驗證。",
+            "links": [
+              {
+                "label": "json_parse_stringify.js",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_parse_stringify.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_parse_stringify_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/json/test_json_parse_stringify.html"
+              }
+            ]
+          },
           {
             "title": "Data Backup",
             "desc": "通用 JSON 備份與匯入工具，提供 JSON 下載、檔案讀取、備份 payload 建立與資料擷取功能。",
@@ -511,6 +529,102 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/data/blob/blob_url_scope_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "diff",
+        "title": "Diff / 差異比較",
+        "items": [
+          {
+            "title": "Data Diff",
+            "desc": "通用資料差異比較核心，比較兩份 JavaScript 資料並回傳 added、removed、changed、equal 與摘要資訊；支援 Object、Array 與巢狀資料，不負責 JSON 解析、DOM 或顯示。",
+            "links": [
+              {
+                "label": "data_diff.js",
+                "href": "https://lib.stillnessbyslowly.com/data/diff/data_diff.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/diff/data_diff_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/diff/test_data_diff.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "validation",
+        "title": "Validation / 驗證",
+        "items": [
+          {
+            "title": "Data Validation",
+            "desc": "通用資料驗證核心，依規則驗證 required、type、min／max、pattern 與自訂 validate，並回傳明確錯誤清單；不綁定 DOM、表單 UI、資料儲存或提交流程。",
+            "links": [
+              {
+                "label": "data_validation.js",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/data_validation.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/data_validation_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/test_data_validation.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "file",
+        "title": "File / 檔案",
+        "items": [
+          {
+            "title": "File Reader",
+            "desc": "通用 File / Blob 讀取核心，可讀為 text、ArrayBuffer 或 Data URL；只負責讀取已取得的檔案資料，不負責檔案選擇、內容解析、預覽、下載或儲存。",
+            "links": [
+              {
+                "label": "file_reader.js",
+                "href": "https://lib.stillnessbyslowly.com/data/file/file_reader.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/file/file_reader_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/file/test_file_reader.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "csv",
+        "title": "CSV",
+        "items": [
+          {
+            "title": "CSV Parse / Stringify",
+            "desc": "通用 CSV 解析與輸出核心，支援 BOM、引號、欄位內逗號與換行、雙引號跳脫、自訂 delimiter，以及 header 與物件陣列轉換；不負責檔案讀取、下載、Schema 驗證或資料儲存。",
+            "links": [
+              {
+                "label": "csv_parse_stringify.js",
+                "href": "https://lib.stillnessbyslowly.com/data/csv/csv_parse_stringify.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/csv/csv_parse_stringify_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/csv/test_csv_parse_stringify.html"
               }
             ]
           }
@@ -685,7 +799,7 @@ window.SlowlyLibraryIndex = [
             ]
           }
         ]
-      },
+      }
     ]
   },
   {
@@ -1104,36 +1218,72 @@ window.SlowlyLibraryIndex = [
             "title": "Clipboard Copy",
             "desc": "通用文字複製工具，只負責把文字寫入剪貼簿；優先使用 Clipboard API，不可用時以暫時 textarea fallback，完成後自動清除。",
             "links": [
-              { "label": "clipboard_copy.js", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy.js" },
-              { "label": "功能測試", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_copy.html" },
-              { "label": "使用說明", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy_usage.html" }
+              {
+                "label": "clipboard_copy.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_copy.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy_usage.html"
+              }
             ]
           },
           {
             "title": "Clipboard Cut",
             "desc": "通用文字剪下工具，只負責剪下 input / textarea 目前選取的文字，寫入剪貼簿後移除原選取內容並送出 input 事件。",
             "links": [
-              { "label": "clipboard_cut.js", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_cut.js" },
-              { "label": "功能測試", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_cut.html" },
-              { "label": "使用說明", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_cut_usage.html" }
+              {
+                "label": "clipboard_cut.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_cut.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_cut.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_cut_usage.html"
+              }
             ]
           },
           {
             "title": "Clipboard Paste",
             "desc": "通用文字貼上工具，負責讀取剪貼簿文字，並可貼入指定 input / textarea 的目前選取位置；受瀏覽器 HTTPS、權限與使用者操作限制。",
             "links": [
-              { "label": "clipboard_paste.js", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_paste.js" },
-              { "label": "功能測試", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_paste.html" },
-              { "label": "使用說明", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_paste_usage.html" }
+              {
+                "label": "clipboard_paste.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_paste.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_paste.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_paste_usage.html"
+              }
             ]
           },
           {
             "title": "Clipboard Select",
             "desc": "通用全選工具，只負責選取指定 input / textarea 或一般元素的全部內容；不執行複製、剪下或貼上。",
             "links": [
-              { "label": "clipboard_select.js", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_select.js" },
-              { "label": "功能測試", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_select.html" },
-              { "label": "使用說明", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_select_usage.html" }
+              {
+                "label": "clipboard_select.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_select.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_select.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_select_usage.html"
+              }
             ]
           }
         ]

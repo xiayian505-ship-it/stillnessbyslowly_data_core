@@ -70,6 +70,7 @@
 <section class="page" data-page-panel="examples">
 <h2 class="section-title">完成品使用</h2>
 <div class="list"></div>
+<nav id="examples-pagination" class="pagination" aria-label="完成品分頁"></nav>
 </section>
 <section class="page" data-page-panel="data">
 <h2 class="section-title">Data</h2>
@@ -178,6 +179,61 @@
 
       card.append(title, desc, meta);
       return card;
+    }
+
+    const EXAMPLES_PAGE_SIZE = 5;
+    let examplesCurrentPage = 1;
+
+    function setExamplesPage(pageNumber, options = {}) {
+      const examplesPanel = document.querySelector('[data-page-panel="examples"]');
+      const list = examplesPanel?.querySelector(".list");
+      const pagination = document.getElementById("examples-pagination");
+      const examplesData = libraryData.find((entry) => entry.page === "examples");
+      const totalItems = examplesData?.items?.length || 0;
+      const totalPages = Math.max(1, Math.ceil(totalItems / EXAMPLES_PAGE_SIZE));
+
+      if (!list || !pagination) return;
+
+      const targetPage = Math.min(Math.max(Number(pageNumber) || 1, 1), totalPages);
+      examplesCurrentPage = targetPage;
+
+      Array.from(list.children).forEach((card) => {
+        const index = Number(card.dataset.itemIndex);
+        const start = (targetPage - 1) * EXAMPLES_PAGE_SIZE;
+        const end = start + EXAMPLES_PAGE_SIZE;
+        card.hidden = !(index >= start && index < end);
+      });
+
+      pagination.replaceChildren();
+
+      if (totalPages <= 1) {
+        pagination.hidden = true;
+        return;
+      }
+
+      pagination.hidden = false;
+
+      for (let page = 1; page <= totalPages; page += 1) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "pagination-button";
+        button.textContent = String(page);
+        button.setAttribute("aria-label", `第 ${page} 頁`);
+
+        if (page === targetPage) {
+          button.setAttribute("aria-current", "page");
+        }
+
+        button.addEventListener("click", () => {
+          setExamplesPage(page, { scroll: true });
+        });
+
+        pagination.appendChild(button);
+      }
+
+      if (options.scroll === true) {
+        examplesPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     }
 
     function renderLibrary() {
@@ -313,6 +369,10 @@
         return;
       }
 
+      if (entry.page === "examples") {
+        setExamplesPage(Math.floor(entry.index / EXAMPLES_PAGE_SIZE) + 1);
+      }
+
       showPage(entry.page);
       const selector = `.item[data-item-page="${CSS.escape(entry.page)}"][data-item-index="${entry.index}"]` +
         (entry.group ? `[data-item-group="${CSS.escape(entry.group)}"]` : ":not([data-item-group])");
@@ -361,6 +421,7 @@
     }
 
     renderLibrary();
+    setExamplesPage(examplesCurrentPage);
     const searchIndex = buildSearchIndex();
 
     const initialPage = decodeURIComponent(window.location.hash.slice(1));
