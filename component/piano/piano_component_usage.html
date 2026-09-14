@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>
+    Slowly Piano｜使用說明
+  </title>
+
+  <style>
+    body {
+      max-width: 920px;
+      margin: 0 auto;
+
+      padding:
+        32px 18px 64px;
+
+      color: #202426;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        "Noto Sans TC",
+        sans-serif;
+
+      line-height: 1.7;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.3;
+    }
+
+    code {
+      font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Consolas,
+        monospace;
+    }
+
+    pre {
+      overflow-x: auto;
+
+      padding: 14px;
+
+      border:
+        1px solid #d7dcdf;
+
+      border-radius: 8px;
+
+      background: #f7f8f8;
+    }
+
+    .note {
+      padding: 12px 14px;
+
+      border-left:
+        4px solid #77838c;
+
+      background: #f4f5f5;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    Slowly Piano v1.2.0
+  </h1>
+
+  <p>
+    手機／觸控友善的鋼琴完成品。
+    宿主可以決定音域、排版、
+    捲動方向、可視範圍與外觀。
+  </p>
+
+  <h2>
+    檔案
+  </h2>
+
+  <pre><code>piano_component.js
+piano_component.css
+piano_config.js
+piano_component_demo.html
+piano_component_usage.html</code></pre>
+
+  <p class="note">
+    piano_config.js 是可選純資料設定。
+    不載入時，
+    Component 仍會使用內建預設。
+  </p>
+
+  <h2>
+    為什麼 A0 附近像沒聲音？
+  </h2>
+
+  <p>
+    A0 只有 27.5 Hz。
+    Web Audio 確實有產生正確基頻，
+    但手機與小型喇叭通常很難有效重播
+    這類極低頻。
+  </p>
+
+  <p>
+    v1.2.0 預設開啟低頻輔助：
+    基頻仍然保留，
+    只是另外加較小聲的 2 倍與 3 倍泛音，
+    讓手機比較能聽見低音。
+  </p>
+
+  <pre><code>lowFrequencyAssist: {
+  enabled: true,
+  belowHz: 130,
+  sineOnly: true,
+
+  harmonics: [
+    {
+      multiple: 2,
+      gainRatio: 0.30
+    },
+    {
+      multiple: 3,
+      gainRatio: 0.18
+    }
+  ]
+}</code></pre>
+
+  <p>
+    若要完全純粹的單一 Oscillator：
+  </p>
+
+  <pre><code>lowFrequencyAssist: {
+  enabled: false
+}</code></pre>
+
+  <h2>
+    音域
+  </h2>
+
+  <pre><code>range: {
+  from: "A0",
+  to: "C8"
+}</code></pre>
+
+  <p>
+    A0～C8 是標準 88 鍵音域。
+    也可以任意裁成例如 C3～B5。
+  </p>
+
+  <h2>
+    垂直捲動
+  </h2>
+
+  <pre><code>layout: {
+  scrollDirection: "vertical",
+
+  whiteKeysPerRow: 7,
+
+  visibleRows: 3,
+
+  visibleWhiteKeys: 7
+}</code></pre>
+
+  <p>
+    <code>whiteKeysPerRow</code>
+    是每排幾個白鍵。
+    黑鍵是覆蓋在白鍵之間，
+    不拿來當等寬欄位計算。
+  </p>
+
+  <p>
+    <code>visibleRows: 3</code>
+    代表畫面同時顯示三排，
+    其他排往下捲。
+  </p>
+
+  <h2>
+    水平捲動
+  </h2>
+
+  <pre><code>layout: {
+  scrollDirection: "horizontal",
+
+  visibleWhiteKeys: 8,
+
+  whiteKeysPerRow: 7,
+  visibleRows: 1
+}</code></pre>
+
+  <p>
+    水平模式會把整個音域排成
+    一條連續鋼琴並左右捲動。
+  </p>
+
+  <p>
+    <code>visibleWhiteKeys</code>
+    控制 viewport 大約顯示幾個白鍵寬。
+    水平模式只有一條琴鍵，
+    所以 <code>whiteKeysPerRow</code>
+    與 <code>visibleRows</code>
+    不參與分排。
+  </p>
+
+  <h2>
+    為什麼設定的是白鍵數？
+  </h2>
+
+  <p>
+    因為鋼琴黑鍵是覆蓋在兩個白鍵之間，
+    不是真正獨立的一個等寬欄位。
+    如果直接「每 12 個實體鍵硬切一排」，
+    很容易剛好切在黑鍵中間，
+    造成下一排的琴鍵幾何不自然。
+  </p>
+
+  <h2>
+    獨立設定檔
+  </h2>
+
+  <pre><code>&lt;script src="./piano_config.js"&gt;&lt;/script&gt;
+&lt;script src="./piano_component.js"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+  const piano =
+    SlowlyPiano.mount(
+      "#piano",
+      SlowlyPianoConfig
+    );
+&lt;/script&gt;</code></pre>
+
+  <h2>
+    宿主換皮
+  </h2>
+
+  <pre><code>#piano .slowly-piano {
+  --spiano-accent: #ff8fc6;
+
+  --spiano-white-bg:
+    linear-gradient(
+      180deg,
+      #ffe9f4,
+      #ffc5df
+    );
+
+  --spiano-white-down-bg:
+    #ff76b7;
+
+  --spiano-black-bg:
+    linear-gradient(
+      180deg,
+      #7d3e61,
+      #3e1e31
+    );
+}</code></pre>
+
+  <h2>
+    API
+  </h2>
+
+  <pre><code>piano.enableAudio()
+
+piano.getWave()
+piano.setWave("triangle")
+piano.nextWave()
+
+piano.allOff()
+
+piano.getState()
+
+piano.refreshLayout()
+
+piano.destroy()</code></pre>
+
+  <h2>
+    設計邊界
+  </h2>
+
+  <p>
+    Slowly Piano 負責琴鍵排列、
+    發聲、多指操作與 layout。
+    音準仍交給
+    SlowlyAudioNoteFrequency。
+    宿主決定音域、捲動方向、
+    每排白鍵數、可見排數與皮膚。
+  </p>
+</body>
+</html>

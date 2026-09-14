@@ -1,0 +1,456 @@
+/* =========================================================
+   慢慢的倉庫｜Slowly Piano v1.2.0
+
+   基礎結構 + 預設外觀。
+   宿主可透過 CSS 變數換皮。
+
+   Layout：
+   - .is-vertical   垂直捲動、多排
+   - .is-horizontal 水平捲動、單一長排
+========================================================= */
+
+.slowly-piano {
+  /* ---------- 尺寸 ---------- */
+
+  --spiano-white-width:
+    clamp(36px, 12.5vw, 64px);
+
+  --spiano-white-height:
+    clamp(120px, 18vh, 180px);
+
+  --spiano-black-width:
+    calc(
+      var(--spiano-white-width) * 0.62
+    );
+
+  --spiano-black-height:
+    calc(
+      var(--spiano-white-height) * 0.62
+    );
+
+  --spiano-gap: 8px;
+  --spiano-radius: 14px;
+  --spiano-black-top: 38px;
+
+  /* ---------- 一般 UI ---------- */
+
+  --spiano-text:
+    rgba(255, 255, 255, 0.92);
+
+  --spiano-muted:
+    rgba(255, 255, 255, 0.70);
+
+  --spiano-accent: #7cffb6;
+
+  --spiano-panel-bg:
+    rgba(255, 255, 255, 0.06);
+
+  --spiano-panel-border:
+    rgba(255, 255, 255, 0.14);
+
+  --spiano-row-bg:
+    rgba(0, 0, 0, 0.18);
+
+  --spiano-row-border:
+    rgba(255, 255, 255, 0.10);
+
+  /* ---------- 白鍵 ---------- */
+
+  --spiano-white-bg:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.95),
+      rgba(255, 255, 255, 0.78)
+    );
+
+  --spiano-white-text:
+    rgba(0, 0, 0, 0.78);
+
+  --spiano-white-border:
+    rgba(255, 255, 255, 0.14);
+
+  --spiano-white-down-bg:
+    linear-gradient(
+      180deg,
+      rgba(124, 255, 182, 0.92),
+      rgba(124, 255, 182, 0.72)
+    );
+
+  --spiano-white-down-border:
+    rgba(124, 255, 182, 0.55);
+
+  /* ---------- 黑鍵 ---------- */
+
+  --spiano-black-bg:
+    linear-gradient(
+      180deg,
+      rgba(55, 55, 55, 0.98),
+      rgba(0, 0, 0, 0.98)
+    );
+
+  --spiano-black-text:
+    rgba(255, 255, 255, 0.92);
+
+  --spiano-black-border:
+    rgba(255, 255, 255, 0.10);
+
+  --spiano-black-down-bg:
+    linear-gradient(
+      180deg,
+      rgba(124, 255, 182, 0.92),
+      rgba(55, 170, 120, 0.85)
+    );
+
+  --spiano-black-down-border:
+    rgba(124, 255, 182, 0.40);
+
+  /* ---------- Shadow ---------- */
+
+  --spiano-white-shadow:
+    0 10px 26px
+    rgba(0, 0, 0, 0.45);
+
+  --spiano-black-shadow:
+    0 12px 28px
+    rgba(0, 0, 0, 0.60);
+
+  display: grid;
+  gap: 10px;
+
+  min-width: 0;
+
+  color:
+    var(--spiano-text);
+}
+
+.slowly-piano,
+.slowly-piano * {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   Header
+========================================================= */
+
+.spiano-header {
+  padding: 12px;
+
+  border:
+    1px solid
+    var(--spiano-panel-border);
+
+  border-radius: 16px;
+
+  background:
+    var(--spiano-panel-bg);
+}
+
+.spiano-title {
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.spiano-hint {
+  margin-top: 6px;
+
+  color:
+    var(--spiano-muted);
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   Controls
+========================================================= */
+
+.spiano-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.spiano-controls button {
+  padding: 10px 14px;
+
+  border:
+    2px solid
+    var(--spiano-accent);
+
+  border-radius: 14px;
+
+  background: transparent;
+  color:
+    var(--spiano-accent);
+
+  font: inherit;
+  cursor: pointer;
+}
+
+.spiano-status {
+  color:
+    var(--spiano-muted);
+
+  font-size: 14px;
+}
+
+/* =========================================================
+   Scroll viewport
+========================================================= */
+
+.spiano-scroll {
+  min-width: 0;
+
+  overscroll-behavior:
+    contain;
+
+  -webkit-overflow-scrolling:
+    touch;
+
+  scrollbar-gutter:
+    stable;
+}
+
+.slowly-piano.is-vertical
+.spiano-scroll {
+  width: 100%;
+
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.slowly-piano.is-horizontal
+.spiano-scroll {
+  width: 100%;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* =========================================================
+   Keyboard
+========================================================= */
+
+.spiano-keyboard {
+  display: flex;
+
+  min-width: 0;
+}
+
+.slowly-piano.is-vertical
+.spiano-keyboard {
+  flex-direction: column;
+
+  gap: 10px;
+
+  touch-action: pan-y;
+}
+
+.slowly-piano.is-horizontal
+.spiano-keyboard {
+  width: max-content;
+  min-width: max-content;
+
+  touch-action: pan-x;
+}
+
+/* =========================================================
+   Row
+========================================================= */
+
+.spiano-row {
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 10px;
+
+  border:
+    1px solid
+    var(--spiano-row-border);
+
+  border-radius: 16px;
+
+  background:
+    var(--spiano-row-bg);
+}
+
+.slowly-piano.is-horizontal
+.spiano-row {
+  width: max-content;
+  min-width: max-content;
+}
+
+.spiano-row-title {
+  margin-bottom: 8px;
+
+  color:
+    var(--spiano-muted);
+
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+}
+
+.spiano-white-row {
+  display: flex;
+  align-items: stretch;
+
+  width: max-content;
+
+  gap:
+    var(--spiano-gap);
+}
+
+/* =========================================================
+   Keys
+========================================================= */
+
+.spiano-key {
+  appearance: none;
+
+  margin: 0;
+  padding: 10px 8px;
+
+  font: inherit;
+
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+.slowly-piano.is-vertical
+.spiano-key {
+  touch-action: pan-y;
+}
+
+.slowly-piano.is-horizontal
+.spiano-key {
+  touch-action: pan-x;
+}
+
+.spiano-key-label {
+  display: block;
+
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+}
+
+.spiano-key-sub {
+  display: block;
+
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* ---------- 白鍵 ---------- */
+
+.spiano-white-key {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  flex:
+    0 0
+    var(--spiano-white-width);
+
+  width:
+    var(--spiano-white-width);
+
+  height:
+    var(--spiano-white-height);
+
+  border:
+    2px solid
+    var(--spiano-white-border);
+
+  border-radius:
+    var(--spiano-radius);
+
+  background:
+    var(--spiano-white-bg);
+
+  color:
+    var(--spiano-white-text);
+
+  box-shadow:
+    var(--spiano-white-shadow);
+
+  cursor: pointer;
+}
+
+.spiano-white-key.is-down {
+  border-color:
+    var(
+      --spiano-white-down-border
+    );
+
+  background:
+    var(
+      --spiano-white-down-bg
+    );
+}
+
+/* ---------- 黑鍵 ---------- */
+
+.spiano-black-key {
+  position: absolute;
+
+  top:
+    var(--spiano-black-top);
+
+  z-index: 5;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width:
+    var(--spiano-black-width);
+
+  height:
+    var(--spiano-black-height);
+
+  border:
+    1px solid
+    var(--spiano-black-border);
+
+  border-radius:
+    0 0 12px 12px;
+
+  background:
+    var(--spiano-black-bg);
+
+  color:
+    var(--spiano-black-text);
+
+  box-shadow:
+    var(--spiano-black-shadow);
+
+  cursor: pointer;
+}
+
+.spiano-black-key.is-down {
+  border-color:
+    var(
+      --spiano-black-down-border
+    );
+
+  background:
+    var(
+      --spiano-black-down-bg
+    );
+}
+
+/* =========================================================
+   Small screen
+========================================================= */
+
+@media (max-width: 360px) {
+  .slowly-piano {
+    --spiano-gap: 6px;
+    --spiano-black-top: 34px;
+  }
+}

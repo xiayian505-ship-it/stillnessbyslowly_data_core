@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>
+    Slowly Piano｜展示頁
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="./piano_component.css"
+  >
+
+  <style>
+    /* =====================================================
+       Demo page
+    ===================================================== */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+
+      padding: 28px 16px 56px;
+
+      background: #151018;
+      color: #f8eef5;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        "Noto Sans TC",
+        sans-serif;
+    }
+
+    main {
+      width: min(100%, 980px);
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    .intro {
+      margin: 0 0 20px;
+
+      color: #cdbdca;
+      line-height: 1.6;
+    }
+
+    /* =====================================================
+       Demo controls
+    ===================================================== */
+
+    .demo-controls {
+      margin-bottom: 18px;
+      padding: 14px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+      border-radius: 16px;
+
+      background:
+        rgba(255, 255, 255, 0.05);
+    }
+
+    .demo-controls fieldset {
+      margin: 0;
+      padding: 0;
+
+      border: 0;
+    }
+
+    .demo-controls legend {
+      margin-bottom: 10px;
+
+      font-weight: 800;
+    }
+
+    .mode-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .mode-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      padding: 10px 12px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+      border-radius: 12px;
+
+      cursor: pointer;
+    }
+
+    .mode-option input {
+      margin: 0;
+    }
+
+    .mode-status {
+      margin-top: 10px;
+
+      color: #cdbdca;
+      font-size: 14px;
+    }
+
+    /* =====================================================
+       宿主換皮：粉紅琴鍵
+    ===================================================== */
+
+    #piano .slowly-piano {
+      --spiano-accent: #ff8fc6;
+
+      --spiano-panel-bg:
+        rgba(255, 143, 198, 0.08);
+
+      --spiano-panel-border:
+        rgba(255, 180, 216, 0.22);
+
+      --spiano-white-bg:
+        linear-gradient(
+          180deg,
+          #ffe9f4,
+          #ffc5df
+        );
+
+      --spiano-white-text:
+        #5d2643;
+
+      --spiano-white-border:
+        #ffb2d5;
+
+      --spiano-white-down-bg:
+        linear-gradient(
+          180deg,
+          #ff97c9,
+          #ff6caf
+        );
+
+      --spiano-white-down-border:
+        #ff4b9c;
+
+      --spiano-black-bg:
+        linear-gradient(
+          180deg,
+          #7d3e61,
+          #3e1e31
+        );
+
+      --spiano-black-text:
+        #fff4fa;
+
+      --spiano-black-border:
+        #985275;
+
+      --spiano-black-down-bg:
+        linear-gradient(
+          180deg,
+          #ff70b2,
+          #b8407a
+        );
+
+      --spiano-black-down-border:
+        #ff9bcb;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>
+      Slowly Piano v1.2.0
+    </h1>
+
+    <p class="intro">
+      同一台 88 鍵鋼琴，
+      直接在展示頁切換垂直捲動或水平捲動。
+    </p>
+
+    <section class="demo-controls">
+      <fieldset>
+        <legend>
+          捲動方向
+        </legend>
+
+        <div class="mode-options">
+          <label class="mode-option">
+            <input
+              type="radio"
+              name="scroll-mode"
+              value="vertical"
+              checked
+            >
+
+            垂直捲動
+          </label>
+
+          <label class="mode-option">
+            <input
+              type="radio"
+              name="scroll-mode"
+              value="horizontal"
+            >
+
+            水平捲動
+          </label>
+        </div>
+      </fieldset>
+
+      <div
+        id="mode-status"
+        class="mode-status"
+      ></div>
+    </section>
+
+    <div id="piano"></div>
+  </main>
+
+  <!-- =====================================================
+       慢慢的倉庫｜Audio dependencies
+  ====================================================== -->
+
+  <script
+    src="https://lib.stillnessbyslowly.com/audio/context/audio_context.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/audio/pitch/note_frequency.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/audio/source/oscillator.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/audio/gain/gain.js"
+  ></script>
+
+  <script
+    src="https://lib.stillnessbyslowly.com/audio/gain/envelope.js"
+  ></script>
+
+  <!-- =====================================================
+       Slowly Piano
+  ====================================================== -->
+
+  <script
+    src="./piano_config.js"
+  ></script>
+
+  <script
+    src="./piano_component.js"
+  ></script>
+
+  <script>
+    let piano = null;
+
+    const modeStatus =
+      document.getElementById(
+        "mode-status"
+      );
+
+    function makeConfig(mode) {
+      const isVertical =
+        mode === "vertical";
+
+      return {
+        ...SlowlyPianoConfig,
+
+        layout: {
+          ...SlowlyPianoConfig.layout,
+
+          scrollDirection:
+            mode,
+
+          whiteKeysPerRow:
+            7,
+
+          visibleRows:
+            3,
+
+          visibleWhiteKeys:
+            8
+        },
+
+        labels: {
+          ...SlowlyPianoConfig.labels,
+
+          title:
+            isVertical
+              ? "88 鍵｜垂直捲動"
+              : "88 鍵｜水平捲動",
+
+          hint:
+            isVertical
+              ? "每排 7 個白鍵，同時顯示 3 排；其餘往下捲。"
+              : "完整一條 88 鍵鋼琴，左右捲動；約顯示 8 個白鍵寬。"
+        }
+      };
+    }
+
+    function renderPiano(mode) {
+      if (piano) {
+        piano.destroy();
+        piano = null;
+      }
+
+      piano =
+        SlowlyPiano.mount(
+          "#piano",
+          makeConfig(mode)
+        );
+
+      modeStatus.textContent =
+        mode === "vertical"
+          ? "目前：垂直捲動｜每排 7 個白鍵｜顯示 3 排"
+          : "目前：水平捲動｜單一長排｜約顯示 8 個白鍵寬";
+
+      requestAnimationFrame(
+        () => {
+          piano.refreshLayout();
+        }
+      );
+    }
+
+    document
+      .querySelectorAll(
+        'input[name="scroll-mode"]'
+      )
+      .forEach((input) => {
+        input.addEventListener(
+          "change",
+          () => {
+            if (input.checked) {
+              renderPiano(
+                input.value
+              );
+            }
+          }
+        );
+      });
+
+    renderPiano("vertical");
+  </script>
+</body>
+</html>
