@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Action Pattern 功能測試</title>
+</head>
+<body>
+  <h1>Action Pattern 功能測試</h1>
+  <pre id="result"></pre>
+
+  <script src="./action_pattern.js"></script>
+  <script>
+    const result = document.getElementById("result");
+    let pass = 0;
+    let fail = 0;
+
+    function assert(name, condition, detail) {
+      if (condition) {
+        pass += 1;
+        result.textContent += "PASS | " + name + "\n";
+      } else {
+        fail += 1;
+        result.textContent += "FAIL | " + name;
+        if (detail) result.textContent += " | " + detail;
+        result.textContent += "\n";
+      }
+    }
+
+    const pattern = ActionPattern.create(
+      ["attack", "attack", "guard", "charge"],
+      { fallback: "attack" }
+    );
+
+    assert("初始 peek", pattern.peek() === "attack");
+    assert("第一次 next", pattern.next() === "attack");
+    assert("第二次 next", pattern.next() === "attack");
+    assert("第三次 next", pattern.next() === "guard");
+    assert("第四次 next", pattern.next() === "charge");
+    assert("循環回第一格", pattern.next() === "attack");
+
+    pattern.reset(2);
+    assert("reset(index)", pattern.peek() === "guard");
+
+    pattern.setPattern(["a", "b"]);
+    assert("setPattern 重設 index", pattern.getIndex() === 0);
+    assert("setPattern 新內容", pattern.next() === "a");
+
+    const emptyWithFallback = ActionPattern.create([], { fallback: "idle" });
+    assert("空 pattern 使用 fallback", emptyWithFallback.next() === "idle");
+    assert("fallback 可持續循環", emptyWithFallback.next() === "idle");
+
+    const emptyWithoutFallback = ActionPattern.create([]);
+    assert("空 pattern 無 fallback 回 null", emptyWithoutFallback.next() === null);
+
+    const arbitraryValues = ActionPattern.create([{ type: "move" }, 7, true]);
+    assert("可保存任意 action 值", arbitraryValues.next().type === "move");
+    assert("非字串 action", arbitraryValues.next() === 7);
+    assert("布林 action", arbitraryValues.next() === true);
+
+    result.textContent += "\n";
+    result.textContent += "TOTAL PASS: " + pass + "\n";
+    result.textContent += "TOTAL FAIL: " + fail + "\n";
+  </script>
+</body>
+</html>

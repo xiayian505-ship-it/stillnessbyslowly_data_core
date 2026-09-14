@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Action Pattern 使用說明</title>
+</head>
+<body>
+  <h1>Action Pattern</h1>
+
+  <p>
+    通用循環行動模式核心。只負責保存 pattern、目前索引，
+    並依序回傳下一個 action；不執行攻擊、防禦、蓄力、動畫或任何遊戲效果。
+  </p>
+
+  <h2>引入</h2>
+  <pre><code>&lt;script src="./action_pattern.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>基本使用</h2>
+  <pre><code>const pattern = ActionPattern.create(
+  ["attack", "attack", "guard", "charge"],
+  { fallback: "attack" }
+);
+
+pattern.next(); // "attack"
+pattern.next(); // "attack"
+pattern.next(); // "guard"
+pattern.next(); // "charge"
+pattern.next(); // "attack"</code></pre>
+
+  <h2>宿主決定 action 的意義</h2>
+  <pre><code>const action = pattern.next();
+
+switch (action) {
+  case "attack":
+    doAttack();
+    break;
+  case "guard":
+    doGuard();
+    break;
+  case "charge":
+    doCharge();
+    break;
+}</code></pre>
+
+  <p>
+    Action Pattern 不知道 <code>attack</code>、<code>guard</code> 或 <code>charge</code>
+    是什麼；這些行動名稱與實際效果全部由宿主決定。
+  </p>
+
+  <h2>主要 API</h2>
+  <ul>
+    <li><code>ActionPattern.create(pattern, options)</code>：建立循環模式。</li>
+    <li><code>next()</code>：取得目前 action，並把索引移到下一格。</li>
+    <li><code>peek()</code>：查看目前 action，但不移動索引。</li>
+    <li><code>reset(index)</code>：重設目前索引，預設回到 0。</li>
+    <li><code>setPattern(pattern, { keepIndex })</code>：替換 pattern。</li>
+    <li><code>setFallback(action)</code>：設定空 pattern 時使用的 fallback。</li>
+    <li><code>getPattern()</code>：取得 pattern 副本。</li>
+    <li><code>getIndex()</code>：取得目前索引。</li>
+    <li><code>getState()</code>：取得目前 pattern、index 與 fallback。</li>
+  </ul>
+
+  <h2>互動確認</h2>
+  <p>目前 pattern：<code id="patternText"></code></p>
+  <p>下一個 action：<strong id="nextText"></strong></p>
+  <p>目前 index：<strong id="indexText"></strong></p>
+
+  <button id="btnNext" type="button">next()</button>
+  <button id="btnPeek" type="button">peek()</button>
+  <button id="btnReset" type="button">reset()</button>
+
+  <pre id="output"></pre>
+
+  <script src="./action_pattern.js"></script>
+  <script>
+    const instance = ActionPattern.create(
+      ["attack", "attack", "guard", "charge"],
+      { fallback: "attack" }
+    );
+
+    const patternText = document.getElementById("patternText");
+    const nextText = document.getElementById("nextText");
+    const indexText = document.getElementById("indexText");
+    const output = document.getElementById("output");
+
+    function render(message) {
+      patternText.textContent = JSON.stringify(instance.getPattern());
+      nextText.textContent = String(instance.peek());
+      indexText.textContent = String(instance.getIndex());
+      if (message) output.textContent += message + "\n";
+    }
+
+    document.getElementById("btnNext").addEventListener("click", () => {
+      render("next() => " + String(instance.next()));
+    });
+
+    document.getElementById("btnPeek").addEventListener("click", () => {
+      render("peek() => " + String(instance.peek()));
+    });
+
+    document.getElementById("btnReset").addEventListener("click", () => {
+      instance.reset();
+      render("reset()");
+    });
+
+    render();
+  </script>
+</body>
+</html>
