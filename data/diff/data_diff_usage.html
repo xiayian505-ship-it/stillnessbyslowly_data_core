@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Diff 使用說明</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.7;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Data Diff 使用說明</h1>
+
+  <h2>用途</h2>
+  <p>
+    Data Diff 是純資料差異比較核心，用來比較兩份 JavaScript 資料，
+    回傳新增、移除與變更項目。
+  </p>
+
+  <p>
+    核心不負責 JSON 字串解析、檔案讀取、DOM、UI、標亮或畫面顯示。
+  </p>
+
+  <h2>載入</h2>
+  <pre><code>&lt;script src="data_diff.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>基本使用</h2>
+  <pre><code>const result = SlowlyDataDiff.diff(
+  {
+    name: "Slowly",
+    count: 1
+  },
+  {
+    name: "Slowly",
+    count: 2,
+    active: true
+  }
+);
+
+console.log(result);</code></pre>
+
+  <h2>回傳格式</h2>
+  <pre><code>{
+  equal: false,
+
+  added: [
+    {
+      type: "added",
+      path: "$.active",
+      segments: ["active"],
+      newValue: true
+    }
+  ],
+
+  removed: [],
+
+  changed: [
+    {
+      type: "changed",
+      path: "$.count",
+      segments: ["count"],
+      oldValue: 1,
+      newValue: 2
+    }
+  ],
+
+  summary: {
+    added: 1,
+    removed: 0,
+    changed: 1,
+    total: 2
+  }
+}</code></pre>
+
+  <h2>路徑格式</h2>
+  <p>一般欄位使用點記法：</p>
+  <pre><code>$.user.name</code></pre>
+
+  <p>陣列使用索引：</p>
+  <pre><code>$.items[0].title</code></pre>
+
+  <p>無法安全使用點記法的 key，會改用括號格式：</p>
+  <pre><code>$["hello-world"]</code></pre>
+
+  <h2>比較規則</h2>
+  <ul>
+    <li>Object 依 key 比較。</li>
+    <li>Array 依索引比較。</li>
+    <li>巢狀 Object / Array 會繼續往下比較。</li>
+    <li>不同容器型態，例如 Object → Array，視為該路徑的一筆 changed。</li>
+    <li>primitive 使用 Object.is() 判斷是否相同。</li>
+  </ul>
+
+  <h2>責任邊界</h2>
+  <p>Data Diff 不處理：</p>
+  <ul>
+    <li>JSON.parse() / JSON.stringify()</li>
+    <li>CSV</li>
+    <li>檔案讀取</li>
+    <li>DOM 與 UI</li>
+    <li>文字標亮</li>
+    <li>陣列依 ID 對齊</li>
+    <li>循環參照資料</li>
+  </ul>
+
+  <p>
+    若之後需要 JSON Diff 完成品，可再由 JSON Parser、Data Diff、
+    Custom File、Clipboard、Toast 等積木組合。
+  </p>
+</body>
+</html>

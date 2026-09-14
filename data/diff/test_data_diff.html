@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Diff 功能測試</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+    }
+
+    .pass {
+      color: #0a7a34;
+    }
+
+    .fail {
+      color: #b42318;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      padding: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Data Diff 功能測試</h1>
+  <div id="results"></div>
+
+  <script src="./data_diff.js"></script>
+  <script>
+    const results = document.getElementById("results");
+
+    function addResult(name, passed, detail = "") {
+      const item = document.createElement("p");
+      item.className = passed ? "pass" : "fail";
+      item.textContent = `${passed ? "PASS" : "FAIL"}｜${name}${detail ? `｜${detail}` : ""}`;
+      results.appendChild(item);
+    }
+
+    function assert(name, condition, detail = "") {
+      addResult(name, Boolean(condition), detail);
+    }
+
+    const same = SlowlyDataDiff.diff(
+      { name: "Slowly", tags: ["a", "b"] },
+      { name: "Slowly", tags: ["a", "b"] }
+    );
+
+    assert("相同資料", same.equal === true && same.summary.total === 0);
+
+    const objectDiff = SlowlyDataDiff.diff(
+      {
+        id: 1,
+        title: "old",
+        keep: true,
+        removeMe: "bye",
+        nested: {
+          count: 1
+        }
+      },
+      {
+        id: 1,
+        title: "new",
+        keep: true,
+        addMe: "hello",
+        nested: {
+          count: 2
+        }
+      }
+    );
+
+    assert(
+      "物件新增欄位",
+      objectDiff.added.some(item => item.path === "$.addMe" && item.newValue === "hello")
+    );
+
+    assert(
+      "物件移除欄位",
+      objectDiff.removed.some(item => item.path === "$.removeMe" && item.oldValue === "bye")
+    );
+
+    assert(
+      "巢狀欄位變更",
+      objectDiff.changed.some(
+        item =>
+          item.path === "$.nested.count" &&
+          item.oldValue === 1 &&
+          item.newValue === 2
+      )
+    );
+
+    assert(
+      "一般欄位變更",
+      objectDiff.changed.some(
+        item =>
+          item.path === "$.title" &&
+          item.oldValue === "old" &&
+          item.newValue === "new"
+      )
+    );
+
+    const arrayDiff = SlowlyDataDiff.diff(
+      ["a", "b"],
+      ["a", "c", "d"]
+    );
+
+    assert(
+      "陣列索引變更",
+      arrayDiff.changed.some(
+        item =>
+          item.path === "$[1]" &&
+          item.oldValue === "b" &&
+          item.newValue === "c"
+      )
+    );
+
+    assert(
+      "陣列新增項目",
+      arrayDiff.added.some(
+        item =>
+          item.path === "$[2]" &&
+          item.newValue === "d"
+      )
+    );
+
+    const typeDiff = SlowlyDataDiff.diff(
+      { value: { a: 1 } },
+      { value: [1] }
+    );
+
+    assert(
+      "資料型態不同視為單筆 changed",
+      typeDiff.changed.length === 1 &&
+      typeDiff.changed[0].path === "$.value"
+    );
+
+    const specialKeyDiff = SlowlyDataDiff.diff(
+      { "hello-world": 1 },
+      { "hello-world": 2 }
+    );
+
+    assert(
+      "特殊 key 路徑",
+      specialKeyDiff.changed[0].path === '$["hello-world"]'
+    );
+
+    const nanDiff = SlowlyDataDiff.diff(NaN, NaN);
+    assert("NaN 與 NaN 視為相同", nanDiff.equal === true);
+
+    const output = document.createElement("pre");
+    output.textContent = JSON.stringify(objectDiff, null, 2);
+    results.appendChild(output);
+  </script>
+</body>
+</html>
