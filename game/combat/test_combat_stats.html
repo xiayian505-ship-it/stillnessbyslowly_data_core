@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Combat Stats 功能測試</title>
+</head>
+<body>
+  <h1>Combat Stats 功能測試</h1>
+  <pre id="output"></pre>
+
+  <script src="./combat_stats.js"></script>
+  <script>
+    const output = document.getElementById("output");
+    const lines = [];
+
+    function test(name, fn) {
+      try {
+        fn();
+        lines.push(`PASS  ${name}`);
+      } catch (error) {
+        lines.push(`FAIL  ${name}\n      ${error.message}`);
+      }
+    }
+
+    function equal(actual, expected, message) {
+      if (actual !== expected) {
+        throw new Error(`${message}｜expected: ${expected}, actual: ${actual}`);
+      }
+    }
+
+    test("護盾先吸收傷害", () => {
+      const unit = { hp: 20, maxHP: 20, shield: 5 };
+      const result = CombatStats.damage(unit, 8);
+      equal(result.absorbed, 5, "吸收值錯誤");
+      equal(result.damage, 3, "實際傷害錯誤");
+      equal(unit.hp, 17, "HP 錯誤");
+      equal(unit.shield, 0, "shield 錯誤");
+    });
+
+    test("護盾可完全擋下傷害", () => {
+      const unit = { hp: 20, maxHP: 20, shield: 10 };
+      const result = CombatStats.damage(unit, 4);
+      equal(result.damage, 0, "不應扣 HP");
+      equal(unit.hp, 20, "HP 不應變化");
+      equal(unit.shield, 6, "剩餘護盾錯誤");
+    });
+
+    test("HP 不會低於 0", () => {
+      const unit = { hp: 3, maxHP: 20, shield: 0 };
+      CombatStats.damage(unit, 99);
+      equal(unit.hp, 0, "HP 應停在 0");
+      equal(CombatStats.isDefeated(unit), true, "應判定 defeated");
+    });
+
+    test("治療不會超過 maxHP", () => {
+      const unit = { hp: 18, maxHP: 20, shield: 0 };
+      const result = CombatStats.heal(unit, 5);
+      equal(result.healed, 2, "實際治療量錯誤");
+      equal(unit.hp, 20, "HP 應停在 maxHP");
+    });
+
+    test("增加與清除護盾", () => {
+      const unit = { hp: 20, maxHP: 20, shield: 2 };
+      CombatStats.addShield(unit, 4);
+      equal(unit.shield, 6, "加盾錯誤");
+      const result = CombatStats.clearShield(unit);
+      equal(result.removed, 6, "移除量錯誤");
+      equal(unit.shield, 0, "護盾應歸零");
+    });
+
+    test("normalize 會限制非法數值", () => {
+      const unit = { hp: 99, maxHP: 10, shield: -5 };
+      CombatStats.normalize(unit);
+      equal(unit.hp, 10, "HP 應限制到 maxHP");
+      equal(unit.shield, 0, "shield 不可為負");
+    });
+
+    test("setMaxHP 可選擇維持比例", () => {
+      const unit = { hp: 10, maxHP: 20, shield: 0 };
+      CombatStats.setMaxHP(unit, 40, { preserveRatio: true });
+      equal(unit.hp, 20, "HP 應維持 50% 比例");
+      equal(unit.maxHP, 40, "maxHP 錯誤");
+    });
+
+    output.textContent = lines.join("\n");
+  </script>
+</body>
+</html>
