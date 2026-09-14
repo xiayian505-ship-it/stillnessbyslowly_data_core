@@ -71,6 +71,32 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Slowly Card Battle",
+        "desc": "可直接嵌入網站使用的卡牌戰鬥完成品，組合 Deck、Combat Stats、Damage Roll、Charge State、Combatant Config 與 Action Pattern，提供玩家／Boss 戰鬥流程、能量、複合卡牌效果、敵人行動模式、戰鬥快照還原與容器自適應；宿主可透過設定檔修改數值與牌組，外觀可自行覆寫。",
+        "links": [
+          {
+            "label": "card_battle_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_battle_component.js"
+          },
+          {
+            "label": "card_battle_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_battle_component.css"
+          },
+          {
+            "label": "card_battle_config.js",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_battle_config.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_battle_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_battle_component_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly JSON Viewer",
         "desc": "可直接使用的 JSON 檢視完成品，組合 JSON Viewer 與 Fiction Storage，支援貼上或匯入 JSON、結構顯示、搜尋標亮、全部展開／收合，以及將常用 JSON 儲存於 localStorage。",
         "links": [
@@ -2047,6 +2073,26 @@ window.SlowlyLibraryIndex = [
     ]
   },
   {
+    "page": "mail",
+    "title": "Mail",
+    "items": [
+      {
+        "title": "Mail",
+        "desc": "共用 Email 呼叫介面，提供即時寄送、排程、取消與狀態查詢。實際寄送、排程、驗證與敏感設定由後端負責。",
+        "links": [
+          {
+            "label": "mail.js",
+            "href": "https://lib.stillnessbyslowly.com/mail/mail.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/mail/mail_test.html"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "page": "external",
     "title": "External / 外部",
     "groups": [
@@ -2115,26 +2161,6 @@ window.SlowlyLibraryIndex = [
           {
             "label": "功能測試",
             "href": "https://lib.stillnessbyslowly.com/comment/comment_board_test.html"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "page": "mail",
-    "title": "Mail",
-    "items": [
-      {
-        "title": "Mail",
-        "desc": "共用 Email 呼叫介面，提供即時寄送、排程、取消與狀態查詢。實際寄送、排程、驗證與敏感設定由後端負責。",
-        "links": [
-          {
-            "label": "mail.js",
-            "href": "https://lib.stillnessbyslowly.com/mail/mail.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/mail/mail_test.html"
           }
         ]
       }
