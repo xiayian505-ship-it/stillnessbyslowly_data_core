@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deck 功能測試</title>
+</head>
+<body>
+  <h1>Deck 功能測試</h1>
+  <pre id="result"></pre>
+
+  <script src="./deck.js"></script>
+  <script>
+    const lines = [];
+    let failed = 0;
+
+    function test(name, condition) {
+      const pass = Boolean(condition);
+      if (!pass) failed += 1;
+      lines.push(`${pass ? "PASS" : "FAIL"}  ${name}`);
+    }
+
+    // 關閉洗牌，固定抽牌順序：C → B → A。
+    const deck = Deck.create({
+      items: ["A", "B", "C"],
+      handSize: 2,
+      shuffleOnReset: false,
+      shuffleOnRecycle: false
+    });
+
+    test("建立後 drawPile 有 3 個項目", deck.snapshot().drawPile.length === 3);
+
+    const firstDraw = deck.draw(1);
+    test("draw(1) 會把項目移進 hand", firstDraw[0] === "C" && deck.snapshot().hand.length === 1);
+
+    deck.drawToHand();
+    test("drawToHand() 會補到 handSize", deck.snapshot().hand.length === 2);
+
+    const discarded = deck.discardAt(0);
+    test("discardAt() 會由 hand 移到 discardPile", discarded === "C" && deck.snapshot().discardPile[0] === "C");
+
+    deck.drawToHand(3);
+    test("drawPile 空時會自動回收 discardPile", deck.snapshot().hand.length === 3 && deck.snapshot().discardPile.length === 0);
+
+    deck.discardAll();
+    test("discardAll() 會清空 hand", deck.snapshot().hand.length === 0 && deck.snapshot().discardPile.length === 3);
+
+    deck.reset([1, 2]);
+    test("reset(items) 可替換宿主資料", deck.snapshot().drawPile.length === 2 && deck.snapshot().discardPile.length === 0);
+
+    test("模組不依賴 Game", typeof window.Game === "undefined");
+
+    lines.push("");
+    lines.push(failed === 0 ? "ALL PASS" : `${failed} FAILED`);
+    document.getElementById("result").textContent = lines.join("\n");
+  </script>
+</body>
+</html>

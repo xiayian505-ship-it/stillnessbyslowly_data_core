@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deck 使用說明｜慢慢的倉庫</title>
+  <style>
+    body { font-family: system-ui, sans-serif; line-height: 1.6; margin: 24px; max-width: 960px; }
+    section { margin: 28px 0; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { padding: 12px; background: #f3f3f3; overflow: auto; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; vertical-align: top; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .zone { border: 1px solid #bbb; padding: 12px; min-height: 120px; }
+    .items { display: flex; flex-wrap: wrap; gap: 6px; }
+    .item { border: 1px solid #999; padding: 6px 10px; }
+    @media (max-width: 700px) { .zones { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Deck</h1>
+  <p>通用牌庫循環核心，管理抽牌堆、手牌與棄牌堆。模組只負責項目在三個區域之間的流動；卡片資料、使用條件、效果、戰鬥規則、UI 與儲存方式都由宿主決定。</p>
+
+  <section>
+    <h2>基本使用</h2>
+<pre><code>&lt;script src="./deck.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const deck = Deck.create({
+    items: myCards,
+    handSize: 4
+  });
+
+  deck.drawToHand();
+  deck.discardAt(0);
+
+  console.log(deck.snapshot());
+&lt;/script&gt;</code></pre>
+  </section>
+
+  <section>
+    <h2>建立選項</h2>
+    <table>
+      <thead><tr><th>選項</th><th>用途</th><th>預設</th></tr></thead>
+      <tbody>
+        <tr><td><code>items</code></td><td>宿主提供的任意項目陣列；也接受 <code>cards</code>。</td><td><code>[]</code></td></tr>
+        <tr><td><code>handSize</code></td><td><code>drawToHand()</code> 預設補到的手牌數。</td><td><code>0</code></td></tr>
+        <tr><td><code>recycleDiscard</code></td><td>抽牌堆空時是否自動回收棄牌堆。</td><td><code>true</code></td></tr>
+        <tr><td><code>shuffleOnReset</code></td><td>建立／重設牌庫時是否洗牌。</td><td><code>true</code></td></tr>
+        <tr><td><code>shuffleOnRecycle</code></td><td>棄牌堆回收時是否洗牌。</td><td><code>true</code></td></tr>
+        <tr><td><code>random</code></td><td>宿主可傳入自訂亂數函式。</td><td><code>Math.random</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>API</h2>
+    <table>
+      <tbody>
+        <tr><th><code>reset(items?)</code></th><td>重建抽牌堆並清空手牌、棄牌堆。</td></tr>
+        <tr><th><code>shuffle()</code></th><td>洗目前的抽牌堆。</td></tr>
+        <tr><th><code>recycle()</code></th><td>手動把棄牌堆移回抽牌堆。</td></tr>
+        <tr><th><code>draw(count)</code></th><td>抽指定數量到手牌，回傳實際抽到的項目。</td></tr>
+        <tr><th><code>drawToHand(size?)</code></th><td>把手牌補到指定數量。</td></tr>
+        <tr><th><code>discardAt(index)</code></th><td>把指定手牌位置移到棄牌堆。</td></tr>
+        <tr><th><code>discardItem(item)</code></th><td>依項目參照找到手牌並棄掉。</td></tr>
+        <tr><th><code>discardAll()</code></th><td>把全部手牌移到棄牌堆。</td></tr>
+        <tr><th><code>setHandSize(size)</code></th><td>修改預設手牌數。</td></tr>
+        <tr><th><code>snapshot()</code></th><td>取得 drawPile、hand、discardPile、handSize 的快照。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>操作展示</h2>
+    <p>下面的按鈕與項目外觀只是這個說明頁的宿主 UI，不屬於 Deck。</p>
+    <div class="controls">
+      <button id="reset">重設</button>
+      <button id="drawOne">抽 1 張</button>
+      <button id="fillHand">補到 4 張</button>
+      <button id="discardFirst">棄掉第一張</button>
+      <button id="discardAll">棄掉全部手牌</button>
+    </div>
+    <div class="zones">
+      <div class="zone"><strong>Draw pile <span id="drawCount"></span></strong><div class="items" id="drawPile"></div></div>
+      <div class="zone"><strong>Hand <span id="handCount"></span></strong><div class="items" id="hand"></div></div>
+      <div class="zone"><strong>Discard pile <span id="discardCount"></span></strong><div class="items" id="discardPile"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>宿主責任</h2>
+    <p>Deck 不處理卡牌效果、能量、攻擊、防禦、回合、動畫、DOM、儲存或任何特定遊戲規則。宿主只把它當作牌庫狀態與流動核心使用。</p>
+  </section>
+
+  <script src="./deck.js"></script>
+  <script>
+    const demoItems = [
+      { id: "A" }, { id: "B" }, { id: "C" },
+      { id: "D" }, { id: "E" }, { id: "F" }
+    ];
+
+    const deck = Deck.create({ items: demoItems, handSize: 4 });
+
+    function itemNode(item) {
+      const node = document.createElement("span");
+      node.className = "item";
+      node.textContent = item.id;
+      return node;
+    }
+
+    function fill(id, items) {
+      document.getElementById(id).replaceChildren(...items.map(itemNode));
+    }
+
+    function render() {
+      const state = deck.snapshot();
+      fill("drawPile", state.drawPile);
+      fill("hand", state.hand);
+      fill("discardPile", state.discardPile);
+      document.getElementById("drawCount").textContent = `(${state.drawPile.length})`;
+      document.getElementById("handCount").textContent = `(${state.hand.length})`;
+      document.getElementById("discardCount").textContent = `(${state.discardPile.length})`;
+    }
+
+    document.getElementById("reset").addEventListener("click", () => { deck.reset(demoItems); render(); });
+    document.getElementById("drawOne").addEventListener("click", () => { deck.draw(1); render(); });
+    document.getElementById("fillHand").addEventListener("click", () => { deck.drawToHand(); render(); });
+    document.getElementById("discardFirst").addEventListener("click", () => { deck.discardAt(0); render(); });
+    document.getElementById("discardAll").addEventListener("click", () => { deck.discardAll(); render(); });
+
+    render();
+  </script>
+</body>
+</html>
