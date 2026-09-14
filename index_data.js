@@ -27,6 +27,28 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Slowly Clipboard",
+        "desc": "可直接嵌入網站使用的剪貼簿操作完成品，組合 Clipboard Copy、Cut、Paste 與 Select 四顆零件，為 input / textarea 建立複製、剪下、貼上與全選的原生按鈕列；完成品 CSS 僅提供基本結構，外觀可由宿主覆寫。",
+        "links": [
+          {
+            "label": "clipboard_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component.js"
+          },
+          {
+            "label": "clipboard_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly Calendar",
         "desc": "可直接嵌入網站使用的完整萬年曆元件，整合西曆、農曆、節慶與二十四節氣，支援一個月、三週、兩週與一週顯示，並依容器寬度調整資訊密度。",
         "links": [
