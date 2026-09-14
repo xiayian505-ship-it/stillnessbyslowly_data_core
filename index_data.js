@@ -1073,6 +1073,50 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "clipboard",
+        "title": "Clipboard / 剪貼簿",
+        "subpage": true,
+        "desc": "複製、剪下、貼上與全選相關的小型 UI 積木；各自只負責一種剪貼簿／選取操作。",
+        "items": [
+          {
+            "title": "Clipboard Copy",
+            "desc": "通用文字複製工具，只負責把文字寫入剪貼簿；優先使用 Clipboard API，不可用時以暫時 textarea fallback，完成後自動清除。",
+            "links": [
+              { "label": "clipboard_copy.js", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy.js" },
+              { "label": "功能測試", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_copy.html" },
+              { "label": "使用說明", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy_usage.html" }
+            ]
+          },
+          {
+            "title": "Clipboard Cut",
+            "desc": "通用文字剪下工具，只負責剪下 input / textarea 目前選取的文字，寫入剪貼簿後移除原選取內容並送出 input 事件。",
+            "links": [
+              { "label": "clipboard_cut.js", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_cut.js" },
+              { "label": "功能測試", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_cut.html" },
+              { "label": "使用說明", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_cut_usage.html" }
+            ]
+          },
+          {
+            "title": "Clipboard Paste",
+            "desc": "通用文字貼上工具，負責讀取剪貼簿文字，並可貼入指定 input / textarea 的目前選取位置；受瀏覽器 HTTPS、權限與使用者操作限制。",
+            "links": [
+              { "label": "clipboard_paste.js", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_paste.js" },
+              { "label": "功能測試", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_paste.html" },
+              { "label": "使用說明", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_paste_usage.html" }
+            ]
+          },
+          {
+            "title": "Clipboard Select",
+            "desc": "通用全選工具，只負責選取指定 input / textarea 或一般元素的全部內容；不執行複製、剪下或貼上。",
+            "links": [
+              { "label": "clipboard_select.js", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_select.js" },
+              { "label": "功能測試", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/test_clipboard_select.html" },
+              { "label": "使用說明", "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_select_usage.html" }
+            ]
+          }
+        ]
+      },
+      {
         "id": "custom-input",
         "title": "Custom Input / 自訂輸入",
         "subpage": true,
