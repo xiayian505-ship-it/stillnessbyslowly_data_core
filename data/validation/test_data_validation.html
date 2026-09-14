@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Validation 功能測試</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
+    .pass { color: #087a32; }
+    .fail { color: #b42318; }
+    pre { white-space: pre-wrap; word-break: break-word; padding: 16px; border: 1px solid #ccc; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Data Validation 功能測試</h1>
+  <div id="results"></div>
+
+  <script src="./data_validation.js"></script>
+  <script>
+    const results = document.getElementById("results");
+
+    function assert(name, condition) {
+      const p = document.createElement("p");
+      p.className = condition ? "pass" : "fail";
+      p.textContent = `${condition ? "PASS" : "FAIL"}｜${name}`;
+      results.appendChild(p);
+    }
+
+    const schema = {
+      name: {
+        required: true,
+        type: "string",
+        min: 2,
+        max: 10
+      },
+      age: {
+        type: "integer",
+        min: 18,
+        max: 120
+      },
+      email: {
+        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      },
+      "profile.nickname": {
+        required: true,
+        type: "string"
+      },
+      tags: {
+        type: "array",
+        min: 1,
+        max: 3
+      },
+      code: {
+        validate(value) {
+          return value === "SBS" || "code 必須是 SBS。";
+        }
+      }
+    };
+
+    const good = SlowlyDataValidation.validate(
+      {
+        name: "Slowly",
+        age: 20,
+        email: "hello@example.com",
+        profile: { nickname: "慢慢" },
+        tags: ["library"],
+        code: "SBS"
+      },
+      schema
+    );
+
+    assert("合法資料", good.valid === true && good.errorCount === 0);
+
+    const bad = SlowlyDataValidation.validate(
+      {
+        name: "",
+        age: 15,
+        email: "wrong",
+        profile: {},
+        tags: ["a", "b", "c", "d"],
+        code: "NO"
+      },
+      schema
+    );
+
+    assert("required", bad.errors.some(e => e.path === "name" && e.rule === "required"));
+    assert("巢狀 required", bad.errors.some(e => e.path === "profile.nickname" && e.rule === "required"));
+    assert("數字 min", bad.errors.some(e => e.path === "age" && e.rule === "min"));
+    assert("pattern", bad.errors.some(e => e.path === "email" && e.rule === "pattern"));
+    assert("陣列 max", bad.errors.some(e => e.path === "tags" && e.rule === "max"));
+    assert("自訂 validate", bad.errors.some(e => e.path === "code" && e.rule === "validate"));
+
+    const optional = SlowlyDataValidation.validate({}, {
+      note: { type: "string", min: 3 }
+    });
+
+    assert("非必填空值略過其他規則", optional.valid === true);
+
+    const typeFail = SlowlyDataValidation.validate(
+      { count: "10" },
+      { count: { type: "number" } }
+    );
+
+    assert("type", typeFail.errors.some(e => e.rule === "type"));
+
+    assert(
+      "getValue 巢狀欄位",
+      SlowlyDataValidation.getValue({ a: { b: 7 } }, "a.b") === 7
+    );
+
+    const output = document.createElement("pre");
+    output.textContent = JSON.stringify(bad, null, 2);
+    results.appendChild(output);
+  </script>
+</body>
+</html>

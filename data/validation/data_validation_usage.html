@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Validation 使用說明</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.7; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { overflow-x: auto; padding: 16px; border: 1px solid #ccc; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Data Validation 使用說明</h1>
+
+  <h2>用途</h2>
+  <p>Data Validation 是通用資料驗證核心，依 schema 驗證 JavaScript 資料並回傳錯誤清單。</p>
+  <p>不負責 DOM、表單 UI、錯誤訊息顯示、資料儲存、提交或 JSON Schema 標準。</p>
+
+  <h2>載入</h2>
+  <pre><code>&lt;script src="data_validation.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>基本使用</h2>
+  <pre><code>const schema = {
+  name: {
+    required: true,
+    type: "string",
+    min: 2,
+    max: 20
+  },
+
+  age: {
+    type: "integer",
+    min: 18
+  },
+
+  email: {
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  },
+
+  "profile.nickname": {
+    required: true
+  },
+
+  code: {
+    validate(value, data) {
+      return value === "SBS" || "code 必須是 SBS。";
+    }
+  }
+};
+
+const result = SlowlyDataValidation.validate(data, schema);</code></pre>
+
+  <h2>支援規則</h2>
+  <ul>
+    <li><code>required</code>：必填。</li>
+    <li><code>type</code>：string、number、boolean、function、array、object、integer、null 等。</li>
+    <li><code>min</code> / <code>max</code>：數字比較數值；字串與陣列比較 length。</li>
+    <li><code>pattern</code>：使用 RegExp 驗證字串。</li>
+    <li><code>validate</code>：自訂驗證函式。</li>
+  </ul>
+
+  <h2>自訂驗證</h2>
+  <pre><code>validate(value, data) {
+  if (value === "SBS") {
+    return true;
+  }
+
+  return "code 必須是 SBS。";
+}</code></pre>
+
+  <p>回傳 <code>true</code> 或 <code>undefined</code> 視為通過；回傳字串時，字串會成為錯誤訊息。</p>
+
+  <h2>回傳格式</h2>
+  <pre><code>{
+  valid: false,
+  errors: [
+    {
+      path: "age",
+      rule: "min",
+      message: "不可小於 18。",
+      value: 15
+    }
+  ],
+  errorCount: 1
+}</code></pre>
+
+  <h2>巢狀欄位</h2>
+  <p>欄位名稱可使用點記法：</p>
+  <pre><code>{
+  "profile.nickname": {
+    required: true
+  }
+}</code></pre>
+
+  <h2>責任邊界</h2>
+  <p>Data Validation 不處理：</p>
+  <ul>
+    <li>DOM 與表單元素。</li>
+    <li>Toast 或錯誤文字顯示。</li>
+    <li>資料提交與儲存。</li>
+    <li>JSON.parse()。</li>
+    <li>JSON Schema 標準。</li>
+    <li>非同步／遠端驗證。</li>
+    <li>欄位自動轉型。</li>
+  </ul>
+</body>
+</html>
