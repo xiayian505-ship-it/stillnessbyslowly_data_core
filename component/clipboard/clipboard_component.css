@@ -1,0 +1,31 @@
+/* 慢慢的倉庫｜Slowly Clipboard Component
+ * 只提供完成品最低限度的結構與可用性。
+ * 顏色、字體、圓角、陰影等視覺外觀由宿主自行決定。
+ */
+
+.slowly-clipboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.slowly-clipboard-button {
+  min-height: 2.25rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.slowly-clipboard-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.slowly-clipboard-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}

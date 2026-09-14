@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slowly Clipboard Component Demo</title>
+<link rel="stylesheet" href="./clipboard_component.css">
+<style>
+  body {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: Arial, "Microsoft JhengHei", sans-serif;
+    line-height: 1.7;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 180px;
+    box-sizing: border-box;
+    padding: 12px;
+    font: inherit;
+  }
+
+  .demo-note {
+    margin-top: 24px;
+    color: #666;
+  }
+
+  /* 宿主可以直接覆寫完成品外觀。 */
+  .demo-custom .slowly-clipboard-button {
+    border-radius: 999px;
+  }
+</style>
+</head>
+<body>
+<h1>Slowly Clipboard Component</h1>
+<p>選取文字後可複製或剪下；貼上會插入游標位置；全選會選取整個輸入區內容。</p>
+
+<div class="demo-custom">
+  <textarea id="editor">這是一段測試文字。
+你可以先選取其中一段，再試試複製或剪下。
+也可以把游標放到任意位置後按「貼上」。</textarea>
+</div>
+
+<p class="demo-note">
+  這個展示頁故意只用很少的宿主 CSS。完成品本身只提供基本排列與按鈕可用性。
+</p>
+
+<script src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy.js"></script>
+<script src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_cut.js"></script>
+<script src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_paste.js"></script>
+<script src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_select.js"></script>
+<script src="./clipboard_component.js"></script>
+<script>
+  const clipboard = SlowlyClipboard.mount("#editor", {
+    onError(error) {
+      alert(error.message);
+    }
+  });
+
+  // 呼叫後仍是普通 DOM，宿主可以繼續修改。
+  clipboard.elements.copy.textContent = "複製";
+</script>
+</body>
+</html>
