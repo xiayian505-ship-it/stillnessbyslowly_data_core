@@ -36,6 +36,22 @@
     <div id="search-results" class="search-results"></div>
   </div>
 
+  <section class="api-explorer-panel" aria-labelledby="api-explorer-title">
+    <div class="api-explorer-head">
+      <label id="api-explorer-title" class="search-label" for="api-explorer-input">解析怎麼用</label>
+      <a class="api-explorer-link" href="https://lib.stillnessbyslowly.com/pocket/slowly_api_explorer.html">單獨開啟 API Explorer</a>
+    </div>
+
+    <form id="api-explorer-form" class="api-explorer-form">
+      <input id="api-explorer-input" class="search-input" type="url" required placeholder="貼上倉庫 JS / CSS / Usage URL" autocomplete="off" spellcheck="false">
+      <button class="api-explorer-submit" type="submit">解析</button>
+    </form>
+
+    <div id="api-explorer-result" class="api-explorer-result" hidden>
+      <iframe id="api-explorer-frame" class="api-explorer-frame" title="Slowly API Explorer"></iframe>
+    </div>
+  </section>
+
   <div class="directory-note">
     <ul>
       <li>這裡的東西，各長各的，路徑、命名、API 與回報方式可能不一樣。</li>
@@ -224,6 +240,12 @@
     const searchStatus = document.getElementById("search-status");
     const searchResults = document.getElementById("search-results");
 
+    const API_EXPLORER_URL = "https://lib.stillnessbyslowly.com/pocket/slowly_api_explorer.html";
+    const apiExplorerForm = document.getElementById("api-explorer-form");
+    const apiExplorerInput = document.getElementById("api-explorer-input");
+    const apiExplorerResult = document.getElementById("api-explorer-result");
+    const apiExplorerFrame = document.getElementById("api-explorer-frame");
+
     function normalizeSearchText(value) {
       return String(value ?? "").toLocaleLowerCase();
     }
@@ -347,6 +369,21 @@
     }
 
     searchInput?.addEventListener("input", () => renderSearchResults(searchInput.value, searchIndex));
+
+    apiExplorerForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const target = apiExplorerInput.value.trim();
+      if (!target) return;
+
+      const explorerUrl = new URL(API_EXPLORER_URL);
+      explorerUrl.searchParams.set("url", target);
+
+      apiExplorerFrame.src = explorerUrl.href;
+      apiExplorerResult.hidden = false;
+      apiExplorerResult.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
     navButtons.forEach((button) => {
       button.addEventListener("click", () => showPage(button.dataset.page));
     });
