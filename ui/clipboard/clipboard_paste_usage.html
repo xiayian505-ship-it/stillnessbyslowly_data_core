@@ -1,0 +1,2 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><title>Clipboard Paste 使用說明</title><body><h1>Clipboard Paste</h1><p>只負責讀取剪貼簿文字，或貼入指定 input / textarea。瀏覽器可能要求 HTTPS、權限與使用者操作。</p><h2>載入</h2><pre>&lt;script src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_paste.js"&gt;&lt;/script&gt;</pre><h2>API</h2><pre>const text = await SlowlyClipboardPaste.read();
+await SlowlyClipboardPaste.paste("#text");</pre><p>paste 會在目前選取範圍或游標位置插入文字，並觸發 input 事件。</p></body></html>

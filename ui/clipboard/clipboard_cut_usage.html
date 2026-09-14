@@ -1,0 +1,2 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><title>Clipboard Cut 使用說明</title><body><h1>Clipboard Cut</h1><p>只負責剪下 input / textarea 目前選取的文字。</p><h2>載入順序</h2><pre>&lt;script src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_copy.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_cut.js"&gt;&lt;/script&gt;</pre><h2>API</h2><pre>await SlowlyClipboardCut.cut("#text");</pre><p>成功後回傳被剪下的文字，並觸發 input 事件。沒有選取內容時回傳空字串。</p></body></html>
