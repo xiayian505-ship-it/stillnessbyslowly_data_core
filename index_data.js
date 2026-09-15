@@ -1547,6 +1547,54 @@ window.SlowlyLibraryIndex = [
             ]
           }
         ]
+      },
+      {
+        "id": "loader",
+        "title": "Loader / 載入",
+        "subpage": true,
+        "desc": "載入遮罩與進度顯示相關的通用 UI 積木。",
+        "items": [
+          {
+            "title": "Loader Progress",
+            "desc": "通用全頁載入遮罩與進度條控制元件，由宿主提供 root，支援直接設定 0～100 進度、百分比文字、模擬進度、完成收起與 onDone 回呼；CSS 負責基礎遮罩與進度條結構，色彩可由變數覆寫。",
+            "links": [
+              {
+                "label": "loader_progress.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/loader/loader_progress.css"
+              },
+              {
+                "label": "loader_progress.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/loader/loader_progress.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/loader/test_loader_progress.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "progress",
+        "title": "Progress / 進度",
+        "subpage": true,
+        "desc": "一般數值、狀態與能力進度顯示相關的通用 UI 積木。",
+        "items": [
+          {
+            "title": "Stat Bar",
+            "desc": "純 CSS 通用狀態／進度條結構，包含 label、track、bar 與 value，可由宿主以 --sl-stat-value 控制寬度，並自訂標籤寬度、條高、底色、填色與動畫時間；支援 reduced-motion。",
+            "links": [
+              {
+                "label": "stat_bar.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/progress/stat_bar.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/progress/test_stat_bar.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -1569,6 +1617,20 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/effects/line/test_underline.html"
+              }
+            ]
+          },
+          {
+            "title": "Gradient Divider",
+            "desc": "純 CSS 漸層分隔線，中央顯色、兩端透明，可由 CSS 變數控制線條高度與顏色；不綁定版面或容器尺寸。",
+            "links": [
+              {
+                "label": "gradient_divider.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/gradient_divider.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_gradient_divider.html"
               }
             ]
           }
@@ -1611,6 +1673,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/light/electric_border_usage.html"
               }
             ]
+          },
+          {
+            "title": "Decorative Dual Glow",
+            "desc": "純 CSS 雙重徑向光暈裝飾，透過兩組偽元素在容器內建立獨立光源，可由宿主控制兩側光暈的尺寸、位置與色彩；不處理互動或內容。",
+            "links": [
+              {
+                "label": "decorative_glow.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/decorative_glow.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_decorative_glow.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -1633,6 +1709,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/hover/test_lift.html"
               }
             ]
+          },
+          {
+            "title": "Magnetic Hover",
+            "desc": "指標磁吸位移互動，依游標相對元素中心的位置套用 translate，可分別控制 X／Y 強度；僅在 fine pointer 且未啟用 reduced-motion 時作用，並提供 destroy 還原。",
+            "links": [
+              {
+                "label": "magnetic_hover.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/magnetic_hover.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_magnetic_hover.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -1653,6 +1743,20 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_fade_up.html"
+              }
+            ]
+          },
+          {
+            "title": "Auto Reveal",
+            "desc": "通用自動進場觀察器，以 IntersectionObserver 監看 data-slowly-reveal 元素並切換 is-visible，可設定 threshold、rootMargin 與是否只觸發一次；reduced-motion 或不支援 Observer 時直接顯示。",
+            "links": [
+              {
+                "label": "auto_reveal.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/auto_reveal.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_auto_reveal.html"
               }
             ]
           }
@@ -1681,6 +1785,34 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_progress.html"
               }
             ]
+          },
+          {
+            "title": "Parallax Fade",
+            "desc": "捲動視差淡出效果，依頁面 scrollY 對指定元素套用垂直位移與透明度，可控制位移速度、淡出範圍與作用視窗高度；以 requestAnimationFrame 節流並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "parallax_fade.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax_fade.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_parallax_fade.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Class",
+            "desc": "通用捲動門檻 class 切換工具，當頁面 scrollY 超過指定 threshold 時替目標元素加入 class，回到門檻內則移除；class 名稱與門檻皆由宿主設定。",
+            "links": [
+              {
+                "label": "scroll_class.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/scroll_class.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_scroll_class.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -1703,6 +1835,48 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/typography/test_tracking.html"
               }
             ]
+          },
+          {
+            "title": "Marquee",
+            "desc": "純 CSS 橫向循環跑馬燈，以 track 持續位移並在容器兩側加入漸隱遮罩；可由 CSS 變數控制動畫時間，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "marquee.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/marquee.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_marquee.html"
+              }
+            ]
+          },
+          {
+            "title": "Shine Text",
+            "desc": "純 CSS 流動漸層文字光澤效果，以 background-clip 將動畫漸層限制在文字內，可由宿主自訂漸層與動畫時間，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "shine_text.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/shine_text.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_shine_text.html"
+              }
+            ]
+          },
+          {
+            "title": "Typewriter",
+            "desc": "通用打字機文字循環工具，由宿主提供目標元素與 phrases，支援逐字輸入、停留、刪除、句間延遲與是否循環，並提供 start、stop 與 destroy。",
+            "links": [
+              {
+                "label": "typewriter.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/typewriter.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_typewriter.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -1723,6 +1897,48 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/effects/background/test_gradient_shift.html"
+              }
+            ]
+          },
+          {
+            "title": "Aurora Background",
+            "desc": "純 CSS 全畫面極光背景，以三組模糊徑向光團持續漂移，可由宿主控制三組色彩、模糊與透明度；使用 fixed 疊層且不攔截指標事件，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "aurora.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/aurora.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_aurora.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Overlay",
+            "desc": "純 CSS 全畫面網格覆蓋層，以兩組線性漸層建立水平與垂直網格，並以徑向遮罩讓邊緣淡出；網格尺寸可由宿主 CSS 變數調整。",
+            "links": [
+              {
+                "label": "grid_overlay.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/grid_overlay.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_grid_overlay.html"
+              }
+            ]
+          },
+          {
+            "title": "Noise Overlay",
+            "desc": "純 CSS 全畫面顆粒覆蓋層，以內嵌 SVG fractalNoise 產生細微雜訊質感，使用 fixed 疊層且不攔截指標事件，可由 CSS 變數控制透明度。",
+            "links": [
+              {
+                "label": "noise_overlay.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/noise_overlay.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_noise_overlay.html"
               }
             ]
           }
@@ -1751,6 +1967,24 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/3d/test_tilt.html"
               }
             ]
+          },
+          {
+            "title": "Tilt Spotlight",
+            "desc": "3D 指標傾斜加聚光效果，JavaScript 依游標位置更新旋轉、上浮與聚光座標，CSS 以 radial-gradient 顯示游標附近光源；可控制角度、lift、perspective 與光色，並尊重 fine pointer／reduced-motion。",
+            "links": [
+              {
+                "label": "tilt_spotlight.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt_spotlight.css"
+              },
+              {
+                "label": "tilt_spotlight.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt_spotlight.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/test_tilt_spotlight.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -1773,6 +2007,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/particle/test_float.html"
               }
             ]
+          },
+          {
+            "title": "Particle Network",
+            "desc": "Canvas 粒子連線背景核心，依畫面大小建立粒子、距離近時自動連線，並可選擇啟用游標排斥；支援密度、數量、連線距離、摩擦、線條色彩與 DPR 等設定，提供 start、stop、resize、destroy，reduced-motion 時改為靜態粒子。",
+            "links": [
+              {
+                "label": "particle_network.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/particle_network.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_particle_network.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -1793,6 +2041,38 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_press.html"
+              }
+            ]
+          },
+          {
+            "title": "Pulse Dot",
+            "desc": "純 CSS 脈衝圓點效果，以透明度與縮放往返建立呼吸感，可由 CSS 變數控制動畫時間，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "pulse_dot.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/pulse_dot.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_pulse_dot.html"
+              }
+            ]
+          },
+          {
+            "title": "Custom Cursor",
+            "desc": "自訂游標核心，由宿主提供 ring 與 dot 元素；圓點即時跟隨游標、外圈以可調 lag 追蹤，並可依指定 hover selector 切換互動狀態。僅在 fine pointer 且未啟用 reduced-motion 時作用，提供 destroy 清除事件與狀態。",
+            "links": [
+              {
+                "label": "custom_cursor.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/custom_cursor.css"
+              },
+              {
+                "label": "custom_cursor.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/custom_cursor.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_custom_cursor.html"
               }
             ]
           }
