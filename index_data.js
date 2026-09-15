@@ -389,6 +389,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/storage/test_local_storage_scan.html"
               }
             ]
+          },
+          {
+            "title": "Snapshot Mirror",
+            "desc": "通用多儲存來源 snapshot 協調核心，可從多個提供 read／write 的 store 讀取資料、依時間選出最新 snapshot、處理同時間 tie-break，並將最新版本回寫到所有 store 修補不一致；不綁 localStorage、IndexedDB 或特定資料格式。",
+            "links": [
+              {
+                "label": "snapshot_mirror.js",
+                "href": "https://lib.stillnessbyslowly.com/data/storage/snapshot_mirror.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/storage/test_snapshot_mirror.html"
+              }
+            ]
           }
         ]
       },
@@ -595,6 +609,24 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/import/import_rollback_usage.html"
               }
             ]
+          },
+          {
+            "title": "Import Merge",
+            "desc": "通用匯入合併核心，將匯入資料加入既有資料；識別鍵衝突或缺少識別鍵時，可交由宿主提供 createKey 重新配號，並回報新增與 rekey 結果；不讀檔、不解析 JSON、不寫 Storage，也不決定資料 schema。",
+            "links": [
+              {
+                "label": "import_merge.js",
+                "href": "https://lib.stillnessbyslowly.com/data/import/import_merge.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/import/import_merge_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/import/test_import_merge.html"
+              }
+            ]
           }
         ]
       },
@@ -739,6 +771,44 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/random/test_random.html"
               }
             ]
+          },
+          {
+            "title": "Random ID",
+            "desc": "通用唯一識別字串產生器，優先使用 crypto.randomUUID()，不支援時退回時間戳＋隨機片段；可加入前綴，不保存狀態、不綁定 Fiction，也不依賴其他隨機模組。",
+            "links": [
+              {
+                "label": "random_id.js",
+                "href": "https://lib.stillnessbyslowly.com/data/random/random_id.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/random/test_random_id.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "id",
+        "title": "ID / 序號",
+        "items": [
+          {
+            "title": "Next Sequence",
+            "desc": "通用下一序號計算核心，從既有數值或帶前綴的序號字串找出下一個整數序號，支援自訂起始值、前綴與取值函式；不保存 counter、不產生完整 ID、不修改資料。",
+            "links": [
+              {
+                "label": "next_sequence.js",
+                "href": "https://lib.stillnessbyslowly.com/data/id/next_sequence.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/id/next_sequence_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/id/test_next_sequence.html"
+              }
+            ]
           }
         ]
       },
@@ -761,6 +831,20 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/data/file/test_file_reader.html"
+              }
+            ]
+          },
+          {
+            "title": "Filename Sanitize",
+            "desc": "通用檔名清理核心，可替換常見不可用字元、清除尾端空白／句點，並支援自訂替換字元、fallback 與最大長度；不負責副檔名、下載或 DOM。",
+            "links": [
+              {
+                "label": "filename_sanitize.js",
+                "href": "https://lib.stillnessbyslowly.com/data/file/filename_sanitize.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/file/test_filename_sanitize.html"
               }
             ]
           }
@@ -1151,6 +1235,34 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/date/test_next_occurrence.html"
+              }
+            ]
+          },
+          {
+            "title": "Month Count",
+            "desc": "通用月份筆數統計核心，將資料依日期歸入 YYYY-MM 並計算每月筆數，可取得指定月份或目前月份的數量；宿主自行提供日期來源，無效日期會略過，不綁 DOM、儲存或圖表。",
+            "links": [
+              {
+                "label": "month_count.js",
+                "href": "https://lib.stillnessbyslowly.com/date/month_count.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/test_month_count.html"
+              }
+            ]
+          },
+          {
+            "title": "Upcoming Window",
+            "desc": "通用未來提前區間判斷核心，可判斷目標時間是否已進入指定 window、取得剩餘毫秒數，或從資料陣列篩出即將到來的項目；不綁通知、DOM、排程、儲存或業務狀態。",
+            "links": [
+              {
+                "label": "upcoming_window.js",
+                "href": "https://lib.stillnessbyslowly.com/date/upcoming_window.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/test_upcoming_window.html"
               }
             ]
           }
@@ -1667,6 +1779,26 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_select_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "share",
+        "title": "Share / 分享",
+        "items": [
+          {
+            "title": "Web Share",
+            "desc": "通用 Web Share API 封裝，提供支援檢查、分享資料可用性判斷與系統分享，並區分成功、取消、不支援與失敗結果；不組業務資料、不做 Clipboard fallback，也不綁 DOM 或提示 UI。",
+            "links": [
+              {
+                "label": "web_share.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/share/web_share.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/share/test_web_share.html"
               }
             ]
           }
@@ -2581,6 +2713,26 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/audio/pitch/midi_frequency_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "tempo",
+        "title": "Tempo / 節拍",
+        "items": [
+          {
+            "title": "Beat Time",
+            "desc": "通用 BPM、拍數與秒數換算核心，提供每拍秒數、拍數轉秒數與秒數轉拍數；不綁 AudioContext、不負責排程，也不建立 Timer。",
+            "links": [
+              {
+                "label": "beat_time.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/tempo/beat_time.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/tempo/test_beat_time.html"
               }
             ]
           }
