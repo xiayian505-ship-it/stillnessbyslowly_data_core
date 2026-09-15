@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tag Parser 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+.test{
+  max-width:760px;
+  padding:14px 16px;
+  margin:12px 0;
+  border:1px solid #d6ddd1;
+  border-radius:10px;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+code{background:#f5f5f5;padding:2px 5px}
+</style>
+</head>
+<body>
+<h1>Tag Parser 功能測試</h1>
+<div id="results"></div>
+
+<script src="./tag_parser.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+
+  function same(actual, expected){
+    return JSON.stringify(actual) === JSON.stringify(expected);
+  }
+
+  function check(name, actual, expected){
+    var pass = same(actual, expected);
+    var box = document.createElement("div");
+
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.innerHTML =
+      "<strong>" + (pass ? "PASS" : "FAIL") + "｜" + name + "</strong><br>" +
+      "actual: <code>" + JSON.stringify(actual) + "</code><br>" +
+      "expected: <code>" + JSON.stringify(expected) + "</code>";
+
+    root.appendChild(box);
+  }
+
+  check(
+    "混合逗號、全形逗號、空白、#",
+    TagParser.parse("#旅行, 美食，#日常  電影"),
+    ["旅行", "美食", "日常", "電影"]
+  );
+
+  check(
+    "去除重複並保留第一次順序",
+    TagParser.parse("#旅行 旅行,美食 #旅行"),
+    ["旅行", "美食"]
+  );
+
+  check(
+    "陣列也能 normalize",
+    TagParser.normalize([" #A ", "", "B", "#A"]),
+    ["A", "B"]
+  );
+
+  check(
+    "可選擇大小寫不敏感去重",
+    TagParser.parse("Apple apple APPLE", {
+      caseSensitive: false
+    }),
+    ["Apple"]
+  );
+
+  check(
+    "可保留 #",
+    TagParser.parse("#A #B", {
+      stripHash: false
+    }),
+    ["#A", "#B"]
+  );
+})();
+</script>
+</body>
+</html>
