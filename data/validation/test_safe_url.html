@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Safe URL 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+.test{
+  max-width:760px;
+  padding:12px 14px;
+  margin:10px 0;
+  border:1px solid #d6ddd1;
+  border-radius:10px;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+code{background:#f5f5f5;padding:2px 5px}
+</style>
+</head>
+<body>
+<h1>Safe URL 功能測試</h1>
+<div id="results"></div>
+
+<script src="./safe_url.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+
+  function check(name, actual, expected){
+    var pass = actual === expected;
+    var box = document.createElement("div");
+
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.innerHTML =
+      "<strong>" + (pass ? "PASS" : "FAIL") + "｜" + name + "</strong><br>" +
+      "actual: <code>" + String(actual) + "</code><br>" +
+      "expected: <code>" + String(expected) + "</code>";
+
+    root.appendChild(box);
+  }
+
+  check(
+    "預設允許 https",
+    SafeURL.normalize(" https://example.com/a "),
+    "https://example.com/a"
+  );
+
+  check(
+    "預設允許 http",
+    SafeURL.isAllowed("HTTP://example.com"),
+    true
+  );
+
+  check(
+    "預設拒絕 mailto",
+    SafeURL.normalize("mailto:test@example.com"),
+    ""
+  );
+
+  check(
+    "可額外允許 mailto",
+    SafeURL.normalize(
+      "mailto:test@example.com",
+      { protocols: ["https", "mailto"] }
+    ),
+    "mailto:test@example.com"
+  );
+
+  check(
+    "拒絕 javascript",
+    SafeURL.normalize(
+      "javascript:alert(1)",
+      { fallback: "#" }
+    ),
+    "#"
+  );
+
+  check(
+    "不自動補 protocol",
+    SafeURL.normalize(
+      "example.com",
+      { fallback: "#" }
+    ),
+    "#"
+  );
+
+  check(
+    "取得 protocol",
+    SafeURL.getProtocol("MAILTO:test@example.com"),
+    "mailto"
+  );
+})();
+</script>
+</body>
+</html>
