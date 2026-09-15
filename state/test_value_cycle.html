@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Value Cycle 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+.test{
+  max-width:760px;
+  padding:14px 16px;
+  margin:12px 0;
+  border:1px solid #d6ddd1;
+  border-radius:10px;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+code{background:#f5f5f5;padding:2px 5px}
+</style>
+</head>
+<body>
+<h1>Value Cycle 功能測試</h1>
+<p>
+  不載入 Storage、FictionData 或 UI 元件。
+  只測有限值循環。
+</p>
+
+<div id="results"></div>
+
+<script src="./value_cycle.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+
+  function check(name, actual, expected){
+    var pass = actual === expected;
+    var box = document.createElement("div");
+
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.innerHTML =
+      "<strong>" + (pass ? "PASS" : "FAIL") + "｜" + name + "</strong><br>" +
+      "actual: <code>" + String(actual) + "</code><br>" +
+      "expected: <code>" + String(expected) + "</code>";
+
+    root.appendChild(box);
+  }
+
+  var roomStates = ["空房", "住房", "保留", "維修"];
+
+  check(
+    "下一個",
+    ValueCycle.next(roomStates, "住房"),
+    "保留"
+  );
+
+  check(
+    "最後一個回第一個",
+    ValueCycle.next(roomStates, "維修"),
+    "空房"
+  );
+
+  check(
+    "第一個往前回最後一個",
+    ValueCycle.previous(roomStates, "空房"),
+    "維修"
+  );
+
+  check(
+    "位移兩格",
+    ValueCycle.shift(roomStates, "空房", 2),
+    "保留"
+  );
+
+  check(
+    "負位移",
+    ValueCycle.shift(roomStates, "保留", -2),
+    "空房"
+  );
+
+  check(
+    "找不到目前值時預設從第一個基準位移",
+    ValueCycle.next(roomStates, "不存在"),
+    "住房"
+  );
+
+  var threw = false;
+
+  try{
+    ValueCycle.next(roomStates, "不存在", {
+      onMissing: "throw"
+    });
+  }catch(error){
+    threw = error instanceof RangeError;
+  }
+
+  check(
+    "可選擇找不到時丟錯",
+    threw,
+    true
+  );
+})();
+</script>
+</body>
+</html>
