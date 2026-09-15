@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Millimeter Ruler 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px}
+.mm-ruler{position:relative;margin:24px;border-color:#333}
+.mm-ruler--horizontal{width:100mm;height:12mm;border-top:1px solid}
+.mm-ruler--vertical{height:50mm;width:12mm;border-left:1px solid}
+.mm-ruler__tick{position:absolute;background:#333}
+.mm-ruler--horizontal .mm-ruler__tick{top:0;width:1px}
+.mm-ruler--vertical .mm-ruler__tick{left:0;height:1px}
+.mm-ruler__label{position:absolute;font-size:10px}
+.mm-ruler--horizontal .mm-ruler__label{top:6mm;transform:translateX(-50%)}
+.mm-ruler--vertical .mm-ruler__label{left:6mm;transform:translateY(-50%)}
+.test{padding:10px;margin:8px 0;border:1px solid #ccc}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Millimeter Ruler 功能測試</h1>
+<div id="preview"></div>
+<div id="results"></div>
+<script src="./mm_ruler.js"></script>
+<script>
+(function(){
+  const root = document.getElementById("results");
+  function check(name, pass, detail){
+    const box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent = (pass ? "PASS｜" : "FAIL｜") + name + (detail ? "｜" + detail : "");
+    root.appendChild(box);
+  }
+
+  const ruler = MillimeterRuler.create({
+    orientation: "horizontal",
+    lengthMm: 100
+  });
+
+  document.getElementById("preview").appendChild(ruler);
+
+  check(
+    "0~100mm 共 101 個 tick",
+    ruler.querySelectorAll(".mm-ruler__tick").length === 101,
+    ruler.querySelectorAll(".mm-ruler__tick").length
+  );
+
+  check(
+    "每 10mm 有 label",
+    ruler.querySelectorAll(".mm-ruler__label").length === 11,
+    ruler.querySelectorAll(".mm-ruler__label").length
+  );
+
+  check(
+    "96px 約等於 25.4mm",
+    Math.abs(MillimeterRuler.pxToMm(96) - 25.4) < 0.0001,
+    MillimeterRuler.pxToMm(96)
+  );
+})();
+</script>
+</body>
+</html>
