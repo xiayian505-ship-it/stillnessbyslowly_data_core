@@ -1,0 +1,3 @@
+.slowly-pulse-dot { animation:sl-pulse var(--sl-pulse-duration,1.9s) ease-in-out infinite; }
+@keyframes sl-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+@media(prefers-reduced-motion:reduce){.slowly-pulse-dot{animation:none!important}}
