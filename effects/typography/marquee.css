@@ -1,0 +1,4 @@
+.slowly-marquee { overflow:hidden; mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent); -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent); }
+.slowly-marquee__track { display:flex; width:max-content; animation:sl-marquee var(--sl-marquee-duration,28s) linear infinite; }
+@keyframes sl-marquee{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.slowly-marquee__track{animation:none!important}}
