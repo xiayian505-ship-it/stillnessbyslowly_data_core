@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canvas Rect Drag 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+canvas{
+  width:min(720px,100%);
+  height:auto;
+  border:1px solid #cdd5ce;
+  touch-action:none;
+}
+#status{
+  margin-top:12px;
+  white-space:pre-wrap;
+}
+</style>
+</head>
+<body>
+<h1>Canvas Rect Drag 功能測試</h1>
+<p>拖曳灰色方塊。測試頁只負責畫圖，拖曳狀態由元件管理。</p>
+
+<canvas id="canvas" width="720" height="360"></canvas>
+<div id="status"></div>
+
+<script src="./canvas_rect_drag.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  var status = document.getElementById("status");
+
+  var drag = CanvasRectDrag.create({
+    rect: { x: 40, y: 40, width: 120, height: 120 },
+    bounds: { width: canvas.width, height: canvas.height }
+  });
+
+  function draw(){
+    var state = drag.snapshot();
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#f1f2ef";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#768177";
+    ctx.fillRect(
+      state.rect.x,
+      state.rect.y,
+      state.rect.width,
+      state.rect.height
+    );
+
+    status.textContent =
+      "x: " + state.rect.x.toFixed(1) +
+      " / y: " + state.rect.y.toFixed(1) +
+      " / dragging: " + state.dragging;
+  }
+
+  function point(event){
+    return CanvasRectDrag.pointFromEvent(canvas, event);
+  }
+
+  canvas.addEventListener("pointerdown", function(event){
+    if (drag.start(point(event)).started) {
+      canvas.setPointerCapture(event.pointerId);
+      event.preventDefault();
+      draw();
+    }
+  });
+
+  canvas.addEventListener("pointermove", function(event){
+    if (!drag.snapshot().dragging) return;
+
+    drag.move(point(event));
+    event.preventDefault();
+    draw();
+  });
+
+  canvas.addEventListener("pointerup", function(event){
+    drag.stop();
+
+    if (canvas.hasPointerCapture(event.pointerId)) {
+      canvas.releasePointerCapture(event.pointerId);
+    }
+
+    draw();
+  });
+
+  canvas.addEventListener("pointercancel", function(){
+    drag.stop();
+    draw();
+  });
+
+  console.assert(
+    CanvasRectDrag.contains(
+      { x: 10, y: 10, width: 20, height: 20 },
+      { x: 15, y: 15 }
+    ) === true,
+    "contains should detect a point inside rect"
+  );
+
+  var clamped = CanvasRectDrag.clampRect(
+    { x: 95, y: 95, width: 20, height: 20 },
+    { width: 100, height: 100 }
+  );
+
+  console.assert(
+    clamped.x === 80 && clamped.y === 80,
+    "clampRect should keep rect inside bounds"
+  );
+
+  draw();
+})();
+</script>
+</body>
+</html>
