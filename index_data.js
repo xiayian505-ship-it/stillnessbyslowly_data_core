@@ -1347,6 +1347,24 @@ window.SlowlyLibraryIndex = [
             ]
           },
           {
+            "title": "Elapsed Format",
+            "desc": "通用經過時間格式化工具，將毫秒轉為 HH:MM:SS，負值與無效值安全歸零，小時可超過 24；只負責格式化，不建立 Timer、不管理狀態或 UI。",
+            "links": [
+              {
+                "label": "elapsed_format.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/elapsed_format.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_elapsed_format.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/elapsed_format_usage.html"
+              }
+            ]
+          },
+          {
             "title": "Phase Cycle",
             "desc": "通用不同時長階段循環核心，管理階段順序、開始、暫停、繼續、停止、下一階段、重設與完成通知；不綁定呼吸法、UI、音效，也不依賴其他 Timer 模組。",
             "links": [
@@ -1362,7 +1380,7 @@ window.SlowlyLibraryIndex = [
           }
         ],
         "subpage": true,
-        "desc": "經過時間、倒數、碼表、固定週期觸發與逐幀觸發等計時核心。"
+        "desc": "經過時間、倒數、碼表、固定週期、逐幀觸發與經過時間格式化等計時工具。"
       }
     ]
   },
@@ -2929,6 +2947,104 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/game/card/test_pair_matching.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "grid",
+        "title": "Grid / 格子",
+        "subpage": true,
+        "desc": "二維格子的連線判定、重力、相鄰交換搜尋、條件洗牌與連鎖擴散等通用遊戲核心。",
+        "items": [
+          {
+            "title": "Grid Line Match",
+            "desc": "通用二維格子橫向／縱向連線掃描核心，可設定最短連線長度，並由宿主提供取值與阻擋判定；不綁定糖果、分數、特殊格、DOM 或特定三消規則。",
+            "links": [
+              {
+                "label": "line_match.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/line_match.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_line_match.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/line_match_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Gravity",
+            "desc": "通用二維格子向下重力與補空核心，將非空內容依欄向下壓實，並由宿主定義空格判斷與新格建立方式；不綁定隨機來源、糖果、特殊格、動畫或 UI。",
+            "links": [
+              {
+                "label": "gravity.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/gravity.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_gravity.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/gravity_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Swap Search",
+            "desc": "通用相鄰交換搜尋核心，掃描二維 grid 的相鄰格並暫時交換，由宿主判定交換是否立即成立或交換後是否合法；測試後一定還原，不綁定三連、提示、分數或特殊格規則。",
+            "links": [
+              {
+                "label": "swap_search.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/swap_search.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_swap_search.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/swap_search_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Shuffle Until",
+            "desc": "通用二維格子條件洗牌核心，將 grid 內容攤平、交給宿主提供的 shuffle 重新排列並寫回，再依 accept 條件重試至成功或達嘗試上限；不綁定隨機實作、三消或 UI。",
+            "links": [
+              {
+                "label": "shuffle_until.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/shuffle_until.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_shuffle_until.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/shuffle_until_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Chain Expand",
+            "desc": "通用格子連鎖擴散核心，從起始座標依宿主提供的 expand 規則逐波加入更多格子，負責去重、越界忽略與最大波數保護；不綁定炸彈、特殊糖、技能、清除或 UI。",
+            "links": [
+              {
+                "label": "chain_expand.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/chain_expand.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_chain_expand.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/chain_expand_usage.html"
               }
             ]
           }
