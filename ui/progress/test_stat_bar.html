@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stat Bar 功能測試</title>
+<link rel="stylesheet" href="./stat_bar.css">
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.8}
+.wrap{max-width:560px;display:grid;gap:18px;margin-top:28px}
+.slowly-stat__label{font-size:14px}
+.slowly-stat__value{font-size:13px}
+.blue{--sl-stat-fill:linear-gradient(90deg,#60a5fa,#2563eb);--sl-stat-track:#dbeafe}
+button{margin-top:24px;padding:10px 16px}
+</style>
+</head>
+<body>
+<h1>Stat Bar 功能測試</h1>
+<p>每一列的進度由 <code>--sl-stat-value</code> 控制；按鈕會修改第一列的 CSS 變數以驗證動畫。</p>
+<div class="wrap">
+  <div class="slowly-stat" id="dynamic">
+    <span class="slowly-stat__label">動態測試</span>
+    <div class="slowly-stat__track"><div class="slowly-stat__bar" style="--sl-stat-value:35%"></div></div>
+    <span class="slowly-stat__value">35</span>
+  </div>
+  <div class="slowly-stat blue">
+    <span class="slowly-stat__label">自訂藍色</span>
+    <div class="slowly-stat__track"><div class="slowly-stat__bar" style="--sl-stat-value:82%"></div></div>
+    <span class="slowly-stat__value">82</span>
+  </div>
+</div>
+<button id="change" type="button">切換 35 ↔ 88</button>
+<script>
+var high = false;
+document.getElementById('change').addEventListener('click', function(){
+  high = !high;
+  var value = high ? 88 : 35;
+  document.querySelector('#dynamic .slowly-stat__bar').style.setProperty('--sl-stat-value', value + '%');
+  document.querySelector('#dynamic .slowly-stat__value').textContent = value;
+});
+</script>
+</body>
+</html>
