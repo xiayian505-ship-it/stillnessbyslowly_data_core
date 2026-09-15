@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canvas Text Wrap 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+canvas{
+  border:1px solid #ccd3ce;
+  max-width:100%;
+}
+.test{
+  max-width:760px;
+  padding:12px 14px;
+  margin:10px 0;
+  border:1px solid #d6ddd1;
+  border-radius:10px;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Canvas Text Wrap 功能測試</h1>
+
+<canvas id="canvas" width="640" height="260"></canvas>
+<div id="results"></div>
+
+<script src="./canvas_text_wrap.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  var root = document.getElementById("results");
+
+  ctx.font = '24px Arial, "Microsoft JhengHei", sans-serif';
+  ctx.fillStyle = "#263029";
+
+  function check(name, pass, detail){
+    var box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      (detail ? "｜" + detail : "");
+    root.appendChild(box);
+  }
+
+  var layout = CanvasTextWrap.layout(
+    ctx,
+    "這是一段用來測試 Canvas 中文自動換行與省略號的文字。",
+    {
+      maxWidth: 220,
+      maxLines: 2
+    }
+  );
+
+  check(
+    "限制最多兩行",
+    layout.lines.length <= 2,
+    JSON.stringify(layout.lines)
+  );
+
+  check(
+    "過長文字會標記 truncated",
+    layout.truncated === true,
+    "truncated=" + layout.truncated
+  );
+
+  check(
+    "截斷時最後一行有省略號",
+    layout.lines.at(-1).endsWith("…"),
+    layout.lines.at(-1)
+  );
+
+  var drawn = CanvasTextWrap.draw(
+    ctx,
+    "中文 English 混合文字也可以依實際 measureText 寬度換行。",
+    {
+      x: 30,
+      y: 50,
+      maxWidth: 360,
+      lineHeight: 36,
+      maxLines: 4
+    }
+  );
+
+  check(
+    "draw 回報行數",
+    drawn.lineCount >= 1,
+    "lineCount=" + drawn.lineCount
+  );
+
+  check(
+    "nextY 可供宿主接續排版",
+    drawn.nextY > drawn.firstY,
+    "nextY=" + drawn.nextY
+  );
+
+  var empty = CanvasTextWrap.layout(
+    ctx,
+    "",
+    {
+      maxWidth: 200
+    }
+  );
+
+  check(
+    "空字串回傳空行",
+    empty.lines.length === 0,
+    JSON.stringify(empty.lines)
+  );
+})();
+</script>
+</body>
+</html>
