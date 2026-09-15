@@ -1,0 +1,9 @@
+.slowly-aurora { position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+.slowly-aurora > span { position:absolute; border-radius:50%; filter:blur(var(--sl-aurora-blur,90px)); opacity:var(--sl-aurora-opacity,.5); }
+.slowly-aurora > span:nth-child(1){width:52vw;height:52vw;left:-14%;top:-16%;background:radial-gradient(circle,var(--sl-aurora-a,rgba(34,211,238,.75)),transparent 68%);animation:sl-drift1 24s ease-in-out infinite}
+.slowly-aurora > span:nth-child(2){width:46vw;height:46vw;right:-12%;top:8%;background:radial-gradient(circle,var(--sl-aurora-b,rgba(139,92,246,.7)),transparent 68%);animation:sl-drift2 30s ease-in-out infinite}
+.slowly-aurora > span:nth-child(3){width:40vw;height:40vw;left:26%;bottom:-22%;background:radial-gradient(circle,var(--sl-aurora-c,rgba(244,114,182,.5)),transparent 68%);animation:sl-drift3 27s ease-in-out infinite}
+@keyframes sl-drift1{50%{transform:translate3d(12vw,8vh,0) scale(1.18)}}
+@keyframes sl-drift2{50%{transform:translate3d(-14vw,12vh,0) scale(1.12)}}
+@keyframes sl-drift3{50%{transform:translate3d(8vw,-14vh,0) scale(1.22)}}
+@media(prefers-reduced-motion:reduce){.slowly-aurora > span{animation:none!important}}
