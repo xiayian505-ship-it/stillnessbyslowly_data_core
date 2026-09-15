@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit Price 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+.test{
+  max-width:760px;
+  padding:14px 16px;
+  margin:12px 0;
+  border:1px solid #d6ddd1;
+  border-radius:10px;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+code{background:#f5f5f5;padding:2px 5px}
+</style>
+</head>
+<body>
+<h1>Unit Price 功能測試</h1>
+<p>
+  不載入 Money、Currency 或任何 UI 元件。
+  測試不同包裝規格換算到同一比較單位。
+</p>
+
+<div id="results"></div>
+
+<script src="./unit_price.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+
+  function almostEqual(a, b){
+    return Math.abs(a - b) < 1e-9;
+  }
+
+  function check(name, actual, expected){
+    var pass = almostEqual(actual, expected);
+    var box = document.createElement("div");
+
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.innerHTML =
+      "<strong>" + (pass ? "PASS" : "FAIL") + "｜" + name + "</strong><br>" +
+      "actual: <code>" + actual + "</code><br>" +
+      "expected: <code>" + expected + "</code>";
+
+    root.appendChild(box);
+  }
+
+  // 2 L × 2 瓶，180 元 → 每 1 L = 45 元
+  check(
+    "L → 每 L",
+    UnitPrice.calculate({
+      price: 180,
+      size: 2,
+      quantity: 2,
+      inputFactor: 1000,
+      compareSize: 1000
+    }).unitPrice,
+    45
+  );
+
+  // 500 ml × 6 瓶，150 元 → 每 1 L = 50 元
+  check(
+    "ml → 每 L",
+    UnitPrice.calculate({
+      price: 150,
+      size: 500,
+      quantity: 6,
+      inputFactor: 1,
+      compareSize: 1000
+    }).unitPrice,
+    50
+  );
+
+  // 2 kg，原價 260，折 20 → 每 kg = 120
+  check(
+    "kg + 折扣",
+    UnitPrice.calculate({
+      price: 260,
+      discount: 20,
+      size: 2,
+      inputFactor: 1000,
+      compareSize: 1000
+    }).unitPrice,
+    120
+  );
+
+  // 100 抽 × 3 包，120 元 + 運費 30 → 每 100 抽 = 50
+  check(
+    "自訂比較量：每 100 抽",
+    UnitPrice.calculate({
+      price: 120,
+      shipping: 30,
+      size: 100,
+      quantity: 3,
+      compareSize: 100
+    }).unitPrice,
+    50
+  );
+
+  check(
+    "折扣不讓有效價格變負數",
+    UnitPrice.effectivePrice({
+      price: 50,
+      discount: 80,
+      shipping: 0
+    }),
+    0
+  );
+})();
+</script>
+</body>
+</html>
