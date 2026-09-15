@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web Share 功能測試</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; line-height: 1.7; }
+    button { padding: .7rem 1rem; cursor: pointer; }
+    pre { white-space: pre-wrap; padding: 1rem; background: #f4f4f4; border-radius: 8px; }
+    .pass { color: #087830; }
+    .fail { color: #a32121; }
+  </style>
+</head>
+<body>
+  <h1>Web Share 功能測試</h1>
+  <p>自動測試不會主動叫出系統分享面板；真正分享必須由使用者操作觸發。</p>
+
+  <div id="summary"></div>
+  <button id="shareButton" type="button">手動測試系統分享</button>
+  <pre id="result"></pre>
+
+  <script src="./web_share.js"></script>
+  <script>
+    (function () {
+      const tests = [];
+      const test = (name, condition) => tests.push({ name, pass: Boolean(condition) });
+
+      test("SlowlyWebShare 已載入", typeof SlowlyWebShare === "object");
+      test("version 存在", typeof SlowlyWebShare.version === "string");
+      test("isSupported 是函式", typeof SlowlyWebShare.isSupported === "function");
+      test("canShare 是函式", typeof SlowlyWebShare.canShare === "function");
+      test("share 是函式", typeof SlowlyWebShare.share === "function");
+      test("null 不可分享", SlowlyWebShare.canShare(null) === false);
+
+      const passed = tests.filter(item => item.pass).length;
+      const summary = document.getElementById("summary");
+      summary.className = passed === tests.length ? "pass" : "fail";
+      summary.textContent = passed + "/" + tests.length + " PASS";
+
+      document.getElementById("result").textContent = tests
+        .map(item => (item.pass ? "PASS" : "FAIL") + "  " + item.name)
+        .join("\n");
+
+      document.getElementById("shareButton").addEventListener("click", async () => {
+        const data = {
+          title: "Web Share 測試",
+          text: "這是 SlowlyWebShare 的手動測試。",
+          url: location.href
+        };
+
+        const result = await SlowlyWebShare.share(data);
+        document.getElementById("result").textContent +=
+          "\n\n手動分享結果：\n" + JSON.stringify(result, null, 2);
+      });
+    })();
+  </script>
+</body>
+</html>
