@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shine Text 功能測試</title>
+<link rel="stylesheet" href="./shine_text.css">
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;background:#0b1020;color:white}
+.demo{font-size:clamp(42px,10vw,88px);font-weight:900;line-height:1.1;display:inline-block}
+.custom{--sl-shine-duration:2.5s;--sl-shine-gradient:linear-gradient(90deg,#fde68a,#fb7185,#60a5fa,#fde68a)}
+</style>
+</head>
+<body>
+<h1>Shine Text 功能測試</h1>
+<p>下方文字應顯示持續流動的漸層光澤。</p>
+<div class="demo slowly-shine-text custom">SLOWLY</div>
+</body>
+</html>

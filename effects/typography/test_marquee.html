@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marquee 功能測試</title>
+<link rel="stylesheet" href="./marquee.css">
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;background:#111827;color:white}
+.slowly-marquee{margin-top:36px;padding:20px 0;border-block:1px solid #475569;--sl-marquee-duration:12s}
+.slowly-marquee__track span{font-size:28px;font-weight:700;white-space:nowrap;padding-right:40px}
+</style>
+</head>
+<body>
+<h1>Marquee 功能測試</h1>
+<p>文字軌道應水平無縫循環；兩側有漸隱遮罩。</p>
+<div class="slowly-marquee">
+  <div class="slowly-marquee__track">
+    <span>STILLNESS BY SLOWLY · MARQUEE TEST · 慢慢的倉庫 · </span>
+    <span>STILLNESS BY SLOWLY · MARQUEE TEST · 慢慢的倉庫 · </span>
+  </div>
+</div>
+</body>
+</html>

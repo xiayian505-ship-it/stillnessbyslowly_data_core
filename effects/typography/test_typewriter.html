@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Typewriter 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:2}
+.demo{min-height:1.8em;font-size:24px;padding:18px;border-left:4px solid #2563eb;background:#eff6ff}
+button{margin-top:20px;padding:10px 16px}
+</style>
+</head>
+<body>
+<h1>Typewriter 功能測試</h1>
+<p>文字應逐字輸入、停留、逐字刪除，再切換下一句。</p>
+<div class="demo"><span id="typed"></span></div>
+<button type="button" id="restart">重新啟動</button>
+<script src="./typewriter.js"></script>
+<script>
+var writer = SlowlyTypewriter.create({
+  target: '#typed',
+  phrases: ['第一句：慢慢測試中。','第二句：零件可以獨立使用。','第三句：宿主決定怎麼用。'],
+  typeMin: 45,
+  typeJitter: 20,
+  holdDelay: 900,
+  deleteDelay: 24,
+  gapDelay: 250
+});
+writer.start();
+document.getElementById('restart').addEventListener('click', function(){
+  writer.stop();
+  document.getElementById('typed').textContent = '';
+  writer = SlowlyTypewriter.create({
+    target:'#typed',
+    phrases:['重新開始。','Typewriter 正常。'],
+    typeMin:45,typeJitter:10,holdDelay:700,deleteDelay:24,gapDelay:220
+  });
+  writer.start();
+});
+</script>
+</body>
+</html>
