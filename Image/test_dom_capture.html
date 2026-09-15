@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DOM Capture 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+}
+#card{
+  width:320px;
+  padding:24px;
+  border:1px solid #ccc;
+  background:#fff;
+  box-shadow:0 10px 24px rgba(0,0,0,.15);
+}
+#log{
+  margin-top:18px;
+  white-space:pre-wrap;
+}
+</style>
+</head>
+<body>
+<h1>DOM Capture 功能測試</h1>
+
+<div id="card">
+  <strong>測試卡片</strong>
+  <p>這不是 html2canvas 測試；renderer 由宿主注入。</p>
+</div>
+
+<button id="run" type="button">執行測試</button>
+<div id="log"></div>
+
+<script src="./dom_capture.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var log = document.getElementById("log");
+
+  function write(text){
+    log.textContent += text + "\n";
+  }
+
+  async function fakeRenderer(clone){
+    var canvas = document.createElement("canvas");
+    canvas.width = 320;
+    canvas.height = 120;
+
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#222222";
+    ctx.font = "20px sans-serif";
+    ctx.fillText(
+      clone.querySelector("strong").textContent,
+      16,
+      36
+    );
+
+    return canvas;
+  }
+
+  document.getElementById("run").onclick = async function(){
+    log.textContent = "";
+
+    try{
+      var before = document.body.children.length;
+
+      var result = await DOMCapture.capture(
+        document.getElementById("card"),
+        {
+          renderer: fakeRenderer,
+          prepareClone: function(clone){
+            clone.dataset.prepared = "true";
+          }
+        }
+      );
+
+      var after = document.body.children.length;
+
+      write(
+        result.blob instanceof Blob
+          ? "PASS 回傳 Blob"
+          : "FAIL 沒有 Blob"
+      );
+
+      write(
+        result.blob.type === "image/png"
+          ? "PASS PNG Blob"
+          : "FAIL Blob type = " + result.blob.type
+      );
+
+      write(
+        before === after
+          ? "PASS 暫存 clone 已清除"
+          : "FAIL DOM child 數量改變"
+      );
+
+      write(
+        result.width === 320
+          ? "PASS 固定來源寬度"
+          : "FAIL width = " + result.width
+      );
+    }catch(error){
+      write("FAIL " + error.message);
+    }
+  };
+})();
+</script>
+</body>
+</html>
