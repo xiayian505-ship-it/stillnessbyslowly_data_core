@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canvas Content Normalize 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.7}
+canvas{border:1px solid #ccc;margin:8px}
+.test{max-width:760px;padding:12px 14px;margin:10px 0;border:1px solid #d6ddd1}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Canvas Content Normalize 功能測試</h1>
+<div id="preview"></div>
+<div id="results"></div>
+<script src="./canvas_content_normalize.js"></script>
+<script>
+(function(){
+  const resultRoot = document.getElementById("results");
+  function check(name, pass, detail){
+    const box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      (detail ? "｜" + detail : "");
+    resultRoot.appendChild(box);
+  }
+
+  const source = document.createElement("canvas");
+  source.width = 100;
+  source.height = 100;
+  const ctx = source.getContext("2d");
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0,0,100,100);
+  ctx.fillStyle = "#000";
+  ctx.fillRect(30,20,40,60);
+
+  const bounds = CanvasContentNormalize.findBounds(source);
+
+  check(
+    "找到黑色內容邊界",
+    bounds.x === 30 &&
+    bounds.y === 20 &&
+    bounds.width === 40 &&
+    bounds.height === 60,
+    JSON.stringify(bounds)
+  );
+
+  const normalized = CanvasContentNormalize.normalize(source, {
+    size: 200,
+    quietRatio: 0.1
+  });
+
+  check(
+    "輸出尺寸",
+    normalized.canvas.width === 200 &&
+    normalized.canvas.height === 200,
+    normalized.canvas.width + "×" + normalized.canvas.height
+  );
+
+  check(
+    "內容保持比例",
+    normalized.target.width / normalized.target.height === 40 / 60,
+    JSON.stringify(normalized.target)
+  );
+
+  document.getElementById("preview").append(source, normalized.canvas);
+})();
+</script>
+</body>
+</html>
