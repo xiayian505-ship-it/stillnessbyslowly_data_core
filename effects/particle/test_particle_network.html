@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Particle Network 功能測試</title>
+<style>
+html,body{margin:0;min-height:100%;background:#05060a;color:#eef5ff}
+body{font-family:Arial,"Microsoft JhengHei",sans-serif}
+#network{position:fixed;inset:0;width:100vw;height:100vh}
+.content{position:relative;z-index:1;min-height:100vh;display:grid;place-items:center;text-align:center;pointer-events:none;padding:32px}
+.card{padding:24px 28px;background:rgba(5,6,10,.68);border:1px solid rgba(255,255,255,.12);border-radius:18px}
+</style>
+</head>
+<body>
+<canvas id="network" aria-hidden="true"></canvas>
+<div class="content"><div class="card"><h1>Particle Network</h1><p>應可看到漂移粒子與近距離連線；桌機移動滑鼠時附近粒子會被排斥。</p></div></div>
+<script src="./particle_network.js"></script>
+<script>
+var network = SlowlyParticleNetwork.create({
+  canvas: '#network',
+  maxCount: 90,
+  linkDistance: 140,
+  repelStrength: .24
+});
+if (network) network.start();
+</script>
+</body>
+</html>
