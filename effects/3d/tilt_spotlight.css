@@ -1,0 +1,22 @@
+[data-slowly-tilt] {
+  --sl-spot-x: 50%;
+  --sl-spot-y: 50%;
+  --sl-spot-color: rgba(34,211,238,.17);
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+[data-slowly-tilt]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s ease;
+  background: radial-gradient(330px circle at var(--sl-spot-x) var(--sl-spot-y), var(--sl-spot-color), transparent 62%);
+}
+[data-slowly-tilt]:hover::before { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  [data-slowly-tilt] { transform: none !important; }
+}
