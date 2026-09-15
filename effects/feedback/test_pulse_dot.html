@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pulse Dot 功能測試</title>
+<link rel="stylesheet" href="./pulse_dot.css">
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:2}
+.status{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border:1px solid #ccc;border-radius:999px}
+.dot{width:10px;height:10px;border-radius:50%;background:#16a34a;box-shadow:0 0 12px rgba(22,163,74,.6)}
+.fast{--sl-pulse-duration:.8s;background:#2563eb}
+</style>
+</head>
+<body>
+<h1>Pulse Dot 功能測試</h1>
+<p>圓點應持續進行透明度與縮放的呼吸動畫。</p>
+<div class="status"><i class="dot slowly-pulse-dot"></i>預設速度</div>
+<div class="status"><i class="dot fast slowly-pulse-dot"></i>自訂較快速度</div>
+</body>
+</html>

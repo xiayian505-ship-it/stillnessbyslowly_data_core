@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Custom Cursor 功能測試</title>
+<link rel="stylesheet" href="./custom_cursor.css">
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.8;min-height:100vh}
+.demo{display:flex;gap:16px;flex-wrap:wrap;margin-top:32px}
+a,button,.target{padding:14px 22px;border:1px solid #888;border-radius:12px;background:#fff;color:#222;text-decoration:none}
+.target{display:inline-block}
+</style>
+</head>
+<body>
+<h1>Custom Cursor 功能測試</h1>
+<p>桌機細指標裝置：移動滑鼠時白點會即時跟隨、外圈稍慢追上；移到按鈕／連結／測試區時外圈會放大。觸控或 reduced-motion 不啟用。</p>
+<div class="demo">
+  <button type="button">按鈕</button>
+  <a href="#ok">連結</a>
+  <span class="target" data-cursor-hover>Hover 測試區</span>
+</div>
+<div class="slowly-cursor-ring" id="ring" aria-hidden="true"></div>
+<div class="slowly-cursor-dot" id="dot" aria-hidden="true"></div>
+<script src="./custom_cursor.js"></script>
+<script>
+SlowlyCustomCursor.create({
+  ring: '#ring',
+  dot: '#dot',
+  hoverSelector: 'a,button,[data-cursor-hover]'
+});
+</script>
+</body>
+</html>
