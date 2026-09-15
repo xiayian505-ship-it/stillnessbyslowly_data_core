@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Grid Line Match｜使用說明</title>
+  <style>
+    body{font-family:system-ui,sans-serif;max-width:900px;margin:32px auto;padding:0 16px;line-height:1.8}
+    pre{overflow:auto;padding:14px;border:1px solid #ccc} code{font-family:ui-monospace,monospace}
+  </style>
+</head>
+<body>
+  <h1>Grid Line Match v1.0.0</h1>
+  <p>通用二維格狀橫／直連線掃描核心。只找連線，不處理交換、消除、特殊物件、分數或 DOM。</p>
+
+  <h2>載入</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/grid/line_match.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>最小使用</h2>
+  <pre><code>const result = SlowlyGridLineMatch.find([
+  [1, 1, 1, 2],
+  [2, 3, 4, 5]
+]);
+
+console.log(result.groups);</code></pre>
+
+  <h2>物件格子</h2>
+  <pre><code>const result = SlowlyGridLineMatch.find(grid, {
+  minLength: 3,
+
+  getValue(cell) {
+    return cell.color;
+  },
+
+  isBlocked(cell) {
+    return cell.empty || cell.special === "bomb";
+  }
+});</code></pre>
+
+  <h2>回傳</h2>
+  <pre><code>{
+  groups: [
+    {
+      type: "h", // 或 "v"
+      len: 4,
+      value: 2,
+      cells: [
+        { r: 1, c: 0 },
+        { r: 1, c: 1 },
+        { r: 1, c: 2 },
+        { r: 1, c: 3 }
+      ]
+    }
+  ]
+}</code></pre>
+
+  <h2>Options</h2>
+  <p><code>minLength</code> 預設 3；<code>getValue</code> 決定比對值；<code>isBlocked</code> 決定哪些格子中斷連線；<code>equals</code> 可自訂值比較方式。</p>
+</body>
+</html>
