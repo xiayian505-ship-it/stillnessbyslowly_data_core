@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auto Reveal 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:0;line-height:1.8;background:#f6f7f9}
+.intro{padding:32px;min-height:75vh}
+.card{margin:28px auto;padding:28px;max-width:560px;border:1px solid #ccd2da;border-radius:16px;background:white}
+[data-slowly-reveal]{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+[data-slowly-reveal].is-visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="intro"><h1>Auto Reveal 功能測試</h1><p>往下捲動。卡片進入可視範圍時應加入 <code>is-visible</code> 並淡入上移。</p></div>
+<div class="card" data-slowly-reveal>Reveal 01</div>
+<div class="card" data-slowly-reveal>Reveal 02</div>
+<div class="card" data-slowly-reveal>Reveal 03</div>
+<div style="height:45vh"></div>
+<script src="./auto_reveal.js"></script>
+<script>
+SlowlyReveal.create({ threshold: .2, rootMargin: '0px 0px -30px 0px' });
+</script>
+</body>
+</html>
