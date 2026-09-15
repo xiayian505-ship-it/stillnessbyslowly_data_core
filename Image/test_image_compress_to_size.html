@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image Compress To Size 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+}
+.test{
+  max-width:760px;
+  padding:14px 16px;
+  margin:12px 0;
+  border:1px solid #d6ddd1;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Image Compress To Size 功能測試</h1>
+<p>測試頁自己產生圖片 Blob，不需要外部檔案。</p>
+<div id="results"></div>
+
+<script src="./image_compress_to_size.js"></script>
+<script>
+(async function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+
+  function check(name, pass, detail){
+    var box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      (detail ? "｜" + detail : "");
+    root.appendChild(box);
+  }
+
+  function canvasBlob(canvas, type, quality){
+    return new Promise(function(resolve, reject){
+      canvas.toBlob(
+        function(blob){
+          blob ? resolve(blob) : reject(new Error("測試圖片建立失敗"));
+        },
+        type,
+        quality
+      );
+    });
+  }
+
+  var canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 900;
+
+  var ctx = canvas.getContext("2d");
+  var gradient = ctx.createLinearGradient(0, 0, 1200, 900);
+  gradient.addColorStop(0, "#263238");
+  gradient.addColorStop(0.5, "#d7ccc8");
+  gradient.addColorStop(1, "#607d8b");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  for (var i = 0; i < 200; i += 1) {
+    ctx.fillStyle =
+      "rgba(" +
+      ((i * 47) % 255) + "," +
+      ((i * 83) % 255) + "," +
+      ((i * 131) % 255) + ",0.45)";
+
+    ctx.fillRect(
+      (i * 67) % 1200,
+      (i * 41) % 900,
+      120,
+      80
+    );
+  }
+
+  var source = await canvasBlob(
+    canvas,
+    "image/png"
+  );
+
+  try{
+    var result = await ImageCompressToSize.compress(
+      source,
+      {
+        maxBytes: 70 * 1024,
+        maxWidth: 800,
+        maxHeight: 800,
+        type: "image/webp",
+        minLongEdge: 320
+      }
+    );
+
+    check(
+      "輸出 Blob",
+      result.blob instanceof Blob,
+      result.outputBytes + " bytes"
+    );
+
+    check(
+      "尺寸不超過限制",
+      result.width <= 800 && result.height <= 800,
+      result.width + "×" + result.height
+    );
+
+    check(
+      "有回報是否達標",
+      typeof result.metTarget === "boolean",
+      "metTarget=" + result.metTarget
+    );
+
+    check(
+      "有壓縮嘗試紀錄",
+      result.attempts >= 1,
+      "attempts=" + result.attempts
+    );
+
+    if (result.metTarget) {
+      check(
+        "達標時 bytes <= maxBytes",
+        result.outputBytes <= result.maxBytes,
+        result.outputBytes + " / " + result.maxBytes
+      );
+    }
+  }catch(error){
+    check("compress 執行", false, error.message);
+  }
+})();
+</script>
+</body>
+</html>
