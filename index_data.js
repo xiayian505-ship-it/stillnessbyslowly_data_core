@@ -1011,10 +1011,28 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/date/timer/test_ticker.html"
               }
             ]
+          },
+          {
+            "title": "Frame Loop",
+            "desc": "通用 requestAnimationFrame 逐幀觸發核心，由宿主提供 callback，負責逐幀排程、開始、暫停、繼續、停止、歸零與單步執行，並提供 timestamp、delta、elapsed 與 frame；不綁定 DOM、動畫公式、遊戲規則、Canvas、儲存或 UI。",
+            "links": [
+              {
+                "label": "frame_loop.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/frame_loop.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_frame_loop.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/frame_loop_usage.html"
+              }
+            ]
           }
         ],
         "subpage": true,
-        "desc": "經過時間、倒數、碼表與固定週期觸發等計時核心。"
+        "desc": "經過時間、倒數、碼表、固定週期觸發與逐幀觸發等計時核心。"
       }
     ]
   },
