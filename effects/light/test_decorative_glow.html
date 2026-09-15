@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Decorative Dual Glow 功能測試</title>
+<link rel="stylesheet" href="./decorative_glow.css">
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;background:#f2eee8;color:#2f241d}
+.box{max-width:560px;min-height:240px;margin:32px auto;padding:32px;border:1px solid #cabda8;border-radius:18px;background:#fffdf8;display:grid;place-items:center;text-align:center}
+.custom{--sl-glow-a:rgba(255,80,130,.35);--sl-glow-b:rgba(40,120,255,.28);--sl-glow-a-size:240px;--sl-glow-b-size:190px}
+</style>
+</head>
+<body>
+<h1>Decorative Dual Glow 功能測試</h1>
+<div class="box slowly-dual-glow custom"><div><strong>雙光暈容器</strong><p>右上與左下應各有一組徑向光暈，內容與版面不受影響。</p></div></div>
+</body>
+</html>
