@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Grid Gravity｜使用說明</title>
+  <style>
+    body{font-family:system-ui,sans-serif;max-width:900px;margin:32px auto;padding:0 16px;line-height:1.8}
+    pre{overflow:auto;padding:14px;border:1px solid #ccc} code{font-family:ui-monospace,monospace}
+  </style>
+</head>
+<body>
+  <h1>Grid Gravity v1.0.0</h1>
+  <p>通用二維格狀向下重力核心。只負責把非空格子往下壓實，並可選擇由宿主補入新格子。</p>
+
+  <h2>載入</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/grid/gravity.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>最小使用</h2>
+  <pre><code>SlowlyGridGravity.down(grid);</code></pre>
+
+  <h2>自訂空格與補格</h2>
+  <pre><code>SlowlyGridGravity.down(grid, {
+  isEmpty(cell) {
+    return cell.empty === true;
+  },
+
+  createCell() {
+    return {
+      color: randomColor(),
+      empty: false
+    };
+  }
+});</code></pre>
+
+  <h2>回傳</h2>
+  <pre><code>{
+  grid,     // 原地修改後的同一個 grid
+  moved,    // 有實際改變列位置的既有格子數
+  filled    // createCell 建立的新格子數
+}</code></pre>
+
+  <p>格子的內容、隨機方式、特殊物件與 Render 都由宿主決定。</p>
+</body>
+</html>

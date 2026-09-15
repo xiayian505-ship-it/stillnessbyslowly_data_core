@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Grid Gravity｜功能測試</title>
+  <style>
+    body{font-family:system-ui,sans-serif;max-width:900px;margin:32px auto;padding:0 16px;line-height:1.7}
+    .pass{color:#176b36}.fail{color:#a52b2b} pre{white-space:pre-wrap}
+  </style>
+</head>
+<body>
+  <h1>Grid Gravity 功能測試</h1>
+  <div id="result"></div>
+
+  <script src="./gravity.js"></script>
+  <script>
+    (() => {
+      const lines = [];
+      let failed = 0;
+
+      function same(actual, expected, label) {
+        const a = JSON.stringify(actual);
+        const e = JSON.stringify(expected);
+        const ok = a === e;
+        if (!ok) failed += 1;
+        lines.push(`<div class="${ok ? "pass" : "fail"}">${ok ? "PASS" : "FAIL"}｜${label}${ok ? "" : `<pre>actual: ${a}\nexpected: ${e}</pre>`}</div>`);
+      }
+
+      const basic = [["A"], [null], ["B"], [null]];
+      SlowlyGridGravity.down(basic);
+      same(basic, [[null], [null], ["A"], ["B"]], "向下壓實並保留順序");
+
+      const multi = [
+        ["A", null],
+        [null, "X"],
+        ["B", null]
+      ];
+      SlowlyGridGravity.down(multi);
+      same(multi, [
+        [null, null],
+        ["A", null],
+        ["B", "X"]
+      ], "多欄獨立處理");
+
+      let next = 1;
+      const fill = [[null], ["A"], [null]];
+      const stats = SlowlyGridGravity.down(fill, {
+        createCell() {
+          return `N${next++}`;
+        }
+      });
+      same(fill, [["N1"], ["N2"], ["A"]], "createCell 補入新格");
+      same({ moved: stats.moved, filled: stats.filled }, { moved: 1, filled: 2 }, "統計 moved / filled");
+
+      const custom = [
+        [{ c: 1, sp: null }],
+        [{ c: null, sp: "b" }],
+        [{ c: null, sp: null }]
+      ];
+      SlowlyGridGravity.down(custom, {
+        isEmpty(cell) {
+          return cell.c === null && cell.sp !== "b";
+        },
+        createCell() {
+          return { c: 9, sp: null };
+        }
+      });
+      same(custom, [
+        [{ c: 9, sp: null }],
+        [{ c: 1, sp: null }],
+        [{ c: null, sp: "b" }]
+      ], "宿主可自訂空格語意");
+
+      let threw = false;
+      try {
+        SlowlyGridGravity.down([[1, 2], [3]]);
+      } catch (error) {
+        threw = true;
+      }
+      same(threw, true, "拒絕非矩形 grid");
+
+      lines.push(`<p><strong>${failed === 0 ? "全部通過" : `失敗 ${failed} 項`}</strong></p>`);
+      document.querySelector("#result").innerHTML = lines.join("");
+    })();
+  </script>
+</body>
+</html>
