@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next Sequence Test</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
+.pass { color: green; }
+.fail { color: crimson; }
+pre { white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Next Sequence Test</h1>
+<pre id="result"></pre>
+<script src="./next_sequence.js"></script>
+<script>
+const output = document.getElementById("result");
+let passed = 0;
+let total = 0;
+
+function test(name, fn) {
+  total += 1;
+  try {
+    fn();
+    passed += 1;
+    output.innerHTML += `<span class="pass">PASS</span> ${name}\n`;
+  } catch (error) {
+    output.innerHTML += `<span class="fail">FAIL</span> ${name}: ${error.message}\n`;
+  }
+}
+
+function equal(actual, expected) {
+  if (actual !== expected) throw new Error(`expected ${expected}, got ${actual}`);
+}
+
+test("純數字取 max + 1", () => equal(NextSequence.next([1, 2, 5]), 6));
+test("空陣列從 1 開始", () => equal(NextSequence.next([]), 1));
+test("可指定 start", () => equal(NextSequence.next([], { start: 10 }), 10));
+test("前綴序號只讀指定前綴", () => equal(NextSequence.next(["A1", "A7", "B99"], { prefix: "A" }), 8));
+test("無效值會忽略", () => equal(NextSequence.next(["A1", "Axx", null, -3], { prefix: "A" }), 2));
+test("可從物件欄位取得值", () => {
+  const rows = [{ serial: 2 }, { serial: 9 }, { serial: 4 }];
+  equal(NextSequence.next(rows, { getValue: row => row.serial }), 10);
+});
+
+output.innerHTML += `\n${passed}/${total} PASS`;
+</script>
+</body>
+</html>
