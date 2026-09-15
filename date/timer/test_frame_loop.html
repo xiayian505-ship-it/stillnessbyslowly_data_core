@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Frame Loop 功能測試</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 28px 18px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.6;
+    }
+
+    main {
+      width: min(720px, 100%);
+      margin: 0 auto;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 8px 14px;
+      font: inherit;
+    }
+
+    #box {
+      width: 48px;
+      height: 48px;
+      margin-top: 20px;
+      border-radius: 50%;
+      background: currentColor;
+      transform: translateX(0);
+    }
+
+    #status {
+      margin-top: 20px;
+      padding: 12px;
+      background: #f4f4f4;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Frame Loop 功能測試</h1>
+
+    <div class="controls">
+      <button id="start" type="button">Start</button>
+      <button id="pause" type="button">Pause</button>
+      <button id="resume" type="button">Resume</button>
+      <button id="stop" type="button">Stop</button>
+      <button id="reset" type="button">Reset</button>
+    </div>
+
+    <div id="box" aria-hidden="true"></div>
+    <div id="status">尚未開始</div>
+  </main>
+
+  <script src="./frame_loop.js"></script>
+
+  <script>
+    const box = document.getElementById("box");
+    const status = document.getElementById("status");
+
+    const loop = FrameLoop.create({
+      callback({ delta, elapsed, frame }) {
+        const x = (elapsed / 10) % 300;
+
+        box.style.transform = `translateX(${x}px)`;
+
+        status.textContent = [
+          `frame: ${frame}`,
+          `delta: ${delta.toFixed(2)} ms`,
+          `elapsed: ${elapsed.toFixed(2)} ms`,
+          `state: ${loop.getState().state}`
+        ].join("\n");
+      }
+    });
+
+    document.getElementById("start").addEventListener("click", () => {
+      loop.start();
+    });
+
+    document.getElementById("pause").addEventListener("click", () => {
+      loop.pause();
+      status.textContent = JSON.stringify(loop.getState(), null, 2);
+    });
+
+    document.getElementById("resume").addEventListener("click", () => {
+      loop.resume();
+    });
+
+    document.getElementById("stop").addEventListener("click", () => {
+      loop.stop();
+      status.textContent = JSON.stringify(loop.getState(), null, 2);
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      loop.reset();
+      box.style.transform = "translateX(0)";
+      status.textContent = JSON.stringify(loop.getState(), null, 2);
+    });
+  </script>
+</body>
+</html>

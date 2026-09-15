@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Frame Loop 使用說明</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 32px 20px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.7;
+    }
+
+    main {
+      width: min(760px, 100%);
+      margin: 0 auto;
+    }
+
+    code,
+    pre {
+      font-family: Consolas, monospace;
+    }
+
+    pre {
+      padding: 16px;
+      overflow: auto;
+      background: #f5f5f5;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Frame Loop</h1>
+
+    <p>
+      通用 requestAnimationFrame 迴圈。
+      只負責每一幀通知宿主，不決定每幀要更新什麼。
+    </p>
+
+    <h2>載入</h2>
+
+    <pre><code>&lt;script
+  defer
+  src="https://lib.stillnessbyslowly.com/date/timer/frame_loop.js"
+&gt;&lt;/script&gt;</code></pre>
+
+    <h2>基本使用</h2>
+
+    <pre><code>const loop = FrameLoop.create({
+  callback({ timestamp, delta, elapsed, frame }) {
+    // 宿主自行更新動畫 / 遊戲 / 狀態
+  }
+});
+
+loop.start();</code></pre>
+
+    <h2>控制</h2>
+
+    <pre><code>loop.start();
+loop.pause();
+loop.resume();
+loop.stop();
+loop.reset();
+
+loop.getState();</code></pre>
+
+    <h2>單步執行</h2>
+
+    <pre><code>loop.step(1000);
+loop.step(1016);</code></pre>
+
+    <p>
+      step() 不會自動啟動 requestAnimationFrame，
+      適合測試或由宿主自行提供時間來源。
+    </p>
+
+    <h2>替換 callback</h2>
+
+    <pre><code>loop.setCallback(({ delta }) =&gt; {
+  // 新的每幀邏輯
+});</code></pre>
+
+    <h2>Callback 資料</h2>
+
+    <pre><code>{
+  timestamp, // requestAnimationFrame timestamp
+  delta,     // 與上一幀的差（毫秒）
+  elapsed,   // 累積執行時間（不含暫停）
+  frame      // 已執行幀數，從 1 開始
+}</code></pre>
+
+    <h2>設計原則</h2>
+
+    <p>
+      FrameLoop 不知道自己正在驅動什麼。
+      信紙老化、漂浮動畫、Canvas、遊戲角色或其他逐幀更新，
+      都由宿主自行決定。
+    </p>
+  </main>
+
+  <script src="./frame_loop.js"></script>
+</body>
+</html>
