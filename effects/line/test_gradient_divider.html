@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gradient Divider 功能測試</title>
+<link rel="stylesheet" href="./gradient_divider.css">
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:2}
+.demo{max-width:560px;margin:28px 0}
+.custom{--sl-divider-color:#2563eb;--sl-divider-height:3px}
+</style>
+</head>
+<body>
+<h1>Gradient Divider 功能測試</h1>
+<div class="demo">
+  <p>預設分隔線</p>
+  <div class="slowly-gradient-divider"></div>
+</div>
+<div class="demo">
+  <p>自訂藍色 3px 分隔線</p>
+  <div class="slowly-gradient-divider custom"></div>
+</div>
+</body>
+</html>
