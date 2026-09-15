@@ -1,0 +1,4 @@
+.slowly-gradient-divider {
+  height:var(--sl-divider-height,1px);
+  background:linear-gradient(90deg,transparent,var(--sl-divider-color,#e8c88a),transparent);
+}
