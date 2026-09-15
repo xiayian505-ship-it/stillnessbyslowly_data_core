@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Next Occurrence 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.8;
+  color:#263029;
+}
+.test{
+  max-width:720px;
+  padding:14px 16px;
+  margin:12px 0;
+  border:1px solid #d6ddd1;
+  border-radius:10px;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+code{background:#f5f5f5;padding:2px 5px}
+</style>
+</head>
+<body>
+<h1>Next Occurrence 功能測試</h1>
+<p>
+  這頁只測 <code>next_occurrence.js</code>。
+  不載入 Lunar、DateTime 或 Calendar。
+</p>
+
+<div id="results"></div>
+
+<script src="./next_occurrence.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var results = document.getElementById("results");
+
+  function check(name, actual, expected){
+    var box = document.createElement("div");
+    var pass = actual === expected;
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.innerHTML =
+      "<strong>" + (pass ? "PASS" : "FAIL") + "｜" + name + "</strong><br>" +
+      "actual: <code>" + String(actual) + "</code><br>" +
+      "expected: <code>" + String(expected) + "</code>";
+    results.appendChild(box);
+  }
+
+  check(
+    "固定月日：今年還沒到",
+    NextOccurrence.fixedMonthDay({
+      month: 12,
+      day: 25,
+      from: "2026-09-15"
+    }),
+    "2026-12-25"
+  );
+
+  check(
+    "固定月日：今年已過，自動下一年",
+    NextOccurrence.fixedMonthDay({
+      month: 1,
+      day: 1,
+      from: "2026-09-15"
+    }),
+    "2027-01-01"
+  );
+
+  check(
+    "閏日：跳過不存在的年份",
+    NextOccurrence.fixedMonthDay({
+      month: 2,
+      day: 29,
+      from: "2026-09-15",
+      maxYears: 8
+    }),
+    "2028-02-29"
+  );
+
+  check(
+    "resolver：模擬某曆法只有偶數年可解析",
+    NextOccurrence.resolvedYear({
+      from: "2026-09-15",
+      maxYears: 5,
+      resolver: function(year){
+        if (year % 2 !== 0) {
+          throw new Error("該年不存在");
+        }
+        return year + "-10-10";
+      }
+    }),
+    "2026-10-10"
+  );
+
+  check(
+    "resolver：解析出的日期已過，繼續找下一年",
+    NextOccurrence.resolvedYear({
+      from: "2026-12-20",
+      maxYears: 4,
+      resolver: function(year){
+        return year + "-10-10";
+      }
+    }),
+    "2027-10-10"
+  );
+
+  check(
+    "搜尋範圍內不存在",
+    NextOccurrence.fixedMonthDay({
+      month: 2,
+      day: 29,
+      from: "2026-09-15",
+      maxYears: 1
+    }),
+    null
+  );
+})();
+</script>
+</body>
+</html>
