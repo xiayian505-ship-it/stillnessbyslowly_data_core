@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Local Storage Scan 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+table{
+  border-collapse:collapse;
+  width:min(900px,100%);
+  margin-top:20px;
+  background:#fff;
+}
+th,td{
+  border:1px solid #d6ddd1;
+  padding:8px 10px;
+  text-align:left;
+  vertical-align:top;
+}
+th{background:#eef1ea}
+code{background:#f5f5f5;padding:2px 5px}
+.pass{color:#2f6b3d}
+</style>
+</head>
+<body>
+<h1>Local Storage Scan 功能測試</h1>
+<p>
+  使用假的 Storage 物件測試，不碰這個頁面真正的 <code>localStorage</code>。
+</p>
+
+<div id="summary"></div>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>type</th>
+      <th>JSON</th>
+      <th>count</th>
+      <th>namespace</th>
+      <th>name</th>
+    </tr>
+  </thead>
+  <tbody id="rows"></tbody>
+</table>
+
+<script src="./local_storage_scan.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  function createFakeStorage(data){
+    var keys = Object.keys(data);
+
+    return {
+      get length(){
+        return keys.length;
+      },
+      key: function(index){
+        return keys[index] ?? null;
+      },
+      getItem: function(key){
+        return Object.prototype.hasOwnProperty.call(data, key)
+          ? data[key]
+          : null;
+      }
+    };
+  }
+
+  var fake = createFakeStorage({
+    "memory_game:scores": JSON.stringify([
+      { moves: 18 },
+      { moves: 22 }
+    ]),
+    "plant_care:plants": JSON.stringify([
+      { name: "薄荷" }
+    ]),
+    "theme": "forest",
+    "settings:plain:text": JSON.stringify({
+      compact: true
+    }),
+    "answer": "42",
+    "empty": "null"
+  });
+
+  var entries = LocalStorageScan.scan(fake);
+  var grouped = LocalStorageScan.groupByNamespace(entries);
+
+  document.getElementById("summary").innerHTML =
+    '<p class="pass">掃描完成：' +
+    entries.length +
+    ' keys；分組 ' +
+    grouped.groups.size +
+    ' namespaces；未分組 ' +
+    grouped.unmatched.length +
+    ' keys。</p>';
+
+  var rows = document.getElementById("rows");
+
+  entries.forEach(function(entry){
+    var parts = LocalStorageScan.splitKey(entry.key);
+    var tr = document.createElement("tr");
+
+    [
+      entry.key,
+      entry.type,
+      entry.isJson ? "yes" : "no",
+      entry.count == null ? "—" : String(entry.count),
+      parts.namespace || "—",
+      parts.name
+    ].forEach(function(value){
+      var td = document.createElement("td");
+      td.textContent = value;
+      tr.appendChild(td);
+    });
+
+    rows.appendChild(tr);
+  });
+
+  console.assert(entries[0].count === 2, "array count should be 2");
+  console.assert(
+    LocalStorageScan.splitKey("settings:plain:text").namespace === "settings:plain",
+    "default split should use the last delimiter"
+  );
+  console.assert(
+    LocalStorageScan.inspectRaw("hello").isJson === false,
+    "plain text should not be marked as JSON"
+  );
+})();
+</script>
+</body>
+</html>
