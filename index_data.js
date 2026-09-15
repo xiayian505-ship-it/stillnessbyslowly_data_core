@@ -807,6 +807,34 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/test_tag_parser.html"
               }
             ]
+          },
+          {
+            "title": "WiFi Payload",
+            "desc": "通用 Wi-Fi QR payload 序列化核心，將 SSID、密碼、加密類型與 hidden 設定轉成 WIFI: 格式，並處理保留字元跳脫；不產生 QRCode、不碰 DOM、不保存帳密。",
+            "links": [
+              {
+                "label": "wifi_payload.js",
+                "href": "https://lib.stillnessbyslowly.com/data/wifi_payload.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_wifi_payload.html"
+              }
+            ]
+          },
+          {
+            "title": "Numeric Text",
+            "desc": "通用文字數字擷取核心，可從任意文字抓出正負整數、小數與千分位數字，並提供加總與摘要；不綁貨幣、DOM 或分組規則。",
+            "links": [
+              {
+                "label": "numeric_text.js",
+                "href": "https://lib.stillnessbyslowly.com/data/numeric_text.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_numeric_text.html"
+              }
+            ]
           }
         ]
       }
@@ -1809,6 +1837,46 @@ window.SlowlyLibraryIndex = [
             ]
           }
         ]
+      },
+      {
+        "id": "ruler",
+        "title": "Ruler / 尺規",
+        "items": [
+          {
+            "title": "Millimeter Ruler",
+            "desc": "通用實體毫米刻度尺 DOM renderer，使用 CSS mm 單位建立水平／垂直刻度與標籤，另提供 px↔mm 換算；不綁 QRCode 或特定列印版型。",
+            "links": [
+              {
+                "label": "mm_ruler.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/ruler/mm_ruler.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/ruler/test_mm_ruler.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "table",
+        "title": "Table / 表格",
+        "items": [
+          {
+            "title": "Editable Table Grid",
+            "desc": "通用可編輯表格群組 DOM builder，可建立多張表格、指定列欄數、版面欄數與選配欄寬，並透過 callback 回報目前啟用的標題或儲存格；不處理儲存、字體、PNG/PDF 或商業資料。",
+            "links": [
+              {
+                "label": "editable_table_grid.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/table/editable_table_grid.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/table/test_editable_table_grid.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -2339,6 +2407,20 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/Image/canvas/test_wrapped_text.html"
+              }
+            ]
+          },
+          {
+            "title": "Canvas Content Normalize",
+            "desc": "通用 Canvas 內容邊界偵測與正規化核心，可依像素判定函式找出內容範圍，裁切後等比例置中到指定尺寸並保留 quiet zone；預設適合深色 QR 圖樣，但不依賴 QRCode 套件。",
+            "links": [
+              {
+                "label": "canvas_content_normalize.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas_content_normalize.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/test_canvas_content_normalize.html"
               }
             ]
           }
