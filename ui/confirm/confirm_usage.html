@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Slowly Confirm 使用說明</title>
+
+  <link rel="stylesheet" href="./confirm.css">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 32px 20px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.7;
+    }
+
+    main {
+      width: min(760px, 100%);
+      margin: 0 auto;
+    }
+
+    code,
+    pre {
+      font-family: Consolas, monospace;
+    }
+
+    pre {
+      padding: 16px;
+      overflow: auto;
+      background: #f5f5f5;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Slowly Confirm</h1>
+
+    <p>
+      通用確認視窗。只負責詢問並回傳確認結果，
+      不負責刪除、儲存、導航或其他宿主業務規則。
+    </p>
+
+    <h2>載入</h2>
+
+    <pre><code>&lt;link
+  rel="stylesheet"
+  href="https://lib.stillnessbyslowly.com/ui/confirm/confirm.css"
+&gt;
+
+&lt;script
+  defer
+  src="https://lib.stillnessbyslowly.com/ui/confirm/confirm.js"
+&gt;&lt;/script&gt;</code></pre>
+
+    <h2>基本使用</h2>
+
+    <pre><code>const ok = await SlowlyConfirm.show({
+  title: "刪除這封信？",
+  message: "刪除後無法復原。",
+  confirmText: "刪除",
+  cancelText: "取消"
+});
+
+if (ok) {
+  // 宿主自行執行刪除
+}</code></pre>
+
+    <h2>Options</h2>
+
+    <pre><code>{
+  title: "請確認",
+  message: "",
+  confirmText: "確認",
+  cancelText: "取消",
+  className: "",
+  closeOnBackdrop: true,
+  closeOnEscape: true,
+  initialFocus: "cancel" // "cancel" | "confirm"
+}</code></pre>
+
+    <h2>其他 API</h2>
+
+    <pre><code>SlowlyConfirm.confirm();
+SlowlyConfirm.cancel();
+SlowlyConfirm.close(false);
+
+SlowlyConfirm.isOpen();
+SlowlyConfirm.pendingCount();
+
+SlowlyConfirm.destroy();</code></pre>
+
+    <h2>外觀覆寫</h2>
+
+    <pre><code>.slowly-confirm.my-project-confirm {
+  --confirm-surface: #fff9f2;
+  --confirm-text: #3e332b;
+  --confirm-muted: #75685f;
+  --confirm-confirm-bg: #7f5c49;
+  --confirm-confirm-text: #ffffff;
+  --confirm-radius: 18px;
+}</code></pre>
+
+    <h2>設計原則</h2>
+
+    <p>
+      Slowly Confirm 不知道「確認」代表什麼。
+      宿主可以拿它確認刪除、覆蓋、離開、送出或任何其他行為。
+    </p>
+  </main>
+
+  <script src="./confirm.js"></script>
+</body>
+</html>

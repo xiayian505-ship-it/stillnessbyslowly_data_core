@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Slowly Confirm 功能測試</title>
+
+  <link rel="stylesheet" href="./confirm.css">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 28px 18px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.6;
+    }
+
+    main {
+      width: min(680px, 100%);
+      margin: 0 auto;
+    }
+
+    .tests {
+      display: grid;
+      gap: 12px;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 8px 14px;
+      font: inherit;
+    }
+
+    #result {
+      min-height: 1.8em;
+      padding: 12px;
+      background: #f4f4f4;
+      border-radius: 8px;
+    }
+
+    .capsule-confirm {
+      --confirm-surface: #fffaf3;
+      --confirm-text: #44372e;
+      --confirm-muted: #77675d;
+      --confirm-confirm-bg: #8c6651;
+      --confirm-confirm-text: #ffffff;
+      --confirm-radius: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Slowly Confirm 功能測試</h1>
+
+    <div class="tests">
+      <button id="basicTest" type="button">
+        基本確認
+      </button>
+
+      <button id="customTest" type="button">
+        自訂文字與 class
+      </button>
+
+      <button id="escapeTest" type="button">
+        禁止 Escape / 遮罩取消
+      </button>
+
+      <button id="queueTest" type="button">
+        連續排隊 3 次
+      </button>
+    </div>
+
+    <h2>結果</h2>
+    <div id="result">尚未測試</div>
+  </main>
+
+  <script src="./confirm.js"></script>
+
+  <script>
+    const result = document.getElementById("result");
+
+    document.getElementById("basicTest").addEventListener("click", async () => {
+      const ok = await SlowlyConfirm.show({
+        title: "確定要繼續嗎？",
+        message: "這是一個基本確認測試。"
+      });
+
+      result.textContent = `基本確認結果：${ok}`;
+    });
+
+    document.getElementById("customTest").addEventListener("click", async () => {
+      const ok = await SlowlyConfirm.show({
+        title: "刪除這封信？",
+        message: "刪除後無法復原。",
+        confirmText: "刪除",
+        cancelText: "保留",
+        className: "capsule-confirm"
+      });
+
+      result.textContent = `自訂確認結果：${ok}`;
+    });
+
+    document.getElementById("escapeTest").addEventListener("click", async () => {
+      const ok = await SlowlyConfirm.show({
+        title: "只能按按鈕",
+        message: "這次 Escape 與點遮罩都不會取消。",
+        closeOnBackdrop: false,
+        closeOnEscape: false
+      });
+
+      result.textContent = `按鈕確認結果：${ok}`;
+    });
+
+    document.getElementById("queueTest").addEventListener("click", async () => {
+      const answers = await Promise.all([
+        SlowlyConfirm.show({
+          title: "第一題",
+          message: "這是第 1 個排隊確認。"
+        }),
+        SlowlyConfirm.show({
+          title: "第二題",
+          message: "這是第 2 個排隊確認。"
+        }),
+        SlowlyConfirm.show({
+          title: "第三題",
+          message: "這是第 3 個排隊確認。"
+        })
+      ]);
+
+      result.textContent = `排隊結果：${answers.join(", ")}`;
+    });
+  </script>
+</body>
+</html>
