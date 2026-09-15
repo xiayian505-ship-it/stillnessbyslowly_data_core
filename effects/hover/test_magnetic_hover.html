@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Magnetic Hover 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:2;min-height:100vh}
+.zone{height:260px;display:grid;place-items:center;border:1px dashed #aaa;border-radius:18px;margin-top:24px}
+#magnetic{padding:16px 28px;border:0;border-radius:999px;background:#111827;color:white;font-size:16px;transition:transform .08s linear}
+</style>
+</head>
+<body>
+<h1>Magnetic Hover 功能測試</h1>
+<p>桌機細指標裝置：在按鈕範圍內移動滑鼠，按鈕會朝游標方向位移；離開後回到原位。</p>
+<div class="zone"><button id="magnetic" type="button">Magnetic</button></div>
+<script src="./magnetic_hover.js"></script>
+<script>
+SlowlyMagneticHover.attach('#magnetic', { strengthX: .35, strengthY: .35 });
+</script>
+</body>
+</html>
