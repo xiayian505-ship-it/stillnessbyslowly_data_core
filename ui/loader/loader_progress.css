@@ -1,0 +1,7 @@
+.slowly-loader {
+  position: fixed; inset: 0; z-index: var(--sl-loader-z, 9999); display:grid; place-items:center;
+  background: var(--sl-loader-bg, #05060a); transition: opacity .8s ease, visibility .8s ease;
+}
+.slowly-loader.is-done { opacity:0; visibility:hidden; pointer-events:none; }
+.slowly-loader__bar { height:2px; width:100%; background:rgba(255,255,255,.09); overflow:hidden; border-radius:2px; }
+.slowly-loader__bar > i { display:block; width:0; height:100%; background:var(--sl-loader-bar, linear-gradient(90deg,#22d3ee,#a78bfa)); transition:width .25s ease; }
