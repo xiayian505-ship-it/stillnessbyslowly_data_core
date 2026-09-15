@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import Merge Test</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
+.pass { color: green; }
+.fail { color: crimson; }
+pre { white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Import Merge Test</h1>
+<pre id="result"></pre>
+<script src="./import_merge.js"></script>
+<script>
+const output = document.getElementById("result");
+let passed = 0;
+let total = 0;
+
+function test(name, fn) {
+  total += 1;
+  try {
+    fn();
+    passed += 1;
+    output.innerHTML += `<span class="pass">PASS</span> ${name}\n`;
+  } catch (error) {
+    output.innerHTML += `<span class="fail">FAIL</span> ${name}: ${error.message}\n`;
+  }
+}
+
+function equal(actual, expected) {
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error(`expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+  }
+}
+
+test("無衝突直接追加", () => {
+  const result = ImportMerge.merge([{ id: "a" }], [{ id: "b" }]);
+  equal(result.records.map(x => x.id), ["a", "b"]);
+  equal(result.rekeyedCount, 0);
+});
+
+test("與現有 ID 衝突時重生", () => {
+  let n = 1;
+  const result = ImportMerge.merge(
+    [{ id: "a" }],
+    [{ id: "a", value: 2 }],
+    { createKey: () => `new-${n++}` }
+  );
+  equal(result.records.map(x => x.id), ["a", "new-1"]);
+  equal(result.rekeyedCount, 1);
+});
+
+test("匯入資料彼此撞 ID 也會處理", () => {
+  let n = 1;
+  const result = ImportMerge.merge(
+    [],
+    [{ id: "x" }, { id: "x" }],
+    { createKey: () => `regen-${n++}` }
+  );
+  equal(result.records.map(x => x.id), ["x", "regen-1"]);
+});
+
+test("缺少 ID 可由宿主補鍵", () => {
+  const result = ImportMerge.merge([], [{ value: 1 }], {
+    createKey: () => "created-id"
+  });
+  equal(result.records[0].id, "created-id");
+});
+
+test("不修改 existing / incoming 原資料", () => {
+  const existing = [{ id: "a", nested: { n: 1 } }];
+  const incoming = [{ id: "b", nested: { n: 2 } }];
+  const result = ImportMerge.merge(existing, incoming);
+  result.records[0].nested.n = 9;
+  equal(existing[0].nested.n, 1);
+  equal(incoming[0].nested.n, 2);
+});
+
+test("createKey 重複時會持續嘗試", () => {
+  const generated = ["a", "a", "b"];
+  const result = ImportMerge.merge([{ id: "a" }], [{ id: "a" }], {
+    createKey: () => generated.shift()
+  });
+  equal(result.records.map(x => x.id), ["a", "b"]);
+});
+
+output.innerHTML += `\n${passed}/${total} PASS`;
+</script>
+</body>
+</html>

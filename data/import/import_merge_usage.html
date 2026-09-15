@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import Merge Usage</title>
+<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.7}pre{overflow:auto;padding:14px;background:#f5f5f5}</style>
+</head>
+<body>
+<h1>Import Merge</h1>
+<p>只處理「現有陣列 + 匯入陣列」的合併，以及識別鍵衝突時的重新配號。</p>
+<p>讀檔、JSON 解析、驗證、Storage、覆蓋模式與 UI 都由宿主決定。</p>
+<pre><code>&lt;script src="import_merge.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+const result = ImportMerge.merge(existingRecords, importedRecords, {
+  key: "id",
+  createKey({ usedKeys }) {
+    let id;
+    do {
+      id = crypto.randomUUID();
+    } while (usedKeys.has(`string:${id}`));
+    return id;
+  }
+});
+
+console.log(result.records);
+console.log(result.collisions);
+&lt;/script&gt;</code></pre>
+</body>
+</html>
