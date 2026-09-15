@@ -473,6 +473,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/test_unit_price.html"
               }
             ]
+          },
+          {
+            "title": "Metered Charge",
+            "desc": "通用按用量計費核心，將實際用量依計費單位向上取整，可套最低計費量與最低可受理門檻，再依費率計算費用；不綁定運輸、商品、幣別、UI，也不依賴 Money 或 Unit Price。",
+            "links": [
+              {
+                "label": "metered_charge.js",
+                "href": "https://lib.stillnessbyslowly.com/data/metered_charge.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_metered_charge.html"
+              }
+            ]
           }
         ]
       },
@@ -687,6 +701,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/validation/test_data_validation.html"
               }
             ]
+          },
+          {
+            "title": "Safe URL",
+            "desc": "通用 URL protocol 白名單驗證與正規化工具，可指定允許的 URI scheme 與不合法時的 fallback；不自動補 https、不碰 DOM，也不依賴 Data Validation。",
+            "links": [
+              {
+                "label": "safe_url.js",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/safe_url.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/test_safe_url.html"
+              }
+            ]
           }
         ]
       },
@@ -761,6 +789,26 @@ window.SlowlyLibraryIndex = [
             ]
           }
         ]
+      },
+      {
+        "id": "text",
+        "title": "Text / 文字資料",
+        "items": [
+          {
+            "title": "Tag Parser",
+            "desc": "通用標籤字串解析與標準化工具，支援 #tag、半形／全形逗號與空白分隔，可去除空值、去重複並保留第一次出現順序；不綁定 UI、資料儲存或特定內容類型。",
+            "links": [
+              {
+                "label": "tag_parser.js",
+                "href": "https://lib.stillnessbyslowly.com/data/tag_parser.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_tag_parser.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -819,6 +867,48 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/state/test_cooldown_gate.html"
+              }
+            ]
+          },
+          {
+            "title": "Once Per Key",
+            "desc": "通用「同一個 key 只能成功一次」狀態核心，提供 claim、has、get、release、keys 與 clear，並可注入 Storage-like 物件做跨頁持久化；不綁日期、抽籤、UI 或特定業務。",
+            "links": [
+              {
+                "label": "once_per_key.js",
+                "href": "https://lib.stillnessbyslowly.com/state/once_per_key.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_once_per_key.html"
+              }
+            ]
+          },
+          {
+            "title": "Value Cycle",
+            "desc": "通用有限值循環核心，依目前值計算下一個、上一個或位移 N 格後的值，並自動循環首尾；不保存宿主資料、不綁定狀態名稱、UI 或商業副作用。",
+            "links": [
+              {
+                "label": "value_cycle.js",
+                "href": "https://lib.stillnessbyslowly.com/state/value_cycle.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_value_cycle.html"
+              }
+            ]
+          },
+          {
+            "title": "Derived Result",
+            "desc": "通用衍生結果有效性狀態核心，以來源版本與結果版本管理 empty、fresh、stale；來源輸入 touch 後既有結果自動過期，commit 後重新有效；不綁 QRCode、預覽 UI 或資料內容比較。",
+            "links": [
+              {
+                "label": "derived_result.js",
+                "href": "https://lib.stillnessbyslowly.com/state/derived_result.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_derived_result.html"
               }
             ]
           }
@@ -1699,6 +1789,26 @@ window.SlowlyLibraryIndex = [
             ]
           }
         ]
+      },
+      {
+        "id": "canvas",
+        "title": "Canvas / 畫布互動",
+        "items": [
+          {
+            "title": "Canvas Rect Drag",
+            "desc": "通用 Canvas 矩形拖曳互動核心，提供畫布座標換算、矩形命中判斷、拖曳偏移與邊界限制；不負責繪圖、不綁 QRCode、圖片或特定業務資料。",
+            "links": [
+              {
+                "label": "canvas_rect_drag.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/canvas/canvas_rect_drag.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/canvas/test_canvas_rect_drag.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -2273,6 +2383,46 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/Image/png/test_png_download.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "capture",
+        "title": "Capture / 擷取",
+        "items": [
+          {
+            "title": "DOM Capture",
+            "desc": "通用 DOM 影像擷取流程核心，將來源元素複製到畫面外並固定實際寬度，交由宿主注入 renderer 轉成 Canvas，再輸出 Blob，完成後一定清除暫存 clone；不綁 html2canvas、下載、分享或特定元件。",
+            "links": [
+              {
+                "label": "dom_capture.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/dom_capture.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/test_dom_capture.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "compress",
+        "title": "Compress / 壓縮",
+        "items": [
+          {
+            "title": "Image Compress To Size",
+            "desc": "通用圖片目標檔案大小壓縮核心，先限制最大尺寸，再逐步降低輸出品質；若仍過大則繼續縮小尺寸，並回報是否達到 maxBytes、最後尺寸、品質、輸出 bytes 與嘗試次數；不依賴 Image Resize 或 UI。",
+            "links": [
+              {
+                "label": "image_compress_to_size.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/image_compress_to_size.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/test_image_compress_to_size.html"
               }
             ]
           }
