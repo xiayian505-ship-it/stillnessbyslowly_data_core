@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noise Source 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.8}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+button{padding:10px 16px}
+small{color:#666}
+</style>
+</head>
+<body>
+<h1>Noise Source 功能測試</h1>
+<p>只測 <code>noise.js</code>。按下 White / Pink / Brown 會建立對應噪音；再次按其他類型會停止前一個。</p>
+<div class="row">
+  <button data-type="white">White Noise</button>
+  <button data-type="pink">Pink Noise</button>
+  <button data-type="brown">Brown Noise</button>
+  <button id="stop">停止</button>
+</div>
+<small>測試頁自己建立 GainNode 壓低音量；Noise 元件本身不管理音量或 AudioContext。</small>
+
+<script src="./noise.js"></script>
+<script>
+(function(){
+  var ctx = null;
+  var current = null;
+
+  function ensureContext(){
+    if (!ctx) {
+      var AudioContext = window.AudioContext || window.webkitAudioContext;
+      ctx = new AudioContext();
+    }
+    if (ctx.state === "suspended") ctx.resume();
+  }
+
+  function stopCurrent(){
+    if (!current) return;
+    try { current.source.stop(); } catch (e) {}
+    try { current.source.disconnect(); } catch (e) {}
+    try { current.gain.disconnect(); } catch (e) {}
+    current = null;
+  }
+
+  document.querySelectorAll("[data-type]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      ensureContext();
+      stopCurrent();
+
+      var source = SlowlyAudioNoise.create(ctx, {
+        type: btn.dataset.type,
+        duration: 2,
+        loop: true
+      });
+
+      var gain = ctx.createGain();
+      gain.gain.value = 0.08;
+
+      source.connect(gain);
+      gain.connect(ctx.destination);
+      source.start();
+
+      current = { source: source, gain: gain };
+    });
+  });
+
+  document.getElementById("stop").addEventListener("click", stopCurrent);
+})();
+</script>
+</body>
+</html>
