@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Serial Queue 功能測試</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 28px 18px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.6;
+    }
+
+    main {
+      width: min(720px, 100%);
+      margin: 0 auto;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 8px 14px;
+      font: inherit;
+    }
+
+    #status,
+    #log {
+      margin-top: 18px;
+      padding: 12px;
+      background: #f4f4f4;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+
+    #log {
+      min-height: 160px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Serial Queue 功能測試</h1>
+
+    <div class="controls">
+      <button id="normalTest" type="button">
+        測試依序執行
+      </button>
+
+      <button id="errorTest" type="button">
+        測試失敗不中斷
+      </button>
+
+      <button id="idleTest" type="button">
+        測試 idle()
+      </button>
+    </div>
+
+    <div id="status">尚未測試</div>
+    <div id="log"></div>
+  </main>
+
+  <script src="./serial_queue.js"></script>
+
+  <script>
+    const status = document.getElementById("status");
+    const log = document.getElementById("log");
+
+    function sleep(ms) {
+      return new Promise(resolve => {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    function write(message) {
+      log.textContent += `${message}\n`;
+    }
+
+    function clearOutput() {
+      log.textContent = "";
+      status.textContent = "";
+    }
+
+    document
+      .getElementById("normalTest")
+      .addEventListener("click", async () => {
+        clearOutput();
+
+        const queue = SerialQueue.create();
+
+        queue.add(async () => {
+          write("A 開始");
+          await sleep(500);
+          write("A 完成");
+        });
+
+        queue.add(async () => {
+          write("B 開始");
+          await sleep(200);
+          write("B 完成");
+        });
+
+        queue.add(async () => {
+          write("C 開始");
+          write("C 完成");
+        });
+
+        await queue.idle();
+
+        status.textContent =
+          "正確順序應為：A 完成後才 B，B 完成後才 C。";
+      });
+
+    document
+      .getElementById("errorTest")
+      .addEventListener("click", async () => {
+        clearOutput();
+
+        const queue = SerialQueue.create();
+
+        queue
+          .add(async () => {
+            write("第 1 件開始");
+            throw new Error("故意失敗");
+          })
+          .catch(error => {
+            write(`第 1 件失敗：${error.message}`);
+          });
+
+        queue.add(async () => {
+          write("第 2 件仍然有執行");
+        });
+
+        await queue.idle();
+
+        status.textContent =
+          "如果第 2 件有執行，代表單一錯誤沒有毒死整條 queue。";
+      });
+
+    document
+      .getElementById("idleTest")
+      .addEventListener("click", async () => {
+        clearOutput();
+
+        const queue = SerialQueue.create();
+
+        queue.add(async () => {
+          write("工作開始");
+          await sleep(600);
+          write("工作完成");
+        });
+
+        status.textContent =
+          JSON.stringify(queue.getState(), null, 2);
+
+        await queue.idle();
+
+        status.textContent =
+          JSON.stringify(queue.getState(), null, 2);
+
+        write("idle() 已 resolve");
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Serial Queue 使用說明</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 32px 20px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.7;
+    }
+
+    main {
+      width: min(780px, 100%);
+      margin: 0 auto;
+    }
+
+    code,
+    pre {
+      font-family: Consolas, monospace;
+    }
+
+    pre {
+      padding: 16px;
+      overflow: auto;
+      background: #f5f5f5;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Serial Queue</h1>
+
+    <p>
+      通用非同步序列佇列。
+      每一件工作完成後才會執行下一件；
+      某一件失敗不會讓後面的工作停止。
+    </p>
+
+    <h2>載入</h2>
+
+    <pre><code>&lt;script
+  defer
+  src="https://lib.stillnessbyslowly.com/state/queue/serial_queue.js"
+&gt;&lt;/script&gt;</code></pre>
+
+    <h2>基本使用</h2>
+
+    <pre><code>const queue = SerialQueue.create();
+
+queue.add(async () =&gt; {
+  await saveFirst();
+});
+
+queue.add(async () =&gt; {
+  await saveSecond();
+});</code></pre>
+
+    <p>
+      即使第二件工作在第一件尚未完成時加入，
+      也一定會等第一件完成後才開始。
+    </p>
+
+    <h2>取得單一工作結果</h2>
+
+    <pre><code>try {
+  const result = await queue.add(async () =&gt; {
+    return await saveSomething();
+  });
+
+  console.log(result);
+} catch (error) {
+  console.error(error);
+}</code></pre>
+
+    <h2>單一工作失敗不會中斷後續工作</h2>
+
+    <pre><code>queue
+  .add(async () =&gt; {
+    throw new Error("這一件失敗");
+  })
+  .catch(console.error);
+
+queue.add(async () =&gt; {
+  // 這一件仍然會照常執行
+});</code></pre>
+
+    <h2>等待佇列清空</h2>
+
+    <pre><code>await queue.idle();
+
+console.log("目前排隊工作都完成了");</code></pre>
+
+    <h2>查看狀態</h2>
+
+    <pre><code>queue.getState();
+
+// {
+//   running: true,
+//   pending: 2,
+//   size: 3
+// }</code></pre>
+
+    <h2>設計原則</h2>
+
+    <p>
+      Serial Queue 不知道自己正在排什麼。
+      儲存、Render、API 請求或其他非同步工作，
+      全部由宿主自行決定。
+    </p>
+
+    <p>
+      Retry、Timeout、錯誤提示與業務規則也不屬於本零件。
+    </p>
+  </main>
+
+  <script src="./serial_queue.js"></script>
+</body>
+</html>
