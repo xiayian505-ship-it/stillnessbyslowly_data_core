@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>SlowlyContentEditable Usage</title>
+  <style>
+    #editor {
+      min-height: 120px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div id="editor" contenteditable="true">在這裡輸入文字</div>
+  <button id="insertBtn" type="button">插入換行</button>
+
+  <script src="./contenteditable_insert.js"></script>
+  <script>
+    const editor = document.getElementById("editor");
+
+    document.getElementById("insertBtn").addEventListener("click", () => {
+      editor.focus();
+      SlowlyContentEditable.insertLineBreak(editor);
+    });
+
+    editor.addEventListener("input", () => {
+      console.log("宿主收到 input：", editor.innerText);
+    });
+  </script>
+</body>
+</html>

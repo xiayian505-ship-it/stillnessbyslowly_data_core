@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>SlowlyContentEditable Test</title>
+  <style>
+    #editor { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div id="editor" contenteditable="true">abc</div>
+  <pre id="result">測試中…</pre>
+
+  <script src="./contenteditable_insert.js"></script>
+  <script>
+    const editor = document.getElementById("editor");
+    const result = document.getElementById("result");
+    const errors = [];
+
+    let inputCount = 0;
+    editor.addEventListener("input", () => {
+      inputCount += 1;
+    });
+
+    editor.focus();
+
+    const range = document.createRange();
+    range.selectNodeContents(editor);
+    range.collapse(false);
+
+    const selection = getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    const inserted = SlowlyContentEditable.insertLineBreak(editor);
+
+    if (!inserted) {
+      errors.push("insertLineBreak 應回傳 true");
+    }
+
+    if (editor.textContent !== "abc\n") {
+      errors.push(`插入結果錯誤：${JSON.stringify(editor.textContent)}`);
+    }
+
+    if (inputCount !== 1) {
+      errors.push(`input 事件應觸發一次，實際 ${inputCount}`);
+    }
+
+    result.textContent = errors.length > 0
+      ? `FAIL\n${errors.join("\n")}`
+      : "PASS";
+  </script>
+</body>
+</html>
