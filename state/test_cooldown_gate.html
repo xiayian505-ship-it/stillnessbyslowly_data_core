@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cooldown Gate 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+.test{
+  max-width:760px;
+  padding:14px 16px;
+  margin:12px 0;
+  border:1px solid #d6ddd1;
+  border-radius:10px;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+code{background:#f5f5f5;padding:2px 5px}
+</style>
+</head>
+<body>
+<h1>Cooldown Gate 功能測試</h1>
+<p>
+  使用假的時鐘與假的 Storage，測試不依賴真實時間，也不污染 localStorage。
+</p>
+
+<div id="results"></div>
+
+<script src="./cooldown_gate.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+  var now = 100000;
+
+  function createFakeStorage(){
+    var data = Object.create(null);
+
+    return {
+      getItem: function(key){
+        return Object.prototype.hasOwnProperty.call(data, key)
+          ? data[key]
+          : null;
+      },
+      setItem: function(key, value){
+        data[key] = String(value);
+      },
+      removeItem: function(key){
+        delete data[key];
+      }
+    };
+  }
+
+  function check(name, actual, expected){
+    var pass = actual === expected;
+    var box = document.createElement("div");
+
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.innerHTML =
+      "<strong>" + (pass ? "PASS" : "FAIL") + "｜" + name + "</strong><br>" +
+      "actual: <code>" + String(actual) + "</code><br>" +
+      "expected: <code>" + String(expected) + "</code>";
+
+    root.appendChild(box);
+  }
+
+  var storage = createFakeStorage();
+
+  var gate = CooldownGate.create({
+    duration: 30 * 60 * 1000,
+    storage: storage,
+    key: "traffic_refresh",
+    now: function(){ return now; }
+  });
+
+  check("初始可使用", gate.isLocked(), false);
+
+  var first = gate.tryTrigger();
+  check("第一次通過", first.allowed, true);
+  check("觸發後鎖定", gate.isLocked(), true);
+
+  now += 10 * 60 * 1000;
+  check(
+    "10 分鐘後剩 20 分鐘",
+    gate.remaining(),
+    20 * 60 * 1000
+  );
+
+  var second = gate.tryTrigger();
+  check("冷卻期間拒絕", second.allowed, false);
+
+  // 模擬重新開頁：建立新的 instance，但共用同一 Storage。
+  var reloadedGate = CooldownGate.create({
+    duration: 30 * 60 * 1000,
+    storage: storage,
+    key: "traffic_refresh",
+    now: function(){ return now; }
+  });
+
+  check("新 instance 仍記得鎖定", reloadedGate.isLocked(), true);
+
+  now += 20 * 60 * 1000;
+  check("滿 30 分鐘後解鎖", reloadedGate.isLocked(), false);
+
+  check("解鎖後可再次通過", reloadedGate.tryTrigger().allowed, true);
+
+  reloadedGate.reset();
+  check("reset 後立即可用", reloadedGate.isLocked(), false);
+})();
+</script>
+</body>
+</html>
