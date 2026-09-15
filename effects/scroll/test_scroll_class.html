@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scroll Class 功能測試</title>
+<style>
+html,body{margin:0}
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;line-height:1.8}
+#watch{position:fixed;top:0;left:0;right:0;padding:16px 24px;background:#e5e7eb;color:#111827;transition:.25s;z-index:5}
+#watch.is-scrolled{background:#111827;color:white;box-shadow:0 8px 20px rgba(0,0,0,.15)}
+.content{padding:100px 28px 28px;min-height:180vh;background:linear-gradient(#fff,#dbeafe)}
+</style>
+</head>
+<body>
+<div id="watch">尚未超過 80px</div>
+<div class="content"><h1>Scroll Class 功能測試</h1><p>往下捲超過 80px，頂端區塊會得到 <code>is-scrolled</code> class 並變成深色；回到頂端則移除。</p></div>
+<script src="./scroll_class.js"></script>
+<script>
+var watcher = SlowlyScrollClass.attach('#watch', { className: 'is-scrolled', threshold: 80 });
+window.addEventListener('scroll', function(){
+  document.getElementById('watch').textContent = window.scrollY > 80 ? '已超過 80px：is-scrolled' : '尚未超過 80px';
+}, { passive:true });
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Parallax Fade 功能測試</title>
+<style>
+html,body{margin:0}
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;background:#eef2f7}
+.hero{height:100vh;display:grid;place-items:center;background:#111827;color:white;overflow:hidden}
+#target{text-align:center;padding:28px}
+.next{min-height:110vh;padding:40px;box-sizing:border-box}
+</style>
+</head>
+<body>
+<section class="hero"><div id="target"><h1>Parallax Fade</h1><p>往下捲動：這段內容應慢慢下移並淡出。</p></div></section>
+<section class="next"><h2>下一區</h2><p>往回捲動可看到效果反向恢復。</p></section>
+<script src="./parallax_fade.js"></script>
+<script>
+SlowlyParallaxFade.attach('#target', { speed: .22, fadeViewport: .85 });
+</script>
+</body>
+</html>
