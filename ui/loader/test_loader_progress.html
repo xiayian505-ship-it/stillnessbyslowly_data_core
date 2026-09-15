@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loader Progress 功能測試</title>
+<link rel="stylesheet" href="./loader_progress.css">
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:2}
+button{padding:12px 18px}
+#loader .inner{width:min(320px,70vw);color:white;text-align:center}
+.slowly-loader__bar{margin:16px 0}
+[data-loader-pct]{font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<h1>Loader Progress 功能測試</h1>
+<p>頁面開啟後會先顯示全頁 Loader，進度到 100% 後自動淡出。可按按鈕再次測試。</p>
+<button id="again" type="button">重新播放 Loader</button>
+
+<div class="slowly-loader" id="loader">
+  <div class="inner">
+    <strong>LOADING</strong>
+    <div class="slowly-loader__bar"><i data-loader-bar></i></div>
+    <div data-loader-pct>0%</div>
+  </div>
+</div>
+
+<script src="./loader_progress.js"></script>
+<script>
+var loader = SlowlyLoaderProgress.create({
+  root:'#loader',
+  interval:120,
+  stepMin:8,
+  stepMax:18
+});
+loader.startFake();
+
+document.getElementById('again').addEventListener('click', function(){
+  document.getElementById('loader').classList.remove('is-done');
+  loader.setProgress(0);
+  loader.startFake();
+});
+</script>
+</body>
+</html>
