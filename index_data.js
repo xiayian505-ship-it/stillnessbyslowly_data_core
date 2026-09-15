@@ -657,6 +657,30 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "random",
+        "title": "Random / 隨機",
+        "items": [
+          {
+            "title": "Random",
+            "desc": "通用隨機數工具，提供指定範圍浮點數、含上下界整數與依指定機率回傳 true／false；不綁定 UI、業務規則、狀態保存，也不替宿主決定應使用的範圍或機率。",
+            "links": [
+              {
+                "label": "random.js",
+                "href": "https://lib.stillnessbyslowly.com/data/random/random.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/random/random_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/random/test_random.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "file",
         "title": "File / 檔案",
         "items": [
@@ -1357,6 +1381,30 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/ui/clipboard/clipboard_select_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "contenteditable",
+        "title": "Contenteditable / 可編輯內容",
+        "items": [
+          {
+            "title": "ContentEditable Insert",
+            "desc": "通用 contenteditable 純文字插入工具，可在目前游標位置插入文字或換行、將游標移到新內容後方，並可派發 input 事件供宿主同步狀態；不綁定鍵盤事件、編輯器樣式、草稿保存或插入時機。",
+            "links": [
+              {
+                "label": "contenteditable_insert.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/contenteditable/contenteditable_insert.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/contenteditable/contenteditable_insert_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/contenteditable/test_contenteditable_insert.html"
               }
             ]
           }
