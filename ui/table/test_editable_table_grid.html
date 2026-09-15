@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Editable Table Grid 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px}
+#grid{display:grid;gap:16px;max-width:900px}
+.editable-table-grid__wrapper{border:1px solid #bbb;padding:12px}
+.editable-table-grid__title{font-weight:bold;margin-bottom:8px}
+.editable-table-grid__table{border-collapse:collapse;width:100%}
+.editable-table-grid__table td{border:1px solid #aaa;height:36px;padding:4px}
+.test{padding:10px;margin:8px 0;border:1px solid #ccc}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Editable Table Grid 功能測試</h1>
+<div id="grid"></div>
+<div id="results"></div>
+
+<script src="./editable_table_grid.js"></script>
+<script>
+(function(){
+  const grid = document.getElementById("grid");
+  const root = document.getElementById("results");
+  let active = null;
+
+  function check(name, pass, detail){
+    const box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      (detail ? "｜" + detail : "");
+    root.appendChild(box);
+  }
+
+  const result = EditableTableGrid.render(grid, {
+    tableCount: 2,
+    rows: 3,
+    columns: 3,
+    layoutColumns: 2,
+    columnWidths: [25, 35, 40],
+    onActivate(info){
+      active = info;
+    }
+  });
+
+  check("兩張表格", result.wrappers.length === 2, result.wrappers.length);
+  check("18 個儲存格", result.cells.length === 18, result.cells.length);
+  check(
+    "有 colgroup 欄寬",
+    result.wrappers[0].querySelectorAll("col").length === 3,
+    result.wrappers[0].querySelectorAll("col").length
+  );
+
+  result.cells[0].click();
+
+  check(
+    "activate callback",
+    active && active.type === "cell" &&
+    active.tableIndex === 0 &&
+    active.rowIndex === 0 &&
+    active.columnIndex === 0,
+    JSON.stringify(active && {
+      type:active.type,
+      tableIndex:active.tableIndex,
+      rowIndex:active.rowIndex,
+      columnIndex:active.columnIndex
+    })
+  );
+})();
+</script>
+</body>
+</html>
