@@ -1,0 +1,23 @@
+/* Generic stat/progress bar extracted from the personal manual page. */
+.slowly-stat {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.slowly-stat__label { flex:0 0 var(--sl-stat-label-width,72px); }
+.slowly-stat__track {
+  flex:1;
+  height:var(--sl-stat-height,6px);
+  overflow:hidden;
+  border-radius:999px;
+  background:var(--sl-stat-track,#ede8de);
+}
+.slowly-stat__bar {
+  height:100%;
+  width:var(--sl-stat-value,0%);
+  border-radius:inherit;
+  background:var(--sl-stat-fill,linear-gradient(90deg,#e8c88a,#f0a060));
+  transition:width var(--sl-stat-duration,1s) ease;
+}
+.slowly-stat__value { flex:0 0 auto; }
+@media(prefers-reduced-motion:reduce){.slowly-stat__bar{transition:none}}
