@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Once Per Key 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+.test{
+  max-width:760px;
+  padding:14px 16px;
+  margin:12px 0;
+  border:1px solid #d6ddd1;
+  border-radius:10px;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+code{background:#f5f5f5;padding:2px 5px}
+</style>
+</head>
+<body>
+<h1>Once Per Key 功能測試</h1>
+<p>
+  使用假的 Storage 測試跨 instance 持久化。
+  日期只是測試 key，元件本身不理解日期。
+</p>
+
+<div id="results"></div>
+
+<script src="./once_per_key.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+
+  function fakeStorage(){
+    var data = Object.create(null);
+
+    return {
+      getItem: function(key){
+        return Object.prototype.hasOwnProperty.call(data, key)
+          ? data[key]
+          : null;
+      },
+      setItem: function(key, value){
+        data[key] = String(value);
+      },
+      removeItem: function(key){
+        delete data[key];
+      }
+    };
+  }
+
+  function check(name, actual, expected){
+    var pass = actual === expected;
+    var box = document.createElement("div");
+
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.innerHTML =
+      "<strong>" + (pass ? "PASS" : "FAIL") + "｜" + name + "</strong><br>" +
+      "actual: <code>" + String(actual) + "</code><br>" +
+      "expected: <code>" + String(expected) + "</code>";
+
+    root.appendChild(box);
+  }
+
+  var storage = fakeStorage();
+
+  var gate = OncePerKey.create({
+    storage: storage,
+    storageKey: "daily_draw_claims"
+  });
+
+  var first = gate.claim("2026-09-15", {
+    category: "綜合",
+    result: "吉"
+  });
+
+  check("第一次 claim 成功", first.claimed, true);
+  check("claim 後 has = true", gate.has("2026-09-15"), true);
+
+  var second = gate.claim("2026-09-15", {
+    category: "事業",
+    result: "大吉"
+  });
+
+  check("同 key 第二次拒絕", second.claimed, false);
+  check(
+    "拒絕時保留第一次資料",
+    second.value.result,
+    "吉"
+  );
+
+  var nextDay = gate.claim("2026-09-16", "另一日");
+  check("不同 key 可以成功", nextDay.claimed, true);
+
+  // 模擬重新開頁：新 instance，共用 Storage。
+  var reopened = OncePerKey.create({
+    storage: storage,
+    storageKey: "daily_draw_claims"
+  });
+
+  check(
+    "新 instance 仍記得舊 key",
+    reopened.has("2026-09-15"),
+    true
+  );
+
+  check(
+    "keys 數量",
+    reopened.keys().length,
+    2
+  );
+
+  check(
+    "release 成功",
+    reopened.release("2026-09-15"),
+    true
+  );
+
+  check(
+    "release 後可重新 claim",
+    reopened.claim("2026-09-15", "重新開放").claimed,
+    true
+  );
+
+  reopened.clear();
+
+  check(
+    "clear 後沒有任何 claim",
+    reopened.keys().length,
+    0
+  );
+})();
+</script>
+</body>
+</html>
