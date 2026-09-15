@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Upcoming Window 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.7}
+.test{max-width:840px;padding:12px 14px;margin:10px 0;border:1px solid #d6ddd1}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Upcoming Window 功能測試</h1>
+<div id="results"></div>
+
+<script src="./upcoming_window.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+  var HOUR = 60 * 60 * 1000;
+  var now = "2026-09-16T12:00:00+08:00";
+
+  function check(name, actual, expected){
+    var pass = JSON.stringify(actual) === JSON.stringify(expected);
+    var box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      "｜actual=" + JSON.stringify(actual) +
+      "｜expected=" + JSON.stringify(expected);
+    root.appendChild(box);
+  }
+
+  check(
+    "23 小時後位於 24 小時區間內",
+    UpcomingWindow.isUpcoming("2026-09-17T11:00:00+08:00", 24 * HOUR, now),
+    true
+  );
+
+  check(
+    "剛好 24 小時後仍算區間內",
+    UpcomingWindow.isUpcoming("2026-09-17T12:00:00+08:00", 24 * HOUR, now),
+    true
+  );
+
+  check(
+    "超過 24 小時不算",
+    UpcomingWindow.isUpcoming("2026-09-17T12:00:01+08:00", 24 * HOUR, now),
+    false
+  );
+
+  check(
+    "已經發生的不算 upcoming",
+    UpcomingWindow.isUpcoming("2026-09-16T11:59:59+08:00", 24 * HOUR, now),
+    false
+  );
+
+  check(
+    "現在這一刻不算 upcoming",
+    UpcomingWindow.isUpcoming(now, 24 * HOUR, now),
+    false
+  );
+
+  var events = [
+    { id: "a", at: "2026-09-16T18:00:00+08:00" },
+    { id: "b", at: "2026-09-17T10:00:00+08:00" },
+    { id: "c", at: "2026-09-18T12:00:00+08:00" },
+    { id: "d", at: "not-a-date" },
+    { id: "e", at: "2026-09-15T12:00:00+08:00" }
+  ];
+
+  check(
+    "篩出指定提前區間內的資料",
+    UpcomingWindow.filter(events, function(item){ return item.at; }, 24 * HOUR, now).map(function(item){ return item.id; }),
+    ["a", "b"]
+  );
+
+  check(
+    "可取得剩餘毫秒",
+    UpcomingWindow.remainingMs("2026-09-16T14:00:00+08:00", now),
+    2 * HOUR
+  );
+
+  check(
+    "無效日期剩餘時間回傳 null",
+    UpcomingWindow.remainingMs("bad-date", now),
+    null
+  );
+})();
+</script>
+</body>
+</html>
