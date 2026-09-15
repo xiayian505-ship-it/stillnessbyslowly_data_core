@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Month Sequence 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.8}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input{width:90px;padding:7px}
+button{padding:8px 14px}
+#result{margin-top:20px;padding:14px;background:#f5f5f5;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<h1>Month Sequence 功能測試</h1>
+<p>只測年月跨界與連續月份，不處理月曆內容。</p>
+
+<div class="controls">
+  <label>年 <input id="year" type="number" value="2026"></label>
+  <label>月 <input id="month" type="number" value="11"></label>
+  <label>數量 <input id="count" type="number" value="5" min="0"></label>
+  <button id="build">產生</button>
+  <button id="prev">-1 月</button>
+  <button id="next">+1 月</button>
+</div>
+
+<div id="result"></div>
+
+<script src="./month_sequence.js"></script>
+<script>
+(function(){
+  var year = document.getElementById("year");
+  var month = document.getElementById("month");
+  var count = document.getElementById("count");
+  var result = document.getElementById("result");
+
+  function show(){
+    try{
+      var list = CalendarMonthSequence.range(
+        Number(year.value),
+        Number(month.value),
+        Number(count.value)
+      );
+      result.textContent = list.map(function(item, index){
+        return (index + 1) + ". " + item.year + "-" + String(item.month).padStart(2, "0");
+      }).join("\n");
+    }catch(error){
+      result.textContent = error.name + ": " + error.message;
+    }
+  }
+
+  function move(delta){
+    var next = CalendarMonthSequence.shift(
+      Number(year.value),
+      Number(month.value),
+      delta
+    );
+    year.value = next.year;
+    month.value = next.month;
+    show();
+  }
+
+  document.getElementById("build").onclick = show;
+  document.getElementById("prev").onclick = function(){ move(-1); };
+  document.getElementById("next").onclick = function(){ move(1); };
+
+  show();
+})();
+</script>
+</body>
+</html>

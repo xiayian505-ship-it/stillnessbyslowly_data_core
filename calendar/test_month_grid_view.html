@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Month Grid View 功能測試</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;background:#f3f3f3;color:#222}
+#demo{max-width:650px}
+.slowly-month-grid{background:#fff;border:1px solid #ccc}
+.slowly-month-grid__title{text-align:center;font-weight:700;font-size:20px;padding:12px}
+.slowly-month-grid__weekdays,.slowly-month-grid__days{display:grid;grid-template-columns:repeat(7,1fr)}
+.slowly-month-grid__weekday{text-align:center;padding:7px;border-top:1px solid #ddd;border-bottom:1px solid #ddd}
+.slowly-month-grid__day{min-height:78px;padding:6px;border-right:1px solid #ddd;border-bottom:1px solid #ddd}
+.slowly-month-grid__day:nth-child(7n){border-right:0}
+.slowly-month-grid__day.is-empty{background:#fafafa}
+.slowly-month-grid__day.is-sunday{color:#b33}
+.slowly-month-grid__day.is-saturday{color:#3670a8}
+.slowly-month-grid__day.is-today{background:#fff3c4}
+.meta{display:block;color:#777;font-size:11px;margin-top:5px}
+</style>
+</head>
+<body>
+<h1>Month Grid View 功能測試</h1>
+<p>這頁不載入 Calendar、Lunar、SolarTerms。測試 renderer 能單獨吃宿主提供的 month data。</p>
+<div id="demo"></div>
+
+<script src="./month_grid_view.js"></script>
+<script>
+(function(){
+  var sample = {
+    year: 2026,
+    month: 9,
+    firstWeekday: 2,
+    days: Array.from({length:30}, function(_, index){
+      var day = index + 1;
+      return {
+        day: day,
+        note: day === 15 ? "宿主自己的資料" : ""
+      };
+    })
+  };
+
+  CalendarMonthGridView.render("#demo", sample, {
+    dayClass: function(item, context){
+      return context.day === 15 ? "is-today" : "";
+    },
+
+    renderDay: function(cell, item, context){
+      var strong = document.createElement("strong");
+      strong.textContent = context.day;
+      cell.appendChild(strong);
+
+      if(item.note){
+        var meta = document.createElement("span");
+        meta.className = "meta";
+        meta.textContent = item.note;
+        cell.appendChild(meta);
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
