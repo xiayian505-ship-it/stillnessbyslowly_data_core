@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Month Count 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.7}
+.test{max-width:760px;padding:12px 14px;margin:10px 0;border:1px solid #d6ddd1}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Month Count 功能測試</h1>
+<div id="results"></div>
+
+<script src="./month_count.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+
+  function check(name, actual, expected){
+    var pass = JSON.stringify(actual) === JSON.stringify(expected);
+    var box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      "｜actual=" + JSON.stringify(actual) +
+      "｜expected=" + JSON.stringify(expected);
+    root.appendChild(box);
+  }
+
+  var records = [
+    { completedAt: "2026-09-03" },
+    { completedAt: "2026-09-20" },
+    { completedAt: "2026-08-31" },
+    { completedAt: "not-a-date" },
+    { completedAt: "" }
+  ];
+
+  var getDate = function(item){
+    return item.completedAt;
+  };
+
+  check(
+    "月份統計並略過無效日期",
+    MonthCount.count(records, getDate),
+    [
+      { month: "2026-09", count: 2 },
+      { month: "2026-08", count: 1 }
+    ]
+  );
+
+  check(
+    "指定月份筆數",
+    MonthCount.get(records, "2026-09", getDate),
+    2
+  );
+
+  check(
+    "不存在月份回傳 0",
+    MonthCount.get(records, "2026-07", getDate),
+    0
+  );
+
+  check(
+    "指定目前月份",
+    MonthCount.current(records, getDate, "2026-09-16"),
+    2
+  );
+
+  check(
+    "Date 直接產生月份 key",
+    MonthCount.keyOf(new Date(2026, 0, 5)),
+    "2026-01"
+  );
+})();
+</script>
+</body>
+</html>
