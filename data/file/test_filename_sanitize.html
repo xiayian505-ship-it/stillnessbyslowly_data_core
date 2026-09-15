@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Filename Sanitize 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.7}
+.test{max-width:760px;padding:12px 14px;margin:10px 0;border:1px solid #d6ddd1}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Filename Sanitize 功能測試</h1>
+<div id="results"></div>
+
+<script src="./filename_sanitize.js"></script>
+<script>
+(function(){
+  var root = document.getElementById("results");
+
+  function check(name, actual, expected){
+    var pass = actual === expected;
+    var box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      "｜actual=" + actual +
+      "｜expected=" + expected;
+    root.appendChild(box);
+  }
+
+  check(
+    "替換不可用字元",
+    FilenameSanitize.sanitize('折彎:第1章/草稿?.png'),
+    "折彎_第1章_草稿_.png"
+  );
+
+  check(
+    "空字串 fallback",
+    FilenameSanitize.sanitize("   ", {
+      fallback: "作品"
+    }),
+    "作品"
+  );
+
+  check(
+    "可自訂 replacement",
+    FilenameSanitize.sanitize("A:B/C", {
+      replacement: "-"
+    }),
+    "A-B-C"
+  );
+
+  check(
+    "移除尾端點與空白",
+    FilenameSanitize.sanitize("report...   "),
+    "report"
+  );
+
+  check(
+    "maxLength",
+    FilenameSanitize.sanitize("ABCDEFGHIJ", {
+      maxLength: 5
+    }),
+    "ABCDE"
+  );
+})();
+</script>
+</body>
+</html>
