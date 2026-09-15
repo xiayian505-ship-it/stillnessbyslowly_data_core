@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Elapsed Format｜使用說明</title>
+<style>
+body{max-width:900px;margin:0 auto;padding:32px 18px 64px;font-family:system-ui,sans-serif;line-height:1.7;color:#202426}pre{overflow:auto;padding:14px;border:1px solid #d7dcdf;background:#f7f8f8}code{font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+<h1>Slowly Elapsed Format v1.0.0</h1>
+<p>通用經過時間格式化核心。輸入毫秒，輸出不限制 24 小時的 <code>HH:MM:SS</code>。</p>
+<h2>載入</h2>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/date/timer/elapsed_format.js"&gt;&lt;/script&gt;</code></pre>
+<h2>基本使用</h2>
+<pre><code>SlowlyElapsedFormat.formatHMS(0);          // 00:00:00
+SlowlyElapsedFormat.formatHMS(3723000);    // 01:02:03
+SlowlyElapsedFormat.formatHMS(90061000);   // 25:01:01</code></pre>
+<h2>邊界</h2>
+<p>負數、Infinity、NaN 或無法轉成有限數字的值會以 0 處理；毫秒的小數部分會向下取整到整秒。</p>
+<h2>刻意不負責</h2>
+<p>不建立計時器、不排程更新、不讀寫 DOM、不處理日期／時區，也不決定何時開始、暫停或停止。</p>
+</body>
+</html>

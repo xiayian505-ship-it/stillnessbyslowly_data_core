@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Elapsed Format Test</title>
+<style>body{font-family:system-ui,sans-serif;padding:24px;line-height:1.7}.pass{color:green}.fail{color:crimson}</style>
+</head>
+<body>
+<h1>Elapsed Format Test</h1>
+<div id="out"></div>
+<script src="./elapsed_format.js"></script>
+<script>
+const out=document.querySelector('#out');
+function test(name,fn){const p=document.createElement('div');try{fn();p.className='pass';p.textContent='PASS · '+name}catch(e){p.className='fail';p.textContent='FAIL · '+name+' · '+e.message}out.appendChild(p)}
+function eq(a,b){if(a!==b)throw new Error(`${a} !== ${b}`)}
+
+test('零',()=>eq(SlowlyElapsedFormat.formatHMS(0),'00:00:00'));
+test('一般時間',()=>eq(SlowlyElapsedFormat.formatHMS(3723000),'01:02:03'));
+test('小時可超過 24',()=>eq(SlowlyElapsedFormat.formatHMS(90061000),'25:01:01'));
+test('不足一秒向下取整',()=>eq(SlowlyElapsedFormat.formatHMS(999),'00:00:00'));
+test('負數歸零',()=>eq(SlowlyElapsedFormat.formatHMS(-5000),'00:00:00'));
+test('無效數值歸零',()=>{
+  eq(SlowlyElapsedFormat.formatHMS(NaN),'00:00:00');
+  eq(SlowlyElapsedFormat.formatHMS(Infinity),'00:00:00');
+  eq(SlowlyElapsedFormat.formatHMS('nope'),'00:00:00');
+});
+test('數字字串可用',()=>eq(SlowlyElapsedFormat.formatHMS('61000'),'00:01:01'));
+</script>
+</body>
+</html>
