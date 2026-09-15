@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grid Swap Search｜使用說明</title>
+</head>
+<body>
+<h1>Slowly Grid Swap Search v1.0.0</h1>
+<p>搜尋二維格子中第一組符合宿主規則的相鄰交換。核心只負責掃描、暫時交換與還原，不知道遊戲規則。</p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/grid/swap_search.js"&gt;&lt;/script&gt;
+
+const move = SlowlyGridSwapSearch.findFirst(grid, {
+  isBlocked(cell) {
+    return cell == null;
+  },
+
+  isImmediate({ aCell, bCell }) {
+    return aCell.isWildcard || bCell.isWildcard;
+  },
+
+  testAfterSwap() {
+    return hasValidPattern(grid);
+  }
+});
+
+// move => [{ r, c }, { r, c }] 或 null</code></pre>
+<p><code>testAfterSwap()</code> 執行時 grid 已暫時交換；callback 結束後核心一定會還原。</p>
+</body>
+</html>

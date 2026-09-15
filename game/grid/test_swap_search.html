@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grid Swap Search Test</title>
+<style>body{font-family:system-ui,sans-serif;padding:24px} .pass{color:green}.fail{color:crimson}</style>
+</head>
+<body>
+<h1>Grid Swap Search Test</h1>
+<div id="out"></div>
+<script src="swap_search.js"></script>
+<script>
+const out = document.querySelector('#out');
+let passed = 0;
+let failed = 0;
+function test(name, fn){
+  try{ fn(); passed++; out.insertAdjacentHTML('beforeend', `<p class="pass">PASS｜${name}</p>`); }
+  catch(error){ failed++; out.insertAdjacentHTML('beforeend', `<p class="fail">FAIL｜${name}｜${error.message}</p>`); }
+}
+function assert(value, message='assert failed'){ if(!value) throw new Error(message); }
+function same(a,b){ return JSON.stringify(a) === JSON.stringify(b); }
+function clone(value){ return JSON.parse(JSON.stringify(value)); }
+function hasThree(grid){
+  for(let r=0;r<grid.length;r++){
+    for(let c=0;c<=grid[r].length-3;c++){
+      if(grid[r][c]===grid[r][c+1] && grid[r][c]===grid[r][c+2]) return true;
+    }
+  }
+  for(let c=0;c<grid[0].length;c++){
+    for(let r=0;r<=grid.length-3;r++){
+      if(grid[r][c]===grid[r+1][c] && grid[r][c]===grid[r+2][c]) return true;
+    }
+  }
+  return false;
+}
+
+test('找到可形成三連的第一步', () => {
+  const grid = [[1,2,1],[3,1,4],[5,6,7]];
+  const before = clone(grid);
+  const move = SlowlyGridSwapSearch.findFirst(grid, { testAfterSwap: () => hasThree(grid) });
+  assert(Array.isArray(move) && move.length === 2, 'move missing');
+  assert(same(grid,before), 'grid was not restored');
+});
+
+test('沒有合法步回傳 null 且 grid 不變', () => {
+  const grid = [[1,2],[3,4]];
+  const before = clone(grid);
+  const move = SlowlyGridSwapSearch.findFirst(grid, { testAfterSwap: () => false });
+  assert(move === null, 'expected null');
+  assert(same(grid,before), 'grid changed');
+});
+
+test('isImmediate 可直接接受 pair', () => {
+  const bomb = { bomb:true };
+  const grid = [[bomb,1],[2,3]];
+  const move = SlowlyGridSwapSearch.findFirst(grid, {
+    isImmediate: ({aCell,bCell}) => Boolean(aCell?.bomb || bCell?.bomb)
+  });
+  assert(move[0].r===0 && move[0].c===0 && move[1].r===0 && move[1].c===1, 'wrong pair');
+});
+
+test('isBlocked 跳過禁止格', () => {
+  const blocked = { blocked:true };
+  const grid = [[blocked,1],[2,3]];
+  const move = SlowlyGridSwapSearch.findFirst(grid, {
+    isBlocked: cell => Boolean(cell?.blocked),
+    testAfterSwap: ({a,b}) => a.r===0 && a.c===0
+  });
+  assert(move === null, 'blocked cell participated');
+});
+
+test('callback 丟錯仍會還原 grid', () => {
+  const grid = [[1,2],[3,4]];
+  const before = clone(grid);
+  let threw = false;
+  try{
+    SlowlyGridSwapSearch.findFirst(grid, { testAfterSwap(){ throw new Error('boom'); } });
+  }catch(error){ threw = error.message === 'boom'; }
+  assert(threw, 'error did not propagate');
+  assert(same(grid,before), 'grid was not restored after error');
+});
+
+test('非矩形 grid 拒絕', () => {
+  let threw = false;
+  try{ SlowlyGridSwapSearch.findFirst([[1,2],[3]], {testAfterSwap:()=>false}); }
+  catch{ threw = true; }
+  assert(threw, 'expected TypeError');
+});
+
+out.insertAdjacentHTML('beforeend', `<hr><p>${passed} passed / ${failed} failed</p>`);
+</script>
+</body>
+</html>
