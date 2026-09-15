@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phase Cycle 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.8}
+.circle{
+  width:150px;height:150px;border-radius:50%;display:grid;place-items:center;
+  margin:28px 0;background:#eef4ef;border:2px solid #4f7a5c;
+  font-weight:bold;transition:transform .6s ease;
+}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+button{padding:9px 14px}
+#state{margin-top:20px;padding:12px;background:#f5f5f5}
+</style>
+</head>
+<body>
+<h1>Phase Cycle 功能測試</h1>
+<p>用縮短版 4-7-8 階段測試變長度 phase。這只是測試宿主；核心不知道什麼是呼吸。</p>
+
+<div class="circle" id="circle">待機</div>
+
+<div class="row">
+  <button id="start">開始</button>
+  <button id="pause">暫停</button>
+  <button id="resume">繼續</button>
+  <button id="next">下一階段</button>
+  <button id="reset">重設</button>
+</div>
+
+<div id="state">idle</div>
+
+<script src="./phase_cycle.js"></script>
+<script>
+(function(){
+  var circle = document.getElementById("circle");
+  var stateEl = document.getElementById("state");
+
+  var cycle = PhaseCycle.create({
+    phases: [
+      { name: "吸氣", duration: 1000, scale: 1.35 },
+      { name: "屏息", duration: 1500, scale: 1.35 },
+      { name: "吐氣", duration: 2000, scale: 1.0 }
+    ],
+    loop: true,
+    onPhase: function(state){
+      circle.textContent = state.phase.name;
+      circle.style.transform = "scale(" + state.phase.scale + ")";
+      render();
+    }
+  });
+
+  function render(){
+    var s = cycle.getState();
+    stateEl.textContent =
+      "state=" + s.state +
+      " ｜ phase=" + s.phase.name +
+      " ｜ index=" + s.index +
+      " ｜ cycle=" + s.cycleCount +
+      " ｜ remaining≈" + Math.round(s.remaining) + "ms";
+  }
+
+  document.getElementById("start").onclick = function(){ cycle.start(); render(); };
+  document.getElementById("pause").onclick = function(){ cycle.pause(); render(); };
+  document.getElementById("resume").onclick = function(){ cycle.resume(); render(); };
+  document.getElementById("next").onclick = function(){ cycle.next(); render(); };
+  document.getElementById("reset").onclick = function(){
+    cycle.reset();
+    circle.textContent = "待機";
+    circle.style.transform = "";
+    render();
+  };
+
+  setInterval(render, 100);
+  render();
+})();
+</script>
+</body>
+</html>
