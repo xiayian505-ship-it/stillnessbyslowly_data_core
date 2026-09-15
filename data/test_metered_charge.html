@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Metered Charge 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+  color:#263029;
+}
+.test{
+  max-width:760px;
+  padding:14px 16px;
+  margin:12px 0;
+  border:1px solid #d6ddd1;
+  border-radius:10px;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+code{background:#f5f5f5;padding:2px 5px}
+</style>
+</head>
+<body>
+<h1>Metered Charge 功能測試</h1>
+<p>
+  不載入 Money、UnitPrice 或任何 UI。
+  只測用量向上取整、最低計費量、受理門檻與費用。
+</p>
+
+<div id="results"></div>
+
+<script src="./metered_charge.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+
+  function check(name, actual, expected){
+    var pass = actual === expected;
+    var box = document.createElement("div");
+
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.innerHTML =
+      "<strong>" + (pass ? "PASS" : "FAIL") + "｜" + name + "</strong><br>" +
+      "actual: <code>" + String(actual) + "</code><br>" +
+      "expected: <code>" + String(expected) + "</code>";
+
+    root.appendChild(box);
+  }
+
+  // 2.3 單位，以每 1 單位 106 計價 → 向上算 3 單位
+  var a = MeteredCharge.calculate({
+    usage: 2.3,
+    rate: 106
+  });
+
+  check("向上取整", a.billableUsage, 3);
+  check("費用", a.cost, 318);
+
+  // 實際只有 0.2，但最低計費 1 單位
+  var b = MeteredCharge.calculate({
+    usage: 0.2,
+    rate: 50,
+    minimumBillable: 1
+  });
+
+  check("最低計費量", b.billableUsage, 1);
+  check("最低計費費用", b.cost, 50);
+
+  // 0.25 為一個計費單位，1.1 → 1.25
+  var c = MeteredCharge.calculate({
+    usage: 1.1,
+    rate: 20,
+    billingUnit: 0.25
+  });
+
+  check("自訂計費單位", c.billableUsage, 1.25);
+  check("計費單位數", c.billingUnits, 5);
+  check("自訂計費單位費用", c.cost, 100);
+
+  // 未達 4 單位不得使用該方案
+  var d = MeteredCharge.calculate({
+    usage: 3.9,
+    rate: 63,
+    eligibleFrom: 4,
+    minimumBillable: 4
+  });
+
+  check("未達受理門檻", d.eligible, false);
+  check("未達門檻不計價", d.cost, null);
+
+  var e = MeteredCharge.calculate({
+    usage: 4,
+    rate: 63,
+    eligibleFrom: 4,
+    minimumBillable: 4
+  });
+
+  check("達門檻可計價", e.eligible, true);
+  check("達門檻費用", e.cost, 252);
+})();
+</script>
+</body>
+</html>
