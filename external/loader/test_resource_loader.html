@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resource Loader 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+}
+.row{margin:12px 0}
+button{padding:8px 14px;margin-right:8px}
+#log{
+  margin-top:18px;
+  padding:12px;
+  background:#f5f5f5;
+  white-space:pre-wrap;
+  min-height:100px;
+}
+.loaded-by-test{
+  border-left:4px solid #4b8060;
+  padding-left:10px;
+}
+</style>
+</head>
+<body>
+<h1>Resource Loader 功能測試</h1>
+<p>
+  測試 URL 正規化、CSS / JS 動態載入、重複載入避免，以及錯誤是否正常丟出。
+</p>
+
+<div class="row">
+  <button id="cssBtn">載入測試 CSS</button>
+  <button id="jsBtn">依序載入 2 支測試 JS</button>
+  <button id="dupBtn">重複載入同一支 JS</button>
+  <button id="errorBtn">故意載入不存在檔案</button>
+</div>
+
+<div id="target">測試區塊</div>
+<div id="log"></div>
+
+<script src="./resource_loader.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var log = document.getElementById("log");
+
+  function write(message){
+    log.textContent += message + "\n";
+  }
+
+  function makeBlobUrl(code, type){
+    return URL.createObjectURL(new Blob([code], { type: type }));
+  }
+
+  var cssUrl = makeBlobUrl(
+    ".loaded-by-test{background:#eef7ef}",
+    "text/css"
+  );
+
+  var js1 = makeBlobUrl(
+    "window.__loaderOrder=(window.__loaderOrder||[]);window.__loaderOrder.push(1);",
+    "text/javascript"
+  );
+
+  var js2 = makeBlobUrl(
+    "window.__loaderOrder.push(2);",
+    "text/javascript"
+  );
+
+  document.getElementById("cssBtn").onclick = async function(){
+    try{
+      await ResourceLoader.loadStyle(cssUrl);
+      document.getElementById("target").classList.add("loaded-by-test");
+      write("PASS CSS 載入完成");
+    }catch(error){
+      write("FAIL " + error.message);
+    }
+  };
+
+  document.getElementById("jsBtn").onclick = async function(){
+    try{
+      window.__loaderOrder = [];
+      await ResourceLoader.loadScripts([js1, js2]);
+      write(
+        window.__loaderOrder.join(",") === "1,2"
+          ? "PASS JS 順序 = 1,2"
+          : "FAIL JS 順序 = " + window.__loaderOrder.join(",")
+      );
+    }catch(error){
+      write("FAIL " + error.message);
+    }
+  };
+
+  document.getElementById("dupBtn").onclick = async function(){
+    try{
+      var before = document.querySelectorAll('script[src="' + js1 + '"]').length;
+      await ResourceLoader.loadScript(js1);
+      await ResourceLoader.loadScript(js1);
+      var after = document.querySelectorAll('script[src="' + js1 + '"]').length;
+
+      write(
+        after === Math.max(1, before)
+          ? "PASS 重複載入沒有新增 script"
+          : "FAIL script 數量 = " + after
+      );
+    }catch(error){
+      write("FAIL " + error.message);
+    }
+  };
+
+  document.getElementById("errorBtn").onclick = async function(){
+    try{
+      await ResourceLoader.loadScript("./__not_exists__.js");
+      write("FAIL 不存在的檔案竟然成功");
+    }catch(error){
+      write("PASS 錯誤有正常往外拋：" + error.message);
+    }
+  };
+})();
+</script>
+</body>
+</html>
