@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Harmonic Chime 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.8}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+button{padding:10px 16px}
+</style>
+</head>
+<body>
+<h1>Harmonic Chime 功能測試</h1>
+<p>測試一次性多頻率提示音。宿主決定頻率、音量、錯開時間與衰減。</p>
+<div class="row">
+  <button id="defaultBtn">預設和聲</button>
+  <button id="zenBtn">432Hz 泛音</button>
+  <button id="togetherBtn">同時響起</button>
+</div>
+
+<script src="./harmonic_chime.js"></script>
+<script>
+(function(){
+  var ctx = null;
+
+  function getContext(){
+    if (!ctx) {
+      var AudioContext = window.AudioContext || window.webkitAudioContext;
+      ctx = new AudioContext();
+    }
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+
+  document.getElementById("defaultBtn").addEventListener("click", function(){
+    SlowlyHarmonicChime.play(getContext());
+  });
+
+  document.getElementById("zenBtn").addEventListener("click", function(){
+    SlowlyHarmonicChime.play(getContext(), {
+      frequencies: [432, 864, 1296],
+      gains: [0.18, 0.08, 0.03],
+      stagger: 0,
+      decay: 2.8
+    });
+  });
+
+  document.getElementById("togetherBtn").addEventListener("click", function(){
+    SlowlyHarmonicChime.play(getContext(), {
+      frequencies: [440, 660, 880],
+      stagger: 0,
+      decay: 1.2
+    });
+  });
+})();
+</script>
+</body>
+</html>
