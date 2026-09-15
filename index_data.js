@@ -373,6 +373,26 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "storage",
+        "title": "Storage / 儲存",
+        "items": [
+          {
+            "title": "Local Storage Scan",
+            "desc": "唯讀 localStorage／Storage-like 掃描核心，列舉 key、讀取原始值、嘗試 JSON 解析、辨識資料型態與陣列筆數，並可選擇依分隔符拆分 namespace；不修改資料、不綁定 Viewer 或特定 Storage schema。",
+            "links": [
+              {
+                "label": "local_storage_scan.js",
+                "href": "https://lib.stillnessbyslowly.com/data/storage/local_storage_scan.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/storage/test_local_storage_scan.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "realtime",
         "title": "Realtime / 即時同步",
         "items": [
@@ -437,6 +457,20 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/data/test_tax.html"
+              }
+            ]
+          },
+          {
+            "title": "Unit Price",
+            "desc": "通用包裝單價換算核心，依價格、折扣、運費、規格、數量、輸入單位倍率與比較基準換算可比較單價；不綁定商品種類、幣別、排序或 UI。",
+            "links": [
+              {
+                "label": "unit_price.js",
+                "href": "https://lib.stillnessbyslowly.com/data/unit_price.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_unit_price.html"
               }
             ]
           }
@@ -773,6 +807,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/state/form_draft_usage.html"
               }
             ]
+          },
+          {
+            "title": "Cooldown Gate",
+            "desc": "通用冷卻／時間鎖狀態核心，提供剩餘時間、鎖定判斷、觸發、嘗試觸發與重設，並可注入 Storage-like 物件做跨頁持久化；不綁定 UI、reload 或特定用途。",
+            "links": [
+              {
+                "label": "cooldown_gate.js",
+                "href": "https://lib.stillnessbyslowly.com/state/cooldown_gate.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_cooldown_gate.html"
+              }
+            ]
           }
         ]
       },
@@ -973,6 +1021,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/date/test_date_overlap.html"
               }
             ]
+          },
+          {
+            "title": "Next Occurrence",
+            "desc": "通用下一次發生日查找核心，支援固定月日與宿主提供 resolver(year) 的年度規則，可自動跳過不存在的日期；不綁定農曆、Calendar、顯示文案或 UI。",
+            "links": [
+              {
+                "label": "next_occurrence.js",
+                "href": "https://lib.stillnessbyslowly.com/date/next_occurrence.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/test_next_occurrence.html"
+              }
+            ]
           }
         ]
       },
@@ -1051,6 +1113,20 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/date/timer/frame_loop_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Phase Cycle",
+            "desc": "通用不同時長階段循環核心，管理階段順序、開始、暫停、繼續、停止、下一階段、重設與完成通知；不綁定呼吸法、UI、音效，也不依賴其他 Timer 模組。",
+            "links": [
+              {
+                "label": "phase_cycle.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/phase_cycle.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_phase_cycle.html"
               }
             ]
           }
@@ -1181,6 +1257,34 @@ window.SlowlyLibraryIndex = [
           {
             "label": "顯示測試",
             "href": "https://lib.stillnessbyslowly.com/calendar/calendar_view_test.html"
+          }
+        ]
+      },
+      {
+        "title": "Month Sequence",
+        "desc": "通用年月位移與連續月份序列核心，提供月份正規化、前後位移與連續 N 個月份產生，並自動處理跨年；不產生日期內容、不處理曆法資料、不碰 DOM。",
+        "links": [
+          {
+            "label": "month_sequence.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/month_sequence.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/test_month_sequence.html"
+          }
+        ]
+      },
+      {
+        "title": "Month Grid View",
+        "desc": "通用單月七欄格狀 DOM renderer，使用宿主提供的 month data 建立月份格子，支援自訂星期、標題、日期內容與 class；不計算農曆、節氣、節日，也不要求 Calendar 模組存在。",
+        "links": [
+          {
+            "label": "month_grid_view.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/month_grid_view.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/test_month_grid_view.html"
           }
         ]
       },
@@ -2273,6 +2377,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/audio/source/oscillator_usage.html"
               }
             ]
+          },
+          {
+            "title": "Noise",
+            "desc": "通用 Web Audio 噪音音源核心，支援 white、pink、brown noise，提供 AudioBuffer 與 BufferSource 建立；不管理 AudioContext、不管理音量、不自動 connect 或 start。",
+            "links": [
+              {
+                "label": "noise.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/noise.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/test_noise.html"
+              }
+            ]
           }
         ]
       },
@@ -2369,6 +2487,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/audio/tone/tone_usage.html"
               }
             ]
+          },
+          {
+            "title": "Harmonic Chime",
+            "desc": "通用一次性多頻率和聲提示音核心，可設定頻率、各聲部增益、波形、錯開時間、attack 與 decay；不管理 AudioContext、不綁定特定頻率、情境或 UI。",
+            "links": [
+              {
+                "label": "harmonic_chime.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/harmonic_chime.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/test_harmonic_chime.html"
+              }
+            ]
           }
         ]
       }
@@ -2399,6 +2531,20 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/game/card/deck_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Pair Matching",
+            "desc": "通用配對回合引擎，管理兩次選取、回合鎖定、配對／不配對、完成與重設狀態，並由宿主提供 matcher 與 callback；不綁定 DOM、卡面資料、分數、歷史或提示。",
+            "links": [
+              {
+                "label": "pair_matching.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/pair_matching.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/test_pair_matching.html"
               }
             ]
           }
@@ -2575,6 +2721,28 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "html2canvas.txt",
                 "href": "https://lib.stillnessbyslowly.com/external/image/html2canvas.txt"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "loader",
+        "title": "Loader / 載入",
+        "subpage": true,
+        "desc": "瀏覽器外部 CSS／JS 資源載入相關工具。",
+        "items": [
+          {
+            "title": "Resource Loader",
+            "desc": "通用瀏覽器 CSS／JS 動態載入核心，提供 URL 正規化、避免重複載入、批次載入與依序載入 JS，載入失敗會正常往外拋錯誤；不讀模組索引、不自動呼叫 init／render、不綁定 UI。",
+            "links": [
+              {
+                "label": "resource_loader.js",
+                "href": "https://lib.stillnessbyslowly.com/external/loader/resource_loader.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/external/loader/test_resource_loader.html"
               }
             ]
           }
