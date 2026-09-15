@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noise Overlay 功能測試</title>
+<link rel="stylesheet" href="./noise_overlay.css">
+<style>
+html,body{min-height:100%;margin:0}
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;background:linear-gradient(135deg,#182848,#4b2d59);color:white}
+.slowly-noise-overlay{z-index:1;--sl-noise-opacity:.12}
+.content{position:relative;z-index:2;min-height:100vh;display:grid;place-items:center;text-align:center;padding:32px}
+.card{padding:30px;border-radius:18px;background:rgba(255,255,255,.08)}
+</style>
+</head>
+<body>
+<div class="slowly-noise-overlay" aria-hidden="true"></div>
+<div class="content"><div class="card"><h1>Noise Overlay</h1><p>背景上應覆蓋一層可見但不影響點擊的細顆粒雜訊。</p></div></div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grid Overlay 功能測試</title>
+<link rel="stylesheet" href="./grid_overlay.css">
+<style>
+html,body{min-height:100%;margin:0}
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;background:radial-gradient(circle at 50% 40%,#18243d,#070a12 70%);color:#fff}
+.slowly-grid-overlay{z-index:0;--sl-grid-size:48px}
+.content{position:relative;z-index:1;min-height:100vh;display:grid;place-items:center;text-align:center;padding:32px}
+</style>
+</head>
+<body>
+<div class="slowly-grid-overlay" aria-hidden="true"></div>
+<div class="content"><div><h1>Grid Overlay</h1><p>畫面中央應有 48px 網格，往四周逐漸淡出。</p></div></div>
+</body>
+</html>
