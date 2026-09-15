@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>SlowlyRandom Usage</title>
+</head>
+<body>
+  <script src="./random.js"></script>
+  <script>
+    const day = SlowlyRandom.int(1, 365);
+    const x = SlowlyRandom.float(-40, 400);
+    const reveal = SlowlyRandom.chance(0.45);
+
+    console.log({ day, x, reveal });
+  </script>
+</body>
+</html>
