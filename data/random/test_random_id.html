@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Random ID 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.7}
+.test{max-width:760px;padding:12px 14px;margin:10px 0;border:1px solid #d6ddd1}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Random ID 功能測試</h1>
+<div id="results"></div>
+
+<script src="./random_id.js"></script>
+<script>
+(function(){
+  var root = document.getElementById("results");
+
+  function check(name, pass, detail){
+    var box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      (detail ? "｜" + detail : "");
+    root.appendChild(box);
+  }
+
+  var fakeCrypto = {
+    randomUUID: function(){
+      return "12345678-1234-1234-1234-123456789abc";
+    }
+  };
+
+  check(
+    "優先使用 randomUUID",
+    RandomId.create({
+      prefix: "work-",
+      crypto: fakeCrypto
+    }) === "work-12345678-1234-1234-1234-123456789abc"
+  );
+
+  var fallback = RandomId.create({
+    prefix: "x-",
+    crypto: {},
+    now: function(){ return 1234567890; },
+    random: function(){ return 0.5; }
+  });
+
+  check(
+    "無 randomUUID 時有 fallback",
+    fallback.startsWith("x-"),
+    fallback
+  );
+
+  var a = RandomId.create();
+  var b = RandomId.create();
+
+  check(
+    "正常情況產生不同值",
+    a !== b,
+    a + " / " + b
+  );
+})();
+</script>
+</body>
+</html>
