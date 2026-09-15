@@ -777,6 +777,30 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "queue",
+        "title": "Queue / 佇列",
+        "items": [
+          {
+            "title": "Serial Queue",
+            "desc": "通用非同步序列佇列核心，將工作依加入順序逐一執行，前一件完成後才開始下一件；單一工作失敗只會 reject 該工作，不會中斷後續佇列，並提供 idle() 等待清空與目前 running／pending／size 狀態。不綁定儲存、Render、Network、Retry、Timeout、錯誤提示或業務規則。",
+            "links": [
+              {
+                "label": "serial_queue.js",
+                "href": "https://lib.stillnessbyslowly.com/state/queue/serial_queue.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/queue/test_serial_queue.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/queue/serial_queue_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "preference",
         "title": "Preference / 偏好",
         "items": [
