@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WiFi Payload 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.7}
+.test{max-width:760px;padding:12px 14px;margin:10px 0;border:1px solid #d6ddd1;border-radius:10px}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+code{background:#f5f5f5;padding:2px 5px}
+</style>
+</head>
+<body>
+<h1>WiFi Payload 功能測試</h1>
+<div id="results"></div>
+<script src="./wifi_payload.js"></script>
+<script>
+(function(){
+  const root = document.getElementById("results");
+
+  function check(name, actual, expected){
+    const pass = actual === expected;
+    const box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.innerHTML =
+      "<strong>" + (pass ? "PASS" : "FAIL") + "｜" + name + "</strong><br>" +
+      "actual: <code>" + String(actual) + "</code><br>" +
+      "expected: <code>" + String(expected) + "</code>";
+    root.appendChild(box);
+  }
+
+  check(
+    "一般 WPA",
+    WiFiPayload.build({
+      ssid: "HotelWiFi",
+      password: "12345678",
+      type: "WPA"
+    }),
+    "WIFI:T:WPA;S:HotelWiFi;P:12345678;;"
+  );
+
+  check(
+    "開放網路",
+    WiFiPayload.build({
+      ssid: "Lobby",
+      password: "",
+      type: "nopass"
+    }),
+    "WIFI:T:nopass;S:Lobby;P:;;"
+  );
+
+  check(
+    "保留字元會跳脫",
+    WiFiPayload.build({
+      ssid: "A;B",
+      password: 'p:a,s"s\\x',
+      type: "WPA"
+    }),
+    'WIFI:T:WPA;S:A\\;B;P:p\\:a\\,s\\"s\\\\x;;'
+  );
+
+  check(
+    "hidden",
+    WiFiPayload.build({
+      ssid: "Hidden",
+      password: "pw",
+      hidden: true
+    }),
+    "WIFI:T:WPA;S:Hidden;P:pw;H:true;;"
+  );
+})();
+</script>
+</body>
+</html>

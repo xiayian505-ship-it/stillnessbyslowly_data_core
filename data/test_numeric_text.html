@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Numeric Text 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.7}
+.test{max-width:760px;padding:12px 14px;margin:10px 0;border:1px solid #d6ddd1}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Numeric Text 功能測試</h1>
+<div id="results"></div>
+<script src="./numeric_text.js"></script>
+<script>
+(function(){
+  const root = document.getElementById("results");
+
+  function check(name, actual, expected){
+    const pass = JSON.stringify(actual) === JSON.stringify(expected);
+    const box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      "｜actual=" + JSON.stringify(actual) +
+      "｜expected=" + JSON.stringify(expected);
+    root.appendChild(box);
+  }
+
+  check(
+    "擷取混合文字數字",
+    NumericText.extract("A 100、B -20.5、C +3"),
+    [100, -20.5, 3]
+  );
+
+  check(
+    "支援千分位",
+    NumericText.extract("1,200 + 35.5"),
+    [1200, 35.5]
+  );
+
+  check(
+    "加總",
+    NumericText.sum("100 -20.5 +3"),
+    82.5
+  );
+
+  const summary = NumericText.summarize("10 20 30");
+  check("摘要 count", summary.count, 3);
+  check("摘要 total", summary.total, 60);
+})();
+</script>
+</body>
+</html>
