@@ -1259,6 +1259,28 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/ui/toast_usage.html"
               }
             ]
+          },
+          {
+            "title": "Confirm",
+            "desc": "通用確認視窗，提供 Promise<boolean> 式確認流程，支援自訂標題、訊息、確認／取消文字、Escape、點擊遮罩、焦點移入與還原，以及連續呼叫排隊；只負責詢問與回傳確認結果，不綁定刪除、覆蓋、送出、導航或其他宿主業務規則。",
+            "links": [
+              {
+                "label": "confirm.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm.js"
+              },
+              {
+                "label": "confirm.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/confirm/test_confirm.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm_usage.html"
+              }
+            ]
           }
         ]
       },
