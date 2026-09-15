@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snapshot Mirror 功能測試</title>
+<style>
+body{
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  margin:32px;
+  line-height:1.7;
+}
+.test{
+  max-width:760px;
+  padding:12px 14px;
+  margin:10px 0;
+  border:1px solid #d6ddd1;
+}
+.pass{background:#edf8ef}
+.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Snapshot Mirror 功能測試</h1>
+<div id="results"></div>
+
+<script src="./snapshot_mirror.js"></script>
+<script>
+(async function(){
+  "use strict";
+
+  var root = document.getElementById("results");
+
+  function check(name, pass, detail){
+    var box = document.createElement("div");
+    box.className =
+      "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      (detail ? "｜" + detail : "");
+    root.appendChild(box);
+  }
+
+  function fakeStore(name, initial){
+    var value = initial;
+
+    return {
+      name: name,
+
+      async read(){
+        return value;
+      },
+
+      async write(next){
+        value = next;
+      },
+
+      peek(){
+        return value;
+      }
+    };
+  }
+
+  var older = {
+    updatedAt: "2026-08-01T00:00:00Z",
+    data: [1]
+  };
+
+  var newer = {
+    updatedAt: "2026-08-02T00:00:00Z",
+    data: [1, 2]
+  };
+
+  var a = fakeStore("local-primary", older);
+  var b = fakeStore("indexed", newer);
+  var c = fakeStore("backup", null);
+
+  var mirror = SnapshotMirror.create({
+    stores: [a, b, c]
+  });
+
+  var result = await mirror.readLatest({
+    repair: true
+  });
+
+  check(
+    "選到最新 snapshot",
+    result.found &&
+    result.latest.snapshot === newer,
+    result.latest && result.latest.name
+  );
+
+  check(
+    "repair 回寫舊來源",
+    a.peek() === newer,
+    JSON.stringify(a.peek())
+  );
+
+  check(
+    "repair 補齊空來源",
+    c.peek() === newer,
+    JSON.stringify(c.peek())
+  );
+
+  var sameTimeSmall = {
+    updatedAt: "2026-08-03T00:00:00Z",
+    data: [1]
+  };
+
+  var sameTimeLarge = {
+    updatedAt: "2026-08-03T00:00:00Z",
+    data: [1, 2, 3]
+  };
+
+  var tieMirror = SnapshotMirror.create({
+    stores: [
+      fakeStore("small", sameTimeSmall),
+      fakeStore("large", sameTimeLarge)
+    ]
+  });
+
+  var tieResult =
+    await tieMirror.readLatest();
+
+  check(
+    "同時間預設選較完整陣列",
+    tieResult.latest.snapshot ===
+      sameTimeLarge,
+    tieResult.latest.name
+  );
+
+  var broken = {
+    name: "broken",
+    async read(){
+      throw new Error("read failed");
+    },
+    async write(){
+      throw new Error("write failed");
+    }
+  };
+
+  var healthy =
+    fakeStore("healthy", newer);
+
+  var partial = SnapshotMirror.create({
+    stores: [broken, healthy]
+  });
+
+  var partialResult =
+    await partial.readLatest();
+
+  check(
+    "單一來源讀取失敗不阻斷其他來源",
+    partialResult.found &&
+    partialResult.latest.name === "healthy",
+    partialResult.latest &&
+      partialResult.latest.name
+  );
+
+})();
+</script>
+</body>
+</html>
