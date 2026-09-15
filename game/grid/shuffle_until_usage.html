@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grid Shuffle Until｜使用說明</title>
+</head>
+<body>
+<h1>Slowly Grid Shuffle Until v1.0.0</h1>
+<p>把矩形二維 grid 反覆重新排列，直到宿主提供的驗收條件成立，或達到最大嘗試次數。</p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/grid/shuffle_until.js"&gt;&lt;/script&gt;
+
+const result = SlowlyGridShuffleUntil.run(grid, {
+  maxAttempts: 5,
+
+  shuffle(values) {
+    return myShuffle(values);
+  },
+
+  accept(currentGrid) {
+    return !hasImmediatePattern(currentGrid);
+  }
+});
+
+// result.accepted
+// result.attempts</code></pre>
+<p>核心不提供 RNG，也不知道什麼叫 Match 或合法局面；洗牌方法與驗收規則都由宿主注入。</p>
+</body>
+</html>

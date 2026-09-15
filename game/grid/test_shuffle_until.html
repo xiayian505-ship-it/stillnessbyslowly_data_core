@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grid Shuffle Until Test</title>
+</head>
+<body>
+<pre id="out"></pre>
+<script src="./shuffle_until.js"></script>
+<script>
+(() => {
+  const lines = [];
+  const ok = (name, pass) => lines.push(`${pass ? "PASS" : "FAIL"}  ${name}`);
+
+  {
+    const grid = [[1,2],[3,4]];
+    const result = SlowlyGridShuffleUntil.run(grid, {
+      shuffle(values) { return values.reverse(); },
+      accept() { return true; }
+    });
+    ok("first attempt accepted", result.accepted && result.attempts === 1);
+    ok("row-major apply", JSON.stringify(grid) === JSON.stringify([[4,3],[2,1]]));
+  }
+
+  {
+    const grid = [[1,2],[3,4]];
+    let calls = 0;
+    const result = SlowlyGridShuffleUntil.run(grid, {
+      maxAttempts: 3,
+      shuffle(values) {
+        calls += 1;
+        return values.slice(1).concat(values[0]);
+      },
+      accept() { return false; }
+    });
+    ok("max attempts respected", !result.accepted && result.attempts === 3 && calls === 3);
+  }
+
+  {
+    const a = {id:"a"};
+    const b = {id:"b"};
+    const grid = [[a,b]];
+    SlowlyGridShuffleUntil.run(grid, {
+      shuffle(values) { return values.reverse(); },
+      accept() { return true; }
+    });
+    ok("keeps cell references", grid[0][0] === b && grid[0][1] === a);
+  }
+
+  {
+    let threw = false;
+    try {
+      SlowlyGridShuffleUntil.run([[1],[2,3]], {
+        shuffle(values) { return values; },
+        accept() { return true; }
+      });
+    } catch (error) {
+      threw = error instanceof TypeError;
+    }
+    ok("reject ragged grid", threw);
+  }
+
+  {
+    let threw = false;
+    try {
+      SlowlyGridShuffleUntil.run([[1,2]], {
+        shuffle() { return [1]; },
+        accept() { return true; }
+      });
+    } catch (error) {
+      threw = error instanceof RangeError;
+    }
+    ok("reject changed item count", threw);
+  }
+
+  document.querySelector("#out").textContent = lines.join("\n");
+})();
+</script>
+</body>
+</html>
