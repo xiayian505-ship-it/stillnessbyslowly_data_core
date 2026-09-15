@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tilt Spotlight 功能測試</title>
+<link rel="stylesheet" href="./tilt_spotlight.css">
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;background:#0b1020;color:#eef5ff;line-height:1.8}
+.card{width:min(360px,80vw);min-height:180px;margin:40px auto;padding:28px;border:1px solid rgba(255,255,255,.18);border-radius:20px;background:#161d32;display:grid;place-items:center;text-align:center}
+.note{max-width:620px;margin:auto;color:#aebbd1}
+</style>
+</head>
+<body>
+<h1>Tilt Spotlight 功能測試</h1>
+<p class="note">桌機細指標裝置：在卡片上移動滑鼠，卡片會依游標位置 3D 傾斜，聚光點也會跟著移動。離開卡片後會還原。</p>
+<div class="card" id="demo" data-slowly-tilt>
+  <strong>Tilt + Spotlight</strong>
+</div>
+<script src="./tilt_spotlight.js"></script>
+<script>
+SlowlyTiltSpotlight.attach('#demo', { angle: 12, lift: 8, perspective: 850 });
+</script>
+</body>
+</html>
