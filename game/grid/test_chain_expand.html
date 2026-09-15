@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grid Chain Expand Test</title>
+<style>body{font-family:system-ui,sans-serif;padding:24px;line-height:1.7}.pass{color:green}.fail{color:crimson}</style>
+</head>
+<body>
+<h1>Grid Chain Expand Test</h1>
+<div id="out"></div>
+<script src="./chain_expand.js"></script>
+<script>
+const out=document.querySelector('#out');
+function test(name,fn){const p=document.createElement('div');try{fn();p.className='pass';p.textContent='PASS · '+name}catch(e){p.className='fail';p.textContent='FAIL · '+name+' · '+e.message}out.appendChild(p)}
+function eq(a,b,msg='not equal'){if(JSON.stringify(a)!==JSON.stringify(b))throw new Error(msg+'\n'+JSON.stringify(a)+'\n'+JSON.stringify(b))}
+const grid=Array.from({length:4},()=>Array.from({length:4},()=>({active:true})));
+
+test('連鎖向右展開並去重',()=>{
+  const r=SlowlyGridChainExpand.expand(grid,[{r:1,c:0}],{
+    expandAt({r,c}){return c<3?[{r,c:c+1},{r,c:c+1}]:[]}
+  });
+  eq(r.positions,[{r:1,c:0},{r:1,c:1},{r:1,c:2},{r:1,c:3}]);
+  if(!r.exhausted)throw new Error('should exhaust');
+});
+
+test('忽略越界座標',()=>{
+  const r=SlowlyGridChainExpand.expand(grid,[{r:0,c:0}],{
+    expandAt(){return [{r:-1,c:0},{r:0,c:-1},{r:99,c:99}]}
+  });
+  eq(r.positions,[{r:0,c:0}]);
+});
+
+test('maxWaves 正確停止',()=>{
+  const r=SlowlyGridChainExpand.expand(grid,[{r:0,c:0}],{
+    maxWaves:2,
+    expandAt({r,c}){return c<3?[{r,c:c+1}]:[]}
+  });
+  eq(r.positions,[{r:0,c:0},{r:0,c:1},{r:0,c:2}]);
+  if(r.exhausted)throw new Error('should stop by maxWaves');
+});
+
+test('不修改 grid',()=>{
+  const before=JSON.stringify(grid);
+  SlowlyGridChainExpand.expand(grid,[{r:1,c:1}],{expandAt(){return [{r:1,c:2}]}});
+  if(JSON.stringify(grid)!==before)throw new Error('grid mutated');
+});
+
+test('非矩形 grid 拒絕',()=>{
+  let threw=false;
+  try{SlowlyGridChainExpand.expand([[1],[2,3]],[],{expandAt(){return []}})}catch{threw=true}
+  if(!threw)throw new Error('expected throw');
+});
+</script>
+</body>
+</html>

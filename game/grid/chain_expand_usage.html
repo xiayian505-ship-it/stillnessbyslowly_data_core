@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grid Chain Expand｜使用說明</title>
+<style>
+body{max-width:900px;margin:0 auto;padding:32px 18px 64px;font-family:system-ui,sans-serif;line-height:1.7;color:#202426}pre{overflow:auto;padding:14px;border:1px solid #d7dcdf;background:#f7f8f8}code{font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+<h1>Slowly Grid Chain Expand v1.0.0</h1>
+<p>通用二維格子連鎖擴散核心。宿主提供起始座標與 <code>expandAt()</code>，元件只負責去重、分波擴散與停止條件。</p>
+<h2>載入</h2>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/grid/chain_expand.js"&gt;&lt;/script&gt;</code></pre>
+<h2>基本使用</h2>
+<pre><code>const result = SlowlyGridChainExpand.expand(grid, [
+  { r: 2, c: 2 }
+], {
+  maxWaves: 12,
+
+  expandAt({ r, c, cell, rows, cols }) {
+    if (!cell?.active) return [];
+
+    return [
+      { r: r - 1, c },
+      { r: r + 1, c },
+      { r, c: c - 1 },
+      { r, c: c + 1 }
+    ];
+  }
+});
+
+console.log(result.positions);
+console.log(result.waves);
+console.log(result.exhausted);</code></pre>
+<h2>邊界</h2>
+<p><code>expandAt()</code> 可以回傳超出 grid 的座標；元件會自動忽略。重複座標只保留第一次加入。</p>
+<h2>刻意不負責</h2>
+<p>不決定哪種格子會擴散、不修改 grid、不管理 DOM、動畫、分數、音效或任何遊戲規則。</p>
+</body>
+</html>
