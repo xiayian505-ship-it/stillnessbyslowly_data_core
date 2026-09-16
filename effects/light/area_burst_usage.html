@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>Slowly Area Burst Usage</title>
+<link rel="stylesheet" href="./area_burst.css">
+<style>
+  body { font-family: sans-serif; padding: 24px; }
+  #stage { position: relative; width: 360px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+  .cell { aspect-ratio: 1; background: #ddd; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<button id="block">Block</button>
+<button id="radial">Radial</button>
+<script src="./area_burst.js"></script>
+<script>
+const stage = document.querySelector('#stage');
+for (let i = 0; i < 36; i += 1) {
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  stage.appendChild(cell);
+}
+const burst = SlowlyAreaBurst.create(stage);
+const center = [stage.children[14], stage.children[15], stage.children[20], stage.children[21]];
+document.querySelector('#block').addEventListener('click', () => burst.play({ targets: center, type: 'block' }));
+document.querySelector('#radial').addEventListener('click', () => burst.play({ targets: center, type: 'radial' }));
+</script>
+</body>
+</html>

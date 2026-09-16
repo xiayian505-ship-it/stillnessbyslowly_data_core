@@ -1,0 +1,54 @@
+/* Slowly Area Burst v1.0.0
+   One-shot area flash / burst.
+   Host owns layout, semantic meaning, sequencing, and colors.
+*/
+
+.sbs-area-burst-layer {
+  position: absolute;
+  pointer-events: none;
+  z-index: var(--sbs-area-burst-z, 6);
+}
+
+.sbs-area-burst-layer.is-block {
+  border: 1px solid var(--sbs-area-burst-border, rgba(255, 255, 255, .76));
+  background: var(--sbs-area-burst-fill, rgba(255, 255, 255, .78));
+  box-shadow:
+    0 0 20px var(--sbs-area-burst-glow, rgba(255, 255, 255, .95)),
+    inset 0 0 24px var(--sbs-area-burst-inner-glow, rgba(255, 255, 255, .8));
+  mix-blend-mode: var(--sbs-area-burst-blend, screen);
+  animation: sbsAreaBurstBlock var(--sbs-area-burst-duration, 220ms) ease-out both;
+}
+
+.sbs-area-burst-layer.is-radial {
+  border: 0;
+  background: radial-gradient(
+    circle at center,
+    var(--sbs-area-burst-radial-core, rgba(255, 255, 255, .99)) 0 18%,
+    var(--sbs-area-burst-radial-mid, rgba(255, 231, 193, .94)) 32%,
+    var(--sbs-area-burst-radial-soft, rgba(255, 255, 255, .62)) 58%,
+    rgba(255, 255, 255, 0) 82%
+  );
+  box-shadow: 0 0 34px var(--sbs-area-burst-glow, rgba(255, 255, 255, .98));
+  mix-blend-mode: var(--sbs-area-burst-blend, screen);
+  animation: sbsAreaBurstRadial var(--sbs-area-burst-duration, 220ms) ease-out both;
+}
+
+@keyframes sbsAreaBurstBlock {
+  0% { opacity: 0; filter: brightness(1); }
+  24% { opacity: 1; filter: brightness(1.45); }
+  68% { opacity: .96; filter: brightness(1.25); }
+  100% { opacity: .12; filter: brightness(1.05); }
+}
+
+@keyframes sbsAreaBurstRadial {
+  0% { opacity: 0; transform: scale(.62); filter: brightness(1); }
+  28% { opacity: 1; transform: scale(.94); filter: brightness(1.55); }
+  68% { opacity: .98; transform: scale(1.04); filter: brightness(1.3); }
+  100% { opacity: .08; transform: scale(1.12); filter: brightness(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sbs-area-burst-layer {
+    animation-duration: 120ms !important;
+  }
+}

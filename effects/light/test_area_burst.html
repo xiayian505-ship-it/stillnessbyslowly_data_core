@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Area Burst Test</title>
+<link rel="stylesheet" href="./area_burst.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; font-family: sans-serif; background: #f5f1ea; color: #262626; }
+  #stage { position: relative; width: min(92vw, 480px); display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; padding: 4px; background: #2f2f2f; }
+  .cell { aspect-ratio: 1; background: #c5a6a1; }
+  .controls { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<h1>Area Burst</h1>
+<div id="stage"></div>
+<div class="controls">
+  <button data-type="block">Block</button>
+  <button data-type="radial">Radial</button>
+  <button data-type="row">整排</button>
+</div>
+<script src="./area_burst.js"></script>
+<script>
+const stage = document.querySelector('#stage');
+for (let i = 0; i < 64; i += 1) {
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  stage.appendChild(cell);
+}
+const cells = [...stage.children];
+const burst = SlowlyAreaBurst.create(stage);
+const center3x3 = cells.filter((_, i) => {
+  const row = Math.floor(i / 8);
+  const col = i % 8;
+  return row >= 2 && row <= 4 && col >= 2 && col <= 4;
+});
+document.querySelectorAll('[data-type]').forEach(button => {
+  button.addEventListener('click', () => {
+    const type = button.dataset.type;
+    if (type === 'row') return burst.play({ targets: cells.slice(24, 32), type: 'block' });
+    return burst.play({ targets: center3x3, type });
+  });
+});
+</script>
+</body>
+</html>
