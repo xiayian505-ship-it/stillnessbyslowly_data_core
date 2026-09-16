@@ -2588,7 +2588,7 @@ window.SlowlyLibraryIndex = [
           },
           {
             "title": "Arrow Icons",
-            "desc": "Canvas 方向箭頭家族，第一版提供 horizontal（↔）與 vertical（↕）雙向箭頭；宿主可覆寫尺寸、顏色、粗細、箭頭寬度比例、箭頭長度與內距。",
+            "desc": "Canvas 方向箭頭家族，包含八方向單箭頭、水平／垂直雙向箭頭、上下堆疊雙箭頭、斜向重疊交錯箭頭、回彎／轉向與旋轉箭頭；宿主可覆寫尺寸、顏色、粗細、箭頭比例與內距。",
             "links": [
               {
                 "label": "arrows.js",
