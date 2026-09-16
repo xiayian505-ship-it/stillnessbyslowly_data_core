@@ -2341,6 +2341,60 @@ window.SlowlyLibraryIndex = [
             ]
           },
           {
+            "title": "Metallic Text",
+            "desc": "純 CSS 金屬材質文字效果，以多段漸層建立銀白、香檳等明暗反射層次；只處理文字材質，不負責動畫或反光掃動，宿主可覆寫金屬漸層、背景尺寸與陰影。",
+            "links": [
+              {
+                "label": "metallic_text.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/metallic_text.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_metal_flow.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/metal_flow_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Text Gradient Flow",
+            "desc": "純 CSS 文字漸層流動效果，讓 background-clip 文字內既有漸層緩慢位移；不限定金屬材質，可自訂漸層、背景尺寸、速度、easing 與流動位置，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "text_gradient_flow.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/text_gradient_flow.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_metal_flow.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/metal_flow_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Text Reflection",
+            "desc": "純 CSS 文字反光帶效果，使用偽元素與 data-text 在文字表面疊加柔和高光，可控制反光漸層、尺寸、透明度、速度與移動位置；不綁定金屬材質或其他文字特效，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "text_reflection.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/text_reflection.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_metal_flow.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/metal_flow_usage.html"
+              }
+            ]
+          },
+          {
             "title": "Typewriter",
             "desc": "通用打字機文字循環工具，由宿主提供目標元素與 phrases，支援逐字輸入、停留、刪除、句間延遲與是否循環，並提供 start、stop 與 destroy。",
             "links": [
