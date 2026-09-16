@@ -2559,6 +2559,56 @@ window.SlowlyLibraryIndex = [
     ]
   },
   {
+    "page": "canvas",
+    "title": "Canvas",
+    "groups": [
+      {
+        "id": "icons",
+        "title": "Icons / 圖示",
+        "subpage": true,
+        "desc": "可由宿主呼叫的 Canvas 向量圖示家族。圖示只負責怎麼畫，尺寸、顏色、粗細與比例由宿主決定；Playground 可即時試參數。",
+        "items": [
+          {
+            "title": "Canvas Icons Core",
+            "desc": "Canvas icon registry 與統一呼叫入口，提供家族註冊、圖示查詢、預設參數取得與 draw()；不內建特定 icon，也不負責 PNG 匯出。",
+            "links": [
+              {
+                "label": "core.js",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/core.js"
+              },
+              {
+                "label": "Playground",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playground.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Arrow Icons",
+            "desc": "Canvas 方向箭頭家族，第一版提供 horizontal（↔）與 vertical（↕）雙向箭頭；宿主可覆寫尺寸、顏色、粗細、箭頭寬度比例、箭頭長度與內距。",
+            "links": [
+              {
+                "label": "arrows.js",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/arrows.js"
+              },
+              {
+                "label": "Playground",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playground.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "page": "image",
     "title": "Image",
     "groups": [
