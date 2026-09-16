@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slowly Canvas Icon Playground</title>
+<style>
+  :root{
+    --bg:#f4f5f5;
+    --surface:#ffffff;
+    --text:#202426;
+    --muted:#687176;
+    --line:#d9dddf;
+    --accent:#536d78;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial,"Microsoft JhengHei",sans-serif;
+  }
+
+  main{
+    width:min(calc(100% - 32px),900px);
+    margin:auto;
+    padding:48px 0;
+  }
+
+  h1,h2,p{margin-top:0}
+
+  .intro{
+    color:var(--muted);
+    line-height:1.8;
+  }
+
+  .family{
+    margin:28px 0;
+  }
+
+  .gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;
+  }
+
+  .icon-choice{
+    display:grid;
+    gap:10px;
+    justify-items:center;
+    padding:16px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--text);
+    font:inherit;
+    cursor:pointer;
+  }
+
+  .icon-choice[aria-pressed="true"]{
+    border-color:var(--accent);
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+
+  .icon-choice canvas{
+    width:96px;
+    height:96px;
+  }
+
+  .workspace{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(260px,320px);
+    gap:20px;
+    align-items:start;
+    margin-top:28px;
+  }
+
+  .preview-panel,
+  .control-panel{
+    border:1px solid var(--line);
+    background:var(--surface);
+    padding:18px;
+  }
+
+  .checker{
+    display:grid;
+    place-items:center;
+    min-height:330px;
+    background:
+      linear-gradient(45deg,#ececec 25%,transparent 25%),
+      linear-gradient(-45deg,#ececec 25%,transparent 25%),
+      linear-gradient(45deg,transparent 75%,#ececec 75%),
+      linear-gradient(-45deg,transparent 75%,#ececec 75%);
+    background-size:22px 22px;
+    background-position:0 0,0 11px,11px -11px,-11px 0;
+  }
+
+  #preview{
+    width:min(280px,75vw);
+    height:auto;
+    display:block;
+  }
+
+  .controls{
+    display:grid;
+    gap:14px;
+  }
+
+  .control{
+    display:grid;
+    gap:6px;
+  }
+
+  .control-line{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    color:var(--muted);
+  }
+
+  input[type="range"]{width:100%}
+
+  input[type="color"]{
+    width:100%;
+    height:44px;
+    padding:3px;
+    border:1px solid var(--line);
+    background:#fff;
+  }
+
+  pre{
+    margin:18px 0 0;
+    padding:14px;
+    overflow:auto;
+    border:1px solid var(--line);
+    background:var(--bg);
+    line-height:1.55;
+  }
+
+  .reset{
+    min-height:44px;
+    border:1px solid var(--accent);
+    background:var(--accent);
+    color:#fff;
+    font:inherit;
+    cursor:pointer;
+  }
+
+  .footnote{
+    margin-top:18px;
+    color:var(--muted);
+    font-size:.92rem;
+    line-height:1.7;
+  }
+
+  @media (max-width:720px){
+    .workspace{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Canvas Icon Playground</h1>
+  <p class="intro">
+    測試台只負責試參數。實際宿主呼叫 icon 時，可自行覆寫尺寸、顏色、粗細與比例。
+    Canvas 本身透明；棋盤格只是預覽透明區域。
+  </p>
+
+  <div id="families"></div>
+
+  <section class="workspace">
+    <div class="preview-panel">
+      <h2 id="selected-title">預覽</h2>
+      <div class="checker">
+        <canvas id="preview" width="320" height="320"></canvas>
+      </div>
+
+      <pre id="call-output"></pre>
+
+      <p class="footnote">
+        要匯出 PNG 時，將這個 Canvas 再交給軍火庫既有的 Canvas PNG / PNG Download 零件即可。
+        Icon 家族本身不綁匯出功能。
+      </p>
+    </div>
+
+    <aside class="control-panel">
+      <h2>視覺參數</h2>
+      <div id="controls" class="controls"></div>
+      <button id="reset" class="reset" type="button">恢復這顆 icon 的預設值</button>
+    </aside>
+  </section>
+</main>
+
+<script src="./core.js"></script>
+<script src="./arrows.js"></script>
+<script>
+(() => {
+  "use strict";
+
+  const api = window.SlowlyCanvasIcons;
+  const familiesEl = document.getElementById("families");
+  const controlsEl = document.getElementById("controls");
+  const preview = document.getElementById("preview");
+  const selectedTitle = document.getElementById("selected-title");
+  const callOutput = document.getElementById("call-output");
+  const resetButton = document.getElementById("reset");
+
+  let selectedFamily = "arrows";
+  let selectedIcon = "horizontal";
+  let values = {};
+
+  function safeNumber(value, fallback) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : fallback;
+  }
+
+  function getFamilyDefinition(name) {
+    return api.getFamily(name);
+  }
+
+  function resetValues() {
+    values = api.getDefaults(selectedFamily, selectedIcon);
+    renderControls();
+    renderPreview();
+  }
+
+  function renderGallery() {
+    familiesEl.replaceChildren();
+
+    api.listFamilies().forEach((familyMeta) => {
+      const family = document.createElement("section");
+      family.className = "family";
+
+      const heading = document.createElement("h2");
+      heading.textContent = familyMeta.label;
+
+      const desc = document.createElement("p");
+      desc.className = "intro";
+      desc.textContent = familyMeta.desc || "";
+
+      const gallery = document.createElement("div");
+      gallery.className = "gallery";
+
+      api.listIcons(familyMeta.name).forEach((iconMeta) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "icon-choice";
+        button.setAttribute(
+          "aria-pressed",
+          familyMeta.name === selectedFamily && iconMeta.name === selectedIcon
+            ? "true"
+            : "false"
+        );
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 128;
+        canvas.height = 128;
+
+        const defaults = api.getDefaults(familyMeta.name, iconMeta.name);
+        api.draw(familyMeta.name, iconMeta.name, canvas, {
+          ...defaults,
+          size: 92,
+          thickness: Math.min(Number(defaults.thickness) || 18, 20),
+          padding: 4
+        });
+
+        const label = document.createElement("span");
+        label.textContent = iconMeta.label;
+
+        button.append(canvas, label);
+
+        button.addEventListener("click", () => {
+          selectedFamily = familyMeta.name;
+          selectedIcon = iconMeta.name;
+          resetValues();
+          renderGallery();
+        });
+
+        gallery.appendChild(button);
+      });
+
+      family.append(heading, desc, gallery);
+      familiesEl.appendChild(family);
+    });
+  }
+
+  function renderControls() {
+    controlsEl.replaceChildren();
+
+    const family = getFamilyDefinition(selectedFamily);
+
+    family.controls.forEach((control) => {
+      const wrapper = document.createElement("label");
+      wrapper.className = "control";
+
+      const line = document.createElement("span");
+      line.className = "control-line";
+
+      const title = document.createElement("span");
+      title.textContent = control.label || control.key;
+
+      const current = document.createElement("strong");
+      current.textContent = String(values[control.key]);
+
+      line.append(title, current);
+
+      const input = document.createElement("input");
+      input.type = control.type || "range";
+      input.value = String(values[control.key]);
+
+      if (control.min !== undefined) input.min = String(control.min);
+      if (control.max !== undefined) input.max = String(control.max);
+      if (control.step !== undefined) input.step = String(control.step);
+
+      input.addEventListener("input", () => {
+        if (input.type === "color") {
+          values[control.key] = input.value;
+        } else {
+          values[control.key] = safeNumber(input.value, values[control.key]);
+        }
+
+        current.textContent = String(values[control.key]);
+        renderPreview();
+      });
+
+      wrapper.append(line, input);
+      controlsEl.appendChild(wrapper);
+    });
+  }
+
+  function renderPreview() {
+    const iconMeta = api
+      .listIcons(selectedFamily)
+      .find((icon) => icon.name === selectedIcon);
+
+    selectedTitle.textContent =
+      `${getFamilyDefinition(selectedFamily).label} · ${iconMeta?.label || selectedIcon}`;
+
+    api.draw(selectedFamily, selectedIcon, preview, values);
+
+    const hostOptions = { ...values };
+    delete hostOptions.clear;
+
+    callOutput.textContent =
+`SlowlyCanvasIcons.draw(
+  "${selectedFamily}",
+  "${selectedIcon}",
+  canvas,
+  ${JSON.stringify(hostOptions, null, 2)}
+);`;
+  }
+
+  resetButton.addEventListener("click", resetValues);
+
+  values = api.getDefaults(selectedFamily, selectedIcon);
+  renderGallery();
+  renderControls();
+  renderPreview();
+})();
+</script>
+</body>
+</html>
