@@ -2603,6 +2603,24 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
               }
             ]
+          },
+          {
+            "title": "Playback Icons",
+            "desc": "Canvas 播放控制家族，提供隨機、重播、單曲循環、播放、快轉、下一首、播放／暫停、向左播放、倒帶、上一首、上下切換、暫停、停止、錄製、退出與影片圖示；宿主可覆寫尺寸、顏色、粗細與內距。",
+            "links": [
+              {
+                "label": "playback.js",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playback.js"
+              },
+              {
+                "label": "Playground",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playground.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
+              }
+            ]
           }
         ]
       }
