@@ -187,6 +187,71 @@
     ctx.fill();
   }
 
+
+
+  function drawSingleArrowAt(ctx, options, direction, cx, cy, sizeScale = 0.44) {
+    const g = getGeometry(ctx, options);
+    const angleMap = {
+      up: 0,
+      upRight: Math.PI / 4,
+      right: Math.PI / 2,
+      downRight: (Math.PI * 3) / 4,
+      down: Math.PI,
+      downLeft: (Math.PI * 5) / 4,
+      left: (Math.PI * 3) / 2,
+      upLeft: (Math.PI * 7) / 4
+    };
+
+    const angle = angleMap[direction];
+    if (angle === undefined) {
+      throw new Error(`[SlowlyCanvasIcons/arrows] 不支援的方向：${direction}`);
+    }
+
+    const localSize = g.drawable * sizeScale;
+    const localThickness = Math.max(2, g.thickness * 0.58);
+    const localHeadHalf = Math.max(localThickness * 1.25, localThickness * number(options.headRatio, 1.55));
+    const localHeadLength = Math.max(localThickness * 1.25, localSize * 0.3);
+    const half = localSize / 2;
+    const shaftHalf = localThickness / 2;
+    const top = cy - half;
+    const bottom = cy + half;
+    const base = top + localHeadLength;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+    ctx.translate(-cx, -cy);
+    ctx.fillStyle = g.color;
+    ctx.beginPath();
+    ctx.moveTo(cx, top);
+    ctx.lineTo(cx + localHeadHalf, base);
+    ctx.lineTo(cx + shaftHalf, base);
+    ctx.lineTo(cx + shaftHalf, bottom);
+    ctx.lineTo(cx - shaftHalf, bottom);
+    ctx.lineTo(cx - shaftHalf, base);
+    ctx.lineTo(cx - localHeadHalf, base);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function makeStackedPair(topDirection, bottomDirection) {
+    return function drawStackedPair(ctx, options) {
+      const g = getGeometry(ctx, options);
+      const offsetY = g.drawable * 0.24;
+      drawSingleArrowAt(ctx, options, topDirection, g.cx, g.cy - offsetY, 0.38);
+      drawSingleArrowAt(ctx, options, bottomDirection, g.cx, g.cy + offsetY, 0.38);
+    };
+  }
+
+  function makeCrossedPair(firstDirection, secondDirection) {
+    return function drawCrossedPair(ctx, options) {
+      const g = getGeometry(ctx, options);
+      drawSingleArrowAt(ctx, options, firstDirection, g.cx, g.cy, 0.56);
+      drawSingleArrowAt(ctx, options, secondDirection, g.cx, g.cy, 0.56);
+    };
+  }
+
   function drawTurnLeft(ctx, options) {
     const g = getGeometry(ctx, options);
     const half = g.drawable / 2;
@@ -352,7 +417,7 @@
   window.SlowlyCanvasIcons.registerFamily("arrows", {
     label: "方向 / Arrows",
     desc: "方向、雙向、轉彎與旋轉箭頭 Canvas icon。宿主可覆寫尺寸、顏色、粗細與箭頭比例。",
-    previewOrder: ["horizontal", "vertical", "up", "right", "turnRight", "rotateClockwise"],
+    previewOrder: ["horizontal", "vertical", "rightLeftStack", "upLeftDownRightStack", "crossUpLeftDownRight", "turnRight", "rotateClockwise"],
     defaults: {
       size: 160,
       color: "#111111",
@@ -449,6 +514,56 @@
         label: "左上箭頭",
         desc: "模擬 ↖ 的單向左上箭頭。",
         draw: makeSingleArrow((Math.PI * 7) / 4)
+      },
+      rightLeftStack: {
+        label: "右／左堆疊箭頭",
+        desc: "上方右箭頭、下方左箭頭。",
+        draw: makeStackedPair("right", "left")
+      },
+      leftRightStack: {
+        label: "左／右堆疊箭頭",
+        desc: "上方左箭頭、下方右箭頭。",
+        draw: makeStackedPair("left", "right")
+      },
+      upDownStack: {
+        label: "上／下堆疊箭頭",
+        desc: "上方上箭頭、下方下箭頭。",
+        draw: makeStackedPair("up", "down")
+      },
+      downUpStack: {
+        label: "下／上堆疊箭頭",
+        desc: "上方下箭頭、下方上箭頭。",
+        draw: makeStackedPair("down", "up")
+      },
+      upLeftDownRightStack: {
+        label: "左上／右下堆疊箭頭",
+        desc: "上方左上箭頭、下方右下箭頭。",
+        draw: makeStackedPair("upLeft", "downRight")
+      },
+      downRightUpLeftStack: {
+        label: "右下／左上堆疊箭頭",
+        desc: "上方右下箭頭、下方左上箭頭。",
+        draw: makeStackedPair("downRight", "upLeft")
+      },
+      upRightDownLeftStack: {
+        label: "右上／左下堆疊箭頭",
+        desc: "上方右上箭頭、下方左下箭頭。",
+        draw: makeStackedPair("upRight", "downLeft")
+      },
+      downLeftUpRightStack: {
+        label: "左下／右上堆疊箭頭",
+        desc: "上方左下箭頭、下方右上箭頭。",
+        draw: makeStackedPair("downLeft", "upRight")
+      },
+      crossUpLeftDownRight: {
+        label: "左上／右下交錯箭頭",
+        desc: "兩支斜向箭頭重疊交錯：左上與右下。",
+        draw: makeCrossedPair("upLeft", "downRight")
+      },
+      crossUpRightDownLeft: {
+        label: "右上／左下交錯箭頭",
+        desc: "兩支斜向箭頭重疊交錯：右上與左下。",
+        draw: makeCrossedPair("upRight", "downLeft")
       },
       vertical: {
         label: "上下雙向箭頭",
