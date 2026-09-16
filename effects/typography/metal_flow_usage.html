@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slowly Typography Metal Flow Usage</title>
+<style>
+  body{
+    margin:0;
+    padding:32px 20px;
+    max-width:900px;
+    margin-inline:auto;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
+    line-height:1.75;
+    color:#202426;
+  }
+  code,pre{
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  pre{
+    padding:16px;
+    overflow:auto;
+    background:#f4f5f5;
+    border:1px solid #d9dddf;
+  }
+  h2{margin-top:2em}
+</style>
+</head>
+<body>
+<h1>Slowly Typography｜Metal Flow 三顆零件</h1>
+
+<p>三支 CSS 互相不依賴。可以單吃，也可以由宿主自由組裝。</p>
+
+<h2>1. Metallic Text</h2>
+<pre><code>&lt;link rel="stylesheet" href="./metallic_text.css"&gt;
+
+&lt;span class="slowly-metallic-text"&gt;METALLIC&lt;/span&gt;</code></pre>
+<p>只負責金屬材質，不負責任何動畫。</p>
+
+<h2>2. Text Gradient Flow</h2>
+<pre><code>&lt;link rel="stylesheet" href="./text_gradient_flow.css"&gt;
+
+&lt;span class="slowly-text-gradient-flow"&gt;FLOW&lt;/span&gt;</code></pre>
+<p>只負責讓文字內的漸層移動。可由宿主用 <code>--slowly-text-gradient</code> 換成任意漸層。</p>
+
+<h2>3. Text Reflection</h2>
+<pre><code>&lt;link rel="stylesheet" href="./text_reflection.css"&gt;
+
+&lt;span
+  class="slowly-text-reflection"
+  data-text="REFLECTION"
+&gt;REFLECTION&lt;/span&gt;</code></pre>
+<p>只負責反光帶。因為使用偽元素覆蓋原文字，宿主需同步提供 <code>data-text</code>。</p>
+
+<h2>三顆一起組裝</h2>
+<pre><code>&lt;span
+  class="
+    slowly-metallic-text
+    slowly-text-gradient-flow
+    slowly-text-reflection
+  "
+  data-text="SBS | MATCH3_V1"
+&gt;SBS | MATCH3_V1&lt;/span&gt;</code></pre>
+
+<p>Match3 目前的感覺可由宿主設定兩個動畫皆約 18 秒：</p>
+<pre><code>.game-title{
+  --slowly-text-flow-duration:18s;
+  --slowly-reflection-duration:18s;
+}</code></pre>
+
+<h2>建議放置位置</h2>
+<pre><code>effects/
+└─ typography/
+   ├─ metallic_text.css
+   ├─ text_gradient_flow.css
+   ├─ text_reflection.css
+   ├─ test_metal_flow.html
+   └─ metal_flow_usage.html</code></pre>
+</body>
+</html>

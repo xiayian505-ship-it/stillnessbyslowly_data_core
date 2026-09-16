@@ -1,0 +1,87 @@
+/* =========================================================
+   Slowly Effects / Typography
+   Text Gradient Flow
+   ---------------------------------------------------------
+   單一職責：讓「文字內的漸層」緩慢流動。
+   - 不限定金屬
+   - 不依賴 Metallic Text
+   - 自帶一組中性預設漸層，因此可單獨使用
+   - 若宿主或其他零件提供 --slowly-text-gradient，會直接流動該漸層
+
+   使用：
+   <span class="slowly-text-gradient-flow">FLOW</span>
+
+   宿主可覆蓋：
+   --slowly-text-gradient
+   --slowly-text-flow-gradient
+   --slowly-text-flow-size
+   --slowly-text-flow-duration
+   --slowly-text-flow-easing
+   --slowly-text-flow-from
+   --slowly-text-flow-mid
+   --slowly-text-flow-to
+========================================================= */
+
+.slowly-text-gradient-flow{
+  --slowly-text-flow-gradient:
+    linear-gradient(
+      115deg,
+      #7c8390 0%,
+      #f4f1ea 22%,
+      #8b94a3 46%,
+      #f8f5ec 70%,
+      #747c89 100%
+    );
+
+  --slowly-text-flow-size:220% 100%;
+  --slowly-text-flow-duration:18s;
+  --slowly-text-flow-easing:linear;
+
+  --slowly-text-flow-from:0% 50%;
+  --slowly-text-flow-mid:46% 50%;
+  --slowly-text-flow-to:92% 50%;
+
+  color:transparent;
+
+  background-image:
+    var(
+      --slowly-text-gradient,
+      var(
+        --slowly-metallic-gradient,
+        var(--slowly-text-flow-gradient)
+      )
+    );
+
+  background-size:var(--slowly-text-flow-size);
+  background-position:var(--slowly-text-flow-from);
+  background-repeat:no-repeat;
+
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  animation:
+    slowly-text-gradient-flow
+    var(--slowly-text-flow-duration)
+    var(--slowly-text-flow-easing)
+    infinite;
+}
+
+@keyframes slowly-text-gradient-flow{
+  0%{
+    background-position:var(--slowly-text-flow-from);
+  }
+  50%{
+    background-position:var(--slowly-text-flow-mid);
+  }
+  100%{
+    background-position:var(--slowly-text-flow-to);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .slowly-text-gradient-flow{
+    animation:none;
+    background-position:var(--slowly-text-flow-mid);
+  }
+}

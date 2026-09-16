@@ -1,0 +1,61 @@
+/* =========================================================
+   Slowly Effects / Typography
+   Metallic Text
+   ---------------------------------------------------------
+   單一職責：提供「金屬材質文字」。
+   - 不負責動畫
+   - 不負責反光掃過
+   - 可單獨使用
+   - 可與 text_gradient_flow.css / text_reflection.css 組合
+
+   使用：
+   <span class="slowly-metallic-text">METALLIC</span>
+
+   宿主可覆蓋：
+   --slowly-text-gradient
+   --slowly-metallic-gradient
+   --slowly-metallic-bg-size
+   --slowly-metallic-bg-position
+   --slowly-metallic-shadow
+========================================================= */
+
+.slowly-metallic-text{
+  --slowly-metallic-gradient:
+    linear-gradient(
+      115deg,
+      #6f727a 0%,
+      #c8c3b2 10%,
+      #f7f6f2 19%,
+      #989ea8 30%,
+      #fefcf7 42%,
+      #8f95a0 54%,
+      #efe6cf 68%,
+      #73767d 84%,
+      #f6f3ea 100%
+    );
+
+  --slowly-metallic-bg-size:220% 100%;
+  --slowly-metallic-bg-position:0% 50%;
+  --slowly-metallic-shadow:
+    0 1px 0 rgba(255,255,255,.08),
+    0 6px 18px rgba(0,0,0,.26);
+
+  color:transparent;
+
+  /* 宿主若提供 --slowly-text-gradient，優先使用宿主版本。 */
+  background-image:
+    var(
+      --slowly-text-gradient,
+      var(--slowly-metallic-gradient)
+    );
+
+  background-size:var(--slowly-metallic-bg-size);
+  background-position:var(--slowly-metallic-bg-position);
+  background-repeat:no-repeat;
+
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  text-shadow:var(--slowly-metallic-shadow);
+}

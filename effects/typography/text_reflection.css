@@ -1,0 +1,100 @@
+/* =========================================================
+   Slowly Effects / Typography
+   Text Reflection
+   ---------------------------------------------------------
+   單一職責：在文字表面疊一條柔和反光帶。
+   - 不負責金屬材質
+   - 不依賴 Gradient Flow
+   - 可單獨使用
+   - 使用 ::after，所以宿主需提供 data-text
+
+   使用：
+   <span
+     class="slowly-text-reflection"
+     data-text="REFLECTION"
+   >REFLECTION</span>
+
+   宿主可覆蓋：
+   --slowly-reflection-gradient
+   --slowly-reflection-size
+   --slowly-reflection-opacity
+   --slowly-reflection-duration
+   --slowly-reflection-easing
+   --slowly-reflection-from
+   --slowly-reflection-mid
+   --slowly-reflection-to
+========================================================= */
+
+.slowly-text-reflection{
+  --slowly-reflection-gradient:
+    linear-gradient(
+      105deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0) 36%,
+      rgba(255,255,255,.18) 44%,
+      rgba(255,255,255,.78) 50%,
+      rgba(255,255,255,.22) 56%,
+      rgba(255,255,255,0) 64%,
+      rgba(255,255,255,0) 100%
+    );
+
+  --slowly-reflection-size:170% 100%;
+  --slowly-reflection-opacity:1;
+  --slowly-reflection-duration:18s;
+  --slowly-reflection-easing:linear;
+
+  --slowly-reflection-from:-145% 50%;
+  --slowly-reflection-mid:60% 50%;
+  --slowly-reflection-to:165% 50%;
+
+  position:relative;
+  display:inline-block;
+  isolation:isolate;
+}
+
+.slowly-text-reflection::after{
+  content:attr(data-text);
+
+  position:absolute;
+  inset:0;
+  z-index:1;
+
+  color:transparent;
+  pointer-events:none;
+
+  background-image:var(--slowly-reflection-gradient);
+  background-size:var(--slowly-reflection-size);
+  background-position:var(--slowly-reflection-from);
+  background-repeat:no-repeat;
+
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  opacity:var(--slowly-reflection-opacity);
+
+  animation:
+    slowly-text-reflection
+    var(--slowly-reflection-duration)
+    var(--slowly-reflection-easing)
+    infinite;
+}
+
+@keyframes slowly-text-reflection{
+  0%{
+    background-position:var(--slowly-reflection-from);
+  }
+  50%{
+    background-position:var(--slowly-reflection-mid);
+  }
+  100%{
+    background-position:var(--slowly-reflection-to);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .slowly-text-reflection::after{
+    animation:none;
+    background-position:50% 50%;
+  }
+}
