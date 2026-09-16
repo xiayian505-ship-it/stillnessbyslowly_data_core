@@ -1,0 +1,60 @@
+/* Slowly Sweep Line v1.0.0
+   One-shot directional sweep line.
+   Host owns layout, semantic meaning, sequencing, and colors.
+*/
+
+.sbs-sweep-line-layer {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: var(--sbs-sweep-line-z, 6);
+}
+
+.sbs-sweep-line-layer::before {
+  content: "";
+  position: absolute;
+  opacity: 0;
+  background: var(--sbs-sweep-line-color, rgba(230, 210, 178, .68));
+  box-shadow:
+    0 0 7px var(--sbs-sweep-line-glow-1, rgba(241, 224, 196, .52)),
+    0 0 15px var(--sbs-sweep-line-glow-2, rgba(214, 183, 145, .38)),
+    0 0 24px var(--sbs-sweep-line-glow-3, rgba(154, 116, 78, .26));
+}
+
+.sbs-sweep-line-layer.is-horizontal::before {
+  left: -18%;
+  top: 50%;
+  width: var(--sbs-sweep-line-length, 22%);
+  height: var(--sbs-sweep-line-size, 8px);
+  transform: translateY(-50%);
+  animation: sbsSweepLineHorizontal var(--sbs-sweep-line-duration, 300ms) linear both;
+}
+
+.sbs-sweep-line-layer.is-vertical::before {
+  top: -18%;
+  left: 50%;
+  width: var(--sbs-sweep-line-size, 8px);
+  height: var(--sbs-sweep-line-length, 22%);
+  transform: translateX(-50%);
+  animation: sbsSweepLineVertical var(--sbs-sweep-line-duration, 300ms) linear both;
+}
+
+@keyframes sbsSweepLineHorizontal {
+  0% { left: -18%; opacity: 0; }
+  14% { opacity: 1; }
+  84% { opacity: 1; }
+  100% { left: 96%; opacity: 0; }
+}
+
+@keyframes sbsSweepLineVertical {
+  0% { top: -18%; opacity: 0; }
+  14% { opacity: 1; }
+  84% { opacity: 1; }
+  100% { top: 96%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sbs-sweep-line-layer::before {
+    animation-duration: 1ms !important;
+  }
+}

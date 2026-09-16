@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sweep Line Test</title>
+<link rel="stylesheet" href="./sweep_line.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; font-family: sans-serif; background: #f5f1ea; color: #262626; }
+  #stage { position: relative; width: min(92vw, 480px); display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; padding: 4px; background: #2f2f2f; }
+  .cell { aspect-ratio: 1; background: #a9b8a0; }
+  .controls { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<h1>Sweep Line</h1>
+<div id="stage"></div>
+<div class="controls">
+  <button data-dir="horizontal">橫向</button>
+  <button data-dir="vertical">直向</button>
+  <button data-dir="both">雙向</button>
+</div>
+<script src="./sweep_line.js"></script>
+<script>
+const stage = document.querySelector('#stage');
+for (let i = 0; i < 64; i += 1) {
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  stage.appendChild(cell);
+}
+const cells = [...stage.children];
+const sweep = SlowlySweepLine.create(stage);
+document.querySelectorAll('[data-dir]').forEach(button => {
+  button.addEventListener('click', () => {
+    const mode = button.dataset.dir;
+    if (mode === 'horizontal') return sweep.play({ targets: cells.slice(24, 32), direction: 'horizontal' });
+    if (mode === 'vertical') return sweep.play({ targets: cells.filter((_, i) => i % 8 === 4), direction: 'vertical' });
+    return sweep.play([
+      { targets: cells.slice(24, 32), direction: 'horizontal' },
+      { targets: cells.filter((_, i) => i % 8 === 4), direction: 'vertical' }
+    ]);
+  });
+});
+</script>
+</body>
+</html>

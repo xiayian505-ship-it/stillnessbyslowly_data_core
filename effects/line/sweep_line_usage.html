@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>Slowly Sweep Line Usage</title>
+<link rel="stylesheet" href="./sweep_line.css">
+<style>
+  body { font-family: sans-serif; padding: 24px; }
+  #stage { position: relative; width: 360px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+  .cell { aspect-ratio: 1; background: #ddd; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<button id="run">播放</button>
+<script src="./sweep_line.js"></script>
+<script>
+const stage = document.querySelector('#stage');
+for (let i = 0; i < 36; i += 1) {
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  stage.appendChild(cell);
+}
+const sweep = SlowlySweepLine.create(stage);
+document.querySelector('#run').addEventListener('click', async () => {
+  const cells = [...stage.children].slice(12, 18);
+  await sweep.play({ targets: cells, direction: 'horizontal' });
+});
+</script>
+</body>
+</html>
