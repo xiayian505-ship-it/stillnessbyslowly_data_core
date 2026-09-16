@@ -352,6 +352,7 @@
   window.SlowlyCanvasIcons.registerFamily("arrows", {
     label: "方向 / Arrows",
     desc: "方向、雙向、轉彎與旋轉箭頭 Canvas icon。宿主可覆寫尺寸、顏色、粗細與箭頭比例。",
+    previewOrder: ["horizontal", "vertical", "up", "right", "turnRight", "rotateClockwise"],
     defaults: {
       size: 160,
       color: "#111111",

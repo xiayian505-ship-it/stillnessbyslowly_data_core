@@ -74,6 +74,9 @@
     families.set(familyName, {
       label: definition.label || familyName,
       desc: definition.desc || "",
+      previewOrder: Array.isArray(definition.previewOrder)
+        ? definition.previewOrder.slice()
+        : [],
       defaults: { ...(definition.defaults || {}) },
       controls: Array.isArray(definition.controls)
         ? definition.controls.map((control) => ({ ...control }))
@@ -142,6 +145,7 @@
       name,
       label: family.label,
       desc: family.desc,
+      previewOrder: family.previewOrder.slice(),
       controls: family.controls.map((control) => ({ ...control })),
       defaults: { ...family.defaults },
       icons: Object.keys(family.icons)

@@ -24,7 +24,7 @@
   }
 
   main{
-    width:min(calc(100% - 32px),900px);
+    width:min(calc(100% - 32px),980px);
     margin:auto;
     padding:48px 0;
   }
@@ -36,51 +36,146 @@
     line-height:1.8;
   }
 
-  .family{
-    margin:28px 0;
+  .view[hidden]{display:none}
+
+  .family-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+    margin-top:24px;
   }
 
-  .gallery{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:12px;
-  }
-
-  .icon-choice{
-    display:grid;
-    gap:10px;
-    justify-items:center;
-    padding:16px;
+  .family-card,
+  .icon-card,
+  .preview-panel,
+  .control-panel{
     border:1px solid var(--line);
     background:var(--surface);
-    color:var(--text);
-    font:inherit;
-    cursor:pointer;
   }
 
-  .icon-choice[aria-pressed="true"]{
+  .family-card{
+    display:grid;
+    gap:12px;
+    padding:16px;
+  }
+
+  .family-preview-button,
+  .icon-card,
+  .back-button,
+  .enter-button,
+  .reset{
+    cursor:pointer;
+    font:inherit;
+  }
+
+  .family-preview-button{
+    display:grid;
+    gap:8px;
+    width:100%;
+    padding:14px;
+    border:1px solid var(--line);
+    background:var(--bg);
+    color:var(--text);
+    text-align:center;
+  }
+
+  .family-preview-button:hover,
+  .family-preview-button:focus-visible,
+  .enter-button:hover,
+  .enter-button:focus-visible,
+  .back-button:hover,
+  .back-button:focus-visible,
+  .icon-card:hover,
+  .icon-card:focus-visible,
+  .icon-card[aria-pressed="true"]{
     border-color:var(--accent);
     outline:2px solid var(--accent);
     outline-offset:2px;
   }
 
-  .icon-choice canvas{
-    width:96px;
-    height:96px;
+  .family-preview-button canvas{
+    width:84px;
+    height:84px;
+    margin:auto;
+    display:block;
   }
 
-  .workspace{
+  .preview-hint{
+    color:var(--muted);
+    font-size:.9rem;
+  }
+
+  .family-card-title{
+    margin:0;
+    font-size:1.05rem;
+  }
+
+  .family-card-desc{
+    margin:0;
+    color:var(--muted);
+    line-height:1.7;
+    font-size:.95rem;
+  }
+
+  .enter-button,
+  .back-button,
+  .reset{
+    min-height:44px;
+    border:1px solid var(--accent);
+    background:var(--accent);
+    color:#fff;
+  }
+
+  .back-button{
+    background:transparent;
+    color:var(--accent);
+  }
+
+  .breadcrumb{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+    margin-bottom:18px;
+    color:var(--muted);
+  }
+
+  .family-layout{
     display:grid;
-    grid-template-columns:minmax(0,1fr) minmax(260px,320px);
-    gap:20px;
+    grid-template-columns:minmax(0,320px) minmax(0,1fr);
+    gap:18px;
     align-items:start;
-    margin-top:28px;
+  }
+
+  .icon-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:12px;
+  }
+
+  .icon-card{
+    display:grid;
+    gap:10px;
+    justify-items:center;
+    padding:14px 12px;
+    color:var(--text);
+    background:var(--surface);
+    border:1px solid var(--line);
+  }
+
+  .icon-card canvas{
+    width:84px;
+    height:84px;
+    display:block;
+  }
+
+  .icon-label{
+    text-align:center;
+    font-size:.95rem;
   }
 
   .preview-panel,
   .control-panel{
-    border:1px solid var(--line);
-    background:var(--surface);
     padding:18px;
   }
 
@@ -98,7 +193,7 @@
   }
 
   #preview{
-    width:min(280px,75vw);
+    width:min(280px,70vw);
     height:auto;
     display:block;
   }
@@ -139,15 +234,6 @@
     line-height:1.55;
   }
 
-  .reset{
-    min-height:44px;
-    border:1px solid var(--accent);
-    background:var(--accent);
-    color:#fff;
-    font:inherit;
-    cursor:pointer;
-  }
-
   .footnote{
     margin-top:18px;
     color:var(--muted);
@@ -155,8 +241,8 @@
     line-height:1.7;
   }
 
-  @media (max-width:720px){
-    .workspace{grid-template-columns:1fr}
+  @media (max-width:860px){
+    .family-layout{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -164,32 +250,49 @@
 <main>
   <h1>Canvas Icon Playground</h1>
   <p class="intro">
-    測試台只負責試參數。實際宿主呼叫 icon 時，可自行覆寫尺寸、顏色、粗細與比例。
-    Canvas 本身透明；棋盤格只是預覽透明區域。
+    家族首頁先看封面預覽。點小圖可切換下一顆 icon；進入家族後才顯示該家族全部 icon 與參數調整。
   </p>
 
-  <div id="families"></div>
+  <section id="family-home" class="view">
+    <div id="family-grid" class="family-grid"></div>
+  </section>
 
-  <section class="workspace">
-    <div class="preview-panel">
-      <h2 id="selected-title">預覽</h2>
-      <div class="checker">
-        <canvas id="preview" width="320" height="320"></canvas>
-      </div>
-
-      <pre id="call-output"></pre>
-
-      <p class="footnote">
-        要匯出 PNG 時，將這個 Canvas 再交給軍火庫既有的 Canvas PNG / PNG Download 零件即可。
-        Icon 家族本身不綁匯出功能。
-      </p>
+  <section id="family-detail" class="view" hidden>
+    <div class="breadcrumb">
+      <button id="back-button" class="back-button" type="button">← 回全部家族</button>
+      <span>></span>
+      <span id="detail-family-name"></span>
     </div>
 
-    <aside class="control-panel">
-      <h2>視覺參數</h2>
-      <div id="controls" class="controls"></div>
-      <button id="reset" class="reset" type="button">恢復這顆 icon 的預設值</button>
-    </aside>
+    <div class="family-layout">
+      <div>
+        <div class="preview-panel">
+          <h2 id="selected-title">預覽</h2>
+          <div class="checker">
+            <canvas id="preview" width="320" height="320"></canvas>
+          </div>
+
+          <pre id="call-output"></pre>
+
+          <p class="footnote">
+            要匯出 PNG 時，將這個 Canvas 再交給軍火庫既有的 Canvas PNG / PNG Download 零件即可。
+            Icon 家族本身不綁匯出功能。
+          </p>
+        </div>
+
+        <div class="control-panel" style="margin-top:18px;">
+          <h2>視覺參數</h2>
+          <div id="controls" class="controls"></div>
+          <button id="reset" class="reset" type="button">恢復這顆 icon 的預設值</button>
+        </div>
+      </div>
+
+      <div>
+        <h2 id="detail-family-title"></h2>
+        <p id="detail-family-desc" class="intro"></p>
+        <div id="icon-grid" class="icon-grid"></div>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -200,15 +303,23 @@
   "use strict";
 
   const api = window.SlowlyCanvasIcons;
-  const familiesEl = document.getElementById("families");
+  const familyHome = document.getElementById("family-home");
+  const familyDetail = document.getElementById("family-detail");
+  const familyGrid = document.getElementById("family-grid");
+  const detailFamilyName = document.getElementById("detail-family-name");
+  const detailFamilyTitle = document.getElementById("detail-family-title");
+  const detailFamilyDesc = document.getElementById("detail-family-desc");
+  const iconGrid = document.getElementById("icon-grid");
   const controlsEl = document.getElementById("controls");
   const preview = document.getElementById("preview");
   const selectedTitle = document.getElementById("selected-title");
   const callOutput = document.getElementById("call-output");
   const resetButton = document.getElementById("reset");
+  const backButton = document.getElementById("back-button");
 
-  let selectedFamily = "arrows";
-  let selectedIcon = "horizontal";
+  const familyPreviewState = new Map();
+  let selectedFamily = null;
+  let selectedIcon = null;
   let values = {};
 
   function safeNumber(value, fallback) {
@@ -216,80 +327,120 @@
     return Number.isFinite(number) ? number : fallback;
   }
 
-  function getFamilyDefinition(name) {
-    return api.getFamily(name);
+  function getFamilies() {
+    return api.listFamilies();
   }
 
-  function resetValues() {
-    values = api.getDefaults(selectedFamily, selectedIcon);
-    renderControls();
-    renderPreview();
+  function getFamilyMeta(name) {
+    return getFamilies().find((family) => family.name === name) || null;
   }
 
-  function renderGallery() {
-    familiesEl.replaceChildren();
+  function getPreviewIcons(familyMeta) {
+    const known = new Set(api.listIcons(familyMeta.name).map((icon) => icon.name));
+    const ordered = (familyMeta.previewOrder || []).filter((name) => known.has(name));
+    const rest = api.listIcons(familyMeta.name).map((icon) => icon.name).filter((name) => !ordered.includes(name));
+    return ordered.concat(rest);
+  }
 
-    api.listFamilies().forEach((familyMeta) => {
-      const family = document.createElement("section");
-      family.className = "family";
+  function getCurrentPreviewIcon(familyMeta) {
+    const list = getPreviewIcons(familyMeta);
+    if (!list.length) return null;
+    const index = familyPreviewState.get(familyMeta.name) || 0;
+    return list[index % list.length];
+  }
 
-      const heading = document.createElement("h2");
-      heading.textContent = familyMeta.label;
+  function cyclePreviewIcon(familyMeta) {
+    const list = getPreviewIcons(familyMeta);
+    if (!list.length) return;
+    const current = familyPreviewState.get(familyMeta.name) || 0;
+    familyPreviewState.set(familyMeta.name, (current + 1) % list.length);
+  }
 
-      const desc = document.createElement("p");
-      desc.className = "intro";
-      desc.textContent = familyMeta.desc || "";
+  function showHome() {
+    familyHome.hidden = false;
+    familyDetail.hidden = true;
+  }
 
-      const gallery = document.createElement("div");
-      gallery.className = "gallery";
+  function showDetail() {
+    familyHome.hidden = true;
+    familyDetail.hidden = false;
+  }
 
-      api.listIcons(familyMeta.name).forEach((iconMeta) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "icon-choice";
-        button.setAttribute(
-          "aria-pressed",
-          familyMeta.name === selectedFamily && iconMeta.name === selectedIcon
-            ? "true"
-            : "false"
-        );
+  function renderFamilyHome() {
+    familyGrid.replaceChildren();
 
-        const canvas = document.createElement("canvas");
-        canvas.width = 128;
-        canvas.height = 128;
+    getFamilies().forEach((familyMeta) => {
+      const card = document.createElement("article");
+      card.className = "family-card";
 
-        const defaults = api.getDefaults(familyMeta.name, iconMeta.name);
-        api.draw(familyMeta.name, iconMeta.name, canvas, {
+      const previewButton = document.createElement("button");
+      previewButton.type = "button";
+      previewButton.className = "family-preview-button";
+      previewButton.title = "點圖切換下一個預覽";
+
+      const canvas = document.createElement("canvas");
+      canvas.width = 128;
+      canvas.height = 128;
+      const currentIconName = getCurrentPreviewIcon(familyMeta);
+      if (currentIconName) {
+        const defaults = api.getDefaults(familyMeta.name, currentIconName);
+        api.draw(familyMeta.name, currentIconName, canvas, {
           ...defaults,
           size: 92,
           thickness: Math.min(Number(defaults.thickness) || 18, 20),
           padding: 4
         });
+      }
 
-        const label = document.createElement("span");
-        label.textContent = iconMeta.label;
+      const hint = document.createElement("span");
+      hint.className = "preview-hint";
+      hint.textContent = currentIconName ? `預覽：${currentIconName}（點圖切換）` : "點圖切換預覽";
 
-        button.append(canvas, label);
-
-        button.addEventListener("click", () => {
-          selectedFamily = familyMeta.name;
-          selectedIcon = iconMeta.name;
-          resetValues();
-          renderGallery();
-        });
-
-        gallery.appendChild(button);
+      previewButton.append(canvas, hint);
+      previewButton.addEventListener("click", () => {
+        cyclePreviewIcon(familyMeta);
+        renderFamilyHome();
       });
 
-      family.append(heading, desc, gallery);
-      familiesEl.appendChild(family);
+      const title = document.createElement("h2");
+      title.className = "family-card-title";
+      title.textContent = familyMeta.label;
+
+      const desc = document.createElement("p");
+      desc.className = "family-card-desc";
+      desc.textContent = familyMeta.desc || "";
+
+      const enter = document.createElement("button");
+      enter.type = "button";
+      enter.className = "enter-button";
+      enter.textContent = `進入 ${familyMeta.label}`;
+      enter.addEventListener("click", () => {
+        selectedFamily = familyMeta.name;
+        const previewIcon = getCurrentPreviewIcon(familyMeta);
+        const allIcons = api.listIcons(familyMeta.name);
+        selectedIcon = previewIcon || allIcons[0]?.name || null;
+        resetValues();
+        renderFamilyDetail();
+        showDetail();
+      });
+
+      card.append(previewButton, title, desc, enter);
+      familyGrid.appendChild(card);
     });
+  }
+
+  function resetValues() {
+    if (!selectedFamily || !selectedIcon) return;
+    values = api.getDefaults(selectedFamily, selectedIcon);
+    renderControls();
+    renderPreview();
   }
 
   function renderControls() {
     controlsEl.replaceChildren();
+    if (!selectedFamily) return;
 
-    const family = getFamilyDefinition(selectedFamily);
+    const family = api.getFamily(selectedFamily);
 
     family.controls.forEach((control) => {
       const wrapper = document.createElement("label");
@@ -309,7 +460,6 @@
       const input = document.createElement("input");
       input.type = control.type || "range";
       input.value = String(values[control.key]);
-
       if (control.min !== undefined) input.min = String(control.min);
       if (control.max !== undefined) input.max = String(control.max);
       if (control.step !== undefined) input.step = String(control.step);
@@ -320,7 +470,6 @@
         } else {
           values[control.key] = safeNumber(input.value, values[control.key]);
         }
-
         current.textContent = String(values[control.key]);
         renderPreview();
       });
@@ -331,33 +480,72 @@
   }
 
   function renderPreview() {
-    const iconMeta = api
-      .listIcons(selectedFamily)
-      .find((icon) => icon.name === selectedIcon);
+    if (!selectedFamily || !selectedIcon) return;
+    const iconMeta = api.listIcons(selectedFamily).find((icon) => icon.name === selectedIcon);
+    const familyMeta = getFamilyMeta(selectedFamily);
 
-    selectedTitle.textContent =
-      `${getFamilyDefinition(selectedFamily).label} · ${iconMeta?.label || selectedIcon}`;
-
+    selectedTitle.textContent = `${familyMeta?.label || selectedFamily} · ${iconMeta?.label || selectedIcon}`;
     api.draw(selectedFamily, selectedIcon, preview, values);
 
     const hostOptions = { ...values };
     delete hostOptions.clear;
 
     callOutput.textContent =
-`SlowlyCanvasIcons.draw(
-  "${selectedFamily}",
-  "${selectedIcon}",
-  canvas,
-  ${JSON.stringify(hostOptions, null, 2)}
-);`;
+`SlowlyCanvasIcons.draw(\n  "${selectedFamily}",\n  "${selectedIcon}",\n  canvas,\n  ${JSON.stringify(hostOptions, null, 2)}\n);`;
   }
+
+  function renderFamilyDetail() {
+    if (!selectedFamily) return;
+
+    const familyMeta = getFamilyMeta(selectedFamily);
+    detailFamilyName.textContent = familyMeta?.label || selectedFamily;
+    detailFamilyTitle.textContent = familyMeta?.label || selectedFamily;
+    detailFamilyDesc.textContent = familyMeta?.desc || "";
+
+    iconGrid.replaceChildren();
+
+    api.listIcons(selectedFamily).forEach((iconMeta) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "icon-card";
+      button.setAttribute("aria-pressed", iconMeta.name === selectedIcon ? "true" : "false");
+
+      const canvas = document.createElement("canvas");
+      canvas.width = 128;
+      canvas.height = 128;
+      const defaults = api.getDefaults(selectedFamily, iconMeta.name);
+      api.draw(selectedFamily, iconMeta.name, canvas, {
+        ...defaults,
+        size: 92,
+        thickness: Math.min(Number(defaults.thickness) || 18, 20),
+        padding: 4
+      });
+
+      const label = document.createElement("span");
+      label.className = "icon-label";
+      label.textContent = iconMeta.label;
+
+      button.append(canvas, label);
+      button.addEventListener("click", () => {
+        selectedIcon = iconMeta.name;
+        resetValues();
+        renderFamilyDetail();
+      });
+      iconGrid.appendChild(button);
+    });
+
+    renderControls();
+    renderPreview();
+  }
+
+  backButton.addEventListener("click", () => {
+    showHome();
+  });
 
   resetButton.addEventListener("click", resetValues);
 
-  values = api.getDefaults(selectedFamily, selectedIcon);
-  renderGallery();
-  renderControls();
-  renderPreview();
+  renderFamilyHome();
+  showHome();
 })();
 </script>
 </body>
