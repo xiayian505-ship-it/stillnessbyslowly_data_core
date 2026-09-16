@@ -2065,6 +2065,28 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/line/test_gradient_divider.html"
               }
             ]
+          },
+          {
+            "title": "Sweep Line",
+            "desc": "一次性方向掃線特效，依指定 DOM 範圍建立橫向或直向光線掃過動畫，可控制速度、粗細、長度、色彩、光暈與層級；只負責掃線，不處理後續爆亮、業務語意或流程順序。",
+            "links": [
+              {
+                "label": "sweep_line.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line.js"
+              },
+              {
+                "label": "sweep_line.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_sweep_line.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line_usage.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -2117,6 +2139,28 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/effects/light/test_decorative_glow.html"
+              }
+            ]
+          },
+          {
+            "title": "Area Burst",
+            "desc": "一次性區域爆亮特效，依指定 DOM 範圍建立 block 或 radial 爆光動畫，可控制時間、填色、邊框、光暈、混合模式與層級；只負責區域爆亮，不依賴掃線、不處理業務語意或流程順序。",
+            "links": [
+              {
+                "label": "area_burst.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst.js"
+              },
+              {
+                "label": "area_burst.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_area_burst.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst_usage.html"
               }
             ]
           }
