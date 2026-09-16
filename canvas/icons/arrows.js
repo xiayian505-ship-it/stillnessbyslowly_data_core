@@ -3,8 +3,10 @@
    ---------------------------------------------------------
    Arrow family.
    Current icons:
-   - horizontal : ↔
-   - vertical   : ↕
+   - up / upRight / right / downRight / down / downLeft / left / upLeft
+   - horizontal / vertical
+   - turnLeft / turnRight / turnUp / turnDown
+   - rotateClockwise / rotateCounterClockwise
 ========================================================= */
 (() => {
   "use strict";
@@ -39,8 +41,8 @@
       drawable * 0.45
     );
 
-    const headRatio = clamp(number(options.headRatio, 1.55), 1, 3);
-    const headHalf = clamp(thickness * headRatio, thickness * 0.75, drawable * 0.48);
+    const headRatio = clamp(number(options.headRatio, 1.55), 0.9, 3);
+    const headHalf = clamp(thickness * headRatio, thickness * 0.65, drawable * 0.48);
     const headLength = clamp(
       number(options.headLength, drawable * 0.28),
       thickness,
@@ -58,6 +60,70 @@
       headHalf,
       headLength,
       color: String(options.color || "#111111")
+    };
+  }
+
+  function withRotation(ctx, cx, cy, angle, drawFn) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+    ctx.translate(-cx, -cy);
+    drawFn();
+    ctx.restore();
+  }
+
+  function drawArrowHeadFilled(ctx, x, y, angle, length, halfWidth, color) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-halfWidth, length);
+    ctx.lineTo(halfWidth, length);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawArrowHeadLine(ctx, x, y, angle, length, halfWidth) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(-halfWidth, length);
+    ctx.lineTo(0, 0);
+    ctx.lineTo(halfWidth, length);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawSingleArrowUp(ctx, options) {
+    const g = getGeometry(ctx, options);
+    const half = g.drawable / 2;
+    const shaftHalf = g.thickness / 2;
+
+    const top = g.cy - half;
+    const bottom = g.cy + half;
+    const base = top + g.headLength;
+
+    ctx.fillStyle = g.color;
+    ctx.beginPath();
+    ctx.moveTo(g.cx, top);
+    ctx.lineTo(g.cx + g.headHalf, base);
+    ctx.lineTo(g.cx + shaftHalf, base);
+    ctx.lineTo(g.cx + shaftHalf, bottom);
+    ctx.lineTo(g.cx - shaftHalf, bottom);
+    ctx.lineTo(g.cx - shaftHalf, base);
+    ctx.lineTo(g.cx - g.headHalf, base);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function makeSingleArrow(angle) {
+    return function drawSingleArrow(ctx, options) {
+      const g = getGeometry(ctx, options);
+      withRotation(ctx, g.cx, g.cy, angle, () => drawSingleArrowUp(ctx, options));
     };
   }
 
@@ -121,9 +187,171 @@
     ctx.fill();
   }
 
+  function drawTurnLeft(ctx, options) {
+    const g = getGeometry(ctx, options);
+    const half = g.drawable / 2;
+    const left = g.cx - half;
+    const right = g.cx + half;
+    const top = g.cy - half;
+    const bottom = g.cy + half;
+    const radius = Math.max(g.thickness * 1.8, g.drawable * 0.26);
+    const startX = right - g.headLength * 0.45;
+    const endX = left + g.headLength * 0.95;
+    const turnTop = top + g.headLength * 0.7;
+    const turnBottom = bottom - g.headLength * 0.7;
+
+    ctx.strokeStyle = g.color;
+    ctx.lineWidth = g.thickness;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.moveTo(startX, turnBottom);
+    ctx.lineTo(startX, turnTop + radius * 0.25);
+    ctx.quadraticCurveTo(startX, turnTop, startX - radius * 0.45, turnTop);
+    ctx.lineTo(endX, turnTop);
+    ctx.stroke();
+
+    drawArrowHeadLine(ctx, endX, turnTop, -Math.PI / 2, g.headLength, g.headHalf);
+  }
+
+  function drawTurnRight(ctx, options) {
+    const g = getGeometry(ctx, options);
+    const half = g.drawable / 2;
+    const left = g.cx - half;
+    const right = g.cx + half;
+    const top = g.cy - half;
+    const bottom = g.cy + half;
+    const radius = Math.max(g.thickness * 1.8, g.drawable * 0.26);
+    const startX = left + g.headLength * 0.45;
+    const endX = right - g.headLength * 0.95;
+    const turnTop = top + g.headLength * 0.7;
+    const turnBottom = bottom - g.headLength * 0.7;
+
+    ctx.strokeStyle = g.color;
+    ctx.lineWidth = g.thickness;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.moveTo(startX, turnBottom);
+    ctx.lineTo(startX, turnTop + radius * 0.25);
+    ctx.quadraticCurveTo(startX, turnTop, startX + radius * 0.45, turnTop);
+    ctx.lineTo(endX, turnTop);
+    ctx.stroke();
+
+    drawArrowHeadLine(ctx, endX, turnTop, Math.PI / 2, g.headLength, g.headHalf);
+  }
+
+  function drawTurnUp(ctx, options) {
+    const g = getGeometry(ctx, options);
+    const half = g.drawable / 2;
+    const left = g.cx - half;
+    const right = g.cx + half;
+    const top = g.cy - half;
+    const bottom = g.cy + half;
+    const endX = right - g.headLength * 0.65;
+    const turnY = bottom - g.headLength * 0.95;
+    const topY = top + g.headLength * 0.9;
+
+    ctx.strokeStyle = g.color;
+    ctx.lineWidth = g.thickness;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.moveTo(left + g.headLength * 0.8, turnY);
+    ctx.lineTo(endX - g.headLength * 0.35, turnY);
+    ctx.quadraticCurveTo(endX, turnY, endX, turnY - g.headLength * 0.35);
+    ctx.lineTo(endX, topY);
+    ctx.stroke();
+
+    drawArrowHeadLine(ctx, endX, topY, 0, g.headLength, g.headHalf);
+  }
+
+  function drawTurnDown(ctx, options) {
+    const g = getGeometry(ctx, options);
+    const half = g.drawable / 2;
+    const left = g.cx - half;
+    const right = g.cx + half;
+    const top = g.cy - half;
+    const bottom = g.cy + half;
+    const endX = right - g.headLength * 0.65;
+    const turnY = top + g.headLength * 0.95;
+    const bottomY = bottom - g.headLength * 0.9;
+
+    ctx.strokeStyle = g.color;
+    ctx.lineWidth = g.thickness;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.moveTo(left + g.headLength * 0.8, turnY);
+    ctx.lineTo(endX - g.headLength * 0.35, turnY);
+    ctx.quadraticCurveTo(endX, turnY, endX, turnY + g.headLength * 0.35);
+    ctx.lineTo(endX, bottomY);
+    ctx.stroke();
+
+    drawArrowHeadLine(ctx, endX, bottomY, Math.PI, g.headLength, g.headHalf);
+  }
+
+  function drawRotateClockwise(ctx, options) {
+    const g = getGeometry(ctx, options);
+    const radius = g.drawable * 0.29;
+    const arcOffset = Math.PI / 7;
+
+    ctx.strokeStyle = g.color;
+    ctx.lineWidth = g.thickness;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.arc(g.cx, g.cy, radius, Math.PI + arcOffset, -arcOffset, false);
+    ctx.stroke();
+
+    const head1X = g.cx + Math.cos(-arcOffset) * radius;
+    const head1Y = g.cy + Math.sin(-arcOffset) * radius;
+    drawArrowHeadLine(ctx, head1X, head1Y, Math.PI / 2 - arcOffset, g.headLength * 0.82, g.headHalf * 0.78);
+
+    ctx.beginPath();
+    ctx.arc(g.cx, g.cy, radius, arcOffset, Math.PI - arcOffset, false);
+    ctx.stroke();
+
+    const head2X = g.cx + Math.cos(Math.PI - arcOffset) * radius;
+    const head2Y = g.cy + Math.sin(Math.PI - arcOffset) * radius;
+    drawArrowHeadLine(ctx, head2X, head2Y, (Math.PI / 2) + (Math.PI - arcOffset), g.headLength * 0.82, g.headHalf * 0.78);
+  }
+
+  function drawRotateCounterClockwise(ctx, options) {
+    const g = getGeometry(ctx, options);
+    const radius = g.drawable * 0.29;
+    const arcOffset = Math.PI / 7;
+
+    ctx.strokeStyle = g.color;
+    ctx.lineWidth = g.thickness;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.arc(g.cx, g.cy, radius, -arcOffset, Math.PI + arcOffset, true);
+    ctx.stroke();
+
+    const head1X = g.cx + Math.cos(-arcOffset) * radius;
+    const head1Y = g.cy + Math.sin(-arcOffset) * radius;
+    drawArrowHeadLine(ctx, head1X, head1Y, -Math.PI / 2 - arcOffset, g.headLength * 0.82, g.headHalf * 0.78);
+
+    ctx.beginPath();
+    ctx.arc(g.cx, g.cy, radius, Math.PI - arcOffset, arcOffset, true);
+    ctx.stroke();
+
+    const head2X = g.cx + Math.cos(Math.PI - arcOffset) * radius;
+    const head2Y = g.cy + Math.sin(Math.PI - arcOffset) * radius;
+    drawArrowHeadLine(ctx, head2X, head2Y, Math.PI / 2 + (Math.PI - arcOffset), g.headLength * 0.82, g.headHalf * 0.78);
+  }
+
   window.SlowlyCanvasIcons.registerFamily("arrows", {
     label: "方向 / Arrows",
-    desc: "方向與箭頭類 Canvas icon。宿主可覆寫尺寸、顏色、粗細與箭頭比例。",
+    desc: "方向、雙向、轉彎與旋轉箭頭 Canvas icon。宿主可覆寫尺寸、顏色、粗細與箭頭比例。",
     defaults: {
       size: 160,
       color: "#111111",
@@ -181,15 +409,85 @@
       }
     ],
     icons: {
-      horizontal: {
-        label: "左右雙向箭頭",
-        desc: "模擬 ↔ 的左右雙向箭頭。",
-        draw: fillHorizontal
+      up: {
+        label: "上箭頭",
+        desc: "模擬 ⬆ 的單向上箭頭。",
+        draw: makeSingleArrow(0)
+      },
+      upRight: {
+        label: "右上箭頭",
+        desc: "模擬 ↗ 的單向右上箭頭。",
+        draw: makeSingleArrow(Math.PI / 4)
+      },
+      right: {
+        label: "右箭頭",
+        desc: "模擬 ➡ 的單向右箭頭。",
+        draw: makeSingleArrow(Math.PI / 2)
+      },
+      downRight: {
+        label: "右下箭頭",
+        desc: "模擬 ↘ 的單向右下箭頭。",
+        draw: makeSingleArrow((Math.PI * 3) / 4)
+      },
+      down: {
+        label: "下箭頭",
+        desc: "模擬 ⬇ 的單向下箭頭。",
+        draw: makeSingleArrow(Math.PI)
+      },
+      downLeft: {
+        label: "左下箭頭",
+        desc: "模擬 ↙ 的單向左下箭頭。",
+        draw: makeSingleArrow((Math.PI * 5) / 4)
+      },
+      left: {
+        label: "左箭頭",
+        desc: "模擬 ⬅ 的單向左箭頭。",
+        draw: makeSingleArrow((Math.PI * 3) / 2)
+      },
+      upLeft: {
+        label: "左上箭頭",
+        desc: "模擬 ↖ 的單向左上箭頭。",
+        draw: makeSingleArrow((Math.PI * 7) / 4)
       },
       vertical: {
         label: "上下雙向箭頭",
         desc: "模擬 ↕ 的上下雙向箭頭。",
         draw: fillVertical
+      },
+      horizontal: {
+        label: "左右雙向箭頭",
+        desc: "模擬 ↔ 的左右雙向箭頭。",
+        draw: fillHorizontal
+      },
+      turnLeft: {
+        label: "左回彎箭頭",
+        desc: "模擬 ↩ 的左回彎箭頭。",
+        draw: drawTurnLeft
+      },
+      turnRight: {
+        label: "右回彎箭頭",
+        desc: "模擬 ↪ 的右回彎箭頭。",
+        draw: drawTurnRight
+      },
+      turnUp: {
+        label: "右上轉向箭頭",
+        desc: "模擬 ⤴ 的右上轉向箭頭。",
+        draw: drawTurnUp
+      },
+      turnDown: {
+        label: "右下轉向箭頭",
+        desc: "模擬 ⤵ 的右下轉向箭頭。",
+        draw: drawTurnDown
+      },
+      rotateClockwise: {
+        label: "順時針旋轉箭頭",
+        desc: "模擬 🔃 的循環箭頭。",
+        draw: drawRotateClockwise
+      },
+      rotateCounterClockwise: {
+        label: "逆時針旋轉箭頭",
+        desc: "模擬 🔄 的循環箭頭。",
+        draw: drawRotateCounterClockwise
       }
     }
   });
