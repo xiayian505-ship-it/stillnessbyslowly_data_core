@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Slowly Tabs｜功能測試</title>
+  <link rel="stylesheet" href="./tabs.css">
+  <style>
+    body { margin: 24px; font-family: system-ui,-apple-system,"Noto Sans TC",sans-serif; line-height: 1.6; }
+    main { max-width: 780px; }
+    [role="tablist"] { display: flex; flex-wrap: wrap; gap: 8px; }
+    button { padding: 8px 10px; }
+    [data-view-panel] { padding: 12px; border: 1px solid #ccc; }
+    pre { padding: 12px; background: #f4f4f4; white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body><main>
+<h1>Slowly Tabs｜功能測試</h1>
+<p>只驗功能；外觀另見 tabs_demo.html。頁面載入後自動執行測試，下面按鈕也可手動切換。</p>
+
+<div id="groupA" data-slowly-tabs>
+  <div role="tablist" aria-label="測試組 A">
+    <button type="button" data-view-target="a" aria-selected="true">A</button>
+    <button type="button" data-view-target="b">B</button>
+    <button type="button" data-view-target="c" disabled>C（停用）</button>
+  </div>
+  <div data-view-panel="a">A 的內容</div>
+  <div data-view-panel="b" hidden>B 的內容</div>
+  <div data-view-panel="c" hidden>C 的內容</div>
+</div>
+
+<div id="groupB" data-slowly-tabs style="margin-top:16px">
+  <div role="tablist" aria-label="測試組 B" aria-orientation="vertical">
+    <button type="button" data-view-target="one" aria-selected="true">ONE</button>
+    <button type="button" data-view-target="two">TWO</button>
+  </div>
+  <div data-view-panel="one">ONE 的內容</div>
+  <div data-view-panel="two" hidden>TWO 的內容</div>
+</div>
+
+<h2>測試結果</h2>
+<pre id="result" aria-live="polite">測試中…</pre>
+<script src="./tabs.js"></script>
+<script>
+(() => {
+  const messages = [];
+  let passed = 0;
+  let failed = 0;
+  const check = (title, condition) => {
+    if (condition) { passed++; messages.push("PASS｜" + title); }
+    else { failed++; messages.push("FAIL｜" + title); }
+  };
+  const fails = (run) => { try { run(); return false; } catch (_) { return true; } };
+  let changeCount = 0;
+  let eventCount = 0;
+  const aRoot = document.getElementById("groupA");
+  const bRoot = document.getElementById("groupB");
+  aRoot.addEventListener("slowlytabschange", () => eventCount++);
+  const a = SlowlyTabs.create("#groupA", { onChange() { changeCount++; } });
+  const b = SlowlyTabs.create(bRoot);
+  const visible = (root, name) => root.querySelector(`[data-view-panel="${name}"]`).hidden === false;
+
+  check("預設分頁 A", a.current === "a" && visible(aRoot, "a") && !visible(aRoot, "b"));
+  check("預設不發送 change", changeCount === 0 && eventCount === 0);
+  check("ARIA 與 TabIndex 初始化", aRoot.querySelector('[data-view-target="a"]').getAttribute("aria-selected") === "true" && aRoot.querySelector('[data-view-target="b"]').tabIndex === -1);
+  check("自動建立 aria-controls / aria-labelledby", !!aRoot.querySelector('[data-view-target="a"]').getAttribute("aria-controls") && !!aRoot.querySelector('[data-view-panel="a"]').getAttribute("aria-labelledby"));
+
+  a.show("b");
+  check("API show 切換 B", a.current === "b" && visible(aRoot, "b") && !visible(aRoot, "a"));
+  check("change 事件與回呼", changeCount === 1 && eventCount === 1);
+  a.show("b");
+  check("切換到相同頁不重發事件", changeCount === 1 && eventCount === 1);
+  a.show("a", { silent: true });
+  check("silent 只更新畫面", a.current === "a" && changeCount === 1 && eventCount === 1);
+  check("找不到分頁時拋錯", fails(() => a.show("missing")));
+  check("停用分頁不可切換", fails(() => a.show("c")));
+  check("多實例隔離", b.current === "one" && visible(bRoot, "one"));
+
+  aRoot.querySelector('[data-view-target="b"]').click();
+  check("原生按鈕點擊切換", a.current === "b" && changeCount === 2 && eventCount === 2);
+  aRoot.querySelector('[data-view-target="b"]').dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+  check("方向鍵跳過停用項並循環", a.current === "a" && document.activeElement === aRoot.querySelector('[data-view-target="a"]'));
+  aRoot.querySelector('[data-view-target="a"]').dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
+  check("End 切到最後可用項", a.current === "b");
+  bRoot.querySelector('[data-view-target="one"]').dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
+  check("垂直模式使用上下方向鍵", b.current === "two");
+
+  const same = SlowlyTabs.create("#groupA");
+  check("相同根元素重複 create 回傳原實例", same === a);
+  check("createAll 回傳兩組", SlowlyTabs.createAll().length === 2);
+  check("不存在根元素時拋錯", fails(() => SlowlyTabs.create("#missing")));
+
+  const duplicateRoot = document.createElement("div");
+  duplicateRoot.innerHTML = '<button data-view-target="x"></button><button data-view-target="x"></button><div data-view-panel="x"></div>';
+  document.body.appendChild(duplicateRoot);
+  check("重複分頁名稱會拋錯", fails(() => SlowlyTabs.create(duplicateRoot)));
+  duplicateRoot.remove();
+
+  const beforeDestroy = a.current;
+  a.destroy();
+  aRoot.querySelector('[data-view-target="a"]').click();
+  check("destroy 移除事件監聽", a.current === beforeDestroy);
+  check("destroy 後 API 明確拋錯", fails(() => a.show("a")));
+  check("destroy 後可以重新建立", SlowlyTabs.create("#groupA") !== a);
+
+  document.getElementById("result").textContent =
+    `${failed === 0 ? "PASS" : "FAIL"}｜通過 ${passed} 項，失敗 ${failed} 項\n\n${messages.join("\n")}`;
+  document.body.dataset.testResult = failed === 0 ? "PASS" : "FAIL";
+})();
+</script>
+</main></body>
+</html>

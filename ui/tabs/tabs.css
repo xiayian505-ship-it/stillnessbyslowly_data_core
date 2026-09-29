@@ -1,0 +1,14 @@
+/* 慢慢的倉庫｜Slowly Tabs v1.0.0
+ * 必要 UI 規則：隱藏非作用中的內容、保留鍵盤焦點提示。
+ * 不設定按鈕形狀、顏色、字體、間距、底線或選中外觀。
+ * 宿主請在自己的 CSS 中另外定義外觀，不必修改這個檔案。
+ */
+
+.slowly-tabs [data-view-panel][hidden] {
+  display: none !important;
+}
+
+.slowly-tabs [data-view-target]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}

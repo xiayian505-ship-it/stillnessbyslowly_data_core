@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Slowly Tabs｜外觀展示</title>
+  <link rel="stylesheet" href="./tabs.css">
+  <style>
+    /* 以下全是本展示頁的「宿主 CSS」，不屬於 Tabs 零件本體。 */
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px 16px; color: #222; font-family: system-ui,-apple-system,"Noto Sans TC",sans-serif; line-height: 1.6; }
+    main { max-width: 760px; margin: 0 auto; }
+    .note { color: #666; }
+    .example { margin-top: 26px; padding: 18px; border: 1px solid #ddd; }
+    .example h2 { margin: 0 0 12px; font-size: 1.1rem; }
+    .example [role="tablist"] { display: flex; flex-wrap: wrap; gap: 14px; }
+    .example [data-view-panel] { padding-top: 16px; }
+    .example [data-view-target] { font: inherit; cursor: pointer; }
+
+    /* 宿主 A：Match3／Termux 可用的文字底線形式。 */
+    #firstTabs [data-view-target] { padding: 6px 0; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #666; }
+    #firstTabs [data-view-target][aria-selected="true"] { color: #222; border-bottom-color: currentColor; font-weight: 700; }
+
+    /* 宿主 B：另一組普通直角按鈕；同一支 JS 不綁定任何皮膚。 */
+    #secondTabs [data-view-target] { padding: 6px 10px; border: 1px solid #aaa; background: transparent; color: inherit; }
+    #secondTabs [data-view-target][aria-selected="true"] { border-color: currentColor; background: #eee; font-weight: 700; }
+    #secondTabs [data-view-target]:disabled { opacity: .5; cursor: not-allowed; }
+    #log { min-height: 2em; padding: 10px 0; font-size: .9rem; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Slowly Tabs｜外觀展示</h1>
+  <p class="note">兩組使用同一支 tabs.js 與 tabs.css；分頁排列、選中樣式和按鈕外觀都由本頁（宿主）的 CSS 決定。兩組可以獨立切換。</p>
+
+  <section class="example" data-slowly-tabs id="firstTabs">
+    <h2>宿主 A｜文字底線</h2>
+    <nav role="tablist" aria-label="範例 A 分頁">
+      <button type="button" role="tab" data-view-target="intro" aria-selected="true">介紹</button>
+      <button type="button" role="tab" data-view-target="detail">內容</button>
+      <button type="button" role="tab" data-view-target="help">說明</button>
+    </nav>
+    <section role="tabpanel" data-view-panel="intro">第一組的介紹。</section>
+    <section role="tabpanel" data-view-panel="detail" hidden>第一組的內容。</section>
+    <section role="tabpanel" data-view-panel="help" hidden>第一組的說明。</section>
+  </section>
+
+  <section class="example" data-slowly-tabs id="secondTabs">
+    <h2>宿主 B｜直角按鈕</h2>
+    <div role="tablist" aria-label="範例 B 分頁">
+      <button type="button" role="tab" data-view-target="one" aria-selected="true">第一頁</button>
+      <button type="button" role="tab" data-view-target="two">第二頁</button>
+      <button type="button" role="tab" data-view-target="three" disabled>停用頁</button>
+    </div>
+    <div role="tabpanel" data-view-panel="one">第一頁的內容。</div>
+    <div role="tabpanel" data-view-panel="two" hidden>第二頁的內容。</div>
+    <div role="tabpanel" data-view-panel="three" hidden>停用頁不應被切換到。</div>
+  </section>
+
+  <p id="log" aria-live="polite">尚未切換</p>
+</main>
+<script src="./tabs.js"></script>
+<script>
+  SlowlyTabs.createAll("[data-slowly-tabs]", {
+    onChange({ name, instance }) {
+      document.getElementById("log").textContent =
+        `${instance.root.id} 已切換到：${name}`;
+    }
+  });
+</script>
+</body>
+</html>

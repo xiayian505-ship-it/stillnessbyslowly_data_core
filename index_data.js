@@ -1675,6 +1675,32 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm_usage.html"
               }
             ]
+          },
+          {
+            "title": "Tabs",
+            "desc": "同頁通用分頁切換零件，沿用 data-view-target／data-view-panel，負責點擊與鍵盤切換、選中狀態、內容顯示、同頁多實例與變更通知；不處理網址、儲存或宿主外觀。",
+            "links": [
+              {
+                "label": "tabs.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs.js"
+              },
+              {
+                "label": "tabs.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs.css"
+              },
+              {
+                "label": "外觀展示",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs_demo.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/test_tabs.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs_usage.html"
+              }
+            ]
           }
         ]
       },

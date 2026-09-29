@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Slowly Tabs｜使用說明</title>
+  <style>
+    body { margin: 0; padding: 28px 18px; font-family: system-ui,-apple-system,"Noto Sans TC",sans-serif; line-height: 1.7; }
+    main { max-width: 840px; margin: 0 auto; }
+    pre { overflow: auto; padding: 14px; background: #f6f6f6; border: 1px solid #ddd; }
+    code,pre { font-family: ui-monospace,Consolas,monospace; }
+    h2 { margin-top: 30px; }
+  </style>
+</head>
+<body><main>
+  <h1>Slowly Tabs｜使用說明</h1>
+  <p>同頁畫面切換的通用 UI 零件。只負責分頁與內容對應、點擊／鍵盤切換、選中狀態及事件；不綁定遊戲、Repo、Router、hash、Storage 或宿主的外觀。</p>
+
+  <h2>1. 載入</h2>
+  <pre><code>&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/tabs/tabs.css"&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/ui/tabs/tabs.js"&gt;&lt;/script&gt;</code></pre>
+  <p>上述網址須在零件正式進貨並部署後使用；測試候選檔案時，請用同資料夾下的 <code>./tabs.css</code> 和 <code>./tabs.js</code>。</p>
+
+  <h2>2. HTML</h2>
+  <pre><code>&lt;main id="appTabs" data-slowly-tabs&gt;
+  &lt;nav role="tablist" aria-label="功能分頁"&gt;
+    &lt;button type="button" role="tab" data-view-target="settings" aria-selected="true"&gt;設定&lt;/button&gt;
+    &lt;button type="button" role="tab" data-view-target="game"&gt;遊戲&lt;/button&gt;
+    &lt;button type="button" role="tab" data-view-target="ranking"&gt;排行&lt;/button&gt;
+  &lt;/nav&gt;
+  &lt;section role="tabpanel" data-view-panel="settings"&gt;設定內容&lt;/section&gt;
+  &lt;section role="tabpanel" data-view-panel="game" hidden&gt;遊戲內容&lt;/section&gt;
+  &lt;section role="tabpanel" data-view-panel="ranking" hidden&gt;排行內容&lt;/section&gt;
+&lt;/main&gt;</code></pre>
+  <p>每個 <code>data-view-target</code> 必須有同名且唯一的 <code>data-view-panel</code>。兩個群組請分別放在各自的根元素中。</p>
+
+  <h2>3. 初始化與切換</h2>
+  <pre><code>const tabs = SlowlyTabs.create("#appTabs", {
+  initial: "game",
+  onChange({ name, previousName }) {
+    console.log(previousName, "→", name);
+    // 遊戲自動暫停、表單檢查等行為，由宿主自行處理。
+  }
+});
+
+tabs.show("ranking");
+console.log(tabs.current);
+tabs.destroy();</code></pre>
+  <p>未傳 <code>initial</code> 時，優先使用 HTML 裡 <code>aria-selected="true"</code> 的有效分頁，否則選擇第一個可用分頁。重複切到同一頁不重送變更通知。不存在或停用的分頁會明確拋出錯誤。</p>
+
+  <h2>4. 同頁多組</h2>
+  <pre><code>const allTabs = SlowlyTabs.createAll();
+// 預設尋找 [data-slowly-tabs]，每組獨立切換。
+// 同一根元素重複 create() 會回傳原實例。</code></pre>
+
+  <h2>5. 事件與鍵盤</h2>
+  <pre><code>document.querySelector("#appTabs").addEventListener(
+  "slowlytabschange",
+  event =&gt; console.log(event.detail.name, event.detail.previousName)
+);</code></pre>
+  <p>預設支援左右方向鍵、Home、End；若 tablist 設定 <code>aria-orientation="vertical"</code>，則改為上下方向鍵。停用的按鈕會被跳過。程式切換可使用 <code>tabs.show("game", { focus: true, silent: true })</code>；silent 不發送變更事件。</p>
+
+  <h2>6. CSS／宿主外觀</h2>
+  <p><code>tabs.css</code> 是軍火庫的必要基礎 CSS，只負責讓非作用中的內容確實隱藏，並提供鍵盤焦點提示。它不替宿主設定按鈕的形狀、顏色、字體、間距或選中底線；請在宿主自己的 CSS 中定義這些外觀，不要修改軍火庫的 <code>tabs.css</code>。</p>
+  <pre><code>#appTabs [role="tablist"] { display: flex; gap: 16px; }
+#appTabs [data-view-target] {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+}
+#appTabs [data-view-target][aria-selected="true"] {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}</code></pre>
+
+  <h2>7. 邊界</h2>
+  <p>本模組不建立 Tab 的視覺皮膚、不儲存所選分頁、不改網址、不負責宿主業務。若需要網址 hash，宿主可另行引用軍火庫的 Navigation Hash 零件。請勿把單純資料分頁的 Fiction Paginate 與畫面 Tabs 混用。</p>
+</main></body>
+</html>
