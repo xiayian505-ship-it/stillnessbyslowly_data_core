@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reading Stats 功能測試</title>
+<style>
+body{font-family:Arial,"Microsoft JhengHei",sans-serif;margin:32px;line-height:1.7}
+.test{max-width:760px;padding:12px 14px;margin:10px 0;border:1px solid #d6ddd1}
+.pass{background:#edf8ef}.fail{background:#fff0f0}
+</style>
+</head>
+<body>
+<h1>Reading Stats 功能測試</h1>
+<div id="results"></div>
+<script src="./reading_stats.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  const root = document.getElementById("results");
+
+  function check(name, actual, expected){
+    const pass = JSON.stringify(actual) === JSON.stringify(expected);
+    const box = document.createElement("div");
+    box.className = "test " + (pass ? "pass" : "fail");
+    box.textContent =
+      (pass ? "PASS｜" : "FAIL｜") +
+      name +
+      "｜actual=" + JSON.stringify(actual) +
+      "｜expected=" + JSON.stringify(expected);
+    root.appendChild(box);
+  }
+
+  check(
+    "忽略空白與換行，保留標點",
+    ReadingStats.count("你好，世界！\n 測試"),
+    8
+  );
+
+  check(
+    "空內容為 0 字",
+    ReadingStats.count("  \n\t "),
+    0
+  );
+
+  check(
+    "預設 1200 字／分鐘：1051 字為 1 分鐘",
+    ReadingStats.estimateMinutes(1051),
+    1
+  );
+
+  check(
+    "超過一分鐘後向上取整",
+    ReadingStats.estimateMinutes(1201),
+    2
+  );
+
+  check(
+    "空內容閱讀時間為 0",
+    ReadingStats.estimateMinutes(0),
+    0
+  );
+
+  check(
+    "可自訂閱讀速度",
+    ReadingStats.estimateMinutes(1051, {
+      charactersPerMinute: 600
+    }),
+    2
+  );
+
+  check(
+    "摘要",
+    ReadingStats.summarize("一二三 四五六", {
+      charactersPerMinute: 4
+    }),
+    {
+      characters: 6,
+      minutes: 2,
+      charactersPerMinute: 4
+    }
+  );
+})();
+</script>
+</body>
+</html>

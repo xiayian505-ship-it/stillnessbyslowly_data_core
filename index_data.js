@@ -919,6 +919,20 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/test_numeric_text.html"
               }
             ]
+          },
+          {
+            "title": "Reading Stats",
+            "desc": "通用文章字數與閱讀時間估算核心，預設忽略空白與換行並保留標點，以每分鐘 1200 字估算閱讀時間，也可自訂閱讀速度；不綁 DOM、UI 或顯示格式。",
+            "links": [
+              {
+                "label": "reading_stats.js",
+                "href": "https://lib.stillnessbyslowly.com/data/reading_stats.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_reading_stats.html"
+              }
+            ]
           }
         ]
       }
