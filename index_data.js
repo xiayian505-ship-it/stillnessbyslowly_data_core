@@ -2075,6 +2075,176 @@ window.SlowlyLibraryIndex = [
     "title": "Effects",
     "groups": [
       {
+        "id": "celebration",
+        "title": "Celebration / 慶祝",
+        "items": [
+          {
+            "title": "Confetti Burst",
+            "desc": "一次性彩帶爆發特效，預設重現連環新接龍的勝利彩帶，可由宿主調整數量、色彩、爆發位置、散布距離、尺寸、延遲與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "confetti_burst.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/confetti_burst.css"
+              },
+              {
+                "label": "confetti_burst.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/confetti_burst.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_confetti_burst.html"
+              }
+            ]
+          },
+          {
+            "title": "Gold Rain",
+            "desc": "一次性金色粒子雨特效，可由宿主調整粒子數量、顏色、水平散布、漂移、尺寸、延遲與落下時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "gold_rain.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/gold_rain.css"
+              },
+              {
+                "label": "gold_rain.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/gold_rain.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_gold_rain.html"
+              }
+            ]
+          },
+          {
+            "title": "Star Explosion",
+            "desc": "一次性星芒爆發特效，可由宿主調整數量、符號、顏色、爆發中心、散布距離、尺寸與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "star_explosion.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/star_explosion.css"
+              },
+              {
+                "label": "star_explosion.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/star_explosion.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_star_explosion.html"
+              }
+            ]
+          },
+          {
+            "title": "Shockwave",
+            "desc": "一次性多圈衝擊波特效，可由宿主調整圈數、間隔、尺寸、線寬、色彩、光暈、縮放範圍與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "shockwave.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/shockwave.css"
+              },
+              {
+                "label": "shockwave.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/shockwave.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_shockwave.html"
+              }
+            ]
+          },
+          {
+            "title": "Flash Shake",
+            "desc": "一次性閃光加震動特效，由宿主指定特效範圍與震動目標，可調整閃光色彩、透明度、震動強度與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "flash_shake.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/flash_shake.css"
+              },
+              {
+                "label": "flash_shake.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/flash_shake.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_flash_shake.html"
+              }
+            ]
+          },
+          {
+            "title": "Jackpot Pop",
+            "desc": "一次性目標元素彈跳放大特效，可由宿主調整延遲、縮放倍率、位移、動畫時間與 transform origin；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "jackpot_pop.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/jackpot_pop.css"
+              },
+              {
+                "label": "jackpot_pop.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/jackpot_pop.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_jackpot_pop.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Rain",
+            "desc": "一次性卡片／字元掉落特效，預設使用撲克牌字樣，宿主可自訂 items、數量、外觀、旋轉、漂移、散布與落下時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "card_rain.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/card_rain.css"
+              },
+              {
+                "label": "card_rain.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/card_rain.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_card_rain.html"
+              }
+            ]
+          },
+          {
+            "title": "Victory Beam",
+            "desc": "一次性勝利放射光束特效，包含可選的雙層爆光，可由宿主調整光束數量、角度、寬度、色彩、延遲、時間與爆光尺寸；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "victory_beam.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/victory_beam.css"
+              },
+              {
+                "label": "victory_beam.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/victory_beam.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_victory_beam.html"
+              }
+            ]
+          },
+          {
+            "title": "Classic Fireworks",
+            "desc": "一次性經典煙火特效，包含升空火箭與爆炸粒子，可由宿主調整煙火數量、每發粒子數、色盤、位置、爆炸距離、重力、尺寸與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "classic_fireworks.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/classic_fireworks.css"
+              },
+              {
+                "label": "classic_fireworks.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/classic_fireworks.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_classic_fireworks.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Celebration / 慶祝 特效積木。"
+      },
+      {
         "id": "line",
         "title": "Line / 線條",
         "items": [
