@@ -1,0 +1,5 @@
+/* Slowly Star Explosion v1.0.0 */
+.sbs-star-explosion-layer { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:var(--sbs-star-z,1); }
+.sbs-star-explosion-star { position:absolute; left:var(--sbs-star-origin-x,50%); top:var(--sbs-star-origin-y,48%); color:var(--sbs-star-color,#fff0ad); font-size:var(--sbs-star-size,18px); line-height:1; opacity:0; text-shadow:0 0 12px var(--sbs-star-glow,rgba(255,226,126,.95)); pointer-events:none; will-change:transform,opacity; animation:sbsStarExplosion var(--sbs-star-duration,1000ms) cubic-bezier(.16,.78,.2,1) var(--sbs-star-delay,0ms) forwards; }
+@keyframes sbsStarExplosion { 0%{opacity:0;transform:translate(-50%,-50%) scale(.25) rotate(0deg)} 15%{opacity:1} 72%{opacity:1} 100%{opacity:0;transform:translate(calc(-50% + var(--sbs-star-x,0px)),calc(-50% + var(--sbs-star-y,0px))) scale(1.2) rotate(var(--sbs-star-rotation,180deg))} }
+@media (prefers-reduced-motion: reduce) { .sbs-star-explosion-layer[data-sbs-respect-reduced-motion="true"] { display:none; } }

@@ -1,0 +1,31 @@
+/* Slowly Confetti Burst v1.0.0 */
+.sbs-confetti-burst-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: var(--sbs-confetti-z, 1);
+}
+.sbs-confetti-burst-piece {
+  position: absolute;
+  left: var(--sbs-confetti-origin-x, 50%);
+  top: var(--sbs-confetti-origin-y, 52%);
+  width: calc(var(--sbs-confetti-size, 8px) * .55);
+  height: var(--sbs-confetti-size, 8px);
+  border-radius: var(--sbs-confetti-radius, 2px);
+  opacity: 0;
+  background: var(--sbs-confetti-color, #ffe58f);
+  box-shadow: 0 0 8px var(--sbs-confetti-glow, rgba(255,226,135,.45));
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation: sbsConfettiBurst var(--sbs-confetti-duration, 1200ms) cubic-bezier(.15,.72,.18,1) var(--sbs-confetti-delay, 0ms) forwards;
+}
+@keyframes sbsConfettiBurst {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(0deg) scale(.45); }
+  12% { opacity: 1; }
+  72% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--sbs-confetti-x, 0px)), calc(-50% + var(--sbs-confetti-y, -180px))) rotate(var(--sbs-confetti-rot, 540deg)) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sbs-confetti-burst-layer[data-sbs-respect-reduced-motion="true"] { display: none; }
+}

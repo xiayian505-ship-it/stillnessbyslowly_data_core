@@ -1,0 +1,5 @@
+/* Slowly Shockwave v1.0.0 */
+.sbs-shockwave-layer { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:var(--sbs-shockwave-z,1); }
+.sbs-shockwave-ring { position:absolute; left:var(--sbs-shockwave-origin-x,50%); top:var(--sbs-shockwave-origin-y,50%); width:var(--sbs-shockwave-size,110px); aspect-ratio:1; border:var(--sbs-shockwave-border-width,3px) solid var(--sbs-shockwave-color,rgba(255,232,157,.94)); border-radius:50%; opacity:0; transform:translate(-50%,-50%) scale(.25); box-shadow:0 0 22px var(--sbs-shockwave-glow,rgba(255,221,115,.48)), inset 0 0 14px var(--sbs-shockwave-inner-glow,rgba(255,255,255,.35)); pointer-events:none; will-change:transform,opacity; animation:sbsShockwave var(--sbs-shockwave-duration,920ms) cubic-bezier(.12,.7,.2,1) var(--sbs-shockwave-delay,0ms) forwards; }
+@keyframes sbsShockwave { 0%{opacity:0;transform:translate(-50%,-50%) scale(var(--sbs-shockwave-start-scale,.2))} 18%{opacity:.95} 100%{opacity:0;transform:translate(-50%,-50%) scale(var(--sbs-shockwave-end-scale,5.6))} }
+@media (prefers-reduced-motion: reduce) { .sbs-shockwave-layer[data-sbs-respect-reduced-motion="true"] { display:none; } }

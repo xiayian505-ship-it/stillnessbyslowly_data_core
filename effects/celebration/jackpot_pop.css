@@ -1,0 +1,4 @@
+/* Slowly Jackpot Pop v1.0.0 */
+.sbs-jackpot-pop-active { animation:sbsJackpotPop var(--sbs-jackpot-duration,780ms) cubic-bezier(.18,.9,.2,1.2) var(--sbs-jackpot-delay,120ms) both; transform-origin:var(--sbs-jackpot-origin,center); will-change:transform,opacity; }
+@keyframes sbsJackpotPop { 0%{opacity:0;transform:scale(var(--sbs-jackpot-start-scale,.35)) translateY(var(--sbs-jackpot-start-y,10px))} 48%{opacity:1;transform:scale(var(--sbs-jackpot-max-scale,1.42)) translateY(var(--sbs-jackpot-peak-y,-5px))} 72%{transform:scale(var(--sbs-jackpot-under-scale,.88)) translateY(var(--sbs-jackpot-under-y,1px))} 88%{transform:scale(var(--sbs-jackpot-over-scale,1.08)) translateY(0)} 100%{opacity:1;transform:scale(1)} }
+@media (prefers-reduced-motion: reduce) { .sbs-jackpot-pop-active[data-sbs-respect-reduced-motion="true"] { animation-duration:120ms!important; animation-delay:0ms!important; } }

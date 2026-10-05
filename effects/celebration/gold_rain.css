@@ -1,0 +1,5 @@
+/* Slowly Gold Rain v1.0.0 */
+.sbs-gold-rain-layer { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:var(--sbs-gold-rain-z,1); }
+.sbs-gold-rain-drop { position:absolute; top:-10%; width:var(--sbs-gold-rain-size,6px); height:var(--sbs-gold-rain-size,6px); border-radius:50%; opacity:0; background:var(--sbs-gold-rain-color,#ffd966); box-shadow:0 0 11px var(--sbs-gold-rain-glow,rgba(255,215,95,.9)); pointer-events:none; will-change:transform,opacity; animation:sbsGoldRain var(--sbs-gold-rain-duration,1250ms) linear var(--sbs-gold-rain-delay,0ms) forwards; }
+@keyframes sbsGoldRain { 0%{opacity:0;transform:translate3d(0,-10vh,0) scale(.6)} 14%{opacity:1} 75%{opacity:.95} 100%{opacity:0;transform:translate3d(var(--sbs-gold-rain-drift,0px),116vh,0) scale(1.2)} }
+@media (prefers-reduced-motion: reduce) { .sbs-gold-rain-layer[data-sbs-respect-reduced-motion="true"] { display:none; } }

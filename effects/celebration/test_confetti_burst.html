@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confetti Burst Test</title>
+<link rel="stylesheet" href="./confetti_burst.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; font-family: sans-serif; background: #f3efe7; color: #2c2925; }
+  .stage { position: relative; width: min(92vw, 620px); height: min(62vh, 420px); min-height: 300px; overflow: hidden; border: 1px solid #b9b0a4; border-radius: 12px; background: #302b27; }
+  .stage-content { position: absolute; inset: 0; display: grid; place-items: center; color: #f8f2e8; font-weight: 800; letter-spacing: .04em; }
+  .controls { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+  button { min-height: 38px; padding: 7px 12px; }
+
+</style>
+</head>
+<body>
+<h1>Confetti Burst</h1>
+<div id="stage" class="stage"><div class="stage-content">Confetti</div></div>
+<div class="controls">
+  <button id="playDefault" type="button">預設</button>
+  <button id="playCustom" type="button">自訂</button>
+  <button id="clear" type="button">清除</button>
+</div>
+<script src="./confetti_burst.js"></script>
+<script>
+const playDefault = document.querySelector('#playDefault');
+const playCustom = document.querySelector('#playCustom');
+const clear = document.querySelector('#clear');
+
+const stage = document.querySelector('#stage');
+playDefault.onclick = () => SlowlyConfettiBurst.play(stage);
+playCustom.onclick = () => SlowlyConfettiBurst.play(stage, { count: 48, colors: ['#ff7a7a','#75d5ff','#ffe76b','#b7ff8a'], distanceMax: 520, durationMax: 1800 });
+clear.onclick = () => SlowlyConfettiBurst.clear(stage);
+
+</script>
+</body>
+</html>
