@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slowly Curtain Transition Usage</title>
+<link rel="stylesheet" href="./curtain_transition.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; font-family: sans-serif; background: #eee3cf; color: #2d241c; }
+  #host { width: min(760px, 100%); margin: 0 auto; border-radius: 18px; }
+  #stage { min-height: 320px; background: #f8f0df; border-radius: inherit; }
+  .page { position: absolute; inset: 0; display: none; place-items: center; font-size: 2rem; font-weight: 800; background: #f8f0df; }
+  .page.is-active { display: grid; }
+  .page.sbs-curtain-transition-incoming,
+  .page.sbs-curtain-transition-outgoing { display: grid; }
+  .controls { width: min(760px, 100%); margin: 14px auto 0; display: flex; gap: 8px; }
+</style>
+</head>
+<body>
+<div id="host">
+  <div id="stage">
+    <section class="page is-active">第一幕</section>
+    <section class="page">第二幕</section>
+  </div>
+</div>
+<div class="controls"><button id="turn" type="button">切換舞台</button></div>
+<script src="./curtain_transition.js"></script>
+<script>
+const host = document.querySelector('#host');
+const stage = document.querySelector('#stage');
+const pages = [...document.querySelectorAll('.page')];
+const curtain = SlowlyCurtainTransition.create(host, { surface: stage });
+let index = 0;
+
+document.querySelector('#turn').addEventListener('click', async () => {
+  const next = (index + 1) % pages.length;
+  const from = pages[index];
+  const to = pages[next];
+  await curtain.play({ outgoing: from, incoming: to });
+  from.classList.remove('is-active');
+  to.classList.add('is-active');
+  index = next;
+});
+</script>
+
+<section style="width:min(760px,100%);margin:28px auto 0;line-height:1.7;">
+  <h2>宿主外觀變數</h2>
+  <p>效果提供預設紅幕與暖色聚光燈；宿主可只覆寫 CSS 變數，不需修改軍火庫本體。</p>
+  <pre style="padding:14px;overflow:auto;background:#fff8ea;border:1px solid #d7c29b;border-radius:12px;">.slowly-curtain-transition {
+  --sbs-curtain-color-top: #8f2529;
+  --sbs-curtain-color-mid: #671619;
+  --sbs-curtain-color-bottom: #4d0f12;
+  --sbs-curtain-trim: rgba(238,190,91,.42);
+  --sbs-curtain-shadow: rgba(32,5,7,.38);
+  --sbs-curtain-stage-bg: #1d120d;
+
+  --sbs-curtain-spotlight-core: rgba(255,253,222,.98);
+  --sbs-curtain-spotlight-mid: rgba(255,237,164,.58);
+  --sbs-curtain-spotlight-soft: rgba(255,218,119,.20);
+  --sbs-curtain-spotlight-fade: rgba(255,217,133,0);
+  --sbs-curtain-spotlight-wash-top: rgba(255,250,215,.48);
+  --sbs-curtain-spotlight-wash-mid: rgba(255,220,128,.12);
+  --sbs-curtain-spotlight-wash-end: rgba(255,216,130,0);
+  --sbs-curtain-spotlight-strength: 1;
+
+  --sbs-curtain-vignette-mid: rgba(24,12,7,.08);
+  --sbs-curtain-vignette-edge: rgba(18,8,5,.56);
+  --sbs-curtain-vignette-top: rgba(17,9,5,.48);
+  --sbs-curtain-vignette-strength: 1;
+
+  --sbs-curtain-duration: 1720ms;
+}</pre>
+  <p><code>--sbs-curtain-spotlight-strength</code> 與 <code>--sbs-curtain-vignette-strength</code> 可直接調整聚光燈與暗場強度，例如 <code>.7</code> 會較淡、<code>1.2</code> 會較明顯。</p>
+</section>
+
+</body>
+</html>

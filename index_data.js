@@ -2245,6 +2245,36 @@ window.SlowlyLibraryIndex = [
         "desc": "Celebration / 慶祝 特效積木。"
       },
       {
+        "id": "stage",
+        "title": "Stage / 舞台",
+        "items": [
+          {
+            "title": "Curtain Transition",
+            "desc": "通用舞台布幕切換特效，提供左右布幕合攏／拉開、聚光燈、暗場、舊內容退場與新內容由暗轉亮；宿主仍自行控制頁面切換流程，並可透過 CSS 變數覆寫布幕色、飾邊、舞台背景、聚光燈色與強度、暗場色與強度及動畫時間。",
+            "links": [
+              {
+                "label": "curtain_transition.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition.css"
+              },
+              {
+                "label": "curtain_transition.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/test_curtain_transition.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition_usage.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Stage / 舞台 切換與場景轉場特效積木。"
+      },
+      {
         "id": "line",
         "title": "Line / 線條",
         "items": [

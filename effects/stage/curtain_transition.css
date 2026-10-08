@@ -1,0 +1,266 @@
+/* Slowly Curtain Transition v1.1.0
+   Stage curtain + spotlight transition.
+   Host: .slowly-curtain-transition
+   Surface: .slowly-curtain-transition-stage
+   Playing state is controlled by SlowlyCurtainTransition.
+*/
+
+.slowly-curtain-transition {
+  --sbs-curtain-duration: 1720ms;
+  --sbs-curtain-easing: cubic-bezier(.62,.02,.20,1);
+  --sbs-curtain-color-top: #8f2529;
+  --sbs-curtain-color-mid: #671619;
+  --sbs-curtain-color-bottom: #4d0f12;
+  --sbs-curtain-trim: rgba(238,190,91,.42);
+  --sbs-curtain-shadow: rgba(32,5,7,.38);
+  --sbs-curtain-stage-bg: #1d120d;
+  --sbs-curtain-z: 30;
+  --sbs-curtain-light-z: 24;
+  --sbs-curtain-vignette-z: 23;
+
+  /* Spotlight skin: host may override without editing the library file. */
+  --sbs-curtain-spotlight-core: rgba(255,253,222,.98);
+  --sbs-curtain-spotlight-mid: rgba(255,237,164,.58);
+  --sbs-curtain-spotlight-soft: rgba(255,218,119,.20);
+  --sbs-curtain-spotlight-fade: rgba(255,217,133,0);
+  --sbs-curtain-spotlight-wash-top: rgba(255,250,215,.48);
+  --sbs-curtain-spotlight-wash-mid: rgba(255,220,128,.12);
+  --sbs-curtain-spotlight-wash-end: rgba(255,216,130,0);
+  --sbs-curtain-spotlight-strength: 1;
+
+  /* Vignette skin: host controls how dark the stage becomes during the transition. */
+  --sbs-curtain-vignette-mid: rgba(24,12,7,.08);
+  --sbs-curtain-vignette-edge: rgba(18,8,5,.56);
+  --sbs-curtain-vignette-top: rgba(17,9,5,.48);
+  --sbs-curtain-vignette-strength: 1;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--sbs-curtain-stage-bg);
+}
+
+.slowly-curtain-transition-stage {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Left / right curtain panels. */
+.slowly-curtain-transition-stage::before,
+.slowly-curtain-transition-stage::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: var(--sbs-curtain-z);
+  width: 51%;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 42px var(--sbs-curtain-shadow),
+    0 0 28px rgba(25,9,6,.34);
+  will-change: transform, opacity;
+}
+
+.slowly-curtain-transition-stage::before {
+  left: 0;
+  border-right: 2px solid var(--sbs-curtain-trim);
+  transform: translateX(-102%);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.06), transparent 13% 27%, rgba(0,0,0,.16) 28% 35%, transparent 36% 52%, rgba(255,255,255,.045) 53% 65%, rgba(0,0,0,.2) 66% 74%, transparent 75%),
+    linear-gradient(180deg, var(--sbs-curtain-color-top) 0%, var(--sbs-curtain-color-mid) 44%, var(--sbs-curtain-color-bottom) 100%);
+}
+
+.slowly-curtain-transition-stage::after {
+  right: 0;
+  border-left: 2px solid var(--sbs-curtain-trim);
+  transform: translateX(102%);
+  background:
+    linear-gradient(270deg, rgba(255,255,255,.06), transparent 13% 27%, rgba(0,0,0,.16) 28% 35%, transparent 36% 52%, rgba(255,255,255,.045) 53% 65%, rgba(0,0,0,.2) 66% 74%, transparent 75%),
+    linear-gradient(180deg, var(--sbs-curtain-color-top) 0%, var(--sbs-curtain-color-mid) 44%, var(--sbs-curtain-color-bottom) 100%);
+}
+
+.slowly-curtain-transition.is-playing .slowly-curtain-transition-stage::before {
+  animation: sbsCurtainTransitionLeft var(--sbs-curtain-duration) var(--sbs-curtain-easing) both;
+}
+
+.slowly-curtain-transition.is-playing .slowly-curtain-transition-stage::after {
+  animation: sbsCurtainTransitionRight var(--sbs-curtain-duration) var(--sbs-curtain-easing) both;
+}
+
+/* Spotlight. */
+.slowly-curtain-transition::before {
+  content: "";
+  position: absolute;
+  z-index: var(--sbs-curtain-light-z);
+  top: -9%;
+  left: 50%;
+  width: min(92%, 980px);
+  height: 118%;
+  transform: translateX(-50%) scaleY(.86);
+  transform-origin: 50% 0;
+  opacity: 0;
+  pointer-events: none;
+  clip-path: polygon(43% 0, 57% 0, 91% 100%, 9% 100%);
+  background:
+    radial-gradient(ellipse at 50% 8%, var(--sbs-curtain-spotlight-core) 0 4%, var(--sbs-curtain-spotlight-mid) 16%, var(--sbs-curtain-spotlight-soft) 43%, var(--sbs-curtain-spotlight-fade) 72%),
+    linear-gradient(180deg, var(--sbs-curtain-spotlight-wash-top), var(--sbs-curtain-spotlight-wash-mid) 54%, var(--sbs-curtain-spotlight-wash-end) 100%);
+  filter: blur(2px);
+  mix-blend-mode: screen;
+  will-change: opacity, transform, filter;
+}
+
+/* Stage vignette. */
+.slowly-curtain-transition::after {
+  content: "";
+  position: absolute;
+  z-index: var(--sbs-curtain-vignette-z);
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 14%, transparent 0 23%, var(--sbs-curtain-vignette-mid) 48%, var(--sbs-curtain-vignette-edge) 100%),
+    linear-gradient(180deg, var(--sbs-curtain-vignette-top), transparent 38%);
+  will-change: opacity;
+}
+
+.slowly-curtain-transition.is-playing::before {
+  animation: sbsCurtainTransitionSpotlight var(--sbs-curtain-duration) cubic-bezier(.22,.62,.22,1) both;
+}
+
+.slowly-curtain-transition.is-playing::after {
+  animation: sbsCurtainTransitionVignette var(--sbs-curtain-duration) ease both;
+}
+
+/* Optional page helpers. The host application remains responsible for its own active-page state. */
+.sbs-curtain-transition-incoming,
+.sbs-curtain-transition-outgoing {
+  visibility: visible !important;
+  pointer-events: none !important;
+  will-change: filter, opacity, transform;
+}
+
+.sbs-curtain-transition-incoming {
+  z-index: 1;
+  animation: sbsCurtainTransitionReveal var(--sbs-curtain-duration) cubic-bezier(.2,.54,.18,1) both;
+}
+
+.sbs-curtain-transition-outgoing {
+  z-index: 3;
+  animation: sbsCurtainTransitionExit var(--sbs-curtain-duration) ease both;
+}
+
+@keyframes sbsCurtainTransitionLeft {
+  0%   { opacity: 0; transform: translateX(-102%) scaleX(1); }
+  8%   { opacity: 1; }
+  39%  { opacity: 1; transform: translateX(0) scaleX(1.025); }
+  52%  { opacity: 1; transform: translateX(0) scaleX(1.025); }
+  66%  { opacity: 1; transform: translateX(-7%) scaleX(1.02); }
+  84%  { opacity: 1; transform: translateX(-74%) scaleX(1.01); }
+  100% { opacity: 0; transform: translateX(-104%) scaleX(1); }
+}
+
+@keyframes sbsCurtainTransitionRight {
+  0%   { opacity: 0; transform: translateX(102%) scaleX(1); }
+  8%   { opacity: 1; }
+  39%  { opacity: 1; transform: translateX(0) scaleX(1.025); }
+  52%  { opacity: 1; transform: translateX(0) scaleX(1.025); }
+  66%  { opacity: 1; transform: translateX(7%) scaleX(1.02); }
+  84%  { opacity: 1; transform: translateX(74%) scaleX(1.01); }
+  100% { opacity: 0; transform: translateX(104%) scaleX(1); }
+}
+
+@keyframes sbsCurtainTransitionSpotlight {
+  0%, 31% {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(.72) scaleX(.74);
+    filter: blur(9px) brightness(.72);
+  }
+  48% {
+    opacity: calc(.14 * var(--sbs-curtain-spotlight-strength));
+    transform: translateX(-50%) scaleY(.84) scaleX(.86);
+    filter: blur(7px) brightness(.9);
+  }
+  63% {
+    opacity: calc(.48 * var(--sbs-curtain-spotlight-strength));
+    transform: translateX(-50%) scaleY(.96) scaleX(.96);
+    filter: blur(4px) brightness(1.06);
+  }
+  80% {
+    opacity: calc(.82 * var(--sbs-curtain-spotlight-strength));
+    transform: translateX(-50%) scaleY(1.04) scaleX(1.035);
+    filter: blur(2px) brightness(1.18);
+  }
+  100% {
+    opacity: calc(.18 * var(--sbs-curtain-spotlight-strength));
+    transform: translateX(-50%) scaleY(1) scaleX(1);
+    filter: blur(4px) brightness(1);
+  }
+}
+
+@keyframes sbsCurtainTransitionVignette {
+  0%   { opacity: 0; }
+  18%  { opacity: calc(.44 * var(--sbs-curtain-vignette-strength)); }
+  48%  { opacity: calc(.72 * var(--sbs-curtain-vignette-strength)); }
+  62%  { opacity: calc(.48 * var(--sbs-curtain-vignette-strength)); }
+  82%  { opacity: calc(.16 * var(--sbs-curtain-vignette-strength)); }
+  100% { opacity: 0; }
+}
+
+@keyframes sbsCurtainTransitionExit {
+  0%, 28% {
+    opacity: 1;
+    filter: brightness(1) saturate(1);
+    transform: scale(1);
+  }
+  45% {
+    opacity: .86;
+    filter: brightness(.58) saturate(.86);
+    transform: scale(.995);
+  }
+  52%, 100% {
+    opacity: 0;
+    filter: brightness(.34) saturate(.72);
+    transform: scale(.99);
+  }
+}
+
+@keyframes sbsCurtainTransitionReveal {
+  0%, 46% {
+    opacity: 1;
+    filter: brightness(.24) saturate(.68) contrast(.96);
+    transform: scale(.988);
+  }
+  57% {
+    filter: brightness(.34) saturate(.74) contrast(.98);
+    transform: scale(.99);
+  }
+  72% {
+    filter: brightness(.62) saturate(.86) contrast(1);
+    transform: scale(.995);
+  }
+  88% {
+    filter: brightness(.90) saturate(.96) contrast(1);
+    transform: scale(.999);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1) saturate(1) contrast(1);
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 760px) {
+  .slowly-curtain-transition::before { width: 120%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-curtain-transition-stage::before,
+  .slowly-curtain-transition-stage::after,
+  .slowly-curtain-transition::before,
+  .slowly-curtain-transition::after,
+  .sbs-curtain-transition-incoming,
+  .sbs-curtain-transition-outgoing {
+    animation: none !important;
+  }
+}
