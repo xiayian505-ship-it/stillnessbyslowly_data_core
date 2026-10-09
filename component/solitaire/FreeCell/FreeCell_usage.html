@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FreeCell｜使用說明</title>
+  <style>
+    body { font: 16px/1.7 system-ui, sans-serif; margin: 20px auto; padding: 0 14px; max-width: 850px; color: #293a37; }
+    pre { overflow-x: auto; padding: 14px; background: #f0f3f1; border: 1px solid #dbe4de; border-radius: 8px; }
+    code { font-family: ui-monospace, monospace; }
+  </style>
+</head>
+<body>
+  <h1>FreeCell｜使用說明</h1>
+  <p>慢慢軍火庫的可嵌入 FreeCell 完成品。只提供隨機開局、標準移牌、主動結束、勝利判定與末盤自動收牌。無 DB、UID、牌局庫、音效、勝利特效或持久化紀錄。</p>
+  <h2>1. HTTPS 載入</h2>
+  <pre><code>&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/component/solitaire/FreeCell/FreeCell.css"&gt;
+&lt;div id="my-freecell"&gt;&lt;/div&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/deck.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/component/solitaire/FreeCell/FreeCell.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const game = window.SlowlyFreeCell.mount("#my-freecell");
+&lt;/script&gt;</code></pre>
+  <p>需要先載入軍火庫 <code>Deck</code> 零件；兩者都是 HTTPS 絕對網址，不需要複製軍火庫 JS 到專案。</p>
+  <h2>2. 遊玩方式</h2>
+  <p>按「開始遊戲」隨機發 52 張牌（前四欄各 7 張，後四欄各 6 張）。點選牌或合法遞減紅黑交錯牌串，再點目的欄位、空自由格或對應回收格。八欄與四自由格決定可一次搬動的牌串數。回收格依花色從 A 排至 K，不支援由回收格取回牌。剩餘全部牌能按回收順序直接收完時，自動完成收牌並宣告勝利。</p>
+  <p>「結束遊戲」直接結束當局，不產生勝利事件；結束或破關後可以再開始隨機一局。</p>
+  <h2>3. JavaScript API</h2>
+  <pre><code>const game = SlowlyFreeCell.mount("#my-freecell");
+game.start();      // 隨機開始一局；遊戲中不會覆蓋目前牌局
+game.end();        // 主動結束目前牌局
+game.getState();   // 取得目前狀態快照（非即時參照）
+game.destroy();    // 清除元件與事件監聽</code></pre>
+  <h2>4. 宿主事件</h2>
+  <pre><code>const host = document.querySelector("#my-freecell");
+host.addEventListener("freecell:start", (event) =&gt; {
+  // 隨機開局
+});
+host.addEventListener("freecell:end", (event) =&gt; {
+  // 使用者主動結束，event.detail.reason === "manual"
+});
+host.addEventListener("freecell:win", (event) =&gt; {
+  // 遊戲完成。宿主要播放特效或存紀錄，可以自行處理。
+});</code></pre>
+  <p>事件從元件容器觸發且可冒泡；<code>event.detail.moves</code> 是該局移動次數。元件不會主動執行宿主專屬功能。</p>
+  <h2>5. 宿主換皮</h2>
+  <pre><code>#my-freecell.slowly-freecell {
+  --sfc-surface: #eff4f9;
+  --sfc-card: #ffffff;
+  --sfc-ink: #23384d;
+  --sfc-accent: #496b9c;
+  --sfc-red: #b52b51;
+  --sfc-black: #243245;
+  --sfc-selected: #dfb75e;
+  --sfc-stack-step: 25px;
+}</code></pre>
+  <p>元件樣式只作用在 <code>.slowly-freecell</code>，不覆寫宿主 <code>body</code> 或全域按鈕。</p>
+  <p><a href="./FreeCell_demo.html">前往 FreeCell 展示頁</a></p>
+</body>
+</html>

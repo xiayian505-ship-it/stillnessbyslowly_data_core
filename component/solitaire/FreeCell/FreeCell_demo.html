@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FreeCell｜慢慢軍火庫完成品展示</title>
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/component/solitaire/FreeCell/FreeCell.css">
+  <style>
+    /* 展示頁只提供容器寬度；牌桌樣式由完成品 CSS 處理。 */
+    body { margin: 0; padding: 18px 10px; background: #f7f8f5; color: #233631; font: 16px/1.5 system-ui, sans-serif; }
+    main { max-width: 1050px; margin: auto; }
+    h1 { margin: 0 0 6px; font-size: 1.5rem; }
+    p { margin: 0 0 16px; }
+    a { color: inherit; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>FreeCell</h1>
+  <p>標準新接龍：點牌選取，再點目標位置。<a href="./FreeCell_usage.html">使用說明</a></p>
+  <div id="freecell"></div>
+</main>
+<script src="https://lib.stillnessbyslowly.com/game/card/deck.js"></script>
+<script src="https://lib.stillnessbyslowly.com/component/solitaire/FreeCell/FreeCell.js"></script>
+<script>
+  window.SlowlyFreeCell.mount("#freecell");
+</script>
+</body>
+</html>
