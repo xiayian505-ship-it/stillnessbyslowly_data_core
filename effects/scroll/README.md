@@ -1,6 +1,6 @@
 # 慢慢軍火庫｜Scroll Motion 滾動互動微零件
 
-本目錄位於 `effects/scroll/`，收納新增的滾動互動微零件；與本目錄既有的滾動功能、`effects/reveal/` 共用功能配合。暫時**不登錄軍火庫主頁**，也不修改 `index.html`、`index_data.js`、`group.html`。
+本目錄位於 `effects/scroll/`，收納新增的滾動互動微零件；與本目錄既有的滾動功能、`effects/reveal/` 共用功能配合。已登錄軍火庫主頁的 **Effects → Scroll / 捲動** 子分類；沿用原有子分類頁、搜尋與積木索引。
 
 - 原則：一個檔案通常只做一件事；簡單視覺效果優先純 CSS，觀察滾動狀態才使用 JS。
 - 每個 CSS/JS 零件都可透過 `https://lib.stillnessbyslowly.com/effects/scroll/分類/檔名` **直接引用**，不需要複製功能到專案。
@@ -130,4 +130,4 @@
 4. `layout/sticky_*` 遵守 CSS sticky 規則，祖先的 overflow、可捲動範圍都可能影響固定位置；`snap_*` 要放在有固定可捲動尺寸的容器。
 5. 基於視差的 `parallax/x.js`、`y.js` 控制 `translate`；若元素已有自己的 translate 效果，請分配至不同包裝層。兩支 JS 可同時套到同一元素，解除時會恢復原始 translate。
 6. 所有純動畫 CSS 都內建 `prefers-reduced-motion` 處理；滾動進度在減少動態設定下會固定為完成狀態。橫向展示則退回一般左右滑動。
-7. 未公開檔案前，以上 CDN 路徑**尚不會生效**：先把這些新增的子目錄放進軍火庫 repo 的 `effects/scroll/` 並部署 GitHub Pages，主頁入口則可以之後再討論。
+7. 以上 CDN 網址以 GitHub Pages 已部署的 `effects/scroll/` 路徑為準；新增或移動檔案時，請同步檢查主頁 `index_data.js` 的絕對網址。

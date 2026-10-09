@@ -2529,6 +2529,472 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_scroll_class.html"
               }
             ]
+          },
+          {
+            "title": "Scroll Direction / 捲動方向",
+            "desc": "偵測頁面向上或向下捲動，切換方向 class，也可用 onChange 接收方向；不附帶動畫樣式。",
+            "links": [
+              {
+                "label": "direction.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/direction.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_direction.html"
+              }
+            ]
+          },
+          {
+            "title": "Element Progress / 元素捲動進度",
+            "desc": "計算元素進出視窗時的進度（0～1），寫入 CSS 自訂變數並可透過 onUpdate 取得數值；可搭配 Linked 效果。",
+            "links": [
+              {
+                "label": "element_progress.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/element_progress.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_element_progress.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Leave / 離開視窗",
+            "desc": "元素進入視窗後再離開時切換 class，重新進入則移除；只負責狀態，不決定外觀。",
+            "links": [
+              {
+                "label": "leave.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/leave.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_leave.html"
+              }
+            ]
+          },
+          {
+            "title": "Section Active / 目前閱讀區塊",
+            "desc": "依視窗閱讀焦點標示目前區塊，切換 is-active-section class，並可透過 onChange 通知宿主。",
+            "links": [
+              {
+                "label": "section_active.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/section_active.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_section_active.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Velocity / 捲動速度",
+            "desc": "測量捲動速度（px/s，含方向正負值），寫入 CSS 自訂變數並提供 onUpdate callback。",
+            "links": [
+              {
+                "label": "velocity.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/velocity.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_velocity.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Opacity / 透明度連動",
+            "desc": "讓透明度依元素捲動進度變化；純 CSS 效果，可搭配 Element Progress 的進度變數。",
+            "links": [
+              {
+                "label": "opacity.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/opacity.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_opacity.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Translate X / 水平位移連動",
+            "desc": "讓元素的水平位移隨捲動進度變化；純 CSS 效果，位移距離可由宿主設定。",
+            "links": [
+              {
+                "label": "translate_x.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/translate_x.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_translate_x.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Translate Y / 垂直位移連動",
+            "desc": "讓元素的垂直位移隨捲動進度變化；純 CSS 效果，位移距離可由宿主設定。",
+            "links": [
+              {
+                "label": "translate_y.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/translate_y.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_translate_y.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Scale / 縮放連動",
+            "desc": "根據捲動進度由起始比例縮放至目標比例；純 CSS 效果，縮放範圍可調。",
+            "links": [
+              {
+                "label": "scale.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/scale.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_scale.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Rotate / 旋轉連動",
+            "desc": "根據捲動進度改變元素旋轉角度；純 CSS 效果，起始與結束角度可調。",
+            "links": [
+              {
+                "label": "rotate.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/rotate.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_rotate.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Blur / 模糊連動",
+            "desc": "隨捲動進度將元素由模糊逐漸變清晰；純 CSS 效果，初始模糊程度可調。",
+            "links": [
+              {
+                "label": "blur.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/blur.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_blur.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Clip Reveal / 遮罩揭露",
+            "desc": "隨捲動進度由左至右揭露元素內容；純 CSS 遮罩效果。",
+            "links": [
+              {
+                "label": "clip_reveal.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/clip_reveal.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_clip_reveal.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Fade / 淡入",
+            "desc": "元素切換 is-visible 後淡入；可搭配既有 Auto Reveal 觸發，時間與延遲由宿主設定。",
+            "links": [
+              {
+                "label": "fade.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/fade.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_fade.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Slide Up / 上浮",
+            "desc": "元素切換 is-visible 後由下向上進場；純 CSS 位移效果，可自訂距離與時間。",
+            "links": [
+              {
+                "label": "slide_up.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_up.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_up.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Slide Down / 下沉",
+            "desc": "元素切換 is-visible 後由上向下進場；純 CSS 位移效果，可自訂距離與時間。",
+            "links": [
+              {
+                "label": "slide_down.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_down.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_down.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Slide Left / 左滑",
+            "desc": "元素切換 is-visible 後向左滑入；純 CSS 位移效果，可自訂距離與時間。",
+            "links": [
+              {
+                "label": "slide_left.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_left.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_left.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Slide Right / 右滑",
+            "desc": "元素切換 is-visible 後向右滑入；純 CSS 位移效果，可自訂距離與時間。",
+            "links": [
+              {
+                "label": "slide_right.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_right.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_right.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Zoom / 縮放進場",
+            "desc": "元素切換 is-visible 後由指定比例縮放到正常大小；可搭配其他進場效果。",
+            "links": [
+              {
+                "label": "zoom.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/zoom.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_zoom.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Spin / 旋轉進場",
+            "desc": "元素切換 is-visible 後旋轉回目標角度；純 CSS 進場效果，參數可調。",
+            "links": [
+              {
+                "label": "spin.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/spin.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_spin.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Flip X / X 軸翻轉",
+            "desc": "元素切換 is-visible 後沿 X 軸翻轉進場；純 CSS 效果。",
+            "links": [
+              {
+                "label": "flip_x.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/flip_x.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_flip_x.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Flip Y / Y 軸翻轉",
+            "desc": "元素切換 is-visible 後沿 Y 軸翻轉進場；純 CSS 效果。",
+            "links": [
+              {
+                "label": "flip_y.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/flip_y.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_flip_y.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Blur Clear / 模糊變清晰",
+            "desc": "元素切換 is-visible 後由模糊轉清晰；純 CSS 進場效果。",
+            "links": [
+              {
+                "label": "blur_clear.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/blur_clear.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_blur_clear.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Bounce / 彈跳",
+            "desc": "元素切換 is-visible 後彈跳進場；純 CSS 動畫，外觀由宿主決定。",
+            "links": [
+              {
+                "label": "bounce.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/bounce.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_bounce.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Shake / 搖晃",
+            "desc": "元素切換 is-visible 時播放搖晃效果；純 CSS 動畫，不額外設定外觀。",
+            "links": [
+              {
+                "label": "shake.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/shake.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_shake.html"
+              }
+            ]
+          },
+          {
+            "title": "Parallax X / 水平視差",
+            "desc": "依頁面捲動量讓指定元素水平視差移動，速度與最大距離可調；可與 Parallax Y 搭配。",
+            "links": [
+              {
+                "label": "x.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/x.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/test_x.html"
+              }
+            ]
+          },
+          {
+            "title": "Parallax Y / 垂直視差",
+            "desc": "依頁面捲動量讓指定元素垂直視差移動，速度與最大距離可調；可與 Parallax X 搭配。",
+            "links": [
+              {
+                "label": "y.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/y.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/test_y.html"
+              }
+            ]
+          },
+          {
+            "title": "Sticky Top / 黏住頂端",
+            "desc": "CSS sticky 頂端定位微零件，可由宿主設定頂端間距與層級，不附帶視覺裝飾。",
+            "links": [
+              {
+                "label": "sticky_top.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/sticky_top.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_sticky_top.html"
+              }
+            ]
+          },
+          {
+            "title": "Sticky Bottom / 黏住底端",
+            "desc": "CSS sticky 底端定位微零件，可由宿主設定底端間距與層級，不附帶視覺裝飾。",
+            "links": [
+              {
+                "label": "sticky_bottom.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/sticky_bottom.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_sticky_bottom.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Snap X / 水平吸附",
+            "desc": "以原生 CSS scroll-snap 讓橫向捲動停在指定元素位置；需由宿主提供捲動容器尺寸。",
+            "links": [
+              {
+                "label": "snap_x.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/snap_x.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_snap_x.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Snap Y / 垂直吸附",
+            "desc": "以原生 CSS scroll-snap 讓垂直捲動停在指定元素位置；需由宿主提供捲動容器尺寸。",
+            "links": [
+              {
+                "label": "snap_y.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/snap_y.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_snap_y.html"
+              }
+            ]
+          },
+          {
+            "title": "Horizontal Rail / 可橫滑內容列",
+            "desc": "純 CSS 橫向內容列，可手指左右滑動；排版尺寸及外觀交給宿主。",
+            "links": [
+              {
+                "label": "horizontal_rail.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/horizontal_rail.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_horizontal_rail.html"
+              }
+            ]
+          },
+          {
+            "title": "Vertical To Horizontal / 垂直轉橫向",
+            "desc": "頁面向下捲動時推進橫向內容軌道；需搭配同名 CSS 與指定 HTML 結構，不攔截滑動手勢。",
+            "links": [
+              {
+                "label": "vertical_to_horizontal.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/horizontal/vertical_to_horizontal.css"
+              },
+              {
+                "label": "vertical_to_horizontal.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/horizontal/vertical_to_horizontal.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/horizontal/test_vertical_to_horizontal.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Stagger / 逐項延遲",
+            "desc": "替多個元素依序設定 CSS 動畫延遲變數，可搭配任一 Motion 進場動畫；不決定動畫外觀。",
+            "links": [
+              {
+                "label": "stagger.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/control/stagger.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/control/test_stagger.html"
+              }
+            ]
           }
         ],
         "subpage": true,
