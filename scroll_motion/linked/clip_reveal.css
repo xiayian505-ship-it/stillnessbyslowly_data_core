@@ -1,0 +1,5 @@
+/* Slowly Scroll Motion | Linked | Clip Reveal */
+.slowly-scroll-clip-reveal {
+  clip-path: inset(0 calc((1 - var(--slowly-scroll-item-progress, 1)) * 100%) 0 0);
+}
+@media (prefers-reduced-motion: reduce) { .slowly-scroll-clip-reveal { clip-path: none !important; } }

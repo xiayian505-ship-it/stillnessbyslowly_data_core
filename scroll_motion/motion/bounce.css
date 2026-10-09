@@ -1,0 +1,12 @@
+/* Slowly Scroll Motion | Motion | Bounce
+   An entrance animation; should not be mixed with another translate animator. */
+.slowly-motion-bounce.is-visible {
+  animation: slowly-scroll-bounce var(--slowly-motion-duration, .7s) var(--slowly-motion-easing, ease-out) var(--slowly-motion-delay, 0ms) both;
+}
+@keyframes slowly-scroll-bounce {
+  0% { translate: 0 36px; }
+  55% { translate: 0 -12px; }
+  76% { translate: 0 5px; }
+  100% { translate: none; }
+}
+@media (prefers-reduced-motion: reduce) { .slowly-motion-bounce.is-visible { animation: none; } }

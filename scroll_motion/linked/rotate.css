@@ -1,0 +1,7 @@
+/* Slowly Scroll Motion | Linked | Rotate */
+.slowly-scroll-rotate {
+  --slowly-scroll-rotate-from: -15deg;
+  --slowly-scroll-rotate-to: 0deg;
+  rotate: calc(var(--slowly-scroll-rotate-from) + (var(--slowly-scroll-rotate-to) - var(--slowly-scroll-rotate-from)) * var(--slowly-scroll-item-progress, 1));
+}
+@media (prefers-reduced-motion: reduce) { .slowly-scroll-rotate { rotate: none !important; } }

@@ -1,0 +1,7 @@
+/* Slowly Scroll Motion | Linked | Opacity */
+.slowly-scroll-opacity {
+  --slowly-scroll-opacity-from: 0.15;
+  --slowly-scroll-opacity-to: 1;
+  opacity: calc(var(--slowly-scroll-opacity-from) + (var(--slowly-scroll-opacity-to) - var(--slowly-scroll-opacity-from)) * var(--slowly-scroll-item-progress, 1));
+}
+@media (prefers-reduced-motion: reduce) { .slowly-scroll-opacity { opacity: 1 !important; } }

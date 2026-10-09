@@ -1,0 +1,12 @@
+/* Slowly Scroll Motion | Linked | Translate y
+   Combine x + y on the same element if needed. */
+.slowly-scroll-translate-y {
+  --slowly-scroll-translate-y-distance: 32px;
+  --slowly-scroll-linked-y: calc((1 - var(--slowly-scroll-item-progress, 1)) * var(--slowly-scroll-translate-y-distance));
+}
+.slowly-scroll-translate-y {
+  translate: var(--slowly-scroll-linked-x, 0px) var(--slowly-scroll-linked-y, 0px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .slowly-scroll-translate-y { --slowly-scroll-linked-y: 0px; }
+}

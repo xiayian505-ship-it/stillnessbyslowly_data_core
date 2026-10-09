@@ -1,0 +1,6 @@
+/* Slowly Scroll Motion | Linked | Blur */
+.slowly-scroll-blur {
+  --slowly-scroll-blur-from: 12px;
+  filter: blur(calc((1 - var(--slowly-scroll-item-progress, 1)) * var(--slowly-scroll-blur-from)));
+}
+@media (prefers-reduced-motion: reduce) { .slowly-scroll-blur { filter: none !important; } }

@@ -1,0 +1,9 @@
+/* Slowly Scroll Motion | Motion | Flip Y
+   Use only one rotate-based effect per element. */
+.slowly-motion-flip-y {
+  rotate: y var(--slowly-motion-flip-angle, 70deg);
+  backface-visibility: hidden;
+  transition: rotate var(--slowly-motion-duration, .7s) var(--slowly-motion-easing, ease) var(--slowly-motion-delay, 0ms);
+}
+.slowly-motion-flip-y.is-visible { rotate: y 0deg; }
+@media (prefers-reduced-motion: reduce) { .slowly-motion-flip-y { rotate: none; transition: none; } }

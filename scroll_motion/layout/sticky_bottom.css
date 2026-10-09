@@ -1,0 +1,7 @@
+/* Slowly Scroll Motion | Layout | Sticky Bottom */
+.slowly-sticky-bottom {
+  --slowly-sticky-bottom: 0px;
+  position: sticky;
+  bottom: var(--slowly-sticky-bottom);
+  z-index: var(--slowly-sticky-z, 10);
+}

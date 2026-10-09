@@ -1,0 +1,21 @@
+/* Slowly Scroll Motion | Horizontal | Vertical to Horizontal
+   DOM: section.slowly-vth > div.slowly-vth-viewport > div.slowly-vth-track
+   JS determines stage height. Native horizontal scrolling is the fallback. */
+.slowly-vth { position: relative; }
+.slowly-vth-viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 100vh;
+  width: 100%;
+}
+.slowly-vth-track { display: flex; width: max-content; min-height: 100%; }
+.slowly-vth.is-vth-enabled .slowly-vth-viewport {
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+}
+.slowly-vth.is-vth-enabled .slowly-vth-track { will-change: translate; }
+@media (prefers-reduced-motion: reduce) {
+  .slowly-vth.is-vth-enabled .slowly-vth-viewport { position: static; overflow-x: auto; }
+  .slowly-vth.is-vth-enabled .slowly-vth-track { translate: none !important; }
+}

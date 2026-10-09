@@ -1,0 +1,13 @@
+/* Slowly Scroll Motion | Layout | Snap Y
+   Apply container class to a fixed-height overflow-y:auto container;
+   apply .slowly-snap-child to each direct target. */
+.slowly-snap-y {
+  scroll-snap-type: y var(--slowly-snap-strength, mandatory);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+.slowly-snap-y > .slowly-snap-child {
+  scroll-snap-align: var(--slowly-snap-align, start);
+  scroll-snap-stop: var(--slowly-snap-stop, normal);
+}
+@media (prefers-reduced-motion: reduce) { .slowly-snap-y { scroll-behavior: auto; } }

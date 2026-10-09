@@ -1,0 +1,11 @@
+/* Slowly Scroll Motion | Layout | Horizontal Rail
+   True horizontal swipe/trackpad scroll (does NOT hijack vertical wheel). */
+.slowly-horizontal-rail {
+  display: flex;
+  gap: var(--slowly-rail-gap, 16px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-block: var(--slowly-rail-padding, 12px);
+}
+.slowly-horizontal-rail > * { flex: 0 0 auto; }

@@ -1,0 +1,9 @@
+/* Slowly Scroll Motion | Motion | Slide Up
+   Combine one x-direction and one y-direction slide if desired. */
+.slowly-motion-slide-up {
+  --slowly-motion-y: var(--slowly-motion-y-distance, 32px);
+  translate: var(--slowly-motion-x, 0px) var(--slowly-motion-y, 0px);
+  transition: translate var(--slowly-motion-duration, .6s) var(--slowly-motion-easing, ease) var(--slowly-motion-delay, 0ms);
+}
+.slowly-motion-slide-up.is-visible { --slowly-motion-y: 0px; }
+@media (prefers-reduced-motion: reduce) { .slowly-motion-slide-up { translate: none; transition: none; } }

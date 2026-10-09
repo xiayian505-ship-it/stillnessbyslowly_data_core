@@ -1,0 +1,7 @@
+/* Slowly Scroll Motion | Motion | Blur Clear */
+.slowly-motion-blur-clear {
+  filter: blur(var(--slowly-motion-blur, 12px));
+  transition: filter var(--slowly-motion-duration, .6s) var(--slowly-motion-easing, ease) var(--slowly-motion-delay, 0ms);
+}
+.slowly-motion-blur-clear.is-visible { filter: blur(0); }
+@media (prefers-reduced-motion: reduce) { .slowly-motion-blur-clear { filter: none; transition: none; } }

@@ -1,0 +1,10 @@
+/* Slowly Scroll Motion | Motion | Shake */
+.slowly-motion-shake.is-visible {
+  animation: slowly-scroll-shake var(--slowly-motion-duration, .5s) ease-in-out var(--slowly-motion-delay, 0ms) both;
+}
+@keyframes slowly-scroll-shake {
+  0%, 100% { transform: translateX(0); }
+  18%, 54% { transform: translateX(-8px); }
+  36%, 72% { transform: translateX(8px); }
+}
+@media (prefers-reduced-motion: reduce) { .slowly-motion-shake.is-visible { animation: none; } }

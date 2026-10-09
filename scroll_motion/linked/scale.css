@@ -1,0 +1,7 @@
+/* Slowly Scroll Motion | Linked | Scale */
+.slowly-scroll-scale {
+  --slowly-scroll-scale-from: 0.85;
+  --slowly-scroll-scale-to: 1;
+  scale: calc(var(--slowly-scroll-scale-from) + (var(--slowly-scroll-scale-to) - var(--slowly-scroll-scale-from)) * var(--slowly-scroll-item-progress, 1));
+}
+@media (prefers-reduced-motion: reduce) { .slowly-scroll-scale { scale: 1 !important; } }

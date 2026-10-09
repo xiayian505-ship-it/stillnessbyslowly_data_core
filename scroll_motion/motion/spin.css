@@ -1,0 +1,8 @@
+/* Slowly Scroll Motion | Motion | Spin */
+.slowly-motion-spin {
+  --slowly-motion-spin-from: -20deg;
+  rotate: var(--slowly-motion-spin-from);
+  transition: rotate var(--slowly-motion-duration, .7s) var(--slowly-motion-easing, ease) var(--slowly-motion-delay, 0ms);
+}
+.slowly-motion-spin.is-visible { rotate: 0deg; }
+@media (prefers-reduced-motion: reduce) { .slowly-motion-spin { rotate: none; transition: none; } }

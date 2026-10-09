@@ -1,0 +1,8 @@
+/* Slowly Scroll Motion | Motion | Fade
+   Add .is-visible (e.g. via existing effects/reveal/auto_reveal.js). */
+.slowly-motion-fade {
+  opacity: 0;
+  transition: opacity var(--slowly-motion-duration, .6s) var(--slowly-motion-easing, ease) var(--slowly-motion-delay, 0ms);
+}
+.slowly-motion-fade.is-visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .slowly-motion-fade { opacity: 1; transition: none; } }

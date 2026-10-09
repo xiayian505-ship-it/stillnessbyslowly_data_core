@@ -1,0 +1,11 @@
+/* Slowly Scroll Motion | Layout | Snap X */
+.slowly-snap-x {
+  scroll-snap-type: x var(--slowly-snap-strength, mandatory);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+.slowly-snap-x > .slowly-snap-child {
+  scroll-snap-align: var(--slowly-snap-align, start);
+  scroll-snap-stop: var(--slowly-snap-stop, normal);
+}
+@media (prefers-reduced-motion: reduce) { .slowly-snap-x { scroll-behavior: auto; } }
