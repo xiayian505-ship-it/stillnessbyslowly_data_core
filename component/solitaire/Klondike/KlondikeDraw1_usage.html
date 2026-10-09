@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Klondike Draw 1｜使用說明</title><style>body { max-width: 850px; margin: 18px auto; padding: 0 12px; } pre { overflow-x: auto; padding: 8px 0; }</style></head>
+<body>
+<h1>Klondike Draw 1｜使用說明</h1>
+<p>慢慢軍火庫的傳統接龍完成品，固定翻1張。包含隨機開局、七欄發牌、合法移牌、回收牌、翻牌與棄牌回收、主動結束、勝利判定及末盤自動收牌。無資料庫、UID、存檔、音效或特效。</p>
+<h2>HTTPS 引用方式</h2>
+<pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/component/solitaire/Klondike/Klondike.css&quot;&gt;
+&lt;div id=&quot;my-klondike&quot;&gt;&lt;/div&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/card/deck.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/component/solitaire/Klondike/Klondike.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/component/solitaire/Klondike/KlondikeDraw1.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  const game = window.SlowlyKlondikeDraw1.mount(&quot;#my-klondike&quot;);
+&lt;/script&gt;</code></pre>
+<p>先載入軍火庫 <code>Deck</code> 積木，再載入共用核心 <code>Klondike.js</code>，最後載入本難度入口。全部是 HTTPS 絕對路徑。</p>
+<h2>基本規則</h2>
+<p>使用 52 張牌，七欄初始牌依序 1～7 張，僅頂牌朝上。移牌時必須紅黑交錯、點數由大到小，只有 K 可放空欄。牌庫每次翻1張到棄牌區，只能移動棄牌區頂牌；牌庫用完後可將剩餘棄牌收回再翻（不重新洗牌）。回收格各按花色由 A 疊到 K，且回收格頂牌可移回牌桌。</p>
+<p>當牌庫及棄牌都空了，所有牌桌剩餘牌均已翻開，且可依序直接放入回收格時，會自動回收並判定勝利。若尚需整理牌面則不會自動結束。</p>
+<p>「結束遊戲」主動終止當局，不會發送勝利事件；結束或過關後可再隨機開始。</p>
+<h2>JavaScript API</h2>
+<pre><code>const game = window.SlowlyKlondikeDraw1.mount("#my-klondike");
+game.start();       // 隨機開局
+game.draw();        // 每次翻1張，牌庫空時收回棄牌
+game.end();         // 主動結束
+game.getState();    // 取得獨立的目前狀態快照
+game.destroy();     // 卸載</code></pre>
+<h2>宿主事件</h2>
+<pre><code>const host = document.querySelector("#my-klondike");
+host.addEventListener("klondike:start", event =&gt; {});
+host.addEventListener("klondike:draw", event =&gt; {});
+host.addEventListener("klondike:move", event =&gt; {});
+host.addEventListener("klondike:collect", event =&gt; {});
+host.addEventListener("klondike:win", event =&gt; {});
+host.addEventListener("klondike:end", event =&gt; {});</code></pre>
+<p>事件可冒泡，<code>detail.draw</code> 為本模式每次翻牌數，<code>detail.moves</code> 為目前步數。主動結束的 <code>detail.reason</code> 是 <code>manual</code>。</p>
+<h2>外觀</h2>
+<p>CSS 僅提供必要結構與不透明卡片，宿主可自訂 <code>--skl-board-bg</code>、<code>--skl-card-bg</code>、<code>--skl-card-back</code>、<code>--skl-red</code>、<code>--skl-black</code>、<code>--skl-border</code>、<code>--skl-step-up</code> 等 CSS 變數。Demo 不設定頁面底色。</p>
+<p><a href="./KlondikeDraw1_demo.html">返回展示頁</a></p>
+</body></html>

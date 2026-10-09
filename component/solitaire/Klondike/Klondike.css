@@ -1,0 +1,39 @@
+/* 慢慢軍火庫｜Klondike 完成品必要版面。
+ * 只影響 .slowly-klondike 內部。背景、按鈕、牌桌配色交給宿主。
+ * 撲克牌本身保持不透明，避免堆疊看穿；宿主可使用 --skl-* 換皮。
+ */
+.slowly-klondike { width: 100%; min-width: 0; color: inherit; font: inherit; }
+.slowly-klondike *, .slowly-klondike *::before, .slowly-klondike *::after { box-sizing: border-box; }
+.slowly-klondike button { font: inherit; cursor: pointer; touch-action: manipulation; }
+.slowly-klondike button:disabled { cursor: default; }
+.slowly-klondike button:focus-visible { outline: 2px solid var(--skl-selection, currentColor); outline-offset: 1px; }
+.slowly-klondike .skl-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-bottom: 12px; }
+.slowly-klondike .skl-action { min-height: 40px; padding: 7px 13px; border: 1px solid var(--skl-border, currentColor); color: inherit; background: var(--skl-action-bg, transparent); border-radius: var(--skl-action-radius, 0); }
+.slowly-klondike .skl-action:disabled { opacity: .5; }
+.slowly-klondike .skl-status { flex: 1 1 190px; font-size: .88rem; line-height: 1.5; }
+.slowly-klondike .skl-board { min-width: 0; padding: var(--skl-board-padding, 8px 0 18px); background: var(--skl-board-bg, transparent); border: var(--skl-board-border, 0); }
+.slowly-klondike .skl-board[hidden] { display: none; }
+.slowly-klondike .skl-top { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--skl-gap, 4px); align-items: start; margin-bottom: 13px; }
+.slowly-klondike .skl-slot { position: relative; display: block; width: 100%; min-width: 0; aspect-ratio: var(--skl-card-ratio, 5 / 7); padding: 3px 2px; border: 1px dashed var(--skl-border, currentColor); color: inherit; background: var(--skl-slot-bg, transparent); text-align: left; overflow: visible; border-radius: var(--skl-slot-radius, 0); font-size: clamp(.62rem, 1.5vw, .9rem); }
+.slowly-klondike .skl-slot:disabled { opacity: 1; }
+.slowly-klondike .skl-foundations { display: grid; grid-column: 4 / span 4; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--skl-gap, 4px); min-width: 0; }
+.slowly-klondike .skl-home { display: grid; place-items: center; }
+.slowly-klondike .skl-waste { overflow: visible; }
+.slowly-klondike .skl-slot .skl-waste-card { position: absolute; top: 0; left: calc(var(--skl-waste-index) * var(--skl-waste-offset, 10px)); width: calc(100% - (var(--skl-waste-count) - 1) * var(--skl-waste-offset, 10px)); height: 100%; z-index: calc(var(--skl-waste-index) + 1); }
+.slowly-klondike .skl-tableau { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--skl-gap, 4px); min-width: 0; }
+.slowly-klondike .skl-column { position: relative; min-width: 0; min-height: var(--skl-column-min-height, 185px); border: 1px solid var(--skl-column-border, currentColor); background: var(--skl-column-bg, transparent); cursor: pointer; }
+.slowly-klondike .skl-card-button { position: absolute; left: 0; width: 100%; min-width: 0; aspect-ratio: var(--skl-card-ratio, 5 / 7); display: block; margin: 0; padding: 0; border: 0; background: transparent; text-align: left; z-index: 1; }
+.slowly-klondike .skl-card-button[disabled] { opacity: 1; }
+.slowly-klondike .skl-card { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 0; width: 100%; height: 100%; min-width: 0; aspect-ratio: var(--skl-card-ratio, 5 / 7); padding: 3px 2px; border: 1px solid var(--skl-card-border, currentColor); border-radius: var(--skl-card-radius, 0); background: var(--skl-card-bg, Canvas); color: var(--skl-card-ink, CanvasText); text-align: left; line-height: 1.08; font-weight: 700; font-size: clamp(.62rem, 1.5vw, .95rem); }
+.slowly-klondike .skl-back { background: var(--skl-card-back, ButtonFace); }
+.slowly-klondike .skl-card-button.is-selected .skl-card, .slowly-klondike .skl-slot.is-selected { outline: 2px solid var(--skl-selection, currentColor); outline-offset: -2px; }
+.slowly-klondike .skl-rank, .slowly-klondike .skl-suit { display: block; }
+.slowly-klondike .skl-red { color: var(--skl-red, #c22); }
+.slowly-klondike .skl-black { color: var(--skl-black, CanvasText); }
+.slowly-klondike .skl-home .skl-card { padding: 3px 2px; }
+@media (max-width: 600px) {
+  .slowly-klondike { --skl-step-up: 24px; --skl-step-down: 10px; --skl-card-height: 62px; --skl-column-min-height: 155px; --skl-gap: 2px; --skl-waste-offset: 7px; }
+  .slowly-klondike .skl-toolbar { gap: 7px; }
+  .slowly-klondike .skl-action { padding: 6px 9px; min-height: 36px; font-size: .86rem; }
+  .slowly-klondike .skl-slot, .slowly-klondike .skl-card { padding: 2px 1px; font-size: clamp(.67rem, 2.7vw, .86rem); }
+}
