@@ -1,9 +1,9 @@
 # 慢慢軍火庫｜Scroll Motion 滾動互動微零件
 
-本目錄是**獨立新增**的分類，與既有 `effects/scroll/`、`effects/reveal/` 並存。暫時**不登錄軍火庫主頁**，也不修改 `index.html`、`index_data.js`、`group.html`。
+本目錄位於 `effects/scroll/`，收納新增的滾動互動微零件；與本目錄既有的滾動功能、`effects/reveal/` 共用功能配合。暫時**不登錄軍火庫主頁**，也不修改 `index.html`、`index_data.js`、`group.html`。
 
 - 原則：一個檔案通常只做一件事；簡單視覺效果優先純 CSS，觀察滾動狀態才使用 JS。
-- 每個 CSS/JS 零件都可透過 `https://lib.stillnessbyslowly.com/scroll_motion/分類/檔名` **直接引用**，不需要複製功能到專案。
+- 每個 CSS/JS 零件都可透過 `https://lib.stillnessbyslowly.com/effects/scroll/分類/檔名` **直接引用**，不需要複製功能到專案。
 - 每個零件都有同目錄 `test_檔名.html` 獨立測試頁。放上 GitHub Pages 後可直接開測試頁。
 - 命名採 `SlowlyScroll...` JS 全域物件，對外提供 `attach(...)`、`destroy()`（部分附帶 `update()` / `refresh()`）。
 - 透過 CSS 自訂屬性調整參數，避免寫死每個網站的設計。
@@ -48,15 +48,15 @@
 - 全頁滾動進度條：`effects/scroll/progress.js` + `progress.css`。
 - 視差加透明度的現成組合：`effects/scroll/parallax_fade.js`。
 
-這些舊檔案**沒有修改**，新零件可以直接跟它們搭配。
+這些舊檔案**沒有修改**，新零件和它們共用 `effects/scroll/` 分類，可以直接搭配。
 
 ## 範例一：進入視窗 → 淡入＋上浮
 
 `fade.css` 與 `slide_up.css` 各是獨立 CSS。觸發使用既有 `auto_reveal.js`：
 
 ```html
-<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/scroll_motion/motion/fade.css">
-<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/scroll_motion/motion/slide_up.css">
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/scroll/motion/fade.css">
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_up.css">
 <div class="slowly-motion-fade slowly-motion-slide-up" data-slowly-reveal>
   我的卡片
 </div>
@@ -73,12 +73,12 @@
 `element_progress.js` 本身**不做動畫**，只計算進度。`linked/` 中各 CSS 不需要彼此依賴：
 
 ```html
-<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/scroll_motion/linked/opacity.css">
-<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/scroll_motion/linked/translate_x.css">
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/scroll/linked/opacity.css">
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/scroll/linked/translate_x.css">
 <section id="scroll-zone" style="min-height:160vh">
   <div class="slowly-scroll-opacity slowly-scroll-translate-x">會逐漸顯現並移動</div>
 </section>
-<script src="https://lib.stillnessbyslowly.com/scroll_motion/trigger/element_progress.js"></script>
+<script src="https://lib.stillnessbyslowly.com/effects/scroll/trigger/element_progress.js"></script>
 <script>
   const scrollPart = SlowlyScrollElementProgress.attach('#scroll-zone');
   // 解除監聽：scrollPart.destroy();
@@ -104,7 +104,7 @@
 這是唯一需要 HTML 結構、CSS、JS 三者配合的零件；JS 不攔截 wheel/touch，手機一樣正常上下滑。
 
 ```html
-<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/scroll_motion/horizontal/vertical_to_horizontal.css">
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/scroll/horizontal/vertical_to_horizontal.css">
 <section id="hscroll" class="slowly-vth">
   <div class="slowly-vth-viewport">
     <div class="slowly-vth-track">
@@ -114,7 +114,7 @@
     </div>
   </div>
 </section>
-<script src="https://lib.stillnessbyslowly.com/scroll_motion/horizontal/vertical_to_horizontal.js"></script>
+<script src="https://lib.stillnessbyslowly.com/effects/scroll/horizontal/vertical_to_horizontal.js"></script>
 <script>
   const hscroll = SlowlyVerticalToHorizontal.attach('#hscroll');
   // 當卡片數量或寬度變動：hscroll.refresh();
@@ -130,4 +130,4 @@
 4. `layout/sticky_*` 遵守 CSS sticky 規則，祖先的 overflow、可捲動範圍都可能影響固定位置；`snap_*` 要放在有固定可捲動尺寸的容器。
 5. 基於視差的 `parallax/x.js`、`y.js` 控制 `translate`；若元素已有自己的 translate 效果，請分配至不同包裝層。兩支 JS 可同時套到同一元素，解除時會恢復原始 translate。
 6. 所有純動畫 CSS 都內建 `prefers-reduced-motion` 處理；滾動進度在減少動態設定下會固定為完成狀態。橫向展示則退回一般左右滑動。
-7. 未公開檔案前，以上 CDN 路徑**尚不會生效**：先把新目錄放進軍火庫 repo 並部署 GitHub Pages，主頁入口則可以之後再討論。
+7. 未公開檔案前，以上 CDN 路徑**尚不會生效**：先把這些新增的子目錄放進軍火庫 repo 的 `effects/scroll/` 並部署 GitHub Pages，主頁入口則可以之後再討論。
