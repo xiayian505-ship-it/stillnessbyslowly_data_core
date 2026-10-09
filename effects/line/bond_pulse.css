@@ -1,0 +1,4 @@
+/* Slowly Effects | line/bond_pulse | Only necessary effect CSS; host owns visual design. */
+.sbs-bond{animation:sbs-bond-pulse var(--sbs-bond-speed,1.8s) ease-in-out infinite}
+@keyframes sbs-bond-pulse{50%{opacity:var(--sbs-bond-dim,.35)}}
+@media(prefers-reduced-motion:reduce){.sbs-bond{animation:none}}

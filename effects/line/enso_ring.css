@@ -1,0 +1,7 @@
+/* Slowly Effects | line/enso_ring | Only necessary effect CSS; host owns visual design. */
+.sbs-enso svg{width:100%;height:100%;overflow:visible;animation:sbs-enso-spin var(--sbs-enso-speed,90s) linear infinite}
+.sbs-enso circle{fill:none;stroke:currentColor;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;animation:sbs-enso-draw var(--sbs-enso-draw,3.4s) .2s cubic-bezier(.3,.6,.2,1) forwards}
+.sbs-enso circle+circle{opacity:.55;animation-delay:.7s}
+@keyframes sbs-enso-draw{to{stroke-dashoffset:14}}
+@keyframes sbs-enso-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.sbs-enso svg,.sbs-enso circle{animation:none}.sbs-enso circle{stroke-dashoffset:14}}

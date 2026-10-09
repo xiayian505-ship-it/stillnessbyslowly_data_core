@@ -1,0 +1,10 @@
+/* Slowly Effects | hover/card_fan | Only necessary effect CSS; host owns visual design. */
+.sbs-fan{position:relative}
+.sbs-fan-card{position:absolute;left:50%;bottom:0;translate:-50% 0;transform-origin:50% 130%;transition:transform var(--sbs-fan-speed,.5s) cubic-bezier(.3,1.4,.4,1)}
+.sbs-fan-card:nth-child(1){transform:rotate(-16deg)}
+.sbs-fan-card:nth-child(2){transform:translateY(-8px)}
+.sbs-fan-card:nth-child(3){transform:rotate(16deg)}
+.sbs-fan:hover .sbs-fan-card:nth-child(1),.sbs-fan:focus-within .sbs-fan-card:nth-child(1){transform:rotate(-30deg) translateY(-6px)}
+.sbs-fan:hover .sbs-fan-card:nth-child(2),.sbs-fan:focus-within .sbs-fan-card:nth-child(2){transform:translateY(-22px)}
+.sbs-fan:hover .sbs-fan-card:nth-child(3),.sbs-fan:focus-within .sbs-fan-card:nth-child(3){transform:rotate(30deg) translateY(-6px)}
+@media(prefers-reduced-motion:reduce){.sbs-fan-card{transition:none}}

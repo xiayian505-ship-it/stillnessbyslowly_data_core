@@ -1,0 +1,4 @@
+/* Slowly Effects | stage/portal_wipe | Only necessary effect CSS; host owns visual design. */
+.sbs-portal-overlay{position:fixed;inset:0;z-index:var(--sbs-portal-z,2147483000);pointer-events:none;background:radial-gradient(circle at var(--sbs-portal-x,50%) var(--sbs-portal-y,50%),var(--sbs-portal-core,#fff) 0,var(--sbs-portal-color,currentColor) 16%,var(--sbs-portal-edge,#05060f) 62%);clip-path:circle(0 at var(--sbs-portal-x,50%) var(--sbs-portal-y,50%));transition:clip-path var(--sbs-portal-duration,.65s) cubic-bezier(.6,0,.2,1)}
+.sbs-portal-overlay.sbs-portal-open{clip-path:circle(150vmax at var(--sbs-portal-x,50%) var(--sbs-portal-y,50%));pointer-events:auto}
+@media(prefers-reduced-motion:reduce){.sbs-portal-overlay{transition:none}}

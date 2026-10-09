@@ -1,0 +1,3 @@
+/* Slowly Effects | background/floating_symbols | Only necessary effect CSS; host owns visual design. */
+.sbs-symbols{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sbs-symbols canvas{display:block;width:100%;height:100%}

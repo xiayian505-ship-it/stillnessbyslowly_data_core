@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>點擊粒子爆散｜功能測試</title>
+<link rel="stylesheet" href="./click_burst.css">
+<script src="./click_burst.js" defer></script>
+</head>
+<body>
+<h1>點擊粒子爆散｜功能測試</h1>
+<p>以下僅測試功能，沒有套用展示外觀。</p>
+<section>
+<div class="sbs-burst-surface" style="position:relative;width:360px;height:180px"><button class="sbs-burst-trigger" type="button">點擊測試粒子爆散</button></div>
+</section>
+<script>document.addEventListener('DOMContentLoaded',()=>{const area=document.querySelector('.sbs-burst-surface');document.querySelector('.sbs-burst-trigger').addEventListener('click',e=>{const r=area.getBoundingClientRect();SlowlyClickBurst.burst({container:area,x:e.clientX-r.left,y:e.clientY-r.top})})});</script>
+</body>
+</html>

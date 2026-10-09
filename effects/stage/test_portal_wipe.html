@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>圓形傳送門轉場｜功能測試</title>
+<link rel="stylesheet" href="./portal_wipe.css">
+<script src="./portal_wipe.js" defer></script>
+</head>
+<body>
+<h1>圓形傳送門轉場｜功能測試</h1>
+<p>以下僅測試功能，沒有套用展示外觀。</p>
+<section>
+<button class="sbs-portal-trigger" type="button">點擊測試轉場（不跳頁）</button>
+</section>
+<script>document.addEventListener('DOMContentLoaded',()=>document.querySelector('.sbs-portal-trigger').addEventListener('click',e=>SlowlyPortalWipe.play({x:e.clientX,y:e.clientY})));</script>
+</body>
+</html>

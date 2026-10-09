@@ -1,0 +1,4 @@
+/* Slowly Effects | particle/atom_bob | Only necessary effect CSS; host owns visual design. */
+.sbs-atom{animation:sbs-atom-bob var(--sbs-atom-speed,3.6s) ease-in-out infinite}
+@keyframes sbs-atom-bob{50%{transform:translateY(var(--sbs-atom-rise,-7px))}}
+@media(prefers-reduced-motion:reduce){.sbs-atom{animation:none}}

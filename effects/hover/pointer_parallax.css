@@ -1,0 +1,3 @@
+/* Slowly Effects | hover/pointer_parallax | Only necessary effect CSS; host owns visual design. */
+.sbs-parallax-layer{transform:translate3d(var(--sbs-px,0px),var(--sbs-py,0px),0);transition:transform var(--sbs-parallax-speed,.17s) ease-out}
+@media(prefers-reduced-motion:reduce){.sbs-parallax-layer{transition:none;transform:none}}

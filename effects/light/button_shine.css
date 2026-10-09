@@ -1,0 +1,5 @@
+/* Slowly Effects | light/button_shine | Only necessary effect CSS; host owns visual design. */
+.sbs-shine{position:relative;overflow:hidden}
+.sbs-shine::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 30%,var(--sbs-shine-color,#ffffffaa) 50%,transparent 70%);transform:translateX(-120%);transition:transform var(--sbs-shine-speed,.7s)}
+.sbs-shine:hover::after,.sbs-shine:focus-visible::after{transform:translateX(120%)}
+@media(prefers-reduced-motion:reduce){.sbs-shine::after{display:none;transition:none}}

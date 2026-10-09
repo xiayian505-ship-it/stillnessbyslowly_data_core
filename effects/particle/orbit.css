@@ -1,0 +1,5 @@
+/* Slowly Effects | particle/orbit | Only necessary effect CSS; host owns visual design. */
+.sbs-orbit{position:relative;border:var(--sbs-orbit-border,1px dashed currentColor);border-radius:50%;animation:sbs-orbit-spin var(--sbs-orbit-speed,18s) linear infinite}
+.sbs-orbit>span{position:absolute;top:0;left:50%;translate:-50% -50%;width:var(--sbs-orbit-dot-size,10px);height:var(--sbs-orbit-dot-size,10px);border-radius:50%;background:currentColor;box-shadow:0 0 var(--sbs-orbit-glow,14px) currentColor}
+@keyframes sbs-orbit-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.sbs-orbit{animation:none}}

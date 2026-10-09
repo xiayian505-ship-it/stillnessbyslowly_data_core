@@ -1,0 +1,4 @@
+/* Slowly Effects | particle/floating_crown | Only necessary effect CSS; host owns visual design. */
+.sbs-crown{text-shadow:0 0 var(--sbs-crown-glow,26px) currentColor;animation:sbs-crown-float var(--sbs-crown-speed,4s) ease-in-out infinite}
+@keyframes sbs-crown-float{50%{transform:translateY(var(--sbs-crown-rise,-9px))}}
+@media(prefers-reduced-motion:reduce){.sbs-crown{animation:none}}

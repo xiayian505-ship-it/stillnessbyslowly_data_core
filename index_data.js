@@ -2261,6 +2261,24 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_classic_fireworks.html"
               }
             ]
+          },
+          {
+            "title": "Click Burst",
+            "desc": "點擊粒子爆散 API：由宿主自行決定觸發時機、位置、顏色和目標容器；不包含按鈕樣式。",
+            "links": [
+              {
+                "label": "click_burst.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/click_burst.css"
+              },
+              {
+                "label": "click_burst.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/click_burst.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_click_burst.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -2289,6 +2307,24 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Portal Wipe",
+            "desc": "獨立圓形頁面轉場，提供 play/reset API 與可選導覽連結；顏色、觸發元素及跳頁流程可由宿主控制。",
+            "links": [
+              {
+                "label": "portal_wipe.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.css"
+              },
+              {
+                "label": "portal_wipe.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/test_portal_wipe.html"
               }
             ]
           }
@@ -2347,6 +2383,34 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Enso Ring",
+            "desc": "SVG 圓環描邊與慢速旋轉；宿主提供 SVG 線條、尺寸與色彩。",
+            "links": [
+              {
+                "label": "enso_ring.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/enso_ring.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_enso_ring.html"
+              }
+            ]
+          },
+          {
+            "title": "Bond Pulse",
+            "desc": "純 CSS 透明度脈動，不限定連結線的尺寸、背景或其他外觀。",
+            "links": [
+              {
+                "label": "bond_pulse.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/bond_pulse.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_bond_pulse.html"
               }
             ]
           }
@@ -2425,6 +2489,48 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst_usage.html"
               }
             ]
+          },
+          {
+            "title": "Flowing Border",
+            "desc": "純 CSS 旋轉流光邊框，宿主控制顏色、圓角、尺寸與內層背景。",
+            "links": [
+              {
+                "label": "flowing_border.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/flowing_border.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_flowing_border.html"
+              }
+            ]
+          },
+          {
+            "title": "Breathing Glow",
+            "desc": "文字呼吸光暈，不指定字型、字級、顏色或排版；宿主可設定光暈參數。",
+            "links": [
+              {
+                "label": "breathing_glow.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/breathing_glow.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_breathing_glow.html"
+              }
+            ]
+          },
+          {
+            "title": "Button Shine",
+            "desc": "純 CSS hover/focus 掃光，按鈕的造型、尺寸、字型、顏色由宿主決定。",
+            "links": [
+              {
+                "label": "button_shine.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/button_shine.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_button_shine.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -2461,6 +2567,56 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/hover/test_magnetic_hover.html"
               }
             ]
+          },
+          {
+            "title": "Pointer Parallax",
+            "desc": "依指標位置帶動指定圖層位移，容器排版、圖層外觀由宿主決定。",
+            "links": [
+              {
+                "label": "pointer_parallax.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_parallax.css"
+              },
+              {
+                "label": "pointer_parallax.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_parallax.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_pointer_parallax.html"
+              }
+            ]
+          },
+          {
+            "title": "Pointer Spotlight",
+            "desc": "隨滑鼠位置移動的區域光暈；宿主自行設定卡片外觀、光色和半徑。",
+            "links": [
+              {
+                "label": "pointer_spotlight.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_spotlight.css"
+              },
+              {
+                "label": "pointer_spotlight.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_spotlight.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_pointer_spotlight.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Fan",
+            "desc": "僅提供三張牌扇形展開與 hover 動作；牌面、尺寸、顏色、陰影和容器排版由宿主決定。",
+            "links": [
+              {
+                "label": "card_fan.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/card_fan.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_card_fan.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -2495,6 +2651,20 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_auto_reveal.html"
+              }
+            ]
+          },
+          {
+            "title": "Stagger Reveal",
+            "desc": "純 CSS 延遲淡入上移，不指定卡片外觀、排列或尺寸。",
+            "links": [
+              {
+                "label": "stagger_reveal.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/stagger_reveal.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_stagger_reveal.html"
               }
             ]
           }
@@ -3199,6 +3369,42 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/background/test_noise_overlay.html"
               }
             ]
+          },
+          {
+            "title": "Starfield",
+            "desc": "獨立 Canvas 星點閃爍，星色繼承宿主 currentColor 或 data-color；宿主提供容器尺寸。",
+            "links": [
+              {
+                "label": "starfield.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/starfield.css"
+              },
+              {
+                "label": "starfield.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/starfield.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_starfield.html"
+              }
+            ]
+          },
+          {
+            "title": "Floating Symbols",
+            "desc": "獨立 Canvas 漂浮字元，可設定符號與色票，預設繼承宿主文字色；宿主提供容器尺寸。",
+            "links": [
+              {
+                "label": "floating_symbols.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/floating_symbols.css"
+              },
+              {
+                "label": "floating_symbols.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/floating_symbols.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_floating_symbols.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -3279,6 +3485,80 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/particle/test_particle_network.html"
               }
             ]
+          },
+          {
+            "title": "Pointer Trail",
+            "desc": "Canvas 滑鼠粒子尾跡，可由宿主設定粒子色票；不處理容器皮膚或布局。",
+            "links": [
+              {
+                "label": "pointer_trail.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/pointer_trail.css"
+              },
+              {
+                "label": "pointer_trail.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/pointer_trail.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_pointer_trail.html"
+              }
+            ]
+          },
+          {
+            "title": "Floating Crown",
+            "desc": "僅提供上下漂浮及可調光暈；任何文字或圖示都可使用，外觀由宿主決定。",
+            "links": [
+              {
+                "label": "floating_crown.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/floating_crown.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_floating_crown.html"
+              }
+            ]
+          },
+          {
+            "title": "Orbit",
+            "desc": "旋轉圓形軌道與光點；容器尺寸和顏色由宿主決定。",
+            "links": [
+              {
+                "label": "orbit.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/orbit.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_orbit.html"
+              }
+            ]
+          },
+          {
+            "title": "Atom Bob",
+            "desc": "純 CSS 上下浮動效果；不限定元素方塊，不提供方塊皮膚或排列。",
+            "links": [
+              {
+                "label": "atom_bob.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/atom_bob.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_atom_bob.html"
+              }
+            ]
+          },
+          {
+            "title": "Turtle Crawl",
+            "desc": "指定元素沿容器水平移動；文字、圖示、尺寸、顏色皆由宿主決定。",
+            "links": [
+              {
+                "label": "turtle_crawl.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/turtle_crawl.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_turtle_crawl.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -3331,6 +3611,20 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_custom_cursor.html"
+              }
+            ]
+          },
+          {
+            "title": "Candy Pop",
+            "desc": "純 CSS 爆閃縮放循環；宿主指定要套用的元素與延遲，糖果外觀、格子布局由宿主決定。",
+            "links": [
+              {
+                "label": "candy_pop.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/candy_pop.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_candy_pop.html"
               }
             ]
           }

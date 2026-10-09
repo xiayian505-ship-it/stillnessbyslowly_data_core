@@ -1,0 +1,4 @@
+/* Slowly Effects | reveal/stagger_reveal | Only necessary effect CSS; host owns visual design. */
+.sbs-reveal{animation:sbs-reveal-up var(--sbs-reveal-speed,.9s) cubic-bezier(.2,.8,.2,1) var(--sbs-reveal-delay,0ms) both}
+@keyframes sbs-reveal-up{from{opacity:0;transform:translateY(var(--sbs-reveal-distance,44px)) scale(var(--sbs-reveal-scale,.95))}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.sbs-reveal{animation:none}}

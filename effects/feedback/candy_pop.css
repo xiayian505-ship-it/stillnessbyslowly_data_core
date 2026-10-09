@@ -1,0 +1,4 @@
+/* Slowly Effects | feedback/candy_pop | Only necessary effect CSS; host owns visual design. */
+.sbs-candy-pop{animation:sbs-candy-pop var(--sbs-candy-duration,3.6s) ease-in-out var(--sbs-candy-delay,0s) infinite}
+@keyframes sbs-candy-pop{0%,56%{transform:scale(1);opacity:1}66%{transform:scale(var(--sbs-candy-peak,1.28));filter:brightness(var(--sbs-candy-flash,1.5))}78%,90%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.sbs-candy-pop{animation:none}}

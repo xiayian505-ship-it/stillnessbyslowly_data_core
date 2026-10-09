@@ -1,0 +1,5 @@
+/* Slowly Effects | hover/pointer_spotlight | Only necessary effect CSS; host owns visual design. */
+.sbs-spotlight{position:relative;isolation:isolate}
+.sbs-spotlight::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(var(--sbs-light-radius,250px) circle at var(--sbs-light-x,50%) var(--sbs-light-y,50%),var(--sbs-light-color,color-mix(in srgb,currentColor 20%,transparent)),transparent 65%);opacity:0;transition:opacity var(--sbs-light-speed,.25s)}
+.sbs-spotlight:hover::after,.sbs-spotlight:focus-within::after{opacity:1}
+@media(hover:none),(prefers-reduced-motion:reduce){.sbs-spotlight::after{display:none}}

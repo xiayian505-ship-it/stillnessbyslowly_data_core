@@ -1,0 +1,5 @@
+/* Slowly Effects | particle/turtle_crawl | Only necessary effect CSS; host owns visual design. */
+.sbs-turtle-track{position:relative;overflow:hidden}
+.sbs-turtle{position:absolute;bottom:var(--sbs-turtle-bottom,0px);animation:sbs-turtle-crawl var(--sbs-turtle-speed,80s) linear infinite}
+@keyframes sbs-turtle-crawl{from{left:0;transform:translateX(-100%)}to{left:100%;transform:translateX(0)}}
+@media(prefers-reduced-motion:reduce){.sbs-turtle{animation:none;left:0;transform:none}}

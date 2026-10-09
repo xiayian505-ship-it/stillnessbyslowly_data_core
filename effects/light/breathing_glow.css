@@ -1,0 +1,4 @@
+/* Slowly Effects | light/breathing_glow | Only necessary effect CSS; host owns visual design. */
+.sbs-breathe{text-shadow:0 0 var(--sbs-breathe-base,18px) var(--sbs-breathe-color,currentColor);animation:sbs-breathe-glow var(--sbs-breathe-speed,6s) ease-in-out infinite}
+@keyframes sbs-breathe-glow{50%{text-shadow:0 0 var(--sbs-breathe-near,38px) var(--sbs-breathe-color,currentColor),0 0 var(--sbs-breathe-far,90px) var(--sbs-breathe-color,currentColor)}}
+@media(prefers-reduced-motion:reduce){.sbs-breathe{animation:none}}
