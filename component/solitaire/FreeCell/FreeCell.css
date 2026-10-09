@@ -1,30 +1,22 @@
-/* 慢慢軍火庫｜FreeCell 完成品基本樣式
- * 只作用於 .slowly-freecell 容器，不修改宿主 body / :root / 全域 button。
- * 宿主可透過 --sfc-* CSS 變數自行換色與調整牌面。
+/* 慢慢軍火庫｜FreeCell 完成品結構樣式
+ * 只作用於 .slowly-freecell 容器；不設定宿主背景、字體與品牌色。
+ * 預設透明牌桌、透明空格與按鈕；宿主使用 --sfc-* 變數決定外觀。
+ * 牌面保留不透明的系統 Canvas 底色，避免牌張重疊時文字透出。
  */
 .slowly-freecell {
-  --sfc-surface: #eaf0ed;
-  --sfc-card: #fffdf8;
-  --sfc-ink: #283a36;
-  --sfc-muted: #52665f;
-  --sfc-line: #9fb7ae;
-  --sfc-accent: #427969;
-  --sfc-red: #bd364d;
-  --sfc-black: #263a43;
-  --sfc-selected: #e8be63;
   --sfc-card-ratio: 5 / 7;
   --sfc-stack-step: 29px;
-  --sfc-radius: 7px;
-  color: var(--sfc-ink);
+  --sfc-radius: 0px;
+  color: var(--sfc-ink, inherit);
   width: 100%;
   min-width: 0;
-  font-family: system-ui, "Noto Sans TC", sans-serif;
+  font-family: inherit;
 }
 .slowly-freecell *,
 .slowly-freecell *::before,
 .slowly-freecell *::after { box-sizing: border-box; }
 .slowly-freecell button { font: inherit; cursor: pointer; }
-.slowly-freecell button:focus-visible { outline: 3px solid var(--sfc-selected); outline-offset: 2px; }
+.slowly-freecell button:focus-visible { outline: 3px solid var(--sfc-selected, currentColor); outline-offset: 2px; }
 .slowly-freecell button:disabled { cursor: default; opacity: .5; }
 .slowly-freecell .sfc-toolbar {
   display: flex;
@@ -36,17 +28,16 @@
 .slowly-freecell .sfc-action {
   min-height: 41px;
   padding: 7px 15px;
-  border: 1px solid var(--sfc-accent);
-  border-radius: 9px;
-  color: var(--sfc-ink);
-  background: var(--sfc-card);
+  border: 1px solid var(--sfc-line, color-mix(in srgb, currentColor 40%, transparent));
+  border-radius: var(--sfc-action-radius, 0px);
+  color: var(--sfc-ink, inherit);
+  background: var(--sfc-action-bg, transparent);
 }
-.slowly-freecell .sfc-start { color: white; background: var(--sfc-accent); }
-.slowly-freecell .sfc-status { flex: 1 1 210px; color: var(--sfc-muted); font-size: .88rem; line-height: 1.5; }
+.slowly-freecell .sfc-status { flex: 1 1 210px; color: var(--sfc-muted, inherit); font-size: .88rem; line-height: 1.5; }
 .slowly-freecell .sfc-board {
-  background: var(--sfc-surface);
-  border: 1px solid var(--sfc-line);
-  border-radius: 12px;
+  background: var(--sfc-surface, transparent);
+  border: var(--sfc-board-border, 0);
+  border-radius: var(--sfc-board-radius, 0px);
   padding: 10px 8px 20px;
   min-width: 0;
 }
@@ -70,23 +61,21 @@
   min-width: 0;
   aspect-ratio: var(--sfc-card-ratio);
   line-height: 1.1;
-  font-weight: 750;
   font-size: clamp(.66rem, 1.6vw, 1rem);
-  letter-spacing: -.03em;
   border-radius: var(--sfc-radius);
 }
 .slowly-freecell .sfc-slot {
-  border: 1px dashed var(--sfc-line);
-  background: color-mix(in srgb, var(--sfc-surface) 82%, white);
-  color: var(--sfc-muted);
+  border: 1px dashed var(--sfc-line, color-mix(in srgb, currentColor 40%, transparent));
+  background: var(--sfc-slot-bg, transparent);
+  color: var(--sfc-muted, inherit);
   text-align: left;
 }
 .slowly-freecell .sfc-slot.occupied,
 .slowly-freecell .sfc-home-slot:has(.sfc-rank) {
   border-style: solid;
-  background: var(--sfc-card);
+  background: var(--sfc-card, Canvas);
 }
-.slowly-freecell .sfc-zone-title { display: block; margin-top: 4px; font-size: .78rem; text-align: center; color: var(--sfc-muted); }
+.slowly-freecell .sfc-zone-title { display: block; margin-top: 4px; font-size: .78rem; text-align: center; color: var(--sfc-muted, inherit); }
 .slowly-freecell .sfc-tableau { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; }
 .slowly-freecell .sfc-column {
   position: relative;
@@ -94,8 +83,8 @@
   min-height: 190px;
   padding: 0;
   border-radius: var(--sfc-radius);
-  background: color-mix(in srgb, var(--sfc-surface) 90%, var(--sfc-line));
-  box-shadow: inset 0 0 0 1px var(--sfc-line);
+  background: var(--sfc-column-bg, transparent);
+  box-shadow: inset 0 0 0 1px var(--sfc-line, color-mix(in srgb, currentColor 30%, transparent));
   cursor: pointer;
 }
 .slowly-freecell .sfc-column > .sfc-card {
@@ -103,15 +92,15 @@
   top: calc(var(--sfc-stack-step) * var(--sfc-position));
   left: 0;
   z-index: calc(var(--sfc-position) + 1);
-  border: 1px solid var(--sfc-line);
-  background: var(--sfc-card);
+  border: 1px solid var(--sfc-line, color-mix(in srgb, currentColor 40%, transparent));
+  background: var(--sfc-card, Canvas);
   text-align: left;
   touch-action: manipulation;
 }
-.slowly-freecell .sfc-column > .sfc-card.is-selected { border-color: var(--sfc-selected); box-shadow: inset 0 0 0 2px var(--sfc-selected); }
-.slowly-freecell .sfc-slot.is-selected { border-color: var(--sfc-selected); box-shadow: inset 0 0 0 2px var(--sfc-selected); }
-.slowly-freecell .sfc-red { color: var(--sfc-red); }
-.slowly-freecell .sfc-black { color: var(--sfc-black); }
+.slowly-freecell .sfc-column > .sfc-card.is-selected { border-color: var(--sfc-selected, currentColor); box-shadow: inset 0 0 0 2px var(--sfc-selected, currentColor); }
+.slowly-freecell .sfc-slot.is-selected { border-color: var(--sfc-selected, currentColor); box-shadow: inset 0 0 0 2px var(--sfc-selected, currentColor); }
+.slowly-freecell .sfc-red { color: var(--sfc-red, #c22); }
+.slowly-freecell .sfc-black { color: var(--sfc-black, CanvasText); }
 .slowly-freecell .sfc-rank { display: block; font-size: 1em; }
 .slowly-freecell .sfc-suit { display: block; font-size: 1.15em; }
 @media (max-width: 600px) {

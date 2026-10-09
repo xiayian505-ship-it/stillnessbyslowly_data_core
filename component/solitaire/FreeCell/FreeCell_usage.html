@@ -46,16 +46,17 @@ host.addEventListener("freecell:win", (event) =&gt; {
   <p>事件從元件容器觸發且可冒泡；<code>event.detail.moves</code> 是該局移動次數。元件不會主動執行宿主專屬功能。</p>
   <h2>5. 宿主換皮</h2>
   <pre><code>#my-freecell.slowly-freecell {
-  --sfc-surface: #eff4f9;
-  --sfc-card: #ffffff;
+  --sfc-surface: #eff4f9; /* 選用：牌桌底色 */
+  --sfc-card: #ffffff;    /* 選用：不透明牌面 */
+  --sfc-line: #8da2b9;
+  --sfc-action-bg: #ffffff;
   --sfc-ink: #23384d;
-  --sfc-accent: #496b9c;
   --sfc-red: #b52b51;
   --sfc-black: #243245;
   --sfc-selected: #dfb75e;
   --sfc-stack-step: 25px;
 }</code></pre>
-  <p>元件樣式只作用在 <code>.slowly-freecell</code>，不覆寫宿主 <code>body</code> 或全域按鈕。</p>
+  <p>元件預設不替宿主設定底色、主題色或字體。空牌桌、按鈕和空槽透明；牌張使用不透明的系統底色以確保重疊時可讀，宿主可用變數自行設定。樣式只作用在 <code>.slowly-freecell</code>，不覆寫宿主 <code>body</code> 或全域按鈕。</p>
   <p><a href="./FreeCell_demo.html">前往 FreeCell 展示頁</a></p>
 </body>
 </html>
