@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spider Medium｜使用說明</title>
+  <style>
+    body { max-width: 850px; margin: 18px auto; padding: 0 12px; }
+    pre { overflow-x: auto; padding: 8px 0; }
+  </style>
+</head>
+<body>
+  <h1>Spider Medium｜使用說明</h1>
+  <p>慢慢軍火庫 Spider 中階完成品，固定 2 花色。只有隨機開局、標準 Spider 移牌與補牌、同花色 K 到 A 自動收走、主動結束和勝利判定。</p>
+  <p>不含 UID、資料庫、存檔、音效、特效、原本 v7 的擴充功能。宿主可以自行擴充。</p>
+  <h2>HTTPS 使用方式</h2>
+  <pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css&quot;&gt;
+&lt;div id=&quot;my-spider&quot;&gt;&lt;/div&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/card/deck.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  const game = window.SlowlySpiderMedium.mount(&quot;#my-spider&quot;);
+&lt;/script&gt;</code></pre>
+  <h2>操作規則</h2>
+  <p>十欄初始牌（前四欄各六張、後六欄各五張），最上方牌翻開，其餘蓋住；補牌共五次，每次向每欄放一張。只有沒有空欄時才能補牌。選取同花色、由大到小的連續牌串後，可放到點數大一的牌上（接續時不限花色），或空白欄。移開蓋牌後會翻開最上面一張。當欄尾湊成同花色 K～A 十三張，會自動收走；完成八組即勝利。</p>
+  <p>「結束遊戲」不算破關；結束或勝利後可再隨機開始。進行中的牌局不可用「開始」覆蓋。</p>
+  <h2>API</h2>
+  <pre><code>const game = SlowlySpiderMedium.mount(&quot;#my-spider&quot;);
+game.start();     // 隨機開局
+game.end();       // 結束進行中的牌局
+game.deal();      // 按標準規則補一排牌
+game.getState();  // 狀態快照
+game.destroy();   // 卸載元件</code></pre>
+  <h2>宿主事件</h2>
+  <pre><code>const host = document.querySelector(&quot;#my-spider&quot;);
+host.addEventListener(&quot;spider:start&quot;, event =&gt; {});
+host.addEventListener(&quot;spider:collect&quot;, event =&gt; {});
+host.addEventListener(&quot;spider:win&quot;, event =&gt; {});
+host.addEventListener(&quot;spider:end&quot;, event =&gt; {});</code></pre>
+  <p>事件可冒泡，detail 包含 difficulty、suits、moves、completed。主動結束會附上 reason: "manual"。完成品不接觸宿主的資料庫或動畫。</p>
+  <h2>外觀</h2>
+  <p>CSS 只設定牌桌結構，不設定 body、頁面底色和品牌色；可在宿主容器用 --ssp-board-bg、--ssp-card-bg、--ssp-back-bg、--ssp-border、--ssp-selection、--ssp-red、--ssp-black、--ssp-step-up、--ssp-step-down 等變數換皮。</p>
+  <p><a href="./SpiderMedium_demo.html">返回展示頁</a></p>
+</body>
+</html>

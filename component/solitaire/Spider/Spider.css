@@ -1,0 +1,37 @@
+/* 慢慢軍火庫｜Spider 完成品必要結構
+ * 限定 .slowly-spider 作用域；宿主控制外觀。
+ * 不設定宿主背景或品牌色。牌面本身保持不透明以避免重疊穿透。
+ */
+.slowly-spider { width: 100%; min-width: 0; font-family: inherit; color: inherit; }
+.slowly-spider *, .slowly-spider *::before, .slowly-spider *::after { box-sizing: border-box; }
+.slowly-spider button { font: inherit; cursor: pointer; touch-action: manipulation; }
+.slowly-spider button:disabled { cursor: default; opacity: .55; }
+.slowly-spider button:focus-visible { outline: 2px solid var(--ssp-selection, currentColor); outline-offset: 1px; }
+.slowly-spider .ssp-toolbar { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; margin-bottom: 12px; }
+.slowly-spider .ssp-action { min-height: 40px; padding: 7px 13px; border: 1px solid var(--ssp-border, currentColor); background: var(--ssp-button-bg, transparent); color: inherit; border-radius: var(--ssp-button-radius, 0); }
+.slowly-spider .ssp-status { flex: 1 1 190px; font-size: .88rem; line-height: 1.5; }
+.slowly-spider .ssp-board { min-width: 0; padding: var(--ssp-board-padding, 7px 0 18px); background: var(--ssp-board-bg, transparent); border: var(--ssp-board-border, 0); }
+.slowly-spider .ssp-board[hidden] { display: none; }
+.slowly-spider .ssp-top { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+.slowly-spider .ssp-stock { flex: 0 0 auto; }
+.slowly-spider .ssp-completed { display: grid; flex: 1 1 auto; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; min-width: 0; }
+.slowly-spider .ssp-completed-slot { display: grid; place-items: center; min-width: 0; min-height: 32px; font-size: clamp(.57rem, 1.7vw, .9rem); border: 1px dashed var(--ssp-border, currentColor); background: var(--ssp-empty-bg, transparent); }
+.slowly-spider .ssp-tableau { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: var(--ssp-column-gap, 3px); }
+.slowly-spider .ssp-column { position: relative; min-width: 0; min-height: var(--ssp-column-min-height, 180px); box-shadow: inset 0 0 0 1px var(--ssp-column-border, currentColor); background: var(--ssp-column-bg, transparent); cursor: pointer; }
+.slowly-spider .ssp-card { position: absolute; left: 0; width: 100%; min-width: 0; padding: 4px 3px; aspect-ratio: var(--ssp-card-ratio, 5 / 7); border: 1px solid var(--ssp-border, currentColor); background: var(--ssp-card-bg, Canvas); color: var(--ssp-card-ink, CanvasText); text-align: left; font-size: clamp(.62rem, 1.5vw, .94rem); line-height: 1.05; border-radius: var(--ssp-card-radius, 0); display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
+.slowly-spider .ssp-face-down { background: var(--ssp-back-bg, ButtonFace); }
+.slowly-spider .ssp-card:disabled { opacity: 1; }
+.slowly-spider .ssp-card.is-selected { border-color: var(--ssp-selection, currentColor); box-shadow: inset 0 0 0 2px var(--ssp-selection, currentColor); }
+.slowly-spider .ssp-red { color: var(--ssp-red, #c22); }
+.slowly-spider .ssp-black { color: var(--ssp-black, CanvasText); }
+.slowly-spider .ssp-rank, .slowly-spider .ssp-suit { display: block; }
+@media (max-width: 600px) {
+  .slowly-spider { --ssp-step-down: 10px; --ssp-step-up: 23px; --ssp-column-min-height: 165px; --ssp-card-height: 45px; }
+  .slowly-spider .ssp-toolbar { gap: 7px; }
+  .slowly-spider .ssp-action { padding: 6px 9px; min-height: 36px; font-size: .86rem; }
+  .slowly-spider .ssp-top { gap: 6px; }
+  .slowly-spider .ssp-completed { gap: 2px; }
+  .slowly-spider .ssp-completed-slot { min-height: 26px; }
+  .slowly-spider .ssp-tableau { gap: 2px; }
+  .slowly-spider .ssp-card { padding: 3px 1px; font-size: clamp(.55rem, 2.15vw, .8rem); }
+}
