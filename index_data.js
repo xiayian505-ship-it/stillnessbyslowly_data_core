@@ -3781,6 +3781,184 @@ window.SlowlyLibraryIndex = [
     ]
   },
   {
+    "page": "video",
+    "title": "Video",
+    "groups": [
+      {
+        "id": "playback",
+        "title": "Playback / 播放",
+        "subpage": true,
+        "desc": "播放速率、播放與暫停、跳轉位置，以及等待可播放狀態。各自獨立，不決定播放器 UI。",
+        "items": [
+          {
+            "title": "Playback Rate / 播放倍率",
+            "desc": "讀取與設定影片的播放倍率；不綁定速度按鈕、滑桿或錄製流程。",
+            "links": [
+              {
+                "label": "playback_rate.js",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/playback_rate.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/test_playback_rate.html"
+              }
+            ]
+          },
+          {
+            "title": "Play Pause / 播放暫停",
+            "desc": "開始播放、暫停或切換狀態；不綁定播放介面或其他影片工具。",
+            "links": [
+              {
+                "label": "play_pause.js",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/play_pause.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/test_play_pause.html"
+              }
+            ]
+          },
+          {
+            "title": "Seek / 播放位置",
+            "desc": "跳至指定播放秒數或重新從頭播放；不管理播放速度與錄製。",
+            "links": [
+              {
+                "label": "seek.js",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/seek.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/test_seek.html"
+              }
+            ]
+          },
+          {
+            "title": "Ready / 可播放狀態",
+            "desc": "等待媒體準備到指定可播放狀態；不要求 seeked 事件一定會觸發。",
+            "links": [
+              {
+                "label": "ready.js",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/ready.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/test_ready.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "capture",
+        "title": "Capture / 串流擷取",
+        "subpage": true,
+        "desc": "偵測與取得影片元素播放中的媒體串流，不啟動手機系統螢幕錄影。",
+        "items": [
+          {
+            "title": "Capture Stream / 串流擷取",
+            "desc": "偵測 captureStream 支援情況，取得媒體元素串流；不負責播放、錄製或下載。",
+            "links": [
+              {
+                "label": "capture_stream.js",
+                "href": "https://lib.stillnessbyslowly.com/video/capture/capture_stream.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/capture/test_capture_stream.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "recording",
+        "title": "Recording / 錄製",
+        "subpage": true,
+        "desc": "錄製格式支援判斷、MediaRecorder 控制與錄製片段收集；不耦合成一套完整播放器。",
+        "items": [
+          {
+            "title": "Recorder MIME Type / 錄製格式",
+            "desc": "查詢 MediaRecorder 可使用的 MIME 類型並挑選格式；不建立錄製器。",
+            "links": [
+              {
+                "label": "mime_type.js",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/mime_type.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/test_mime_type.html"
+              }
+            ]
+          },
+          {
+            "title": "Media Recorder / 錄製器",
+            "desc": "建立、啟動與停止 MediaRecorder；不處理畫面、按鈕、Blob 匯出或錄製片段。",
+            "links": [
+              {
+                "label": "media_recorder.js",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/test_media_recorder.html"
+              }
+            ]
+          },
+          {
+            "title": "Recorded Chunks / 錄製片段",
+            "desc": "收集 MediaRecorder 回傳的 Blob 片段並合併；不建立串流、控制錄製或下載。",
+            "links": [
+              {
+                "label": "recorded_chunks.js",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/test_recorded_chunks.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "progress",
+        "title": "Progress / 進度",
+        "subpage": true,
+        "desc": "計算影片播放進度及倍速播放的預估剩餘時間；不產生 UI 或裝飾。",
+        "items": [
+          {
+            "title": "Media Progress / 播放進度",
+            "desc": "從目前播放秒數及總長度計算比例或百分比，不操作進度條 DOM。",
+            "links": [
+              {
+                "label": "media_progress.js",
+                "href": "https://lib.stillnessbyslowly.com/video/progress/media_progress.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/progress/test_media_progress.html"
+              }
+            ]
+          },
+          {
+            "title": "Remaining Time / 剩餘時間",
+            "desc": "由播放秒數、影片長度和倍率推估剩餘實際播放時間，不建立計時器或 UI。",
+            "links": [
+              {
+                "label": "remaining_time.js",
+                "href": "https://lib.stillnessbyslowly.com/video/progress/remaining_time.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/progress/test_remaining_time.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "page": "game",
     "title": "Game",
     "groups": [
