@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slowly Video Speed Player｜完成品展示</title>
+  <link rel="stylesheet" href="./video_speed_player_component.css">
+  <style>
+    /* 僅展示頁的宿主排版，與完成品外觀獨立。Piano 展示頁背景色碼。 */
+    body { margin:0; padding:24px 16px 48px; background:#151018; color:#f8eef5; font-family:system-ui, "Noto Sans TC", sans-serif; }
+    main { max-width:850px; margin:auto; }
+    .demo-note { color:#cdbdca; line-height:1.6; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Slowly Video Speed Player</h1>
+    <p class="demo-note">選一段本機影片，調整 0.5～5 倍速，嘗試錄製與匯出。錄製依賴裝置瀏覽器；全程不需上傳影片。</p>
+    <div id="player"></div>
+    <p class="demo-note">色票與 Slowly Piano 粉紅展示頁完全相同。元件只使用自己的 CSS 變數，宿主可自行換皮。</p>
+  </main>
+  <script src="https://lib.stillnessbyslowly.com/video/playback/playback_rate.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/video/playback/play_pause.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/video/playback/seek.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/video/playback/ready.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/video/capture/capture_stream.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/video/recording/mime_type.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/video/progress/media_progress.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/video/progress/remaining_time.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/data/file/filename_sanitize.js"></script>
+  <script src="./video_speed_player_component.js"></script>
+  <script>
+    const player = SlowlyVideoSpeedPlayer.mount("#player");
+  </script>
+</body>
+</html>

@@ -5,6 +5,32 @@ window.SlowlyLibraryIndex = [
     "title": "完成品使用",
     "items": [
       {
+        "title": "Slowly Video Speed Player",
+        "desc": "可直接嵌入網站使用的影片倍速播放與錄製匯出完成品，提供本機影片載入、0.5～5 倍速、播放與暫停、進度、錄製匯出及提前停止；組合軍火庫 Video 與 Blob／檔案積木，透過 HTTPS 絕對路徑載入。採與 Slowly Piano 展示頁一致的粉紅色票，宿主可用 CSS 變數自由換皮；真實錄製功能請在裝置瀏覽器驗收。",
+        "links": [
+          {
+            "label": "video_speed_player_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component.js"
+          },
+          {
+            "label": "video_speed_player_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component_usage.html"
+          },
+          {
+            "label": "README.md",
+            "href": "https://lib.stillnessbyslowly.com/component/video/README.md"
+          }
+        ]
+      },
+      {
         "title": "Slowly QRCode Print",
         "desc": "可直接嵌入網站使用的 QRCode 列印完成品，支援一般 QRCode／Wi-Fi QRCode、多尺寸預覽、高解析 QR 內容正規化、固定 quiet zone、A4 排版與實際尺寸列印；列印尺寸曾以實體尺規校正。",
         "links": [

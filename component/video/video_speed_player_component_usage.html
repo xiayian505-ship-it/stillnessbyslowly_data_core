@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Slowly Video Speed Player｜使用說明</title></head>
+<body>
+  <h1>Slowly Video Speed Player｜使用說明</h1>
+  <p>完成品採 mount 指定容器，自動建立原生影片、檔案選取、倍速按鈕與匯出 UI。所有必要積木從軍火庫 HTTPS 絕對路徑引用。</p>
+  <h2>完整引用</h2>
+  <pre><code>&lt;!-- 必要依賴（依照此順序載入，每個來源皆為軍火庫 HTTPS 絕對路徑） --&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/playback/playback_rate.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/playback/play_pause.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/playback/seek.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/playback/ready.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/capture/capture_stream.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/recording/mime_type.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/recording/media_recorder.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/progress/media_progress.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/video/progress/remaining_time.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/data/blob/blob_url.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/data/file/filename_sanitize.js&quot;&gt;&lt;/script&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/component/video/video_speed_player_component.css&quot;&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/component/video/video_speed_player_component.js&quot;&gt;&lt;/script&gt;
+
+&lt;div id=&quot;my-video&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+  const player = SlowlyVideoSpeedPlayer.mount(&quot;#my-video&quot;, {
+    onError(error) { console.error(error); },
+    onExport(blob) { console.log(&quot;已錄製&quot;, blob.size); }
+  });
+  // 播放器可直接操作：player.loadFile(file)、player.setSpeed(2)、player.stopExport()、player.destroy()
+&lt;/script&gt;</code></pre>
+  <h2>外觀與換皮</h2>
+  <p>完成品 CSS 預設使用 Slowly Piano 展示頁<strong>完全相同的粉紅色碼</strong>；並非連動載入 Piano。宿主只需在 CSS 中覆寫容器的 <code>--svsp-*</code> 變數即可換皮（參見 README）。</p>
+  <h2>API</h2>
+  <pre><code>const player = SlowlyVideoSpeedPlayer.mount(container, options);
+await player.loadFile(file);
+player.setSpeed(1.5);
+await player.startExport();
+await player.stopExport();
+player.reset();
+player.destroy();
+player.elements.video; // 原生 video，可直接控制</code></pre>
+  <p>匯出並非手機系統螢幕錄影：使用 captureStream + MediaRecorder 在頁面本機重新錄製，會花實際播放時間。請保持前景，螢幕不要鎖定；播放和錄製能力取決於瀏覽器。</p>
+  <p>個人歷史紀錄：原版影片播放器在 Samsung Galaxy S25 Ultra（S25U）與 Galaxy Note20 Ultra（N20U）可使用；新版完成品尚待實機驗證。</p>
+  <p><a href="./video_speed_player_component_demo.html">開啟完成品展示</a></p>
+</body></html>

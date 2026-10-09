@@ -1,0 +1,87 @@
+/* 慢慢軍火庫｜Video Speed Player v1.0.0
+ * 顏色完全引用 Piano Demo 粉紅色碼（獨立拷貝色票，不引用 Piano）。
+ * 宿主可設定下列 --svsp-* 變數完整換皮。全部選擇器限定在播放器容器。
+ */
+.slowly-video-speed-player {
+  --svsp-bg: #151018;
+  --svsp-text: #f8eef5;
+  --svsp-muted: #cdbdca;
+  --svsp-accent: #ff8fc6;
+  --svsp-panel-bg: rgba(255, 143, 198, 0.08);
+  --svsp-border: rgba(255, 180, 216, 0.22);
+  --svsp-button-bg: linear-gradient(180deg, #ffe9f4, #ffc5df);
+  --svsp-button-text: #5d2643;
+  --svsp-button-border: #ffb2d5;
+  --svsp-button-active-bg: linear-gradient(180deg, #ff97c9, #ff6caf);
+  --svsp-button-active-border: #ff4b9c;
+  --svsp-dark-bg: linear-gradient(180deg, #7d3e61, #3e1e31);
+  --svsp-dark-text: #fff4fa;
+  --svsp-dark-border: #985275;
+  --svsp-dark-active-bg: linear-gradient(180deg, #ff70b2, #b8407a);
+  --svsp-dark-active-border: #ff9bcb;
+  --svsp-radius: 14px;
+  --svsp-spacing: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: var(--svsp-spacing);
+  background: var(--svsp-bg);
+  color: var(--svsp-text);
+  border: 1px solid var(--svsp-border);
+  border-radius: var(--svsp-radius);
+  display: grid;
+  gap: var(--svsp-spacing);
+  font: inherit;
+}
+.slowly-video-speed-player *, .slowly-video-speed-player *::before,
+.slowly-video-speed-player *::after { box-sizing: border-box; }
+.slowly-video-speed-player [hidden] { display: none !important; }
+.slowly-video-speed-player .svsp-upload,
+.slowly-video-speed-player .svsp-speed,
+.slowly-video-speed-player .svsp-export {
+  min-width: 0; margin: 0; padding: var(--svsp-spacing);
+  border: 1px solid var(--svsp-border); border-radius: var(--svsp-radius);
+  background: var(--svsp-panel-bg);
+}
+.slowly-video-speed-player .svsp-upload.is-dragover { outline: 2px dashed var(--svsp-accent); }
+.slowly-video-speed-player .svsp-file-label { display: grid; gap: 6px; }
+.slowly-video-speed-player .svsp-file-label input { width: 100%; max-width: 100%; font: inherit; }
+.slowly-video-speed-player .svsp-hint, .slowly-video-speed-player .svsp-filename,
+.slowly-video-speed-player .svsp-play-progress, .slowly-video-speed-player .svsp-status {
+  color: var(--svsp-muted); margin: 0; line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.slowly-video-speed-player .svsp-hint { display: block; font-size: 0.9em; margin-top: 6px; }
+.slowly-video-speed-player .svsp-video { width: 100%; max-height: 65vh; object-fit: contain; background: var(--svsp-bg); }
+.slowly-video-speed-player .svsp-toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+.slowly-video-speed-player button, .slowly-video-speed-player .svsp-download {
+  min-height: 40px; padding: 8px 12px; font: inherit; cursor: pointer;
+  border: 1px solid var(--svsp-button-border); border-radius: var(--svsp-radius);
+  background: var(--svsp-button-bg); color: var(--svsp-button-text);
+}
+.slowly-video-speed-player button[aria-pressed="true"] {
+  background: var(--svsp-button-active-bg); border-color: var(--svsp-button-active-border);
+}
+.slowly-video-speed-player button:disabled { opacity: 0.55; cursor: not-allowed; }
+.slowly-video-speed-player button:focus-visible, .slowly-video-speed-player a:focus-visible,
+.slowly-video-speed-player input:focus-visible {
+  outline: 2px solid var(--svsp-accent); outline-offset: 2px;
+}
+.slowly-video-speed-player .svsp-speed { display: grid; gap: 10px; }
+.slowly-video-speed-player .svsp-speed legend, .slowly-video-speed-player .svsp-export legend { padding: 0 5px; }
+.slowly-video-speed-player .svsp-speed input[type="range"] { width: 100%; accent-color: var(--svsp-accent); }
+.slowly-video-speed-player .svsp-speed-buttons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; }
+.slowly-video-speed-player .svsp-speed-buttons button { padding: 8px 2px; min-width: 0; }
+.slowly-video-speed-player .svsp-export { display: grid; gap: 10px; }
+.slowly-video-speed-player .svsp-export progress { width: 100%; max-width: 100%; accent-color: var(--svsp-accent); }
+.slowly-video-speed-player [data-part="stop"] {
+  background: var(--svsp-dark-bg); border-color: var(--svsp-dark-border); color: var(--svsp-dark-text);
+}
+.slowly-video-speed-player [data-part="download"] {
+  padding: 10px 12px; text-align: center; color: var(--svsp-dark-text);
+  background: var(--svsp-dark-active-bg); border: 1px solid var(--svsp-dark-active-border);
+  border-radius: var(--svsp-radius);
+}
+@media (max-width: 430px) {
+  .slowly-video-speed-player .svsp-speed-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
