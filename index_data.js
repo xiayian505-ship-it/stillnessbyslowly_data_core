@@ -27,6 +27,84 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Spider Easy",
+        "desc": "可直接嵌入網站使用的 Spider 初階（單一花色）連環新接龍完成品，提供 104 張牌隨機開局、十欄牌區、合法移牌、五次補牌、同花色 K～A 自動收牌、主動結束及破關判定。引用軍火庫 Deck 與 Spider 共用規則引擎，全部透過 HTTPS 絕對路徑載入；僅提供必要的排列與操作樣式，外觀和進階功能由宿主決定，不含資料庫、UID、存檔、音效或特效。",
+        "links": [
+          {
+            "label": "Spider.js（共用規則）",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js"
+          },
+          {
+            "label": "Spider.css",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css"
+          },
+          {
+            "label": "SpiderEasy.js",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderEasy.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderEasy_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderEasy_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Spider Medium",
+        "desc": "可直接嵌入網站使用的 Spider 中階（雙花色）連環新接龍完成品，提供 104 張牌隨機開局、十欄牌區、合法移牌、五次補牌、同花色 K～A 自動收牌、主動結束及破關判定。引用軍火庫 Deck 與 Spider 共用規則引擎，全部透過 HTTPS 絕對路徑載入；僅提供必要的排列與操作樣式，外觀和進階功能由宿主決定，不含資料庫、UID、存檔、音效或特效。",
+        "links": [
+          {
+            "label": "Spider.js（共用規則）",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js"
+          },
+          {
+            "label": "Spider.css",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css"
+          },
+          {
+            "label": "SpiderMedium.js",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Spider Hard",
+        "desc": "可直接嵌入網站使用的 Spider 高階（四花色）連環新接龍完成品，提供 104 張牌隨機開局、十欄牌區、合法移牌、五次補牌、同花色 K～A 自動收牌、主動結束及破關判定。引用軍火庫 Deck 與 Spider 共用規則引擎，全部透過 HTTPS 絕對路徑載入；僅提供必要的排列與操作樣式，外觀和進階功能由宿主決定，不含資料庫、UID、存檔、音效或特效。",
+        "links": [
+          {
+            "label": "Spider.js（共用規則）",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js"
+          },
+          {
+            "label": "Spider.css",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css"
+          },
+          {
+            "label": "SpiderHard.js",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderHard.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderHard_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderHard_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly Video Speed Player",
         "desc": "可直接嵌入網站使用的影片倍速播放與錄製匯出完成品，提供本機影片載入、0.5～5 倍速、播放與暫停、進度、錄製匯出及提前停止；組合軍火庫 Video 與 Blob／檔案積木，透過 HTTPS 絕對路徑載入。採與 Slowly Piano 展示頁一致的粉紅色票，宿主可用 CSS 變數自由換皮；真實錄製功能請在裝置瀏覽器驗收。",
         "links": [
