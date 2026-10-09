@@ -5,6 +5,28 @@ window.SlowlyLibraryIndex = [
     "title": "完成品使用",
     "items": [
       {
+        "title": "FreeCell",
+        "desc": "可直接嵌入網站使用的標準 FreeCell（新接龍）完成品，提供隨機開局、八欄牌區、四個自由格、四個回收格、合法移牌、主動結束、破關判定及末盤自動收牌。依賴軍火庫 Deck 積木，透過 HTTPS 絕對路徑引用；只保留必要的牌面排版與操作樣式，外觀及其他擴充由宿主決定，不包含資料庫、UID、牌局紀錄或特效。",
+        "links": [
+          {
+            "label": "FreeCell.js",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/FreeCell/FreeCell.js"
+          },
+          {
+            "label": "FreeCell.css",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/FreeCell/FreeCell.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/FreeCell/FreeCell_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/FreeCell/FreeCell_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly Video Speed Player",
         "desc": "可直接嵌入網站使用的影片倍速播放與錄製匯出完成品，提供本機影片載入、0.5～5 倍速、播放與暫停、進度、錄製匯出及提前停止；組合軍火庫 Video 與 Blob／檔案積木，透過 HTTPS 絕對路徑載入。採與 Slowly Piano 展示頁一致的粉紅色票，宿主可用 CSS 變數自由換皮；真實錄製功能請在裝置瀏覽器驗收。",
         "links": [
