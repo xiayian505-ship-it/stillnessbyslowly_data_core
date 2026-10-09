@@ -23,10 +23,6 @@ window.SlowlyLibraryIndex = [
           {
             "label": "使用說明",
             "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component_usage.html"
-          },
-          {
-            "label": "README.md",
-            "href": "https://lib.stillnessbyslowly.com/component/video/README.md"
           }
         ]
       },
