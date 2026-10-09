@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recorded Chunks Test</title></head>
+<body>
+<h1>Recorded Chunks — 功能測試</h1>
+<p>純測試頁，沒有自訂 CSS。單獨載入本零件；測試用的 DOM 操作不是積木的一部分。</p>
+<p><button id="test">新增、合併、清空測試 Blob</button></p>
+<pre id="out" aria-live="polite"></pre>
+<script src="./recorded_chunks.js"></script>
+<script>
+"use strict";
+const out = document.getElementById("out");
+document.getElementById("test").onclick=()=>{const bucket=SlowlyVideoRecordedChunks.create("text/plain");bucket.add(new Blob(["slowly"]));bucket.add(new Blob([" video"]));const result=bucket.toBlob();out.textContent=`count=${bucket.count}, size=${bucket.size}, Blob.size=${result.size}, type=${result.type}`;bucket.clear();out.textContent+=`\n清空後 count=${bucket.count}`;};
+</script>
+</body></html>

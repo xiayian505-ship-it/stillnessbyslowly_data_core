@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Media Progress Test</title></head>
+<body>
+<h1>Media Progress — 功能測試</h1>
+<p>純測試頁，沒有自訂 CSS。單獨載入本零件；測試用的 DOM 操作不是積木的一部分。</p>
+<p><button id="check">計算進度</button></p>
+<pre id="out" aria-live="polite"></pre>
+<script src="./media_progress.js"></script>
+<script>
+"use strict";
+const out = document.getElementById("out");
+document.getElementById("check").onclick=()=>out.textContent=`30/120：${SlowlyVideoMediaProgress.percent(30,120)}%\n-10/120：${SlowlyVideoMediaProgress.percent(-10,120)}%\n1/0：${SlowlyVideoMediaProgress.percent(1,0)}`;document.getElementById("check").click();
+</script>
+</body></html>

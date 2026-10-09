@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mime Type Test</title></head>
+<body>
+<h1>Mime Type — 功能測試</h1>
+<p>純測試頁，沒有自訂 CSS。單獨載入本零件；測試用的 DOM 操作不是積木的一部分。</p>
+<p><button id="check">檢查錄製格式</button></p>
+<pre id="out" aria-live="polite"></pre>
+<script src="./mime_type.js"></script>
+<script>
+"use strict";
+const out = document.getElementById("out");
+document.getElementById("check").onclick=()=>{out.textContent=SlowlyVideoRecorderMime.defaultTypes.map(type=>`${type}: ${SlowlyVideoRecorderMime.isSupported(type)}`).join("\n")+"\n優先選擇："+(SlowlyVideoRecorderMime.choose()||"不支援");};
+document.getElementById("check").click();
+</script>
+</body></html>

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Seek Test</title></head>
+<body>
+<h1>Seek — 功能測試</h1>
+<p>純測試頁，沒有自訂 CSS。單獨載入本零件；測試用的 DOM 操作不是積木的一部分。</p>
+<label>選擇本機影片（不會上傳）：<input id="file" type="file" accept="video/*"></label>
+<p><video id="video" controls playsinline width="360"></video></p><p><button id="to">跳到第 3 秒</button> <button id="reset">回到 0 秒</button></p>
+<pre id="out" aria-live="polite"></pre>
+<script src="./seek.js"></script>
+<script>
+"use strict";
+const out = document.getElementById("out");
+const video=document.querySelector("#video");let source="";
+document.querySelector("#file").onchange = e => { if(source) URL.revokeObjectURL(source); const f=e.target.files[0]; if(!f)return; source=URL.createObjectURL(f);video.src=source;video.load();out.textContent="已載入："+f.name; };
+window.addEventListener("pagehide",()=>{if(source) URL.revokeObjectURL(source);});document.getElementById("to").onclick=()=>{try{out.textContent="目前秒數="+SlowlyVideoSeek.to(video,3);}catch(e){out.textContent=e.message;}};
+document.getElementById("reset").onclick=()=>{try{out.textContent="目前秒數="+SlowlyVideoSeek.restart(video);}catch(e){out.textContent=e.message;}};
+</script>
+</body></html>
