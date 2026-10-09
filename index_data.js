@@ -105,6 +105,58 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Klondike Draw 1",
+        "desc": "可直接嵌入網站使用的傳統接龍 Klondike 完成品，固定每次翻 1 張牌。提供 52 張牌隨機開局、七欄牌區、合法移牌、牌庫翻牌及棄牌回收、同花色 A～K 回收、主動結束、末盤自動收牌與破關判定。引用軍火庫 Deck 積木與 Klondike 共用規則引擎，全部採 HTTPS 絕對路徑；只提供必要的牌面排版，外觀與擴充交由宿主決定，不含資料庫、UID、存檔、音效或特效。",
+        "links": [
+          {
+            "label": "Klondike.js（共用規則）",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/Klondike.js"
+          },
+          {
+            "label": "Klondike.css",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/Klondike.css"
+          },
+          {
+            "label": "KlondikeDraw1.js",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/KlondikeDraw1.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/KlondikeDraw1_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/KlondikeDraw1_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Klondike Draw 3",
+        "desc": "可直接嵌入網站使用的傳統接龍 Klondike 完成品，固定每次翻 3 張牌。提供 52 張牌隨機開局、七欄牌區、合法移牌、牌庫翻牌及棄牌回收、同花色 A～K 回收、主動結束、末盤自動收牌與破關判定。引用軍火庫 Deck 積木與 Klondike 共用規則引擎，全部採 HTTPS 絕對路徑；只提供必要的牌面排版，外觀與擴充交由宿主決定，不含資料庫、UID、存檔、音效或特效。",
+        "links": [
+          {
+            "label": "Klondike.js（共用規則）",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/Klondike.js"
+          },
+          {
+            "label": "Klondike.css",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/Klondike.css"
+          },
+          {
+            "label": "KlondikeDraw3.js",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/KlondikeDraw3.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/KlondikeDraw3_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/KlondikeDraw3_usage.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly Video Speed Player",
         "desc": "可直接嵌入網站使用的影片倍速播放與錄製匯出完成品，提供本機影片載入、0.5～5 倍速、播放與暫停、進度、錄製匯出及提前停止；組合軍火庫 Video 與 Blob／檔案積木，透過 HTTPS 絕對路徑載入。採與 Slowly Piano 展示頁一致的粉紅色票，宿主可用 CSS 變數自由換皮；真實錄製功能請在裝置瀏覽器驗收。",
         "links": [
