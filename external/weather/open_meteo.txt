@@ -1,0 +1,47 @@
+慢慢的倉庫｜External / 外部
+Weather 外部 API
+
+名稱：Open-Meteo Forecast API
+版本：無固定套件版本（HTTP API；端點 /v1/forecast）
+角色：reference
+狀態：active（來源專案有實際使用）
+官方文件核對：2026-10-09（非當日端點即時連線測試）
+
+用途：
+- 依經緯度查詢目前天氣
+- 氣溫、體感溫度、相對濕度、降水量、天氣代碼、風速
+- 御膳房網站使用天氣資料決定用餐建議
+
+API 入口：
+https://api.open-meteo.com/v1/forecast
+
+官方文件：
+https://open-meteo.com/en/docs
+
+使用條款：
+https://open-meteo.com/en/terms
+
+最小使用（以下經緯度僅為範例；由宿主自行設定）：
+const params = new URLSearchParams({
+  latitude: "25.03",
+  longitude: "121.56",
+  current: "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m",
+  timezone: "auto"
+});
+const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+const data = await res.json();
+console.log(data.current);
+
+使用條件：
+- 免費公開 API 主要供非商業用途，不等同任何使用情境都可免費。
+- 免費用量限制依官方條款；核對時載明少於每日 10,000 次、每小時 5,000 次、每分鐘 600 次。
+- 資料採 CC BY 4.0，使用時需適當署名；商業用途請查官方方案。
+- API 數據可能改變、失敗或延遲，呼叫端自行處理錯誤與顯示。
+
+備註：
+- 原始使用檔：meal_emperor_v1.js。
+- 這裡只紀錄外部 API，不收御膳房的判斷規則、DOM、樣式。
+- 使用 fetch 直接呼叫，不需額外載入第三方 JavaScript 套件。
+- TXT 給人閱讀；JSON 作為機器可讀的 External 資料來源。
+- 外部服務本體不收進軍火庫，只保留入口、用法、來源及條件。

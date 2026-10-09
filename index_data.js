@@ -4099,6 +4099,50 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "weather",
+        "title": "Weather / 天氣",
+        "subpage": true,
+        "desc": "已實際使用的外部天氣 API，記錄查詢入口、呼叫範例及使用條件。",
+        "items": [
+          {
+            "title": "Open-Meteo Forecast API",
+            "desc": "御膳房使用的天氣 API，可依經緯度查詢氣溫、體感、濕度、降水、風速與天氣代碼。免費公開 API 有非商業使用、用量和署名條件。",
+            "links": [
+              {
+                "label": "open_meteo.json",
+                "href": "https://lib.stillnessbyslowly.com/external/weather/open_meteo.json"
+              },
+              {
+                "label": "open_meteo.txt",
+                "href": "https://lib.stillnessbyslowly.com/external/weather/open_meteo.txt"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "animals",
+        "title": "Animals / 動物",
+        "subpage": true,
+        "desc": "已實際使用的外部動物圖片 API 紀錄；不同服務各自獨立。",
+        "items": [
+          {
+            "title": "Dog CEO API",
+            "desc": "狗狗翻牌使用的隨機狗狗圖片 API；一次可取多張圖片 URL。只提供外部圖片資料，不綁定遊戲邏輯。",
+            "links": [
+              {
+                "label": "dog_ceo.json",
+                "href": "https://lib.stillnessbyslowly.com/external/animals/dog_ceo.json"
+              },
+              {
+                "label": "dog_ceo.txt",
+                "href": "https://lib.stillnessbyslowly.com/external/animals/dog_ceo.txt"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "loader",
         "title": "Loader / 載入",
         "subpage": true,

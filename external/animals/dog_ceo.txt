@@ -1,0 +1,41 @@
+慢慢的倉庫｜External / 外部
+Animals 外部 API
+
+名稱：Dog CEO API
+版本：官方文件未列此端點固定版本
+角色：reference
+狀態：active（來源專案有實際使用）
+官方文件核對：2026-10-09（非當日端點即時連線測試）
+
+用途：
+- 取得隨機狗狗圖片 URL
+- 單次查詢多張狗狗圖片（官方上限 50 張）
+- 狗狗翻牌使用 8 張圖片，再由宿主組成 8 對翻牌
+
+API 入口（8 張）：
+https://dog.ceo/api/breeds/image/random/8
+
+官方文件：
+https://dog.ceo/dog-api/documentation/random
+
+最小使用：
+const res = await fetch("https://dog.ceo/api/breeds/image/random/8");
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+const data = await res.json();
+if (data.status !== "success" || !Array.isArray(data.message)) {
+  throw new Error("回傳格式錯誤");
+}
+const imageUrls = data.message;
+
+回傳重點：
+- status：查詢狀態
+- message：隨機圖片 URL 陣列（單張查詢則為字串）
+
+備註：
+- 原始使用檔：dog_memory_v1.js。
+- Dog CEO 只提供狗狗圖片，沒有提供貓咪圖片 API。
+- 洗牌、配對、翻牌、展示樣式都由宿主負責。
+- 若要對外重用圖片，請留意圖片來源與個別素材權利。
+- 使用 fetch 直接呼叫，不需額外載入第三方 JavaScript 套件。
+- TXT 給人閱讀；JSON 作為機器可讀的 External 資料來源。
+- 外部服務本體不收進軍火庫，只保留入口、用法與使用紀錄。

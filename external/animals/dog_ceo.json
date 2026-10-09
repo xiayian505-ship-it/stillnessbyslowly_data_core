@@ -1,0 +1,27 @@
+{
+  "category": "animals",
+  "title": "Animals",
+  "preferred": "dog-ceo",
+  "updatedAt": "2026-10-09",
+  "items": [
+    {
+      "id": "dog-ceo",
+      "name": "Dog CEO API",
+      "version": null,
+      "role": "reference",
+      "status": "active",
+      "checkedAt": "2026-10-09",
+      "used": true,
+      "usage": [
+        "取得隨機狗狗圖片 URL",
+        "一次取得多張圖片（官方上限 50）",
+        "狗狗翻牌遊戲：每局取得 8 張狗狗圖片，再由宿主組成配對牌組"
+      ],
+      "cdn": null,
+      "endpoint": "https://dog.ceo/api/breeds/image/random/8",
+      "docs": "https://dog.ceo/dog-api/documentation/random",
+      "example": "const res = await fetch(\"https://dog.ceo/api/breeds/image/random/8\"); if (!res.ok) throw new Error(`HTTP ${res.status}`); const data = await res.json(); if (data.status !== \"success\" || !Array.isArray(data.message)) throw new Error(\"回傳格式錯誤\"); const imageUrls = data.message;",
+      "note": "狗狗翻牌 dog_memory_v1.js 實際使用此 API。只記錄外部 API；翻牌、洗牌與配對邏輯不屬外部服務。Dog CEO 只提供狗狗圖片，不包含貓咪；官方文件沒有標示這個端點的固定版本號。官方文件於 2026-10-09 檢查，未將即時端點回應視作已實測。圖片對外使用時請留意來源及個別素材權利。"
+    }
+  ]
+}

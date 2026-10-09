@@ -1,0 +1,29 @@
+{
+  "category": "weather",
+  "title": "Weather",
+  "preferred": "open-meteo",
+  "updatedAt": "2026-10-09",
+  "items": [
+    {
+      "id": "open-meteo",
+      "name": "Open-Meteo Forecast API",
+      "version": null,
+      "role": "reference",
+      "status": "active",
+      "checkedAt": "2026-10-09",
+      "used": true,
+      "usage": [
+        "取得指定經緯度的目前天氣資料",
+        "氣溫與體感溫度",
+        "相對濕度、降水量、風速與天氣代碼",
+        "御膳房網站：依天氣提供用餐建議"
+      ],
+      "cdn": null,
+      "endpoint": "https://api.open-meteo.com/v1/forecast",
+      "docs": "https://open-meteo.com/en/docs",
+      "terms": "https://open-meteo.com/en/terms",
+      "example": "const params = new URLSearchParams({ latitude: \"25.03\", longitude: \"121.56\", current: \"temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m\", timezone: \"auto\" }); const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`); if (!res.ok) throw new Error(`HTTP ${res.status}`); const data = await res.json(); console.log(data.current);",
+      "note": "御膳房 meal_emperor_v1.js 實際以 fetch 呼叫；此處只記錄外部 API，不收錄網站的用餐判斷或 UI。免費公開 API 適用非商業使用、有呼叫量限制且資料採 CC BY 4.0 需適當署名；商業用途應參考官方方案。官方文件／條款已於 2026-10-09 檢查；未將即時端點回應視作已實測。此 API 沒有固定的套件版本號。"
+    }
+  ]
+}
