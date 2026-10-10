@@ -3557,6 +3557,60 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/background/test_floating_symbols.html"
               }
             ]
+          },
+          {
+            "title": "Pine Forest",
+            "desc": "獨立 Canvas 松樹森林剪影，可調整隨機種子、圖層、樹木密度、顏色及背景；僅負責繪製，Canvas 尺寸、定位與外觀由宿主決定，不依賴其他零件。",
+            "links": [
+              {
+                "label": "pine_forest.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/pine_forest.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_pine_forest.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/pine_forest_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Canvas Fog",
+            "desc": "獨立 Canvas 流動霧團，可設定數量、顏色、透明度、漂移速度與大小；提供啟動、停止及銷毀，畫布排版和圖層由宿主決定。",
+            "links": [
+              {
+                "label": "fog.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/fog.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_fog.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/fog_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Canvas Rain",
+            "desc": "獨立 Canvas 持續雨幕，可設定雨滴數量、顏色、透明度、風向、落下速度與雨線長度；不包含水面漣漪、閃電或聲音，畫布外觀由宿主決定。",
+            "links": [
+              {
+                "label": "rain.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/rain.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_rain.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/rain_usage.html"
+              }
+            ]
           }
         ],
         "subpage": true,
