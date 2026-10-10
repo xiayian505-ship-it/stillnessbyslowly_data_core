@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pine Forest（松樹森林剪影）｜功能測試</title>
+  <style>
+    /* 僅供此測試頁展示尺寸與底色，軍火庫 JS 不提供、不要求 CSS。 */
+    body {
+      margin: 24px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    .test-stage {
+      width: min(100%, 720px);
+      height: 290px;
+      background: #102627;
+      border: 1px solid #778e89;
+    }
+
+    .test-stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+
+    .controls button {
+      padding: 8px 12px;
+    }
+
+    output {
+      display: block;
+      margin-top: 12px;
+    }
+  </style>
+  <script src="./pine_forest.js" defer></script>
+</head>
+<body>
+  <h1>Pine Forest（松樹森林剪影）｜功能測試</h1>
+  <p>純靜態 Canvas 畫圖。測試重畫、尺寸調整與清理，不依賴其他零件。</p>
+  <p>以下只測試零件功能，舞台大小、背景色、Canvas 外觀皆由測試頁（宿主）設定。</p>
+
+  <div class="test-stage">
+    <canvas id="sample" aria-label="Pine Forest（松樹森林剪影） 測試畫布"></canvas>
+  </div>
+
+  <div class="controls">
+        <button type="button" id="draw">重新繪製</button>
+        <button type="button" id="resize">手動 resize</button>
+        <button type="button" id="recreate">重新建立</button>
+        <button type="button" id="destroy">銷毀</button>
+  </div>
+  <output id="status" role="status" aria-live="polite">尚未初始化</output>
+  <p>可改變瀏覽器寬度觀察樹形隨尺寸重新繪製。</p>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+
+    const canvas = document.getElementById('sample');
+    const status = document.getElementById('status');
+    const report = (message) => { status.textContent = message; };
+    let effect = null;
+
+    function createEffect() {
+      effect?.destroy();
+      effect = SlowlyPineForest.create({ canvas, seed: 11, density: 1, background: '#122b2b' });
+      // create() / resize() 會自動繪製一次；不用動畫迴圈。
+      report('已建立；畫布 ' + canvas.width + ' × ' + canvas.height + ' px');
+    }
+
+    document.getElementById('draw').addEventListener('click', () => {
+      if (!effect) return report('已銷毀，請重新建立');
+      effect.draw();
+      report('draw() 完成（固定 seed 的樹形相同）');
+    });
+    document.getElementById('resize').addEventListener('click', () => {
+      if (!effect) return report('已銷毀，請重新建立');
+      effect.resize();
+      report('resize() 完成');
+    });
+    document.getElementById('recreate').addEventListener('click', createEffect);
+    document.getElementById('destroy').addEventListener('click', () => {
+      effect?.destroy();
+      effect = null;
+      report('已銷毀；不再自動處理尺寸變化');
+    });
+
+    createEffect();
+    window.addEventListener('pagehide', () => effect?.destroy(), { once: true });
+  });
+  </script>
+</body>
+</html>

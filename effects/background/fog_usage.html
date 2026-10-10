@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canvas Fog（流動霧氣）｜使用說明</title>
+  <style>
+    body {
+      margin: 24px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      line-height: 1.8;
+    }
+    main { width: min(850px, 100%); margin: 0 auto; }
+    pre { padding: 14px; overflow-x: auto; background: #f3f3f3; }
+    code, pre { font-family: Consolas, monospace; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #bbb; padding: 6px 9px; text-align: left; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Canvas Fog（流動霧氣）｜使用說明</h1>
+    <p>獨立的 Canvas 漸層霧團漂移效果，不附帶森林、雨滴或其他內容。</p>
+    <p><a href="./test_fog.html">開啟獨立功能測試頁</a></p>
+
+    <h2>載入（正式 HTTPS 路徑）</h2>
+    <pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/effects/background/fog.js&quot;&gt;&lt;/script&gt;</code></pre>
+    <p>正式 URL 必須等零件部署到軍火庫後才會有效；ZIP 本身不會修改 GitHub 或目錄資料。</p>
+
+    <h2>宿主自行決定 CSS</h2>
+    <p>零件不載入 CSS、不寫入 Canvas 的 <code>style</code>、不建立舞台、不決定定位、層級或版面。宿主提供 Canvas 元素與尺寸。</p>
+    <pre><code>&lt;div class=&quot;my-stage&quot;&gt;
+  &lt;canvas id=&quot;effect&quot;&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  .my-stage { position: relative; width: 100%; height: 280px; }
+  .my-stage canvas { display: block; width: 100%; height: 100%; }
+&lt;/style&gt;</code></pre>
+    <p>上述 CSS 只是宿主範例，不是軍火庫零件的樣式或依賴。</p>
+
+    <h2>基本使用</h2>
+    <pre><code>const fog = SlowlyCanvasFog.create({
+  canvas: &#x27;#effect&#x27;,
+  count: 24,
+  color: &#x27;#c3ddd4&#x27;,
+  opacity: 0.8,
+  speed: 1
+});
+
+fog.start();
+// 不需要時
+fog.stop();
+fog.destroy();</code></pre>
+
+    <h2>建立參數</h2>
+    <table>
+      <thead><tr><th>選項</th><th>預設</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td><code>canvas</code></td><td>必填</td><td>Canvas 元素，或 CSS 選擇器。</td></tr>
+        <tr><td><code>count</code></td><td>24</td><td>霧團數量（範圍 0–150）。</td></tr>
+        <tr><td><code>color</code></td><td>#c3ddd4</td><td>霧團顏色，支援 Canvas 可接受的 CSS 顏色字串。</td></tr>
+        <tr><td><code>opacity</code></td><td>0.8</td><td>整體透明度（0–1）。</td></tr>
+        <tr><td><code>speed</code></td><td>1</td><td>水平漂移速度倍率；0 則不移動。</td></tr>
+        <tr><td><code>size</code></td><td>1</td><td>霧團尺寸倍率。</td></tr>
+        <tr><td><code>maxDpr</code></td><td>1.5</td><td>最高裝置像素比。</td></tr>
+        <tr><td><code>width / height</code></td><td>從 Canvas 的 CSS 尺寸讀取</td><td>手動指定畫布繪圖尺寸（像素）。</td></tr>
+        <tr><td><code>autoResize</code></td><td>true</td><td>自動偵測 Canvas 尺寸變更。</td></tr>
+        <tr><td><code>autoStart</code></td><td>false</td><td>true 為建立後即開始動畫。</td></tr>
+      </tbody>
+    </table>
+
+    <h2>公開方法</h2>
+    <pre><code>fog.start();           // 啟動或繼續動畫（重複呼叫安全）
+fog.stop();            // 停止動畫，保留畫面
+fog.advance(0.016);    // 手動推進（秒；每次最多 0.05 秒）
+fog.draw(1000);        // 重畫；可給時間戳用於透明度呼吸
+fog.resize();          // 更新內部畫布尺寸
+fog.destroy();         // 停止並解除監聽</code></pre>
+
+    <h2>注意事項</h2>
+    <p>預設只有 create() 時的靜態畫面，需 start() 才會漂移。頁面隱藏時暫停繪製；reduced-motion 啟用時維持靜態，停止自動逐幀動畫。霧團顏色由 JS 參數傳入；視覺容器與位置交由宿主。</p>
+    <p>零件不引用其他軍火庫 JS。每個 Canvas 由一個效果管理，若宿主需要疊加不同效果，應建立各自的 Canvas 圖層並由宿主決定排列。</p>
+    <p>宿主負責在移除元件或離開場景時呼叫 <code>destroy()</code> 釋放資源。</p>
+  </main>
+</body>
+</html>
