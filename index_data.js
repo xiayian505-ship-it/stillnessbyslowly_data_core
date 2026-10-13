@@ -408,7 +408,7 @@ window.SlowlyLibraryIndex = [
       },
       {
         "title": "Text Generator Component",
-        "desc": "可供不同宿主使用的文字藝術字生成完成品。由宿主提供 SVG 模板、字型、顏色、排版規則與輸出尺寸；共用文字切分、SVG 預覽、透明 PNG 及等比例書封輸出流程。引用軍火庫既有 Blob URL、Canvas PNG 與 PNG Download 零件，不強制外觀、不附帶字型檔。",
+        "desc": "文字藝術字生成完成品家族：保留 v1 相容入口；v2 以共用核心搭配獨立的直式或橫式完成品，可依需求分別引用。支援字數限制、SVG 預覽、透明 PNG 與等比例書封輸出；SVG 模板、字型、色彩、字位、尺寸與介面均由宿主決定。引用軍火庫既有 Blob URL、Canvas PNG 與 PNG Download 零件，不附帶字型檔。",
         "links": [
           {
             "label": "text_generator_component.js",
@@ -425,6 +425,42 @@ window.SlowlyLibraryIndex = [
           {
             "label": "功能測試",
             "href": "https://lib.stillnessbyslowly.com/component/text_generator/test_text_generator.html"
+          },
+          {
+            "label": "共用核心｜text_generator_core.js",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js"
+          },
+          {
+            "label": "直式｜text_generator_vertical_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_vertical_component.js"
+          },
+          {
+            "label": "直式展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_vertical_demo.html"
+          },
+          {
+            "label": "直式使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_vertical_usage.html"
+          },
+          {
+            "label": "直式功能測試",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/test_text_generator_vertical.html"
+          },
+          {
+            "label": "橫式｜text_generator_horizontal_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_component.js"
+          },
+          {
+            "label": "橫式展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_demo.html"
+          },
+          {
+            "label": "橫式使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_horizontal_usage.html"
+          },
+          {
+            "label": "橫式功能測試",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/test_text_generator_horizontal.html"
           }
         ]
       }
