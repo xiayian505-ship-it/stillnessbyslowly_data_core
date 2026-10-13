@@ -405,6 +405,28 @@ window.SlowlyLibraryIndex = [
             "href": "https://lib.stillnessbyslowly.com/component/data/tax_calculator_component_usage.html"
           }
         ]
+      },
+      {
+        "title": "Text Generator Component",
+        "desc": "可供不同宿主使用的文字藝術字生成完成品。由宿主提供 SVG 模板、字型、顏色、排版規則與輸出尺寸；共用文字切分、SVG 預覽、透明 PNG 及等比例書封輸出流程。引用軍火庫既有 Blob URL、Canvas PNG 與 PNG Download 零件，不強制外觀、不附帶字型檔。",
+        "links": [
+          {
+            "label": "text_generator_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component_usage.html"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/component/text_generator/test_text_generator.html"
+          }
+        ]
       }
     ]
   },
