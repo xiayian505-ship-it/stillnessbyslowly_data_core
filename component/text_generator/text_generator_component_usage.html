@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Text Generator Component｜使用說明</title>
+<style>
+  body { line-height: 1.7; margin: 24px; }
+  main { max-width: 900px; margin: auto; }
+  pre { overflow: auto; padding: 12px; background: #f5f5f5; }
+</style>
+</head>
+<body>
+<main>
+<h1>慢慢軍火庫｜Text Generator Component v1.0.0</h1>
+<p>完成品路徑：<code>component/text_generator/</code>。此元件沒有自己的介面、配色、字型、特效和字數上限；這些都由宿主設定。</p>
+<p><a href="text_generator_component_demo.html">獨立示範頁</a> ｜ <a href="test_text_generator.html">自動測試頁</a></p>
+<h2>載入既有軍火庫零件（正式 HTTPS）</h2>
+<pre><code>&lt;script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"&gt;&lt;/script&gt;
+&lt;script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"&gt;&lt;/script&gt;
+&lt;script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"&gt;&lt;/script&gt;
+&lt;script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_component.js"&gt;&lt;/script&gt;
+&lt;script defer src="my_theme_template.js"&gt;&lt;/script&gt;
+&lt;script defer src="my_theme.js"&gt;&lt;/script&gt;</code></pre>
+<p>注意：新元件必須先部署到軍火庫 URL，再讓宿主網站引用；ZIP 不會自動上傳 GitHub。</p>
+<h2>最簡單呼叫</h2>
+<pre><code>const art = SlowlyTextGenerator.create({
+  maxChars: 4,
+  sourceSize: {width: 840, height: 1200},
+  renderSVG(text, helpers) {
+    // 宿主自己繪製圖案；helpers.escapeXML(text) 可安全寫入 XML
+    return `&lt;svg xmlns="http://www.w3.org/2000/svg" width="840" height="1200" viewBox="0 0 840 1200"&gt;
+       &lt;text x="420" y="600" text-anchor="middle" font-size="180"&gt;${helpers.escapeXML(text)}&lt;/text&gt;
+    &lt;/svg&gt;`;
+  },
+  presets: {
+    png: {scale:2},
+    cover: {width:700, height:1000, fit:"contain",paddingX:55,paddingY:45}
+  },
+  filenames: {
+    svg: text =&gt; `${text}.svg`,
+    png: text =&gt; `${text}_2x.png`,
+    cover: text =&gt; `${text}_700x1000.png`
+  }
+});
+art.generateSVG("電閃雷鳴");
+art.downloadSVG("電閃雷鳴");
+await art.downloadPNG("電閃雷鳴", "png");
+await art.downloadCover("電閃雷鳴");
+
+const preview = art.createPreview(document.querySelector("#preview-img"));
+preview.set("電閃雷鳴");
+preview.clear();
+preview.destroy();</code></pre>
+<h2>提供的 API</h2>
+<pre><code>SlowlyTextGenerator.version
+SlowlyTextGenerator.splitCharacters(input)
+SlowlyTextGenerator.escapeXML(input)
+SlowlyTextGenerator.fileSafe(input)
+SlowlyTextGenerator.applyTemplate(template, variables)
+SlowlyTextGenerator.create(options)
+
+art.maxChars
+art.normalize(input)
+art.splitCharacters(input)
+art.sourceSize(input)
+art.generateSVG(input)
+art.svgBlob(input)
+art.makeURL(svg)
+art.revokeURL(url)
+art.createPreview(imageElement)  // set / clear / destroy
+art.formatSize(input, preset)
+art.pngBlob(input, preset)       // { blob, width, height }
+art.downloadSVG(input)
+art.downloadPNG(input, preset)
+art.downloadCover(input)</code></pre>
+<p><code>presets</code> 可以設任意名稱，<code>{scale:2}</code> 表示依宿主 SVG 尺寸等比例放大；或設定固定 <code>width / height</code> 和 <code>fit:"contain"</code>，讓產物保持比例。<code>paddingX / paddingY</code> 為輸出留白。</p>
+<p><code>sourceSize</code> 可為函式，解決星辰版按字數改變 SVG 高度的特例。</p>
+<p>PNG 使用軍火庫 <code>SlowlyCanvasPNG.toBlob</code> 與 <code>SlowlyPNGDownload.fromBlob</code>；缺少零件時會明確報錯，不會默默輸出錯誤檔案。生成器不主動上傳或儲存使用者文字或字型。若宿主提供可上傳字型，字型檔授權責任應另在宿主頁面交代。</p>
+<h2>三個現有宿主</h2><p>Star、Rain、Thunder 的風格模板維持原地，保留原視覺生成函式；每個系列的檔名、留白和動態裝飾亦由宿主控制。本目錄不收這三套模板。</p>
+</main>
+</body>
+</html>

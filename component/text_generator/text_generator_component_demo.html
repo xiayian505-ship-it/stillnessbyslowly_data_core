@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Text Generator Component｜獨立示範</title>
+  <!-- 本頁僅有必要的預覽佈局樣式；按鈕維持瀏覽器原生外觀。 -->
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 24px; line-height: 1.7; }
+    main { max-width: 900px; margin: auto; }
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .layout > section { min-width: 0; }
+    label { display: block; }
+    input { display: block; max-width: 100%; width: 100%; font: inherit; }
+    .buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .preview {
+      display: grid;
+      place-items: center;
+      min-height: 380px;
+      background-color: #eee;
+      background-image:
+        linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%),
+        linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+    }
+    .preview img { display: block; width: min(100%, 300px); height: auto; }
+    @media (max-width: 700px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script defer src="../../data/blob/blob_url.js"></script>
+  <script defer src="../../Image/png/canvas_png.js"></script>
+  <script defer src="../../Image/png/png_download.js"></script>
+  <script defer src="text_generator_component.js"></script>
+  <script defer src="text_generator_component_demo.js"></script>
+</head>
+<body>
+  <main>
+    <h1>文字產生器｜完成品使用示範</h1>
+    <p>這是中性宿主的測試頁。正式使用時，文字字形、配色、SVG 模板及網頁外觀由宿主決定。</p>
+    <div class="layout">
+      <section>
+        <label for="text-input">輸入 1～4 字 <span id="counter">4/4</span></label>
+        <input id="text-input" value="文字藝術" autocomplete="off" spellcheck="false">
+        <div class="buttons">
+          <button type="button" id="export-svg">下載透明 SVG</button>
+          <button type="button" id="export-png">下載透明 PNG（1680 × 2400）</button>
+          <button type="button" id="export-cover">下載 700 × 1000 書封 PNG</button>
+        </div>
+        <p id="status" role="status"></p>
+        <small>棋盤格僅供預覽；輸出圖片背景透明。</small>
+      </section>
+      <section>
+        <div class="preview">
+          <img id="preview-image" alt="透明 SVG 藝術字預覽" width="840" height="1200">
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
