@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Text Generator v2｜直式獨立示範</title>
+  <style>
+    /* 僅安排測試表單與透明預覽；不指定按鈕風格。 */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    main {
+      max-width: 960px;
+      margin-inline: auto;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    .layout > section {
+      min-width: 0;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      font: inherit;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-block: 16px;
+    }
+
+    .preview {
+      display: grid;
+      place-items: center;
+      min-height: 300px;
+      padding: 10px;
+      background-color: #eee;
+      background-image:
+        linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%),
+        linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+    }
+
+    .preview img {
+      display: block;
+      max-width: 100%;
+      max-height: 60vh;
+    }
+
+    @media (max-width: 700px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <!-- 獨立示範與測試使用軍火庫內部相對路徑，方便在新分支本機驗證。
+       外部宿主請使用 usage 所列的 HTTPS 絕對網址。 -->
+  <script defer src="../../data/blob/blob_url.js"></script>
+  <script defer src="../../Image/png/canvas_png.js"></script>
+  <script defer src="../../Image/png/png_download.js"></script>
+  <script defer src="text_generator_core.js"></script>
+  <script defer src="text_generator_vertical_component.js"></script>
+  <script defer src="text_generator_vertical_demo.js"></script>
+</head>
+<body>
+  <main>
+    <h1>直式文字產生器 v2｜獨立示範</h1>
+    <p>提供中性模板作為功能演示；宿主可以自行設定字型、色彩、背景與 SVG 樣式。</p>
+    <div class="layout">
+      <section>
+        <label for="art-text">輸入文字（上限四字）</label>
+        <input id="art-text" value="穿林打葉" autocomplete="off" spellcheck="false">
+        <p id="counter" aria-live="polite">4 / 4</p>
+        <div class="buttons">
+          <button type="button" id="download-svg">下載 SVG</button>
+          <button type="button" id="download-png">下載透明 PNG</button>
+          <button type="button" id="download-cover">下載 700 × 1000 書封</button>
+        </div>
+        <p id="status" role="status" aria-live="polite"></p>
+        <p><small>棋盤格只是透明預覽背景，不會輸出到檔案。</small></p>
+      </section>
+      <section>
+        <div class="preview"><img id="preview" alt="直式藝術字透明預覽" width="720" height="1100"></div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

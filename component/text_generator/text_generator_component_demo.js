@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const preview = document.querySelector("#preview-image");
   const status = document.querySelector("#status");
   const counter = document.querySelector("#counter");
-  const controls = ["export-svg", "export-png", "export-cover"].map(id => document.getElementById(id));
+  const controls = ["export-svg", "export-png", "export-cover"]
+    .map(id => document.getElementById(id));
   if (!window.SlowlyTextGenerator) {
     status.textContent = "無法載入文字產生器完成品。";
     return;
@@ -14,7 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const art = window.SlowlyTextGenerator.create({
     maxChars: 4,
     sourceSize: { width: 840, height: 1200 },
-    presets: { png: { scale: 2 }, cover: { width: 700, height: 1000, fit: "contain", paddingX: 60, paddingY: 45 } },
+    presets: {
+      png: { scale: 2 },
+      cover: {
+        width: 700,
+        height: 1000,
+        fit: "contain",
+        paddingX: 60,
+        paddingY: 45
+      }
+    },
     filenames: {
       svg: text => `${text}_示範.svg`,
       png: text => `${text}_示範_2x.png`,
@@ -26,10 +36,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const glyphs = chars.map((c, i) => `
         <text x="420" y="${ys[i]}" text-anchor="middle" dominant-baseline="central"
           font-family="Noto Serif TC, PMingLiU, serif" font-weight="800"
-          font-size="210" fill="url(#ink)" stroke="#7499af" stroke-width="2" paint-order="stroke fill">${escapeXML(c)}</text>`).join("");
+          font-size="210" fill="url(#ink)" stroke="#7499af" stroke-width="2"
+          paint-order="stroke fill">${escapeXML(c)}</text>`
+      ).join("");
       return `<svg xmlns="http://www.w3.org/2000/svg" width="840" height="1200" viewBox="0 0 840 1200">
        <title>${escapeXML(text)}｜測試模板</title>
-       <defs><linearGradient id="ink" x2="1" y2="1"><stop stop-color="#315b73"/><stop offset="1" stop-color="#92c4c0"/></linearGradient></defs>
+       <defs>
+         <linearGradient id="ink" x2="1" y2="1">
+           <stop stop-color="#315b73"/>
+           <stop offset="1" stop-color="#92c4c0"/>
+         </linearGradient>
+       </defs>
        <path d="M420 80V1120" stroke="#658ea4" stroke-width="3" opacity=".12"/>
        ${glyphs}</svg>`;
     }
@@ -70,7 +87,12 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
     status.textContent = "正在生成……";
     try {
-      const info = await ([() => art.downloadSVG(input.value), () => art.downloadPNG(input.value), () => art.downloadCover(input.value)][index]());
+      const actions = [
+        () => art.downloadSVG(input.value),
+        () => art.downloadPNG(input.value),
+        () => art.downloadCover(input.value)
+      ];
+      const info = await actions[index]();
       status.textContent = `已送出下載：${info.filename}`;
     } catch (error) {
       status.textContent = `下載失敗：${error.message}`;

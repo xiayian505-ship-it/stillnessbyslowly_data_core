@@ -1,0 +1,86 @@
+    <!doctype html>
+    <html lang="zh-Hant">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>文字產生器 v2｜直式使用說明</title>
+  <style>
+    /* 只限制閱讀寬度，長程式碼允許水平捲動。 */
+    main {
+      max-width: 940px;
+      margin-inline: auto;
+    }
+
+    pre {
+      overflow-x: auto;
+    }
+  </style>
+    </head>
+    <body>
+      <main>
+        <h1>文字產生器 v2｜直式完成品</h1>
+        <p>路徑：<code>component/text_generator/text_generator_vertical_component.js</code>。</p>
+        <p>只負責由上而下的建議字位，以及串接共通核心。字體、顏色、尺寸、裝飾與整張 SVG 均由宿主控制。直式完成品不需要載入另一種排列完成品。</p>
+        <h2>宿主 HTTPS 絕對路徑</h2>
+        <pre><code>&lt;script defer src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"&gt;&lt;/script&gt;
+&lt;script defer src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"&gt;&lt;/script&gt;
+&lt;script defer src="https://lib.stillnessbyslowly.com/Image/png/png_download.js"&gt;&lt;/script&gt;
+&lt;script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_core.js"&gt;&lt;/script&gt;
+&lt;script defer src="https://lib.stillnessbyslowly.com/component/text_generator/text_generator_vertical_component.js"&gt;&lt;/script&gt;</code></pre>
+        <p>Blob URL 零件可省略。生成／預覽 SVG 不依賴 PNG 零件；輸出 PNG 需要 Canvas PNG，直接下載還需要 PNG Download。</p>
+        <h2>最小宿主範例</h2>
+        <pre><code>const art = SlowlyVerticalTextGenerator.create({
+  maxChars: 4,
+  sourceSize: { width: 720, height: 1100 },
+  renderSVG(text, helpers, layout) {
+    const glyphs = helpers.splitCharacters(text).map((char, index) =&gt; {
+      const slot = layout.slots[index];
+      return `&lt;text x="${slot.x}" y="${slot.y}" text-anchor="middle" dominant-baseline="middle"&gt;${helpers.escapeXML(char)}&lt;/text&gt;`;
+    }).join("");
+    return `&lt;svg xmlns="http://www.w3.org/2000/svg" width="720" height="1100" viewBox="0 0 720 1100"&gt;${glyphs}&lt;/svg&gt;`;
+  },
+  presets: {
+    png: { scale: 2 },
+    cover: { width: 700, height: 1000, fit: "contain", paddingX: 48, paddingY: 54 }
+  }
+});
+
+art.generateSVG("穿林打葉");
+await art.downloadPNG("穿林打葉", "png");
+await art.downloadCover("穿林打葉");</code></pre>
+        <h2>設定與回傳</h2>
+        <table>
+          <tr><th>選項</th><th>說明</th></tr>
+          <tr><td><code>maxChars</code></td><td>宿主決定的字數上限，預設 4；採 Unicode 字素而非 UTF-16 單位</td></tr>
+          <tr><td><code>sourceSize</code></td><td><code>{width,height}</code> 或 <code>(text) =&gt; {width,height}</code>，須與 SVG viewBox 一致</td></tr>
+          <tr><td><code>renderSVG(text, helpers, layout)</code></td><td>宿主提供完整 SVG 字串；<code>helpers</code> 含 XML 安全跳脫與字素切分等函式</td></tr>
+          <tr><td><code>getPositions(text, size)</code></td><td>可選，回傳每字一個 <code>{x,y}</code> 物件的陣列，覆蓋預設字位</td></tr>
+          <tr><td><code>presets</code></td><td>可選，PNG 倍率或固定輸出尺寸；留白與 <code>contain</code> 由宿主控制</td></tr>
+          <tr><td><code>filenames</code></td><td>可選，自訂 SVG／PNG／cover 檔名</td></tr>
+        </table>
+        <h2>layout 物件</h2>
+        <pre><code>{
+  orientation: "vertical",
+  sourceSize: { width: 720, height: 1100 },
+  slots: [{ index: 0, x: 100, y: 100 }, ...]
+}</code></pre>
+        <p>單字置中；多字由上而下均勻排列。這只是字位參考，不會替宿主畫文字，也不強制套色或字型。</p>
+        <h2>輸出 API</h2>
+        <pre><code>art.normalize(text);
+art.layout(text);
+art.generateSVG(text);
+art.sourceSize(text);
+art.createPreview(imageElement); // set(text), clear(), destroy()
+art.svgBlob(text);
+art.formatSize(text, "png");
+art.formatSize(text, "cover");
+await art.pngBlob(text, "png");
+art.downloadSVG(text);
+await art.downloadPNG(text, "png");
+await art.downloadCover(text);</code></pre>
+        <p>背景預設透明；如果宿主 SVG 本身包含底圖，核心不會擅自移除。<code>fit: "fill"</code> 可用，但會拉伸，不建議用於書封；通常應選 <code>contain</code>。</p>
+        <p>新 v2 與舊 v1 的 <code>SlowlyTextGenerator</code> 全域名稱不同，不會覆寫既有作品。</p>
+        <p><a href="text_generator_vertical_demo.html">展示頁</a>｜<a href="test_text_generator_vertical.html">測試頁</a></p>
+      </main>
+    </body>
+    </html>
