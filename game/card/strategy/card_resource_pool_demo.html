@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>多資源池｜Demo｜慢慢軍火庫</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color-scheme: light; }
+    body { max-width: 980px; margin: 24px auto; padding: 0 18px 40px; line-height: 1.65; }
+    h1 { line-height: 1.25; }
+    nav a { margin-right: 18px; }
+    section { margin: 30px 0; }
+    code, pre { font-family: ui-monospace, Consolas, monospace; }
+    pre { padding: 14px; border: 1px solid #d7d7d7; background: #f7f7f7; white-space: pre; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #c9c9c9; padding: 9px; text-align: left; vertical-align: top; }
+    th { background: #f2f2f2; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; }
+    button { padding: 8px 12px; cursor: pointer; }
+    .note { border-left: 3px solid #777; padding-left: 14px; }
+    .pass { color: #176739; }
+    .fail { color: #a61b1b; }
+  </style>
+</head>
+<body>
+  <nav><a href="card_resource_pool_usage.html">使用說明</a> <a href="card_resource_pool_demo.html">Demo 展示</a> <a href="test_card_resource_pool.html">功能測試</a></nav>
+  <h1>多資源池｜Demo</h1>
+  <p>保存宿主自訂名稱的資源，檢查多種資源是否足夠，並在足額時一次扣除。</p>
+
+  <section>
+    <h2>可操作示範</h2>
+    <p>以下資料與操作僅用於展示積木 API；不是《霧林之契》，也不是策略系卡牌完成品。</p>
+    <div class="controls">
+      <button type="button" data-action="pay">支出移動 2、晶石 1</button>
+      <button type="button" data-action="earn">增加晶石 2</button>
+      <button type="button" data-action="reset">重設資源</button>
+    </div>
+    <h3>目前結果</h3>
+    <pre id="demoOutput" aria-live="polite"></pre>
+  </section>
+  
+  <script src="./card_resource_pool.js"></script>
+  <script>
+    let resourcePool = CardResourcePool.createPool({ movement: 5, crystals: 2 });
+
+    function runDemo(actionName) {
+      if (actionName === "pay") {
+        resourcePool.spend({ movement: 2, crystals: 1 });
+      }
+
+      if (actionName === "earn") {
+        resourcePool.addAmount("crystals", 2);
+      }
+
+      if (actionName === "reset") {
+        resourcePool = CardResourcePool.createPool({ movement: 5, crystals: 2 });
+      }
+
+      return resourcePool.getSnapshot();
+    }
+
+    const outputElement = document.getElementById("demoOutput");
+
+    // Demo 的按鈕和狀態顯示都只屬於本頁，不包含在零件本身。
+    function showDemoResult(actionName) {
+      try {
+        const demoResult = runDemo(actionName);
+        outputElement.textContent = JSON.stringify(demoResult, null, 2);
+      } catch (error) {
+        outputElement.textContent = error.name + ": " + error.message;
+      }
+    }
+
+    document.querySelectorAll("[data-action]").forEach(function (buttonElement) {
+      buttonElement.addEventListener("click", function () {
+        showDemoResult(buttonElement.dataset.action);
+      });
+    });
+
+    showDemoResult("pay");
+  </script>
+</body>
+</html>

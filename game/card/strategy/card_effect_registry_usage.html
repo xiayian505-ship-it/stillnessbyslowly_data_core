@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>卡牌效果登記器｜使用說明｜慢慢軍火庫</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color-scheme: light; }
+    body { max-width: 980px; margin: 24px auto; padding: 0 18px 40px; line-height: 1.65; }
+    h1 { line-height: 1.25; }
+    nav a { margin-right: 18px; }
+    section { margin: 30px 0; }
+    code, pre { font-family: ui-monospace, Consolas, monospace; }
+    pre { padding: 14px; border: 1px solid #d7d7d7; background: #f7f7f7; white-space: pre; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #c9c9c9; padding: 9px; text-align: left; vertical-align: top; }
+    th { background: #f2f2f2; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; }
+    button { padding: 8px 12px; cursor: pointer; }
+    .note { border-left: 3px solid #777; padding-left: 14px; }
+    .pass { color: #176739; }
+    .fail { color: #a61b1b; }
+  </style>
+</head>
+<body>
+  <nav><a href="card_effect_registry_usage.html">使用說明</a> <a href="card_effect_registry_demo.html">Demo 展示</a> <a href="test_card_effect_registry.html">功能測試</a></nav>
+  <h1>卡牌效果登記器｜使用說明</h1>
+  <p>儲存宿主登記的效果名稱、可執行條件與同步處理函式；依名稱檢查或執行。</p>
+
+  <section>
+    <h2>一、職責與界線</h2>
+    <p>儲存宿主登記的效果名稱、可執行條件與同步處理函式；依名稱檢查或執行。</p>
+    <p class="note">所有效果、耗費、目標、時機、副作用皆由宿主決定。本零件不保證宿主效果的副作用可回滾。</p>
+  </section>
+  <section>
+    <h2>二、相依與載入</h2>
+    <p>無。</p>
+    <p>下方為在軍火庫 repo 對應目錄的相對路徑示例，發布後宿主再改用軍火庫 HTTPS 絕對 URL。</p>
+    <pre><code>&lt;script src=&quot;./card_effect_registry.js&quot;&gt;&lt;/script&gt;</code></pre>
+  </section>
+  <section>
+    <h2>三、公開 API</h2>
+    <p>全域物件：<code>CardEffectRegistry</code>。名稱、參數與回傳結果以此頁和實際原始碼為準。</p>
+    <table>
+      <thead><tr><th>函式</th><th>行為與結果</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>createRegistry()</code></td>
+          <td>建立彼此獨立的效果登記表。</td>
+        </tr>
+        <tr>
+          <td><code>registerEffect(effectKey, effectDefinition)</code></td>
+          <td>登記函式或 { canRun, execute }；不允許重名。</td>
+        </tr>
+        <tr>
+          <td><code>checkEffect(effectKey, effectContext)</code></td>
+          <td>回傳 { ok } 或 { ok:false, reason }。</td>
+        </tr>
+        <tr>
+          <td><code>executeEffect(effectKey, effectContext)</code></td>
+          <td>檢查後同步執行，成功回傳 { ok:true, value }。</td>
+        </tr>
+        <tr>
+          <td><code>hasEffect(effectKey) / removeEffect(effectKey) / listEffectKeys()</code></td>
+          <td>查詢、移除與列出登記名稱。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section>
+    <h2>四、最小使用範例</h2>
+    <pre><code>const registry = CardEffectRegistry.createRegistry();
+registry.registerEffect(&quot;gain-points&quot;, {
+  canRun: context =&gt; context.allowed,
+  execute: context =&gt; context.total + context.award
+});
+
+const result = registry.executeEffect(&quot;gain-points&quot;, {
+  allowed: true,
+  total: 2,
+  award: 3
+});
+console.log(result.value); // 5</code></pre>
+  </section>
+  <section>
+    <h2>五、測試與展示</h2>
+    <p><a href="card_effect_registry_demo.html">前往可操作 Demo</a>：用簡單資料展示該零件的主要能力，不組成遊戲。</p>
+    <p><a href="test_card_effect_registry.html">前往功能測試頁</a>：顯示 PASS / FAIL，供整合前驗收。</p>
+    <p>任何畫面、策略規則、永久儲存、Boss 或關卡設定都應由宿主自行實作。</p>
+  </section>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>出戰清單驗證｜功能測試｜慢慢軍火庫</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color-scheme: light; }
+    body { max-width: 980px; margin: 24px auto; padding: 0 18px 40px; line-height: 1.65; }
+    h1 { line-height: 1.25; }
+    nav a { margin-right: 18px; }
+    section { margin: 30px 0; }
+    code, pre { font-family: ui-monospace, Consolas, monospace; }
+    pre { padding: 14px; border: 1px solid #d7d7d7; background: #f7f7f7; white-space: pre; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #c9c9c9; padding: 9px; text-align: left; vertical-align: top; }
+    th { background: #f2f2f2; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; }
+    button { padding: 8px 12px; cursor: pointer; }
+    .note { border-left: 3px solid #777; padding-left: 14px; }
+    .pass { color: #176739; }
+    .fail { color: #a61b1b; }
+  </style>
+</head>
+<body>
+  <nav><a href="card_loadout_validation_usage.html">使用說明</a> <a href="card_loadout_validation_demo.html">Demo 展示</a> <a href="test_card_loadout_validation.html">功能測試</a></nav>
+  <h1>出戰清單驗證｜功能測試</h1>
+  <p>根據收藏中的實體卡 ID 還原出戰清單，檢查遺失、重複、資格與宿主設定的數量上限。</p>
+
+  <section>
+    <h2>獨立測試結果</h2>
+    <p>下列斷言使用目前頁面引入的實際零件執行，而不是預先寫好的 PASS 字樣。</p>
+    <pre id="testResults" aria-live="polite"></pre>
+  </section>
+  
+  <script src="./card_loadout_validation.js"></script>
+  <script>
+    const testLines = [];
+    let failureCount = 0;
+
+    function verify(description, condition) {
+      const passed = Boolean(condition);
+      if (!passed) {
+        failureCount += 1;
+      }
+      testLines.push((passed ? "PASS  " : "FAIL  ") + description);
+    }
+
+    function throwsError(callback) {
+      try {
+        callback();
+        return false;
+      } catch (error) {
+        return true;
+      }
+    }
+
+    try {
+      const ownedCards = [{ id: "a" }, { id: "b" }];
+      const validSelection = CardLoadoutValidation.validateSelection(ownedCards, ["b", "a"], { maximumCards: 2 });
+      verify("合法清單通過", validSelection.isValid);
+      verify("保留宿主選牌順序", CardLoadoutValidation.getInstanceIds(validSelection.resolvedCards).join(",") === "b,a");
+      const invalidSelection = CardLoadoutValidation.validateSelection(ownedCards, ["a", "a", "missing"], { maximumCards: 2 });
+      verify("重複及遺失皆回報", invalidSelection.duplicateInstanceIds.length === 1 && invalidSelection.missingInstanceIds.length === 1);
+      verify("超過宿主上限會被拒絕", invalidSelection.exceedsMaximum && !invalidSelection.isValid);
+      verify("不會修改收藏清單", ownedCards.length === 2);
+    } catch (error) {
+      failureCount += 1;
+      testLines.push("FAIL  測試執行錯誤：" + error.message);
+    }
+
+    testLines.push("");
+    testLines.push(failureCount === 0 ? "ALL PASS" : failureCount + " FAILED");
+    const resultElement = document.getElementById("testResults");
+    resultElement.textContent = testLines.join("\n");
+    resultElement.className = failureCount === 0 ? "pass" : "fail";
+  </script>
+</body>
+</html>
