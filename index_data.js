@@ -2683,6 +2683,32 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/line/test_bond_pulse.html"
               }
             ]
+          },
+          {
+            "title": "Impact Slash",
+            "desc": "通用指定位置斜向斬擊光線，支援指定 DOM 目標或容器百分比座標，可調整角度、長度、粗細、色彩、光暈與持續時間，動畫完成自動清理；不綁定命中、傷害、音效或遊戲流程。",
+            "links": [
+              {
+                "label": "impact_slash.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash.js"
+              },
+              {
+                "label": "impact_slash.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_impact_slash.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -3949,6 +3975,28 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_candy_pop.html"
+              }
+            ]
+          },
+          {
+            "title": "Device Vibration",
+            "desc": "通用裝置實體震動回饋，包裝瀏覽器 Vibration API，可由宿主指定單次震動或震動／停頓節奏，支援啟用、停用、停止與背景頁面安全略過；不綁定遊戲事件、介面或偏好儲存，不支援時安全回傳。",
+            "links": [
+              {
+                "label": "device_vibration.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/device_vibration.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/device_vibration_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/device_vibration_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_device_vibration.html"
               }
             ]
           }
