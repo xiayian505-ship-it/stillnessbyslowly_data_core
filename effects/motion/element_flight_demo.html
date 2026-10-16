@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>元素飛行動畫｜Demo｜慢慢軍火庫</title>
+  <link rel="stylesheet" href="./element_flight.css">
+  <style>
+    /* 以下卡片皮膚與目標站位全部只是宿主頁面提供。 */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px 48px;
+      background: #f8f8fa;
+      color: #252a30;
+      font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif;
+      line-height: 1.6;
+    }
+    main { max-width: 920px; margin: auto; }
+    nav { display: flex; gap: 16px; }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
+    button { font: inherit; }
+    .controls button { padding: 9px 14px; }
+    .field {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 330px;
+      padding: 24px 12px;
+      border: 1px solid #ccd1db;
+      border-radius: 8px;
+      background: white;
+    }
+    .example-card {
+      display: grid;
+      place-items: center;
+      width: 105px;
+      height: 155px;
+      flex: 0 0 auto;
+      padding: 8px;
+      border: 2px solid #5d6ca0;
+      border-radius: 12px;
+      background: linear-gradient(150deg, #e9edff, #d3e0fc);
+      color: #263658;
+      box-shadow: 0 8px 15px #24344d35;
+      text-align: center;
+      font-weight: 700;
+    }
+    .target-box {
+      display: grid;
+      place-items: center;
+      width: 120px;
+      height: 145px;
+      flex: 0 0 auto;
+      border: 2px dashed #b87654;
+      border-radius: 16px;
+      background: #faece4;
+      color: #754d36;
+    }
+    .status { min-height: 2em; font-weight: 600; }
+    .note { color: #58606b; }
+    @media (max-width: 450px) {
+      .example-card { width: 86px; height: 135px; }
+      .target-box { width: 89px; height: 125px; }
+      .field { min-height: 270px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <nav>
+    <a href="element_flight_usage.html">使用說明</a>
+    <a href="test_element_flight.html">功能測試</a>
+  </nav>
+
+  <h1>元素飛行動畫｜可操作 Demo</h1>
+  <p class="note">左邊的卡片會「複製外觀」飛到右邊，原始卡片始終留在原位。沒有傷害、扣資源或命中判定。</p>
+  <div class="controls">
+    <button type="button" id="playFlight">播放飛行</button>
+    <button type="button" id="cancelFlight">取消目前動畫</button>
+    <label>弧線高度
+      <input id="arcHeight" type="range" min="-40" max="120" value="35">
+    </label>
+  </div>
+
+  <section class="field">
+    <button type="button" class="example-card" id="flightSource">宿主卡片<br>A</button>
+    <div class="target-box" id="flightTarget">宿主目標區</div>
+  </section>
+
+  <p id="status" class="status" aria-live="polite">等待操作</p>
+</main>
+<script src="./element_flight.js"></script>
+<script>
+  const statusElement = document.getElementById("status");
+  let currentController = null;
+
+  document.getElementById("playFlight").addEventListener("click", async () => {
+    currentController?.abort();
+    const controller = new AbortController();
+    currentController = controller;
+    statusElement.textContent = "正在播放飛行動畫……";
+
+    try {
+      const result = await SlowlyElementFlight.play({
+        source: "#flightSource",
+        target: "#flightTarget",
+        duration: 700,
+        arcHeight: Number(document.getElementById("arcHeight").value),
+        signal: controller.signal
+      });
+      if (controller === currentController) {
+        statusElement.textContent = `動畫結果：${result.status}${result.reason ? `（${result.reason}）` : ""}`;
+        currentController = null;
+      }
+    } catch (error) {
+      statusElement.textContent = `動畫失敗：${error.message}`;
+      currentController = null;
+    }
+  });
+
+  document.getElementById("cancelFlight").addEventListener("click", () => {
+    currentController?.abort();
+  });
+</script>
+</body>
+</html>

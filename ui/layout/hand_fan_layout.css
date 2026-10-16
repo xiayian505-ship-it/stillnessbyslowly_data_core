@@ -1,0 +1,48 @@
+/* =========================================================
+   慢慢軍火庫｜Hand Fan Layout 基礎布局
+
+   僅負責扇形排列、重疊與選取浮起。
+   卡牌尺寸、顏色、外框、圖像、文字和點擊行為都由宿主 CSS 決定。
+========================================================= */
+.slowly-hand-fan-layout {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+  overflow: visible;
+  min-width: 0;
+}
+
+.slowly-hand-fan-layout > [data-hand-fan-card] {
+  position: relative;
+  flex: 0 0 auto;
+  margin-left: var(--slowly-hand-overlap, 0px);
+  transform-origin: center 115%;
+  transform: translateY(var(--slowly-hand-rise, 0px))
+    rotate(var(--slowly-hand-angle, 0deg));
+  transition: transform 180ms ease-out;
+  will-change: transform;
+}
+
+.slowly-hand-fan-layout > [data-hand-fan-card]:first-child {
+  margin-left: 0;
+}
+
+.slowly-hand-fan-layout > [data-hand-fan-card]:hover,
+.slowly-hand-fan-layout > [data-hand-fan-card]:focus-visible {
+  z-index: 10;
+  transform: translateY(calc(-1 * var(--slowly-hand-hover-lift, 18px)))
+    rotate(0deg);
+}
+
+.slowly-hand-fan-layout > [data-hand-fan-card][data-hand-fan-selected="true"] {
+  z-index: 20;
+  transform: translateY(calc(-1 * var(--slowly-hand-selected-lift, 38px)))
+    rotate(0deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-hand-fan-layout > [data-hand-fan-card] {
+    transition: none;
+  }
+}

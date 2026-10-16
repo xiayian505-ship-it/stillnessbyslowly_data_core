@@ -1,0 +1,16 @@
+/* =========================================================
+   慢慢軍火庫｜Slot Stage Layout 基礎布局
+
+   只提供 Grid 排列與插槽最小尺寸處理。
+   插槽背景、角色樣式、邊框、間距由宿主 CSS 決定。
+========================================================= */
+.slowly-slot-stage-layout {
+  display: grid;
+  min-width: 0;
+  gap: var(--slowly-stage-gap, 12px);
+}
+
+.slowly-slot-stage-layout > [data-stage-slot] {
+  min-width: 0;
+  min-height: 0;
+}

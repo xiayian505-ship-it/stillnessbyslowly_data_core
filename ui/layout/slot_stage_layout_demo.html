@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自由配置舞台｜Demo｜慢慢軍火庫</title>
+  <link rel="stylesheet" href="./slot_stage_layout.css">
+  <style>
+    /* 以下配色、間距和角色名稱只是宿主提供的示範。 */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px 50px;
+      background: #f8fafc;
+      color: #232a33;
+      font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif;
+      line-height: 1.6;
+    }
+    main { max-width: 980px; margin: auto; }
+    nav { display: flex; gap: 16px; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+    .controls button { padding: 10px 14px; font: inherit; cursor: pointer; }
+    .outer { width: 100%; max-width: 850px; transition: max-width 250ms ease; }
+    .outer.is-narrow { max-width: 340px; }
+    .demo-stage {
+      padding: 12px;
+      border: 1px solid #aeb9c9;
+      border-radius: 10px;
+      background: white;
+      --slowly-stage-gap: 10px;
+    }
+    .demo-stage > [data-stage-slot] {
+      padding: 18px 10px;
+      min-height: 88px;
+      border-radius: 8px;
+      display: grid;
+      align-content: center;
+      justify-content: center;
+      text-align: center;
+    }
+    [data-stage-slot="characterOne"] { background: #e8f2fe; }
+    [data-stage-slot="characterTwo"] { background: #fceae7; }
+    [data-stage-slot="centralContent"] { background: #f0ece7; }
+    [data-stage-slot="actions"] { background: #e4f7e9; }
+    .status { font-weight: 600; }
+    .note { color: #576171; }
+    @media (prefers-reduced-motion: reduce) { .outer { transition: none; } }
+  </style>
+</head>
+<body>
+<main>
+  <nav>
+    <a href="slot_stage_layout_usage.html">使用說明</a>
+    <a href="test_slot_stage_layout.html">功能測試</a>
+  </nav>
+
+  <h1>自由配置舞台｜可操作 Demo</h1>
+  <p class="note">四個插槽名稱由宿主決定。切換版型會變更 Grid 矩陣，而不是把角色綁定在固定敵我位置。</p>
+
+  <div class="controls">
+    <button type="button" id="layoutVersus">左右對位</button>
+    <button type="button" id="layoutQuadrant">四角版型</button>
+    <button type="button" id="layoutStack">垂直排列</button>
+    <button type="button" id="toggleNarrow">切換窄容器</button>
+  </div>
+
+  <div class="outer" id="stageOuter">
+    <div id="demoStage" class="demo-stage">
+      <section data-stage-slot="characterOne">角色 A<br>（可換成其他內容）</section>
+      <section data-stage-slot="characterTwo">角色 B<br>（可換成其他內容）</section>
+      <section data-stage-slot="centralContent">中央內容<br>（也能放卡牌或棋盤）</section>
+      <section data-stage-slot="actions">操作區<br>（內容屬於宿主）</section>
+    </div>
+  </div>
+  <p id="status" class="status" aria-live="polite"></p>
+</main>
+
+<script src="./slot_stage_layout.js"></script>
+<script>
+  const stageOuter = document.getElementById("stageOuter");
+  const statusElement = document.getElementById("status");
+
+  const mobileLayout = {
+    name: "compact",
+    minWidth: 0,
+    areas: [
+      ["characterOne"],
+      ["characterTwo"],
+      ["centralContent"],
+      ["actions"]
+    ]
+  };
+
+  const wideLayouts = {
+    versus: {
+      name: "versus",
+      minWidth: 560,
+      areas: [
+        ["characterOne", "centralContent", "characterTwo"],
+        ["actions", "actions", "actions"]
+      ],
+      columns: ["1fr", "minmax(0, 2fr)", "1fr"]
+    },
+    quadrant: {
+      name: "quadrant",
+      minWidth: 560,
+      areas: [
+        ["characterOne", "characterTwo"],
+        ["centralContent", "actions"]
+      ],
+      columns: ["1fr", "1fr"]
+    },
+    stack: {
+      name: "stack",
+      minWidth: 560,
+      areas: [
+        ["characterOne"],
+        ["centralContent"],
+        ["characterTwo"],
+        ["actions"]
+      ]
+    }
+  };
+
+  const stageLayout = SlowlySlotStageLayout.create("#demoStage", {
+    layouts: [mobileLayout, wideLayouts.versus]
+  });
+
+  function updateStatus() {
+    const layout = stageLayout.refresh();
+    statusElement.textContent = `容器寬度：${stageLayout.root.clientWidth}px，目前布局：${layout}`;
+  }
+
+  function changeLayout(layoutName) {
+    stageLayout.setLayouts([mobileLayout, wideLayouts[layoutName]]);
+    updateStatus();
+  }
+
+  document.getElementById("layoutVersus").addEventListener("click", () => {
+    changeLayout("versus");
+  });
+  document.getElementById("layoutQuadrant").addEventListener("click", () => {
+    changeLayout("quadrant");
+  });
+  document.getElementById("layoutStack").addEventListener("click", () => {
+    changeLayout("stack");
+  });
+  document.getElementById("toggleNarrow").addEventListener("click", () => {
+    stageOuter.classList.toggle("is-narrow");
+    requestAnimationFrame(updateStatus);
+  });
+  updateStatus();
+</script>
+</body>
+</html>

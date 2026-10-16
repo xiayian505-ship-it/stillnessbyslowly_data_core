@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自由配置插槽舞台｜使用說明｜慢慢軍火庫</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 28px 18px 48px;
+      color: #242424;
+      font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif;
+      line-height: 1.7;
+      background: #fff;
+    }
+    main { max-width: 920px; margin: 0 auto; }
+    h1 { margin-bottom: 8px; }
+    h2 { margin-top: 32px; }
+    p { max-width: 80ch; }
+    code, pre { font-family: ui-monospace, Consolas, monospace; }
+    pre {
+      padding: 16px;
+      background: #f6f6f6;
+      border: 1px solid #ddd;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.55;
+    }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 10px; text-align: left; vertical-align: top; border: 1px solid #ddd; }
+    th { background: #f4f4f4; }
+    .note { border-left: 3px solid #888; padding-left: 14px; }
+    nav { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+<main>
+  <nav>
+    <a href="slot_stage_layout_demo.html">可操作 Demo</a>
+      <a href="test_slot_stage_layout.html">功能測試</a>
+  </nav>
+  <h1>自由配置插槽舞台｜使用說明</h1>
+  <p>宿主以具名插槽和 CSS Grid 矩陣定義舞台布局；依容器寬度挑選布局，不把敵我角色位置或卡牌區寫死。</p>
+
+  <h2>一、負責什麼</h2>
+  <p>驗證宿主宣告的布局矩陣，將每一個插槽放入 CSS Grid 指定區域；依容器寬度選擇適用的 minWidth，支援多組布局與動態更新。</p>
+
+  <h2>二、不負責什麼</h2>
+  <p>不建立插槽、不渲染角色、不管理玩家或 Boss、不設定顏色與卡牌特效，也不代替宿主撰寫遊戲規則。</p>
+
+  <h2>三、宿主使用 HTTPS 絕對路徑引用</h2>
+  <pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.css&quot;&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>在正式部署前，隨包提供的測試頁及 Demo 使用同資料夾的檔案驗收，不需要先上傳或依賴尚未發布的 HTTPS 網址。</p>
+
+  <h2>四、HTML 結構</h2>
+  <pre><code>&lt;div id=&quot;myStage&quot;&gt;
+  &lt;section data-stage-slot=&quot;characterOne&quot;&gt;角色 A&lt;/section&gt;
+  &lt;section data-stage-slot=&quot;characterTwo&quot;&gt;角色 B&lt;/section&gt;
+  &lt;section data-stage-slot=&quot;centralContent&quot;&gt;中央內容&lt;/section&gt;
+  &lt;section data-stage-slot=&quot;actions&quot;&gt;操作區&lt;/section&gt;
+&lt;/div&gt;</code></pre>
+
+  <h2>五、JavaScript 使用範例</h2>
+  <pre><code>const layouts = [
+  {
+    name: &quot;compact&quot;,
+    minWidth: 0,
+    areas: [
+      [&quot;characterOne&quot;, &quot;characterOne&quot;],
+      [&quot;characterTwo&quot;, &quot;characterTwo&quot;],
+      [&quot;centralContent&quot;, &quot;centralContent&quot;],
+      [&quot;actions&quot;, &quot;actions&quot;]
+    ],
+    columns: [&quot;minmax(0, 1fr)&quot;, &quot;minmax(0, 1fr)&quot;]
+  },
+  {
+    name: &quot;wide&quot;,
+    minWidth: 620,
+    areas: [
+      [&quot;characterOne&quot;, &quot;centralContent&quot;, &quot;characterTwo&quot;],
+      [&quot;actions&quot;, &quot;actions&quot;, &quot;actions&quot;]
+    ],
+    columns: [&quot;1fr&quot;, &quot;minmax(0, 2fr)&quot;, &quot;1fr&quot;]
+  }
+];
+
+const stage = SlowlySlotStageLayout.create(&quot;#myStage&quot;, {
+  layouts
+});
+
+console.log(stage.activeLayout); // compact 或 wide
+console.log(stage.getSlot(&quot;actions&quot;)); // 宿主的 DOM 元素
+stage.refresh();
+
+// 宿主可決定重新配置插槽，無須更換舞台元件。
+stage.setLayouts(layouts);
+stage.destroy();</code></pre>
+
+  <h2>六、公開 API</h2>
+  <p>瀏覽器全域物件：<code>SlowlySlotStageLayout</code>。不要從檔案名稱猜 API。</p>
+  <table>
+    <thead>
+      <tr><th>名稱</th><th>用途或回傳值</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>create(target, { layouts })</code></td>
+          <td>傳入根元素與布局陣列；同根元素重複呼叫回傳原實例。</td>
+        </tr>
+        <tr>
+          <td><code>instance.activeLayout</code></td>
+          <td>目前採用的布局名稱。</td>
+        </tr>
+        <tr>
+          <td><code>instance.refresh()</code></td>
+          <td>依根容器 clientWidth 重新挑選布局，回傳布局名稱。</td>
+        </tr>
+        <tr>
+          <td><code>instance.getSlot(name)</code></td>
+          <td>取得宿主原本的具名插槽 DOM，找不到回傳 null。</td>
+        </tr>
+        <tr>
+          <td><code>instance.setLayouts(layouts)</code></td>
+          <td>驗證並替換布局設定，立即重新排版。</td>
+        </tr>
+        <tr>
+          <td><code>instance.destroy()</code></td>
+          <td>取消監聽並還原被本零件設定的 Grid inline style。</td>
+        </tr>
+    </tbody>
+  </table>
+
+  <h2>七、重要限制與宿主責任</h2>
+  <p class="note">每一組布局都必須包含所有插槽。areas 是等欄數的二維陣列；同名插槽必須形成完整矩形，空格可用 "."。必須有 minWidth: 0 的後備布局。columns 和 rows 如有提供，數量要與矩陣的欄／列相同。插槽名稱使用英文字母、底線與數字（不可數字開頭），不支援 auto／none／span 保留字。</p>
+
+  <h2>八、驗收與展示</h2>
+  <p><a href="slot_stage_layout_demo.html">Demo</a> 可以互動操作，
+  <a href="test_slot_stage_layout.html">功能測試</a> 在瀏覽器中列出 PASS／FAIL。
+  兩種頁面職責獨立，且均不屬於 JS 零件本體。</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>動態扇形手牌｜功能測試</title>
+  <link rel="stylesheet" href="./hand_fan_layout.css">
+  <style>
+    body { margin: 24px; font-family: system-ui, sans-serif; line-height: 1.6; }
+    main { max-width: 800px; }
+    .sample-hand { width: 600px; height: 160px; margin: 36px 0; }
+    .sample-hand > button { width: 120px; height: 120px; }
+    pre { padding: 16px; border: 1px solid #ccc; background: #f5f5f5; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+<main id="testPage">
+  <h1>動態扇形手牌｜功能測試</h1>
+  <p>只測功能與真實 DOM 排列，卡片外觀請看 Demo。</p>
+
+  <div class="sample-hand" id="handOne">
+    <button type="button" data-hand-fan-card>一</button>
+    <button type="button" data-hand-fan-card>二</button>
+    <button type="button" data-hand-fan-card>三</button>
+  </div>
+  <div class="sample-hand" id="handTwo">
+    <button type="button" data-hand-fan-card>甲</button>
+  </div>
+  <pre id="result" aria-live="polite">正在測試……</pre>
+</main>
+<script src="./hand_fan_layout.js"></script>
+<script>
+(async () => {
+  const results = [];
+  let passed = 0;
+  let failed = 0;
+
+  function check(name, condition) {
+    results.push(`${condition ? "PASS" : "FAIL"}｜${name}`);
+    if (condition) {
+      passed += 1;
+    } else {
+      failed += 1;
+    }
+  }
+
+  function throwsError(action) {
+    try {
+      action();
+      return false;
+    } catch (error) {
+      return error instanceof Error;
+    }
+  }
+
+  const firstRoot = document.getElementById("handOne");
+  const secondRoot = document.getElementById("handTwo");
+  const firstCard = firstRoot.children[0];
+  firstCard.style.setProperty("--slowly-hand-angle", "7deg");
+  const originalAngle = firstCard.style.getPropertyValue("--slowly-hand-angle");
+
+  try {
+    const hand = SlowlyHandFanLayout.create(firstRoot, {
+      maxFanAngle: 40,
+      edgeDrop: 24
+    });
+    const secondHand = SlowlyHandFanLayout.create(secondRoot);
+
+    check("初始化時共三張卡片", hand.refresh().count === 3);
+    check("同一容器重複初始化回傳原實例", SlowlyHandFanLayout.create(firstRoot) === hand);
+    check("左右角度相反、中央角度為零", firstRoot.children[0].style.getPropertyValue("--slowly-hand-angle") === "-20.000deg" &&
+      firstRoot.children[1].style.getPropertyValue("--slowly-hand-angle") === "0.000deg" &&
+      firstRoot.children[2].style.getPropertyValue("--slowly-hand-angle") === "20.000deg");
+    check("左右向下錯位", firstRoot.children[0].style.getPropertyValue("--slowly-hand-rise") === "24.00px" &&
+      firstRoot.children[1].style.getPropertyValue("--slowly-hand-rise") === "0.00px");
+    check("單張手牌角度為零", secondRoot.children[0].style.getPropertyValue("--slowly-hand-angle") === "0.000deg");
+
+    hand.setSelected(1);
+    check("依索引選取並同步視覺狀態", hand.selectedIndex === 1 &&
+      firstRoot.children[1].dataset.handFanSelected === "true" &&
+      firstRoot.children[0].dataset.handFanSelected === "false");
+    check("索引超出範圍會拋錯", throwsError(() => hand.setSelected(20)));
+    hand.setSelected(null);
+    check("可取消選取", hand.selectedIndex === -1);
+
+    const wideSpacing = hand.refresh().spacing;
+    firstRoot.style.width = "220px";
+    const narrowSpacing = hand.refresh().spacing;
+    check("依容器寬度縮小間距", narrowSpacing < wideSpacing);
+    check("卡片之間產生重疊", firstRoot.children[1].style.getPropertyValue("--slowly-hand-overlap").startsWith("-"));
+
+    hand.updateOptions({ maxFanAngle: 0 });
+    check("可把扇形角度設為零", firstRoot.children[0].style.getPropertyValue("--slowly-hand-angle") === "0.000deg");
+    check("非法設定會拋錯", throwsError(() => hand.updateOptions({ edgeDrop: -1 })));
+
+    const extraCard = document.createElement("button");
+    extraCard.setAttribute("data-hand-fan-card", "");
+    extraCard.textContent = "新增";
+    firstRoot.appendChild(extraCard);
+    check("宿主新增卡片後 refresh 更新數量", hand.refresh().count === 4);
+
+    hand.setSelected(3);
+    extraCard.remove();
+    hand.refresh();
+    check("選中卡片被移除後自動清除索引", hand.selectedIndex === -1);
+    check("同頁第二組維持獨立", secondHand.refresh().count === 1 && secondHand.selectedIndex === -1);
+
+    hand.destroy();
+    check("destroy 復原卡片原有樣式", firstCard.style.getPropertyValue("--slowly-hand-angle") === originalAngle);
+    check("destroy 移除新增 class", !firstRoot.classList.contains("slowly-hand-fan-layout"));
+    check("destroy 後呼叫 refresh 會拋錯", throwsError(() => hand.refresh()));
+
+    const freshHand = SlowlyHandFanLayout.create(firstRoot);
+    check("destroy 後可以重新初始化", freshHand !== hand);
+    freshHand.destroy();
+    secondHand.destroy();
+  } catch (error) {
+    check(`未預期例外：${error.stack || error.message}`, false);
+  }
+
+  const result = document.getElementById("result");
+  result.textContent = `${passed} PASS／${failed} FAIL\n\n${results.join("\n")}`;
+  document.getElementById("testPage").dataset.testComplete = "true";
+  document.getElementById("testPage").dataset.failedCount = String(failed);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>動態扇形手牌排列｜使用說明｜慢慢軍火庫</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 28px 18px 48px;
+      color: #242424;
+      font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif;
+      line-height: 1.7;
+      background: #fff;
+    }
+    main { max-width: 920px; margin: 0 auto; }
+    h1 { margin-bottom: 8px; }
+    h2 { margin-top: 32px; }
+    p { max-width: 80ch; }
+    code, pre { font-family: ui-monospace, Consolas, monospace; }
+    pre {
+      padding: 16px;
+      background: #f6f6f6;
+      border: 1px solid #ddd;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.55;
+    }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 10px; text-align: left; vertical-align: top; border: 1px solid #ddd; }
+    th { background: #f4f4f4; }
+    .note { border-left: 3px solid #888; padding-left: 14px; }
+    nav { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+<main>
+  <nav>
+    <a href="hand_fan_layout_demo.html">可操作 Demo</a>
+      <a href="test_hand_fan_layout.html">功能測試</a>
+  </nav>
+  <h1>動態扇形手牌排列｜使用說明</h1>
+  <p>依宿主卡片數量、卡片寬度及容器寬度，計算扇形角度、上下錯位與重疊距離；不創建卡片，也不判斷出牌。</p>
+
+  <h2>一、負責什麼</h2>
+  <p>排列宿主已存在的卡片元素，並維持獨立的選取視覺狀態。ResizeObserver 偵測容器寬度變化；增減卡片後由宿主呼叫 refresh()。</p>
+
+  <h2>二、不負責什麼</h2>
+  <p>不提供卡牌美術、牌庫、手牌資料、出牌判斷、滑鼠點擊邏輯或永久儲存。原有 effects/hover/card_fan.css 保持不變。</p>
+
+  <h2>三、宿主使用 HTTPS 絕對路徑引用</h2>
+  <pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.css&quot;&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>在正式部署前，隨包提供的測試頁及 Demo 使用同資料夾的檔案驗收，不需要先上傳或依賴尚未發布的 HTTPS 網址。</p>
+
+  <h2>四、HTML 結構</h2>
+  <pre><code>&lt;div id=&quot;myHand&quot; aria-label=&quot;手牌&quot;&gt;
+  &lt;button type=&quot;button&quot; data-hand-fan-card&gt;卡片 A&lt;/button&gt;
+  &lt;button type=&quot;button&quot; data-hand-fan-card&gt;卡片 B&lt;/button&gt;
+  &lt;button type=&quot;button&quot; data-hand-fan-card&gt;卡片 C&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+  <h2>五、JavaScript 使用範例</h2>
+  <pre><code>const hand = SlowlyHandFanLayout.create(&quot;#myHand&quot;, {
+  maxFanAngle: 30,     // 首尾總角度差（度）
+  edgeDrop: 20,        // 越靠近兩端越往下（px）
+  selectedLift: 38,    // 已選卡片上浮量（px）
+  hoverLift: 18,       // 滑鼠懸停或鍵盤聚焦上浮量（px）
+  minimumSpacing: 24,  // 窄容器的最低卡片中心間距（px）
+  maximumGap: 8        // 寬容器中卡片間最多額外留的空隙（px）
+});
+
+// 宿主決定選牌行為；零件只改變卡片的視覺狀態。
+hand.setSelected(1);
+hand.setSelected(null);
+
+// 宿主新增、移除或更換卡片後：
+hand.refresh();
+
+// 可以在不改卡片資料的情況下調整扇形角度。
+hand.updateOptions({ maxFanAngle: 44 });
+
+// 移除使用時清除 Observer 與本零件設定的樣式。
+hand.destroy();</code></pre>
+
+  <h2>六、公開 API</h2>
+  <p>瀏覽器全域物件：<code>SlowlyHandFanLayout</code>。不要從檔案名稱猜 API。</p>
+  <table>
+    <thead>
+      <tr><th>名稱</th><th>用途或回傳值</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>create(target, options?)</code></td>
+          <td>傳入 CSS selector 或 HTMLElement；同一根元素重複初始化回傳原實例。</td>
+        </tr>
+        <tr>
+          <td><code>instance.refresh()</code></td>
+          <td>重算目前直屬卡片的布局，回傳 { count, spacing }。</td>
+        </tr>
+        <tr>
+          <td><code>instance.setSelected(index | null)</code></td>
+          <td>指定卡片索引（由 0 開始）；null 取消選取，回傳目前索引。</td>
+        </tr>
+        <tr>
+          <td><code>instance.selectedIndex</code></td>
+          <td>目前選取的卡片索引，沒有時為 -1。</td>
+        </tr>
+        <tr>
+          <td><code>instance.updateOptions(options)</code></td>
+          <td>更新部分布局參數並重新排列。</td>
+        </tr>
+        <tr>
+          <td><code>instance.destroy()</code></td>
+          <td>取消監聽、復原本零件改動的 class、樣式及選取屬性。</td>
+        </tr>
+    </tbody>
+  </table>
+
+  <h2>七、重要限制與宿主責任</h2>
+  <p class="note">所有卡片需是容器的直屬子元素，且標記 data-hand-fan-card；建議同組卡片的可見寬度一致。卡面寬高與外觀由宿主設定。容器太窄且卡片太多時，仍可能產生重疊，宿主應視需要調整卡片尺寸、最低間距或改用其他排列方式。</p>
+
+  <h2>八、驗收與展示</h2>
+  <p><a href="hand_fan_layout_demo.html">Demo</a> 可以互動操作，
+  <a href="test_hand_fan_layout.html">功能測試</a> 在瀏覽器中列出 PASS／FAIL。
+  兩種頁面職責獨立，且均不屬於 JS 零件本體。</p>
+</main>
+</body>
+</html>

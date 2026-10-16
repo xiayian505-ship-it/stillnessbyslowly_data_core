@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>動態扇形手牌｜Demo｜慢慢軍火庫</title>
+  <link rel="stylesheet" href="./hand_fan_layout.css">
+  <style>
+    /* 以下僅屬於示範宿主：卡牌皮膚、版面與操作鈕不是軍火庫零件。 */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px 48px;
+      color: #262a2f;
+      background: #f5f6f8;
+      font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif;
+      line-height: 1.6;
+    }
+    main { max-width: 920px; margin: auto; }
+    nav { display: flex; gap: 16px; flex-wrap: wrap; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+    .controls button, .controls select { padding: 9px 12px; font: inherit; }
+    .sample {
+      width: 100%;
+      max-width: 760px;
+      padding: 12px 14px 58px;
+      margin: 0 auto;
+      border: 1px solid #cdd2dc;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .sample h2 { margin-top: 0; font-size: 1rem; }
+    .sample[data-narrow="true"] { max-width: 340px; }
+    .demo-hand { min-height: 222px; padding: 56px 0 8px; }
+    .demo-card {
+      width: 118px;
+      height: 156px;
+      padding: 14px 9px;
+      border: 2px solid #5c708a;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #fff, #e2eaf4);
+      color: #273e5a;
+      font: inherit;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 3px 8px #0002;
+    }
+    .demo-card strong { font-size: 1.35rem; }
+    .demo-card[data-hand-fan-selected="true"] { border-color: #bb6633; box-shadow: 0 6px 20px #c5756d66; }
+    .demo-card:focus-visible { outline: 3px solid #a45431; }
+    .status { min-height: 2em; font-weight: 600; }
+    .note { color: #565f69; }
+    @media (max-width: 450px) {
+      .demo-card { width: 94px; height: 135px; padding: 8px; }
+      .demo-hand { min-height: 193px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <nav>
+    <a href="hand_fan_layout_usage.html">使用說明</a>
+    <a href="test_hand_fan_layout.html">功能測試</a>
+  </nav>
+
+  <h1>動態扇形手牌｜可操作 Demo</h1>
+  <p class="note">這些藍白卡片只是宿主的示範皮膚。點擊任何卡片會選取，再點一次取消；沒有出牌、費用或戰鬥計算。</p>
+
+  <div class="controls">
+    <button type="button" id="addCard">增加卡片</button>
+    <button type="button" id="removeCard">移除最後一張</button>
+    <button type="button" id="clearSelection">取消選取</button>
+    <button type="button" id="toggleWidth">切換窄容器</button>
+    <label>扇形角度
+      <select id="angleChoice">
+        <option value="0">0° 直線</option>
+        <option value="30" selected>30°</option>
+        <option value="60">60°</option>
+      </select>
+    </label>
+  </div>
+
+  <section class="sample" id="sampleContainer">
+    <h2>宿主手牌區（元素、皮膚由宿主提供）</h2>
+    <div id="demoHand" class="demo-hand" aria-label="示範手牌">
+      <button type="button" class="demo-card" data-hand-fan-card><strong>A</strong><span>卡片一</span></button>
+      <button type="button" class="demo-card" data-hand-fan-card><strong>B</strong><span>卡片二</span></button>
+      <button type="button" class="demo-card" data-hand-fan-card><strong>C</strong><span>卡片三</span></button>
+      <button type="button" class="demo-card" data-hand-fan-card><strong>D</strong><span>卡片四</span></button>
+    </div>
+  </section>
+
+  <p id="status" class="status" aria-live="polite"></p>
+</main>
+
+<script src="./hand_fan_layout.js"></script>
+<script>
+  const handRoot = document.getElementById("demoHand");
+  const sampleContainer = document.getElementById("sampleContainer");
+  const statusElement = document.getElementById("status");
+  const handLayout = SlowlyHandFanLayout.create(handRoot);
+  let nextCardNumber = 5;
+
+  function updateStatus() {
+    const result = handLayout.refresh();
+    statusElement.textContent = `目前 ${result.count} 張卡，已選索引：${handLayout.selectedIndex}，卡片中心間距約 ${result.spacing.toFixed(1)}px。`;
+  }
+
+  handRoot.addEventListener("click", event => {
+    const card = event.target.closest("[data-hand-fan-card]");
+    if (!card || card.parentElement !== handRoot) {
+      return;
+    }
+
+    const index = Array.from(handRoot.children).indexOf(card);
+    handLayout.setSelected(index === handLayout.selectedIndex ? null : index);
+    updateStatus();
+  });
+
+  document.getElementById("addCard").addEventListener("click", () => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "demo-card";
+    card.setAttribute("data-hand-fan-card", "");
+    card.innerHTML = `<strong>${nextCardNumber}</strong><span>新增卡片</span>`;
+    nextCardNumber += 1;
+    handRoot.appendChild(card);
+    updateStatus();
+  });
+
+  document.getElementById("removeCard").addEventListener("click", () => {
+    handRoot.lastElementChild?.remove();
+    updateStatus();
+  });
+
+  document.getElementById("clearSelection").addEventListener("click", () => {
+    handLayout.setSelected(null);
+    updateStatus();
+  });
+
+  document.getElementById("toggleWidth").addEventListener("click", () => {
+    const isNarrow = sampleContainer.dataset.narrow === "true";
+    sampleContainer.dataset.narrow = String(!isNarrow);
+    // ResizeObserver 也會重新布局；這裡呼叫 refresh 方便立即顯示數字。
+    requestAnimationFrame(updateStatus);
+  });
+
+  document.getElementById("angleChoice").addEventListener("change", event => {
+    handLayout.updateOptions({ maxFanAngle: Number(event.target.value) });
+    updateStatus();
+  });
+
+  updateStatus();
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>元素飛行動畫｜使用說明｜慢慢軍火庫</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 28px 18px 48px;
+      color: #242424;
+      font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif;
+      line-height: 1.7;
+      background: #fff;
+    }
+    main { max-width: 920px; margin: 0 auto; }
+    h1 { margin-bottom: 8px; }
+    h2 { margin-top: 32px; }
+    p { max-width: 80ch; }
+    code, pre { font-family: ui-monospace, Consolas, monospace; }
+    pre {
+      padding: 16px;
+      background: #f6f6f6;
+      border: 1px solid #ddd;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.55;
+    }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 10px; text-align: left; vertical-align: top; border: 1px solid #ddd; }
+    th { background: #f4f4f4; }
+    .note { border-left: 3px solid #888; padding-left: 14px; }
+    nav { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+<main>
+  <nav>
+    <a href="element_flight_demo.html">可操作 Demo</a>
+      <a href="test_element_flight.html">功能測試</a>
+  </nav>
+  <h1>元素飛行動畫｜使用說明</h1>
+  <p>將來源元素的視覺副本沿弧線飛往指定目標。只做動畫，原始 DOM 不移動；不綁定攻擊、治療或遊戲結果。</p>
+
+  <h2>一、負責什麼</h2>
+  <p>量測來源與目標的視窗座標，建立不參與互動的視覺副本，使用 Web Animations API 飛行並清理副本。</p>
+
+  <h2>二、不負責什麼</h2>
+  <p>不替宿主選擇角色、不進行傷害計算、不播放聲音、不自動補命中特效，不修改來源元素與目標元素。</p>
+
+  <h2>三、宿主使用 HTTPS 絕對路徑引用</h2>
+  <pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/effects/motion/element_flight.css&quot;&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/effects/motion/element_flight.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>在正式部署前，隨包提供的測試頁及 Demo 使用同資料夾的檔案驗收，不需要先上傳或依賴尚未發布的 HTTPS 網址。</p>
+
+  <h2>四、HTML 結構</h2>
+  <pre><code>&lt;button id=&quot;flightSource&quot; type=&quot;button&quot;&gt;飛出的卡片&lt;/button&gt;
+&lt;div id=&quot;flightTarget&quot;&gt;目標區域&lt;/div&gt;</code></pre>
+
+  <h2>五、JavaScript 使用範例</h2>
+  <pre><code>const controller = new AbortController();
+
+const result = await SlowlyElementFlight.play({
+  source: &quot;#flightSource&quot;,       // 也可以傳入 DOM Element
+  target: &quot;#flightTarget&quot;,
+  duration: 470,                 // 毫秒
+  arcHeight: 35,                 // 弧線中途向上位移（px）
+  endScale: 0.25,                // 抵達時的縮放比例
+  rotation: 9,                   // 末端旋轉度數
+  signal: controller.signal      // 可省略
+});
+
+if (result.status === &quot;finished&quot;) {
+  // 若宿主需要提示、擊中動畫或遊戲事件，在這裡自行決定。
+}
+
+// 需要中途取消時呼叫：controller.abort();</code></pre>
+
+  <h2>六、公開 API</h2>
+  <p>瀏覽器全域物件：<code>SlowlyElementFlight</code>。不要從檔案名稱猜 API。</p>
+  <table>
+    <thead>
+      <tr><th>名稱</th><th>用途或回傳值</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>play({ source, target, ...options })</code></td>
+          <td>回傳 Promise&lt;{ status, reason? }&gt;。source、target 必填。</td>
+        </tr>
+        <tr>
+          <td><code>duration</code></td>
+          <td>可選，預設 470 毫秒；0 表示立即略過動畫。</td>
+        </tr>
+        <tr>
+          <td><code>arcHeight</code></td>
+          <td>可選，預設 35px；中段上拋高度，可設負值。</td>
+        </tr>
+        <tr>
+          <td><code>endScale</code></td>
+          <td>可選，預設 0.25，飛行結束時副本縮放比例。</td>
+        </tr>
+        <tr>
+          <td><code>rotation</code></td>
+          <td>可選，預設 9 度；旋轉角度。</td>
+        </tr>
+        <tr>
+          <td><code>signal</code></td>
+          <td>可選 AbortSignal；中途取消時回傳 cancelled。</td>
+        </tr>
+    </tbody>
+  </table>
+
+  <h2>七、重要限制與宿主責任</h2>
+  <p class="note">status 可為 finished、cancelled 或 skipped（reason 如 reduced_motion_or_zero_duration、missing_geometry、animation_unsupported）。動畫只顯示複製節點；包含 canvas/video 之類特殊內容時，原生 cloneNode 並不保證複製影像畫面，宿主可傳入可複製的視覺替身。prefers-reduced-motion 或 Web Animations API 不可用時會直接略過；宿主仍應正常繼續自己的流程。</p>
+
+  <h2>八、驗收與展示</h2>
+  <p><a href="element_flight_demo.html">Demo</a> 可以互動操作，
+  <a href="test_element_flight.html">功能測試</a> 在瀏覽器中列出 PASS／FAIL。
+  兩種頁面職責獨立，且均不屬於 JS 零件本體。</p>
+</main>
+</body>
+</html>

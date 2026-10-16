@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>元素飛行動畫｜功能測試</title>
+  <link rel="stylesheet" href="./element_flight.css">
+  <style>
+    body { margin: 24px; font-family: system-ui, sans-serif; line-height: 1.6; }
+    main { max-width: 850px; }
+    .scene { display: flex; justify-content: space-between; gap: 30px; padding: 20px; }
+    .source { width: 100px; height: 130px; background: #cee1fa; }
+    .target { width: 100px; height: 130px; background: #e6cfbf; }
+    pre { padding: 16px; background: #f5f5f5; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+<main id="testPage">
+  <h1>元素飛行動畫｜功能測試</h1>
+  <p>檢查副本清除、取消、減少動態效果、參數驗證與 DOM 不變性。</p>
+
+  <div class="scene">
+    <button class="source" id="flightSource" type="button"><span id="childId">來源</span></button>
+    <div class="target" id="flightTarget">目標</div>
+  </div>
+  <div id="hiddenTarget" style="display: none"></div>
+  <pre id="result" aria-live="polite">正在測試……</pre>
+</main>
+<script src="./element_flight.js"></script>
+<script>
+(async () => {
+  const results = [];
+  let passed = 0;
+  let failed = 0;
+
+  function check(name, condition) {
+    results.push(`${condition ? "PASS" : "FAIL"}｜${name}`);
+    if (condition) {
+      passed += 1;
+    } else {
+      failed += 1;
+    }
+  }
+
+  async function rejects(action) {
+    try {
+      await action();
+      return false;
+    } catch (error) {
+      return error instanceof Error;
+    }
+  }
+
+  const source = document.getElementById("flightSource");
+  const target = document.getElementById("flightTarget");
+  const originalSourceParent = source.parentElement;
+  const originalTargetParent = target.parentElement;
+
+  try {
+    check("暴露單純 play API", typeof SlowlyElementFlight.play === "function");
+    check("缺少 source 明確拋錯", await rejects(() => SlowlyElementFlight.play({ target })));
+    check("非法 duration 明確拋錯", await rejects(() => SlowlyElementFlight.play({ source, target, duration: -10 })));
+
+    const noDuration = await SlowlyElementFlight.play({ source, target, duration: 0 });
+    check("duration 0 立即跳過", noDuration.status === "skipped");
+
+    const hidden = await SlowlyElementFlight.play({ source, target: "#hiddenTarget" });
+    check("零尺寸目標不建立動畫", hidden.status === "skipped" && hidden.reason === "missing_geometry");
+
+    const longFlight = SlowlyElementFlight.play({ source, target, duration: 500 });
+    const activeCopy = document.querySelector(".slowly-element-flight-copy");
+    const hasCopy = Boolean(activeCopy);
+    check("飛行時建立獨立的視覺副本", hasCopy && activeCopy !== source);
+    check("副本被標記不可互動", hasCopy && activeCopy.getAttribute("aria-hidden") === "true" && activeCopy.hasAttribute("inert"));
+    check("副本不保留重複 ID", hasCopy && !activeCopy.hasAttribute("id") && !activeCopy.querySelector("[id]"));
+    check("來源與目標維持原 DOM 位置", source.parentElement === originalSourceParent && target.parentElement === originalTargetParent);
+    const finishedResult = await longFlight;
+    check("動畫正常結束", finishedResult.status === "finished");
+    check("結束後清除副本", !document.querySelector(".slowly-element-flight-copy"));
+
+    const cancelController = new AbortController();
+    const cancelledFlight = SlowlyElementFlight.play({
+      source,
+      target,
+      duration: 2000,
+      signal: cancelController.signal
+    });
+    cancelController.abort();
+    const cancelledResult = await cancelledFlight;
+    check("AbortSignal 可以取消進行中的動畫", cancelledResult.status === "cancelled");
+    check("取消後仍清除 DOM 副本", !document.querySelector(".slowly-element-flight-copy"));
+
+    const alreadyCancelled = new AbortController();
+    alreadyCancelled.abort();
+    const beforeStart = await SlowlyElementFlight.play({
+      source,
+      target,
+      signal: alreadyCancelled.signal
+    });
+    check("開始前已取消不建立動畫", beforeStart.status === "cancelled");
+
+    check("來源元素始終沒有被複製覆蓋", document.getElementById("flightSource") === source && document.getElementById("childId")?.parentElement === source);
+  } catch (error) {
+    check(`未預期例外：${error.stack || error.message}`, false);
+  }
+
+  document.getElementById("result").textContent = `${passed} PASS／${failed} FAIL\n\n${results.join("\n")}`;
+  document.getElementById("testPage").dataset.testComplete = "true";
+  document.getElementById("testPage").dataset.failedCount = String(failed);
+})();
+</script>
+</body>
+</html>

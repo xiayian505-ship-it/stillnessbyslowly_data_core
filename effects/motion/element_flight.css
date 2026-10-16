@@ -1,0 +1,17 @@
+/* =========================================================
+   慢慢軍火庫｜Element Flight 基礎視覺副本
+
+   只保證動畫副本可以在視窗座標移動且不攔截操作。
+   不設定牌面、陰影、光效或命中提示。
+========================================================= */
+.slowly-element-flight-copy {
+  position: fixed !important;
+  z-index: var(--slowly-element-flight-layer, 9999) !important;
+  box-sizing: border-box;
+  pointer-events: none !important;
+  margin: 0 !important;
+  transform: none;
+  transition: none !important;
+  animation: none !important;
+  transform-origin: center center;
+}
