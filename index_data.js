@@ -271,6 +271,36 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Slowly Card Strategy",
+        "desc": "可直接嵌入網站使用的通用策略卡牌完成品，組合軍火庫既有 Deck、策略卡牌、舞台、扇形手牌與回饋零件，提供預設可玩對戰，以及收藏、升級、組牌、抽牌、換牌、目標選擇、多資源、卡牌交換、回合與快照還原。內建必要的中性 CSS；宿主可覆蓋卡牌、規則、效果、操作與外觀，不包含《霧林之契》專屬美術及世界觀。",
+        "links": [
+          {
+            "label": "card_strategy_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_strategy_component.js"
+          },
+          {
+            "label": "card_strategy_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_strategy_component.css"
+          },
+          {
+            "label": "card_strategy_config.js",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_strategy_config.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_strategy_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/game/card_strategy_component_usage.html"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/component/game/test_card_strategy_component.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly Game Shell",
         "desc": "可直接嵌入網站使用的通用遊戲外殼完成品，透過 Game Adapter 將遊戲內容與外殼生命週期解耦，提供手動／自動開始、暫停／繼續、重新開始、遊戲時間、可選存檔 Adapter 與自動存檔；不綁定特定遊戲、Storage、後端、排行榜、音效或視覺皮膚。",
         "links": [
