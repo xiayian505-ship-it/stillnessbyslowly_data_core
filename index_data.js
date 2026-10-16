@@ -4546,7 +4546,7 @@ window.SlowlyLibraryIndex = [
         "id": "card",
         "title": "Card / 卡牌",
         "subpage": true,
-        "desc": "牌庫、手牌、棄牌與抽牌循環等通用卡牌機制。",
+        "desc": "牌庫循環、卡牌身分、區域移轉、資源、選擇目標、效果、回合與組牌等通用卡牌機制；具體玩法由宿主決定。",
         "items": [
           {
             "title": "Deck",
@@ -4577,6 +4577,182 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/game/card/test_pair_matching.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Instance Identity",
+            "desc": "通用卡牌實體身分積木，區分卡種 ID 與每張卡牌的實體 ID，提供建立、查找、依卡種分組與重複身分檢查；不綁定卡牌規則、畫面或儲存方式。",
+            "links": [
+              {
+                "label": "card_instance_identity.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_instance_identity.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Zone Transfer",
+            "desc": "透過既有 Deck 的快照與還原介面，移動或交換單張、整批卡牌與指定區域；支援牌庫、手牌與棄牌堆操作，移動時機與合法條件由宿主決定。",
+            "links": [
+              {
+                "label": "card_zone_transfer.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_zone_transfer.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Resource Pool",
+            "desc": "通用多資源池，管理宿主自訂名稱的資源，提供查詢、增加、扣除與多種資源足額檢查；不預設行動點、魔法點或出牌費用。",
+            "links": [
+              {
+                "label": "card_resource_pool.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_resource_pool.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Target Selection",
+            "desc": "從宿主提供的卡牌區域收集候選目標，依自訂條件篩選、查找與選取；不內建敵我關係、卡牌類型或合法目標規則。",
+            "links": [
+              {
+                "label": "card_target_selection.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_target_selection.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Effect Registry",
+            "desc": "登記宿主自訂的卡牌效果名稱、執行條件與同步處理函式，依名稱檢查並執行；不內建特定卡牌效果、數值或戰鬥規則。",
+            "links": [
+              {
+                "label": "card_effect_registry.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_effect_registry.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Turn Order",
+            "desc": "管理任意參與者的行動順序、目前輪到誰、輪次與宿主自訂的階段標記；不寫死玩家／Boss、出牌次數或行動策略。",
+            "links": [
+              {
+                "label": "card_turn_order.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_turn_order.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Level Progression",
+            "desc": "管理卡牌等級與升級操作，計算暫時增減後的有效等級；升級條件、等級上限和成長規則都由宿主設定。",
+            "links": [
+              {
+                "label": "card_level_progression.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_level_progression.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Loadout Validation",
+            "desc": "依收藏中的實體卡 ID 還原出戰清單，檢查遺失、重複、資格與宿主指定的數量限制；不預設收藏上限或固定牌組大小。",
+            "links": [
+              {
+                "label": "card_loadout_validation.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_loadout_validation.html"
               }
             ]
           }
