@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Device Vibration｜使用說明｜慢慢軍火庫</title>
+  <style>
+    body {
+      max-width: 920px;
+      margin: 28px auto;
+      padding: 0 20px 44px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.75;
+      color: #252525;
+    }
+
+    nav a {
+      margin-right: 20px;
+    }
+
+    section {
+      margin-top: 32px;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, Consolas, monospace;
+    }
+
+    pre {
+      padding: 16px;
+      overflow-x: auto;
+      border: 1px solid #dadada;
+      background: #f7f7f7;
+      line-height: 1.55;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #cccccc;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="device_vibration_usage.html">使用說明</a>
+    <a href="device_vibration_demo.html">Demo 展示</a>
+    <a href="test_device_vibration.html">功能測試</a>
+  </nav>
+
+  <h1>Device Vibration｜裝置震動</h1>
+  <p>將瀏覽器 Vibration API 包裝成可重用的獨立積木。不是音效，也不是畫面晃動。</p>
+
+  <section>
+    <h2>一、職責與限制</h2>
+    <p>只負責檢查裝置是否提供震動能力、播放宿主提供的節奏、啟用與停用及停止震動。</p>
+    <p>不內建攻擊、治療、勝利等事件名稱，不儲存選項、不建立 UI、不播放聲音。</p>
+    <p>瀏覽器是否真的震動取決於裝置與瀏覽器政策；桌面瀏覽器和部分手機瀏覽器不支援，即使回傳 true 也不代表能量測到實際馬達運作。</p>
+  </section>
+
+  <section>
+    <h2>二、HTTPS 絕對路徑</h2>
+    <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/effects/feedback/device_vibration.js"&gt;&lt;/script&gt;</code></pre>
+    <p>本零件沒有 CSS 依賴；是否顯示震動控制鈕，以及控制鈕樣式，完全交給宿主。</p>
+  </section>
+
+  <section>
+    <h2>三、公開 API</h2>
+    <p>全域名稱：<code>SlowlyDeviceVibration</code></p>
+    <table>
+      <thead>
+        <tr><th>函式</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>isSupported()</code></td><td>查詢瀏覽器是否提供原生 Vibration API。</td></tr>
+        <tr><td><code>create(options?)</code></td><td>建立獨立實例。可設定 <code>enabled</code> 與 <code>skipWhenHidden</code>（皆預設 true）；<code>vibrationFunction</code> 僅供測試替身或特殊介接。</td></tr>
+        <tr><td><code>instance.play(pattern)</code></td><td>播放正整數或非負數的毫秒數；陣列交替表示震動、停頓、震動。回傳瀏覽器是否接受要求。</td></tr>
+        <tr><td><code>instance.stop()</code></td><td>送出 0 毫秒，請求取消目前震動；即使停用實例也能呼叫。</td></tr>
+        <tr><td><code>instance.setEnabled(boolean)</code></td><td>切換啟用狀態。關閉時會要求停止震動；不寫入 localStorage。</td></tr>
+        <tr><td><code>instance.isEnabled()</code></td><td>讀取該實例的啟用狀態。</td></tr>
+        <tr><td><code>instance.isSupported()</code></td><td>查詢該實例是否有震動介面；測試替身可支援模擬。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>四、最小使用範例</h2>
+    <pre><code>const vibration = SlowlyDeviceVibration.create({
+  enabled: true,
+  skipWhenHidden: true
+});
+
+button.addEventListener("click", function () {
+  // 宿主決定何時觸發，以及傳入哪個節奏。
+  vibration.play([45, 55, 75]);
+});
+
+// 宿主自己的設定介面負責保存偏好。
+vibration.setEnabled(false);
+vibration.stop();</code></pre>
+    <p>震動通常需要使用者互動才能觸發。失敗或不支援時，<code>play()</code> 回傳 false，不影響宿主流程。</p>
+    <p>傳入負數、NaN、無限大、非數字或空陣列屬於程式使用錯誤，會拋出明確例外。</p>
+  </section>
+
+  <section>
+    <h2>五、驗收</h2>
+    <p><a href="device_vibration_demo.html">Demo 展示</a>：可在支援的手機上直接點擊測試震動，並提供停用與停止按鈕。</p>
+    <p><a href="test_device_vibration.html">功能測試</a>：使用模擬震動函式檢查 API，避免測試時讓手機不斷震動。</p>
+  </section>
+</body>
+</html>

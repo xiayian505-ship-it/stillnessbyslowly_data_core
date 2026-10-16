@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impact Slash｜功能測試｜慢慢軍火庫</title>
+  <link rel="stylesheet" href="./impact_slash.css">
+  <style>
+    body {
+      max-width: 890px;
+      margin: 25px auto;
+      padding: 0 20px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.65;
+    }
+
+    .test-stage {
+      position: relative;
+      min-height: 160px;
+      margin: 14px 0;
+      border: 1px solid #999999;
+    }
+
+    .target {
+      position: absolute;
+      top: 25px;
+      right: 20px;
+      width: 70px;
+      height: 60px;
+      background: #dddddd;
+    }
+
+    .pass {
+      color: #176b40;
+    }
+
+    .fail {
+      color: #ab2525;
+    }
+
+    li {
+      margin: 9px 0;
+    }
+  </style>
+  <script src="./impact_slash.js" defer></script>
+</head>
+<body>
+  <h1>Impact Slash｜功能測試</h1>
+  <p>此頁檢查 DOM 建立、座標、樣式參數、取消與自動清理。請保持頁面可見。</p>
+  <p id="summary" aria-live="polite">等待測試……</p>
+  <ol id="results"></ol>
+
+  <div class="test-stage" id="firstStage">
+    <div class="target" id="firstTarget"></div>
+  </div>
+  <div class="test-stage" id="secondStage"></div>
+
+  <p><a href="impact_slash_usage.html">使用說明</a> ｜ <a href="impact_slash_demo.html">Demo</a></p>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      const list = document.getElementById("results");
+      const summary = document.getElementById("summary");
+      const firstStage = document.getElementById("firstStage");
+      const secondStage = document.getElementById("secondStage");
+      const firstTarget = document.getElementById("firstTarget");
+      let passed = 0;
+      let total = 0;
+
+      function assert(condition, message) {
+        if (!condition) {
+          throw new Error(message);
+        }
+      }
+
+      async function run(label, testFunction) {
+        total += 1;
+        const item = document.createElement("li");
+
+        try {
+          await testFunction();
+          passed += 1;
+          item.className = "pass";
+          item.textContent = "PASS：" + label;
+        } catch (error) {
+          item.className = "fail";
+          item.textContent = "FAIL：" + label + " — " + error.message;
+        }
+
+        list.appendChild(item);
+      }
+
+      await run("公開 API 存在", function () {
+        assert(typeof SlowlyImpactSlash.play === "function", "缺少 play");
+        assert(typeof SlowlyImpactSlash.clear === "function", "缺少 clear");
+      });
+
+      await run("百分比座標與自訂外觀", async function () {
+        const playback = SlowlyImpactSlash.play(firstStage, {
+          xPercent: 32,
+          yPercent: 70,
+          angle: 27,
+          length: 125,
+          thickness: 4,
+          color: "red",
+          duration: 2000,
+          respectReducedMotion: false
+        });
+
+        const slash = firstStage.querySelector(".sbs-impact-slash");
+        assert(Boolean(slash), "斬擊元素沒有建立");
+        assert(slash.style.left === "32%", "X 座標錯誤");
+        assert(slash.style.top === "70%", "Y 座標錯誤");
+        assert(slash.style.getPropertyValue("--sbs-impact-slash-angle") === "27deg", "角度錯誤");
+        assert(slash.style.getPropertyValue("--sbs-impact-slash-length") === "125px", "長度錯誤");
+        assert(slash.style.getPropertyValue("--sbs-impact-slash-color") === "red", "顏色錯誤");
+
+        SlowlyImpactSlash.clear(firstStage);
+        const outcome = await playback;
+        assert(outcome.interrupted === true, "沒有正確回報被清除");
+      });
+
+      await run("指定目標時使用目標中心", async function () {
+        const playback = SlowlyImpactSlash.play(firstStage, {
+          target: firstTarget,
+          duration: 2000,
+          respectReducedMotion: false
+        });
+
+        const slash = firstStage.querySelector(".sbs-impact-slash");
+        assert(slash.style.left.endsWith("px"), "沒有換算像素 X 座標");
+        assert(slash.style.top.endsWith("px"), "沒有換算像素 Y 座標");
+
+        SlowlyImpactSlash.clear(firstStage);
+        await playback;
+      });
+
+      await run("同容器可多條共存，clear 全部清掉", async function () {
+        const first = SlowlyImpactSlash.play(firstStage, {
+          duration: 2000,
+          respectReducedMotion: false
+        });
+        const second = SlowlyImpactSlash.play(firstStage, {
+          duration: 2000,
+          respectReducedMotion: false
+        });
+
+        assert(firstStage.querySelectorAll(".sbs-impact-slash").length === 2, "未能共存");
+        assert(SlowlyImpactSlash.clear(firstStage) === 2, "沒有清除兩條");
+        const results = await Promise.all([first, second]);
+        assert(results.every(function (result) { return result.interrupted; }), "未回報中斷");
+      });
+
+      await run("不同容器互不干擾", async function () {
+        const first = SlowlyImpactSlash.play(firstStage, {
+          duration: 2000,
+          respectReducedMotion: false
+        });
+        const second = SlowlyImpactSlash.play(secondStage, {
+          duration: 2000,
+          respectReducedMotion: false
+        });
+
+        SlowlyImpactSlash.clear(firstStage);
+        assert(secondStage.querySelectorAll(".sbs-impact-slash").length === 1, "第二容器被錯誤清除");
+        SlowlyImpactSlash.clear(secondStage);
+        await Promise.all([first, second]);
+      });
+
+      await run("收到 animationend 後清理自身", async function () {
+        const playback = SlowlyImpactSlash.play(firstStage, {
+          duration: 2000,
+          respectReducedMotion: false
+        });
+        const slash = firstStage.querySelector(".sbs-impact-slash");
+        slash.dispatchEvent(new Event("animationend"));
+        const result = await playback;
+
+        assert(result.played === true && result.interrupted === false, "動畫狀態錯誤");
+        assert(!slash.isConnected, "元素沒有移除");
+      });
+
+      await run("非法目標與時長被拒絕", function () {
+        let invalidTarget = false;
+        let invalidDuration = false;
+
+        try {
+          SlowlyImpactSlash.play(firstStage, { target: secondStage });
+        } catch (error) {
+          invalidTarget = true;
+        }
+
+        try {
+          SlowlyImpactSlash.play(firstStage, { duration: -1 });
+        } catch (error) {
+          invalidDuration = true;
+        }
+
+        assert(invalidTarget, "跨容器目標沒有阻擋");
+        assert(invalidDuration, "負時長沒有阻擋");
+      });
+
+      await run("清空後不留下斬擊元素", function () {
+        SlowlyImpactSlash.clear(firstStage);
+        SlowlyImpactSlash.clear(secondStage);
+        assert(document.querySelectorAll(".sbs-impact-slash").length === 0, "仍有殘留元素");
+      });
+
+      summary.textContent = "結果：" + passed + " / " + total + " 通過";
+      summary.className = passed === total ? "pass" : "fail";
+    });
+  </script>
+</body>
+</html>

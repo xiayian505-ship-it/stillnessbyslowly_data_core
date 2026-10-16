@@ -1,0 +1,63 @@
+/**
+ * Slowly Impact Slash v1.0.0
+ * 短暫斜向光線的外觀與動畫。
+ * 宿主負責定位容器（position: relative）、角色、卡面與其他 UI。
+ */
+.sbs-impact-slash {
+  position: absolute;
+  z-index: var(--sbs-impact-slash-z, 5);
+  width: var(--sbs-impact-slash-length, clamp(72px, 27%, 168px));
+  height: var(--sbs-impact-slash-thickness, 3px);
+  pointer-events: none;
+  border-radius: 999px;
+  transform-origin: center;
+  opacity: 0;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--sbs-impact-slash-color, rgba(232, 255, 244, 0.95)) 49%,
+    transparent
+  );
+
+  box-shadow: 0 0 10px 2px
+    var(--sbs-impact-slash-glow, rgba(140, 232, 190, 0.45));
+
+  animation: sbsImpactSlashAppear
+    var(--sbs-impact-slash-duration, 320ms)
+    ease-out
+    both;
+}
+
+@keyframes sbsImpactSlashAppear {
+  0% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      rotate(var(--sbs-impact-slash-angle, -39deg))
+      scaleX(0.2);
+  }
+
+  24% {
+    opacity: 0.9;
+    transform:
+      translate(-50%, -50%)
+      rotate(var(--sbs-impact-slash-angle, -39deg))
+      scaleX(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      rotate(var(--sbs-impact-slash-angle, -39deg))
+      scaleX(1.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sbs-impact-slash {
+    animation: none;
+    display: none;
+  }
+}

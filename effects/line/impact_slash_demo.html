@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impact Slash｜Demo｜慢慢軍火庫</title>
+  <link rel="stylesheet" href="./impact_slash.css">
+  <style>
+    body {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 0 18px 40px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.65;
+      color: #262626;
+    }
+
+    .stage {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      gap: 16px;
+      min-height: 300px;
+      margin: 22px 0;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid #424e62;
+      background: linear-gradient(140deg, #172433, #354359);
+      isolation: isolate;
+    }
+
+    .target {
+      width: 115px;
+      min-height: 115px;
+      display: grid;
+      place-items: center;
+      border: 2px solid rgba(222, 239, 255, 0.65);
+      border-radius: 12px;
+      color: #ffffff;
+      text-align: center;
+      background: rgba(210, 229, 255, 0.1);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: #f1f3f5;
+    }
+
+    button,
+    select,
+    input {
+      padding: 8px;
+      font: inherit;
+    }
+
+    #message {
+      min-height: 1.8em;
+    }
+  </style>
+  <script src="./impact_slash.js" defer></script>
+</head>
+<body>
+  <nav>
+    <a href="impact_slash_usage.html">使用說明</a> ｜
+    <a href="test_impact_slash.html">功能測試</a>
+  </nav>
+
+  <h1>Impact Slash｜可操作 Demo</h1>
+  <p>任意點擊左、中、右三個區塊，斜向光線只會出現在目標位置。下方可以調整角度與顏色。</p>
+
+  <div class="stage" id="stage">
+    <button class="target" id="leftTarget" type="button">左側目標</button>
+    <button class="target" id="centerTarget" type="button">中央目標</button>
+    <button class="target" id="rightTarget" type="button">右側目標</button>
+  </div>
+
+  <div class="controls">
+    <label>
+      角度
+      <select id="angleInput">
+        <option value="-39">-39° 斜向</option>
+        <option value="39">39° 反向</option>
+        <option value="0">0° 水平</option>
+        <option value="-75">-75° 陡斜</option>
+      </select>
+    </label>
+
+    <label>
+      光線顏色
+      <input type="color" id="colorInput" value="#c7ffee">
+    </label>
+
+    <button id="randomButton" type="button">自由座標斬擊</button>
+    <button id="clearButton" type="button">清除光線</button>
+  </div>
+
+  <p id="message" role="status" aria-live="polite">等待操作。</p>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const stage = document.getElementById("stage");
+      const angleInput = document.getElementById("angleInput");
+      const colorInput = document.getElementById("colorInput");
+      const message = document.getElementById("message");
+
+      function playAtTarget(target) {
+        const angle = Number(angleInput.value);
+
+        SlowlyImpactSlash.play(stage, {
+          target: target,
+          angle: angle,
+          color: colorInput.value,
+          glow: "rgba(126, 240, 205, 0.62)",
+          length: 145,
+          thickness: 4,
+          duration: 360
+        });
+
+        message.textContent = "已向「" + target.textContent + "」送出光線動畫。";
+      }
+
+      ["leftTarget", "centerTarget", "rightTarget"].forEach(function (targetId) {
+        const target = document.getElementById(targetId);
+
+        target.addEventListener("click", function () {
+          playAtTarget(target);
+        });
+      });
+
+      document.getElementById("randomButton").addEventListener("click", function () {
+        SlowlyImpactSlash.play(stage, {
+          xPercent: 20 + Math.random() * 60,
+          yPercent: 20 + Math.random() * 60,
+          angle: Number(angleInput.value),
+          color: colorInput.value,
+          glow: "rgba(126, 240, 205, 0.62)"
+        });
+
+        message.textContent = "已在自由座標播放光線。";
+      });
+
+      document.getElementById("clearButton").addEventListener("click", function () {
+        const removedCount = SlowlyImpactSlash.clear(stage);
+        message.textContent = "已清除 " + removedCount + " 條斬擊光線。";
+      });
+    });
+  </script>
+</body>
+</html>

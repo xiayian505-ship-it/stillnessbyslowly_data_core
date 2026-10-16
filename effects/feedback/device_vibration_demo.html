@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Device Vibration｜Demo｜慢慢軍火庫</title>
+  <style>
+    body {
+      max-width: 700px;
+      margin: 25px auto;
+      padding: 0 18px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.7;
+      background: #f7f8fa;
+      color: #262626;
+    }
+
+    .panel {
+      padding: 22px;
+      border: 1px solid #dddddd;
+      border-radius: 12px;
+      background: white;
+    }
+
+    button {
+      margin: 8px 8px 8px 0;
+      padding: 10px 16px;
+      border: 1px solid #9a9a9a;
+      border-radius: 8px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0;
+    }
+
+    #message {
+      min-height: 3em;
+      padding: 12px;
+      background: #eeeeee;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+  </style>
+  <script src="./device_vibration.js" defer></script>
+</head>
+<body>
+  <nav>
+    <a href="device_vibration_usage.html">使用說明</a> ｜
+    <a href="test_device_vibration.html">功能測試</a>
+  </nav>
+
+  <h1>裝置震動｜可操作 Demo</h1>
+  <div class="panel">
+    <p>這裡不模擬震動，是真正呼叫裝置原生 Vibration API。請用支援的手機瀏覽器點按。</p>
+    <p id="supportStatus"></p>
+
+    <label>
+      <input id="enabledInput" type="checkbox" checked>
+      啟用震動
+    </label>
+
+    <button id="shortButton" type="button">短震動（40ms）</button>
+    <button id="patternButton" type="button">節奏震動（45、55、75）</button>
+    <button id="stopButton" type="button">停止震動</button>
+
+    <p id="message" role="status" aria-live="polite"></p>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const vibration = SlowlyDeviceVibration.create();
+      const supportStatus = document.getElementById("supportStatus");
+      const message = document.getElementById("message");
+      const enabledInput = document.getElementById("enabledInput");
+
+      supportStatus.textContent = vibration.isSupported()
+        ? "這個瀏覽器提供 Vibration API。請點擊按鈕驗收實體震動。"
+        : "這個瀏覽器不支援 Vibration API；功能會安全略過。";
+
+      function displayResult(label, accepted) {
+        message.textContent = label + "：" +
+          (accepted ? "瀏覽器接受要求。" : "未啟動（不支援、停用或瀏覽器拒絕）。");
+      }
+
+      enabledInput.addEventListener("change", function () {
+        vibration.setEnabled(enabledInput.checked);
+        message.textContent = enabledInput.checked
+          ? "已啟用；請點按震動按鈕。"
+          : "已停用，並請求停止震動。";
+      });
+
+      document.getElementById("shortButton").addEventListener("click", function () {
+        displayResult("短震動", vibration.play(40));
+      });
+
+      document.getElementById("patternButton").addEventListener("click", function () {
+        displayResult("節奏震動", vibration.play([45, 55, 75]));
+      });
+
+      document.getElementById("stopButton").addEventListener("click", function () {
+        displayResult("停止震動", vibration.stop());
+      });
+
+      message.textContent = "等待操作。";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impact Slash｜使用說明｜慢慢軍火庫</title>
+  <style>
+    body {
+      max-width: 930px;
+      margin: 28px auto;
+      padding: 0 20px 40px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.7;
+      color: #252525;
+    }
+
+    nav a {
+      margin-right: 16px;
+    }
+
+    section {
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #cccccc;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    pre {
+      padding: 15px;
+      background: #f5f5f5;
+      border: 1px solid #dedede;
+      overflow-x: auto;
+      line-height: 1.55;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, Consolas, monospace;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="impact_slash_usage.html">使用說明</a>
+    <a href="impact_slash_demo.html">Demo 展示</a>
+    <a href="test_impact_slash.html">功能測試</a>
+  </nav>
+
+  <h1>Impact Slash｜指定位置斬擊光線</h1>
+  <p>取材自《霧林之契》的瞬間斜向斬擊光線，重新抽成可自訂參數的通用視覺積木。</p>
+
+  <section>
+    <h2>一、與現有軍火庫零件的差別</h2>
+    <p><code>Sweep Line</code> 是沿水平或垂直方向掃過一個區域；本積木是在宿主指定的位置，瞬間顯示一條帶光暈的斜向線條。</p>
+    <p>不整合攻擊、卡牌、命中判定、音效、震動、閃光或畫面晃動，也不依賴那些零件。</p>
+  </section>
+
+  <section>
+    <h2>二、HTTPS 絕對路徑</h2>
+    <pre><code>&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/line/impact_slash.css"&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/effects/line/impact_slash.js"&gt;&lt;/script&gt;</code></pre>
+    <p>宿主必須為容器設定 <code>position: relative</code> 或其他合適的定位方式。積木不會替宿主修改容器布局。</p>
+  </section>
+
+  <section>
+    <h2>三、公開 API</h2>
+    <p>全域名稱：<code>SlowlyImpactSlash</code></p>
+    <table>
+      <thead>
+        <tr><th>函式／參數</th><th>用途</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>play(root, options?)</code></td><td>在指定容器播放斜線，回傳 Promise，結果包含 <code>played</code>、<code>interrupted</code>。</td></tr>
+        <tr><td><code>clear(root)</code></td><td>清除該容器內本積木建立的動畫，回傳清除的數量。</td></tr>
+        <tr><td><code>options.target</code></td><td>宿主提供的容器內目標元素。填入時以元素中心定位。</td></tr>
+        <tr><td><code>xPercent</code> / <code>yPercent</code></td><td>沒有 target 時的百分比位置，預設 50／50。</td></tr>
+        <tr><td><code>angle</code></td><td>光線傾斜角度（度），預設 -39。</td></tr>
+        <tr><td><code>length</code> / <code>thickness</code></td><td>可傳像素數字或 CSS 長度字串。</td></tr>
+        <tr><td><code>color</code> / <code>glow</code></td><td>光線核心色及周圍光暈色，使用 CSS 顏色值。</td></tr>
+        <tr><td><code>duration</code></td><td>播放毫秒數，預設 320。</td></tr>
+        <tr><td><code>zIndex</code></td><td>疊放層級，預設 5。</td></tr>
+        <tr><td><code>interrupt</code></td><td>設定 true 時，先清除同容器先前的斬擊再播放；預設允許多條同時存在。</td></tr>
+        <tr><td><code>respectReducedMotion</code></td><td>預設 true，若使用者偏好減少動態效果則略過；傳 false 可讓宿主明確覆寫 JS 略過，但 CSS 仍遵守瀏覽器減少動態偏好。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>四、最小使用範例</h2>
+    <pre><code>&lt;div id="stage" style="position: relative; min-height: 240px;"&gt;
+  &lt;div id="target"&gt;任意內容&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  const stage = document.getElementById("stage");
+  const target = document.getElementById("target");
+
+  // 宿主選擇目標和視覺參數。積木不處理命中或傷害。
+  SlowlyImpactSlash.play(stage, {
+    target: target,
+    angle: -45,
+    duration: 320,
+    length: 130,
+    thickness: 4,
+    color: "rgba(245, 255, 250, 0.95)",
+    glow: "rgba(90, 210, 160, 0.6)"
+  });
+&lt;/script&gt;</code></pre>
+    <p>若已經有其他震波、閃光、音效或震動零件，宿主自行決定同時或依序觸發；這支零件不替宿主組裝。</p>
+  </section>
+
+  <section>
+    <h2>五、Demo 與測試</h2>
+    <p><a href="impact_slash_demo.html">Demo</a>：點選不同目標、角度、顏色及連續斬擊。</p>
+    <p><a href="test_impact_slash.html">功能測試</a>：檢查建立、位置、清理、打斷和不同容器隔離。</p>
+  </section>
+</body>
+</html>

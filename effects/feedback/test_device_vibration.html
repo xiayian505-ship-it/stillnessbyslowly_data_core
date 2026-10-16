@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Device Vibration｜功能測試｜慢慢軍火庫</title>
+  <style>
+    body {
+      max-width: 900px;
+      margin: 25px auto;
+      padding: 0 20px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.65;
+    }
+
+    .pass {
+      color: #176b40;
+    }
+
+    .fail {
+      color: #ab2525;
+    }
+
+    li {
+      margin: 10px 0;
+    }
+  </style>
+  <script src="./device_vibration.js" defer></script>
+</head>
+<body>
+  <h1>Device Vibration｜功能測試</h1>
+  <p>測試使用傳入的模擬函式，不會真的呼叫手機震動馬達。</p>
+  <p id="summary" aria-live="polite">等待測試……</p>
+  <ol id="results"></ol>
+  <p><a href="device_vibration_usage.html">使用說明</a> ｜ <a href="device_vibration_demo.html">Demo</a></p>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const list = document.getElementById("results");
+      const summary = document.getElementById("summary");
+      let passed = 0;
+      let total = 0;
+
+      function assert(condition, message) {
+        if (!condition) {
+          throw new Error(message);
+        }
+      }
+
+      function run(label, testFunction) {
+        total += 1;
+        const item = document.createElement("li");
+
+        try {
+          testFunction();
+          passed += 1;
+          item.className = "pass";
+          item.textContent = "PASS：" + label;
+        } catch (error) {
+          item.className = "fail";
+          item.textContent = "FAIL：" + label + " — " + error.message;
+        }
+
+        list.appendChild(item);
+      }
+
+      run("公開 API 存在", function () {
+        assert(typeof SlowlyDeviceVibration.create === "function", "缺少 create");
+        assert(typeof SlowlyDeviceVibration.isSupported === "function", "缺少 isSupported");
+      });
+
+      run("可播放毫秒數與節奏陣列", function () {
+        const history = [];
+        const instance = SlowlyDeviceVibration.create({
+          vibrationFunction: function (pattern) {
+            history.push(pattern);
+            return true;
+          }
+        });
+
+        assert(instance.play(40), "單次震動未被接受");
+        assert(instance.play([45, 55, 75]), "節奏震動未被接受");
+        assert(history[0] === 40, "單次時長錯誤");
+        assert(history[1].join(",") === "45,55,75", "節奏內容錯誤");
+      });
+
+      run("停用時不再播放，且要求停止", function () {
+        const history = [];
+        const instance = SlowlyDeviceVibration.create({
+          vibrationFunction: function (pattern) {
+            history.push(pattern);
+            return true;
+          }
+        });
+
+        assert(instance.setEnabled(false) === false, "未關閉");
+        assert(instance.play(80) === false, "停用後仍然播放");
+        assert(history.length === 1 && history[0] === 0, "沒有停止先前震動");
+      });
+
+      run("停止功能不受停用狀態影響", function () {
+        const history = [];
+        const instance = SlowlyDeviceVibration.create({
+          enabled: false,
+          vibrationFunction: function (pattern) {
+            history.push(pattern);
+            return true;
+          }
+        });
+
+        assert(instance.stop() === true, "不能停止");
+        assert(history[0] === 0, "停止值應為 0");
+      });
+
+      run("不同實例的啟用狀態互不干擾", function () {
+        const first = SlowlyDeviceVibration.create({
+          vibrationFunction: function () { return true; }
+        });
+        const second = SlowlyDeviceVibration.create({
+          vibrationFunction: function () { return true; }
+        });
+
+        first.setEnabled(false);
+        assert(first.isEnabled() === false, "第一個實例應停用");
+        assert(second.isEnabled() === true, "第二個實例不應被停用");
+      });
+
+      run("不合法的節奏會被拒絕", function () {
+        const instance = SlowlyDeviceVibration.create({
+          vibrationFunction: function () { return true; }
+        });
+        let thrown = 0;
+
+        [-1, [], [20, NaN], "30"].forEach(function (pattern) {
+          try {
+            instance.play(pattern);
+          } catch (error) {
+            thrown += 1;
+          }
+        });
+
+        assert(thrown === 4, "沒有完整拒絕無效節奏");
+      });
+
+      run("底層介面失敗時安全回傳 false", function () {
+        const instance = SlowlyDeviceVibration.create({
+          vibrationFunction: function () {
+            throw new Error("Mock device failure");
+          }
+        });
+
+        assert(instance.play(20) === false, "失敗沒有被安全處理");
+      });
+
+      summary.textContent = "結果：" + passed + " / " + total + " 通過";
+      summary.className = passed === total ? "pass" : "fail";
+    });
+  </script>
+</body>
+</html>
