@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slowly Card Strategy｜使用說明</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      font: 16px/1.7 system-ui, sans-serif;
+    }
+    main {
+      max-width: 980px;
+      margin: auto;
+    }
+    pre {
+      overflow: auto;
+      padding: 14px;
+      border: 1px solid currentColor;
+    }
+    code {
+      font-family: ui-monospace, Consolas, monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid currentColor;
+      padding: 7px;
+      text-align: left;
+      vertical-align: top;
+    }
+    h2 {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Slowly Card Strategy Component v1.0.0</h1>
+  <p>通用策略卡牌「完成品」，不是只有引擎。內建收藏、升級、組牌與策略對戰的可操作畫面，並有 20 張示範牌及可用的基本規則。外觀只有必要 CSS，所有素材與遊戲世界觀由宿主提供。</p>
+
+  <h2>1. 完成品檔案</h2>
+  <pre><code>component/game/
+├── card_strategy_component.js
+├── card_strategy_component.css
+├── card_strategy_config.js
+├── card_strategy_component_usage.html
+├── card_strategy_component_demo.html
+└── test_card_strategy_component.html</code></pre>
+  <p><code>card_strategy_config.js</code> 是可選的純資料示範設定。沒有載入也能直接掛載，且使用完整預設資料。</p>
+
+  <h2>2. 依賴與載入順序</h2>
+  <p>下列 15 支 JS（含既有 Deck / CombatStats）為必要依賴，版本應以軍火庫目前已公開的正式 API 為準。另需載入 4 支獨立 UI／動畫 CSS 與完成品 CSS；引用均為絕對 HTTPS，不要將零件複製到專案內。</p>
+  <pre><code>&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.css"&gt;
+&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.css"&gt;
+&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/motion/element_flight.css"&gt;
+&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/line/impact_slash.css"&gt;
+&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/component/game/card_strategy_component.css"&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/deck.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/combat/combat_stats.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/effects/motion/element_flight.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/effects/feedback/device_vibration.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/effects/line/impact_slash.js"&gt;&lt;/script&gt;
+
+&lt;script src="https://lib.stillnessbyslowly.com/component/game/card_strategy_component.js"&gt;&lt;/script&gt;</code></pre>
+  <p>音效是可選的：如需啟用 <code>feedback.sound</code>，請另行載入 <code>audio/context/audio_context.js</code>、<code>audio/source/oscillator.js</code>、<code>audio/gain/gain.js</code>、<code>audio/gain/envelope.js</code>、<code>audio/tone/tone.js</code>（一樣使用完整 HTTPS 路徑），參考 Demo。瀏覽器不支援音效／震動時會安全略過。</p>
+
+  <h2>3. 零設定就能用</h2>
+  <pre><code>&lt;div id="strategy-game"&gt;&lt;/div&gt;
+&lt;script&gt;
+  const game = SlowlyCardStrategy.mount("#strategy-game");
+&lt;/script&gt;</code></pre>
+  <p>掛載後先顯示收藏：可以點上方頁籤進行升級、組牌，再按開始戰鬥。也可設定 <code>autoStart: true</code> 直接進入戰鬥。預設玩法：20 張牌、30 HP、行動點 3／魔法點 3、回合補手牌至 5、一次免費換牌、Lv.5 上限、玩家與簡單電腦輪流行動。</p>
+  <p>若已載入設定檔：<code>SlowlyCardStrategy.mount("#strategy-game", SlowlyCardStrategyConfig)</code>。</p>
+
+  <h2>4. 宿主設定入口</h2>
+  <table>
+    <tr><th>options</th><th>用途</th></tr>
+    <tr><td><code>participants</code></td><td>參與者資料陣列，每位需要唯一 id、name、maxHP、hp、shield、ai；預設為 player 與 opponent。</td></tr>
+    <tr><td><code>controlledParticipant</code></td><td>目前 UI 控制者 ID，預設 player；非控制者可交給 aiTurn 處理。</td></tr>
+    <tr><td><code>cards</code></td><td>示範卡種清單。每種含 cardId、name、copies、cost（多資源物件）、target、effects 陣列；用來建立預設收藏。</td></tr>
+    <tr><td><code>collection</code></td><td>宿主提供的實體卡陣列，每張必須有唯一 id 及 cardId；為 null 時使用 cards 建立。</td></tr>
+    <tr><td><code>loadoutIds</code></td><td>已選入出戰牌組的實體 ID 陣列；為 null 時自動預選前 deckSize 張。</td></tr>
+    <tr><td><code>opponentCards</code></td><td>非 UI 控制者的示範牌來源；預設 cards。</td></tr>
+    <tr><td><code>upgradeTokens</code></td><td>初始升級點數，預設 5。</td></tr>
+    <tr><td><code>resources</code></td><td>各資源的基本值，例如 {action: 3, mana: 3}。</td></tr>
+    <tr><td><code>rules</code></td><td>牌組容量、手牌數、升級上限、回合行為及可覆蓋判定函式。</td></tr>
+    <tr><td><code>effects</code></td><td>以 effect.type 為 key 的 CardEffectRegistry 執行函式或 {canRun, execute}；同名替換預設、設 false/null 停用。</td></tr>
+    <tr><td><code>actions.aiTurn</code></td><td>宿主替換整個電腦回合行為。</td></tr>
+    <tr><td><code>renderers</code></td><td>collectionCard、combatant、handCard，可替換卡牌／角色呈現內容。</td></tr>
+    <tr><td><code>formatters.number</code></td><td>決定顯示數字格式。</td></tr>
+    <tr><td><code>layout</code></td><td>{layouts, fan}：分別傳給 SlotStageLayout 和 HandFanLayout 的原生設定。</td></tr>
+    <tr><td><code>feedback</code></td><td>animation、sound、vibration 開關；slash（ImpactSlash 原生 options）、vibrationPattern、flightDuration。</td></tr>
+    <tr><td><code>callbacks</code></td><td>onStart、onTurnStart、onCardPlay、onUpgrade、onFinish、onStateChange、onError。</td></tr>
+  </table>
+
+  <h2>5. 預設卡牌效果與目標</h2>
+  <table>
+    <tr><th>effect.type</th><th>實際使用的軍火庫核心</th><th>目標</th></tr>
+    <tr><td>attack / guard / heal</td><td>CombatStats：傷害、護盾、治療</td><td>opponent / self</td></tr>
+    <tr><td>draw</td><td>Deck.draw()</td><td>none</td></tr>
+    <tr><td>resource</td><td>CardResourcePool</td><td>none</td></tr>
+    <tr><td>discard</td><td>CardTargetSelection → CardZoneTransfer.moveCard()</td><td>opponent-hand</td></tr>
+    <tr><td>redraw</td><td>CardTargetSelection → CardZoneTransfer.moveCard() → Deck.draw()</td><td>self-hand（另一張手牌）</td></tr>
+    <tr><td>exchange</td><td>CardTargetSelection → CardZoneTransfer.swapCards()</td><td>opponent-hand</td></tr>
+  </table>
+  <p>角色目標（participantId）與手牌目標（owner、zone、cardId）不同。CardTargetSelection 的候選只適用於卡牌區；不要假定它會處理角色血量。預設卡牌效果可用 <code>effects</code> 真正替換，而不是在預設效果後面再追加一次。</p>
+
+  <h2>6. 規則完整覆蓋</h2>
+  <p><strong>宿主明確提供的函式優先於預設行為。</strong>核心預設僅為能遊玩而存在。以下函式均為同步呼叫；自訂操作不得直接破壞 Deck 的 snapshot 結構。</p>
+  <table>
+    <tr><th>rules 屬性</th><th>作用與覆蓋範圍</th></tr>
+    <tr><td>deckSize / minimumDeckSize / handSize / maximumLevel</td><td>出戰容量、最低張數、手牌目標與升級上限。</td></tr>
+    <tr><td>freeSwapsPerTurn / aiCardsPerTurn / refillEachTurn</td><td>免費換牌次數、電腦出牌量與是否回滿資源。</td></tr>
+    <tr><td>isLoadoutEligible(card, context)</td><td>單張卡是否允許編組。</td></tr>
+    <tr><td>validateLoadout({cards,ids,game})</td><td>完整牌組額外驗證；傳回 false 或 {valid:false,reason} 即拒絕開始戰鬥。</td></tr>
+    <tr><td>upgradeCost(card,context)</td><td>單張卡升級費用（非負數字）。</td></tr>
+    <tr><td>canUpgrade(card,context)</td><td>可否升級；回傳 false 拒絕。</td></tr>
+    <tr><td>effectAmount({game,card,effect,level})</td><td>覆蓋預設 amount + (Lv-1) 公式。</td></tr>
+    <tr><td>getCost({game,card,actorId,battle})</td><td>完整替換出牌費用（例如 {action:1,mana:2}）。</td></tr>
+    <tr><td>canPlay({game,card,actorId,target})</td><td>整體出牌合法性；false 拒絕。</td></tr>
+    <tr><td>getTargetType({game,card,actorId})</td><td>修改內建目標類型。</td></tr>
+    <tr><td>getTargets(context)</td><td>取代候選目標產生流程；回傳 undefined 使用內建。</td></tr>
+    <tr><td>isEligibleTarget({game,card,actorId,candidate})</td><td>篩選手牌類目標。</td></tr>
+    <tr><td>resolveTarget({game,card,actorId,requestedTarget})</td><td>完整覆蓋目標解決；回傳 {type,target,candidate}、{needsSelection:true,candidates} 或 {invalid:true}。</td></tr>
+    <tr><td>onTurnStart({game,participantId,pool,deck,battle})</td><td>完全取代預設每回合補資源及補牌。</td></tr>
+    <tr><td>onTurnEnd({game,participantId,pool,deck,battle})</td><td>完全取代預設回合末棄光手牌。</td></tr>
+    <tr><td>advanceTurn({game,battle,turnOrder})</td><td>取代預設 turnOrder.advanceTurn()；宿主須自行正確推進以免卡住。</td></tr>
+    <tr><td>checkVictory({game,battle,participants})</td><td>完全取代預設 HP 歸零判定。回傳 null/false 代表未結束、字串代表 winner ID 或 "draw"。</td></tr>
+  </table>
+  <pre><code>const game = SlowlyCardStrategy.mount("#strategy-game", {
+  rules: {
+    checkVictory({ participants }) {
+      // 這裡完整取代內建 HP 歸零判定：宿主決定何時有人勝出。
+      return null;
+    },
+    upgradeCost(card) {
+      return card.level * 2;
+    }
+  },
+  effects: {
+    attack(context) {
+      // 宿主替換攻擊效果；預設攻擊函式不會再執行。
+      return CombatStats.damage(context.target, 9);
+    }
+  },
+  callbacks: {
+    onFinish({ winner }) { console.log("winner:", winner); }
+  }
+});</code></pre>
+  <p>如需完全自訂任意形狀的特殊目標 UI，宿主應搭配 getTargets/resolveTarget、Renderer 和公開的 chooseTarget()，將選擇結果回傳。預設 HTML 只提供角色與手牌的標準目標按鈕。<strong>角色操作界面預設只直接控制一位 controlledParticipant</strong>；額外人類玩家介面由宿主整合。</p>
+
+  <h2>7. 公開實例 API</h2>
+  <table>
+    <tr><th>API</th><th>用途</th></tr>
+    <tr><td>start(), restart()</td><td>使用目前牌組開始／重開一場戰鬥，回傳 {started,...}。</td></tr>
+    <tr><td>setScreen("collection" | "upgrade" | "loadout" | "battle")</td><td>切換內建操作頁。</td></tr>
+    <tr><td>upgradeCard(instanceId)</td><td>對收藏實體卡升級，回傳 {ok,...}。</td></tr>
+    <tr><td>addToLoadout(id), removeFromLoadout(id), moveLoadoutCard(id, -1 | 1)</td><td>編輯出戰牌組。</td></tr>
+    <tr><td>getLoadoutValidation()</td><td>取得 CardLoadoutValidation 結果及最少張數檢查。</td></tr>
+    <tr><td>playCard(index, target?, actorId?)</td><td>出牌；對需要選目標的牌可先不傳 target，再呼叫 chooseTarget。</td></tr>
+    <tr><td>chooseTarget(target), cancelTarget()</td><td>確認／取消操作；角色目標為 {participantId}，手牌目標為 {owner,zone:"hand",cardId}。</td></tr>
+    <tr><td>mulligan(index), endTurn()</td><td>免費換掉指定手牌、結束回合並推進 AI。</td></tr>
+    <tr><td>setFeedbackEnabled("animation" | "sound" | "vibration", enabled)</td><td>切換特效／音效／震動；影響外觀回饋，不改遊戲結果。</td></tr>
+    <tr><td>setLayouts(layouts)</td><td>傳入 SlotStageLayout 原生布局陣列，直接替換插槽排列。</td></tr>
+    <tr><td>getState(), snapshot(), restore(snapshot), destroy()</td><td>完整狀態與生命週期。renderers 與 callbacks 不會進入 JSON。</td></tr>
+  </table>
+
+  <h2>8. Snapshot / restore 與失敗復原</h2>
+  <p>快照包括收藏、牌組 ID、升級點數、所有對戰者、雙方 Deck 三區與 sourceItems、多資源數值、回合順序與戰鬥紀錄。目標選擇中的短暫 UI 對話不保存；還原後需重新選取。永久儲存（FictionStorage、後端或使用者自備的其他資料庫）由宿主負責。</p>
+  <p>出牌在驗證合法目標及費用後才執行；執行中發生例外時，完成品用 snapshot/restore 回復所有戰鬥數值與牌區，不回滾宿主自行進行的外部 I/O、音效、資料庫或 DOM 副作用。預設的 CardEffectRegistry 沒有自動交易功能，因此回滾協調位於完成品。</p>
+
+  <h2>9. UI 與可替換的 CSS</h2>
+  <p>戰鬥舞台具五個插槽：<code>enemy</code>、<code>center</code>、<code>hand</code>、<code>player</code>、<code>controls</code>，由 SlotStageLayout 負責 Grid 模板；扇形交給 HandFanLayout。兩者皆按容器寬度調整布局。</p>
+  <p>完成品 CSS 不提供霧林專屬配色。可覆寫 <code>--scs-gap</code>、<code>--scs-border</code>、<code>--scs-surface</code>、<code>--scs-text</code>、<code>--scs-card-width</code>、<code>--scs-card-height</code>、<code>--scs-meter-fill</code> 等變數。宿主可以更換任意卡面美術和視覺 Renderer。</p>
+
+  <h2>10. 已知邊界與測試</h2>
+  <p>預設勝負依 CombatStats 判定；預設簡易 AI 最多每回合使用 aiCardsPerTurn 張可出牌卡，並非強大 AI。角色目標與卡牌目標分開處理。預設音效需要在使用者互動後播放，且受瀏覽器自動播放政策限制。手機震動也受裝置／瀏覽器支援限制。</p>
+  <p>最小可玩 Demo：<a href="https://lib.stillnessbyslowly.com/component/game/card_strategy_component_demo.html">card_strategy_component_demo.html</a>；功能驗收：<a href="https://lib.stillnessbyslowly.com/component/game/test_card_strategy_component.html">test_card_strategy_component.html</a>。</p>
+</main>
+</body>
+</html>

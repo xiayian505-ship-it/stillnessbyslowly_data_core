@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slowly Card Strategy｜完整互動展示</title>
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/motion/element_flight.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/effects/line/impact_slash.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/component/game/card_strategy_component.css">
+  <style>
+    /* Demo 控制面板的樣式不是完成品 CSS，也不會帶入完成品。 */
+    body {
+      margin: 0;
+      padding: 20px;
+      font: 16px/1.6 system-ui, sans-serif;
+    }
+    main {
+      max-width: 1080px;
+      margin: auto;
+    }
+    .demo-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 14px 0;
+    }
+    .demo-bar button, .demo-bar select {
+      padding: 6px 12px;
+      font: inherit;
+    }
+    .demo-frame {
+      width: 100%;
+      max-width: 880px;
+      margin: auto;
+      border: 1px solid currentColor;
+      padding: 12px;
+    }
+    .demo-status {
+      min-height: 1.5em;
+    }
+    #saveData {
+      display: block;
+      width: 100%;
+      min-height: 105px;
+      font: 12px/1.4 monospace;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Slowly Card Strategy｜可玩的完成品展示</h1>
+  <p>請從「收藏」→「升級」→「組牌」→「戰鬥」操作；預設敵人在上、玩家扇形手牌在中間。Demo 不包含任何《霧林之契》卡牌與色碼。</p>
+  <div class="demo-bar">
+    <button id="newBattle" type="button">開始／重開戰鬥</button>
+    <button id="save" type="button">產生快照</button>
+    <button id="restore" type="button">從下方快照還原</button>
+    <label>容器寬度
+      <select id="width">
+        <option value="880">寬 880px</option>
+        <option value="520">中 520px</option>
+        <option value="320">窄 320px</option>
+      </select>
+    </label>
+    <label><input id="vibration" type="checkbox"> 震動（支援的手機）</label>
+    <label><input id="sound" type="checkbox"> 音效</label>
+    <label><input id="animation" type="checkbox" checked> 動畫</label>
+  </div>
+  <p id="demoStatus" class="demo-status" aria-live="polite"></p>
+  <div id="frame" class="demo-frame"><div id="strategy"></div></div>
+  <label for="saveData">JSON 狀態快照（僅顯示於欄位，不會自動儲存或上傳）</label>
+  <textarea id="saveData" spellcheck="false"></textarea>
+</main>
+
+<!-- 軍火庫共有能力；絕對 HTTPS 載入，不建立副本。 -->
+<script src="https://lib.stillnessbyslowly.com/game/card/deck.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/combat/combat_stats.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation.js"></script>
+<script src="https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.js"></script>
+<script src="https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.js"></script>
+<script src="https://lib.stillnessbyslowly.com/effects/motion/element_flight.js"></script>
+<script src="https://lib.stillnessbyslowly.com/effects/feedback/device_vibration.js"></script>
+<script src="https://lib.stillnessbyslowly.com/effects/line/impact_slash.js"></script>
+
+<!-- 音訊是可選整合；打開 Demo 的音效開關才會嘗試播放。 -->
+<script src="https://lib.stillnessbyslowly.com/audio/context/audio_context.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/source/oscillator.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/gain.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/envelope.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/tone/tone.js"></script>
+
+<script src="https://lib.stillnessbyslowly.com/component/game/card_strategy_config.js"></script>
+<script src="https://lib.stillnessbyslowly.com/component/game/card_strategy_component.js"></script>
+<script>
+  "use strict";
+
+  const game = SlowlyCardStrategy.mount("#strategy", SlowlyCardStrategyConfig);
+  const status = document.getElementById("demoStatus");
+  const saveData = document.getElementById("saveData");
+
+  document.getElementById("newBattle").addEventListener("click", function () {
+    const result = game.start();
+    status.textContent = result.started ? "已開始一場新戰鬥。" : result.reason;
+  });
+
+  document.getElementById("save").addEventListener("click", function () {
+    saveData.value = JSON.stringify(game.snapshot(), null, 2);
+    status.textContent = "已建立狀態快照；你可以複製 JSON。";
+  });
+
+  document.getElementById("restore").addEventListener("click", function () {
+    try {
+      game.restore(JSON.parse(saveData.value));
+      status.textContent = "已從 JSON 還原狀態。";
+    } catch (error) {
+      status.textContent = "還原失敗：" + error.message;
+    }
+  });
+
+  document.getElementById("width").addEventListener("change", function (event) {
+    document.getElementById("frame").style.maxWidth = event.target.value + "px";
+    game.stageLayout.refresh();
+    game.fan.refresh();
+  });
+
+  ["vibration", "sound", "animation"].forEach(function (name) {
+    document.getElementById(name).addEventListener("change", function (event) {
+      game.setFeedbackEnabled(name, event.target.checked);
+    });
+  });
+</script>
+</body>
+</html>

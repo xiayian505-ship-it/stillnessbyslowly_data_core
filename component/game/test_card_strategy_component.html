@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slowly Card Strategy｜整合功能測試</title>
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.css">
+  <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/component/game/card_strategy_component.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 22px;
+      font: 16px/1.6 system-ui, sans-serif;
+    }
+    main {
+      max-width: 950px;
+      margin: auto;
+    }
+    .pass {
+      color: #136b22;
+    }
+    .fail {
+      color: #ae1717;
+    }
+    #fixture {
+      width: 650px;
+      max-width: 100%;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body><main>
+  <h1>Slowly Card Strategy｜測試</h1>
+  <p>此頁獨立驗證主要整合流程。每項顯示 PASS / FAIL；不以 Demo 當測試。</p>
+  <p id="totals" role="status">準備執行……</p>
+  <ol id="results"></ol>
+  <div id="fixture"></div>
+</main>
+<!-- 軍火庫共有能力；絕對 HTTPS 載入，不建立副本。 -->
+<script src="https://lib.stillnessbyslowly.com/game/card/deck.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/combat/combat_stats.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation.js"></script>
+<script src="https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.js"></script>
+<script src="https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.js"></script>
+<script src="https://lib.stillnessbyslowly.com/effects/motion/element_flight.js"></script>
+<script src="https://lib.stillnessbyslowly.com/effects/feedback/device_vibration.js"></script>
+<script src="https://lib.stillnessbyslowly.com/effects/line/impact_slash.js"></script>
+
+<!-- 音訊是可選整合；打開 Demo 的音效開關才會嘗試播放。 -->
+
+
+
+
+
+
+
+<script src="https://lib.stillnessbyslowly.com/component/game/card_strategy_component.js"></script>
+
+<script>
+  "use strict";
+  const results = document.getElementById("results");
+  const fixture = document.getElementById("fixture");
+  let passed = 0;
+  let failed = 0;
+
+  function check(condition, message) {
+    if (!condition) throw new Error(message);
+  }
+
+  function test(name, callback) {
+    const item = document.createElement("li");
+    try {
+      callback();
+      item.textContent = "PASS｜" + name;
+      item.className = "pass";
+      passed += 1;
+    } catch (error) {
+      item.textContent = "FAIL｜" + name + "：" + error.message;
+      item.className = "fail";
+      failed += 1;
+      console.error(name, error);
+    }
+    results.appendChild(item);
+    document.getElementById("totals").textContent =
+      `PASS ${passed} · FAIL ${failed} · TOTAL ${passed + failed}`;
+  }
+
+  function mount(options = {}) {
+    fixture.replaceChildren();
+    return SlowlyCardStrategy.mount(fixture, options);
+  }
+
+  test("15 顆必要依賴及元件公開入口", function () {
+    check(typeof SlowlyCardStrategy.mount === "function", "缺 mount");
+    check(typeof CardZoneTransfer.swapCards === "function", "缺交換 API");
+    check(typeof SlowlyImpactSlash.play === "function", "缺斬擊 API");
+  });
+
+  let game;
+  test("零設定掛載包含 4 個可操作頁面", function () {
+    game = mount();
+    check(fixture.querySelectorAll("[data-page]").length === 4, "頁面不完整");
+    check(game.screen === "collection", "首頁應為收藏");
+  });
+
+  test("實體 ID 唯一、20 張收藏與完整預設牌組", function () {
+    const state = game.snapshot();
+    check(state.collection.length === 20, "預設收藏不是 20 張");
+    check(CardInstanceIdentity.findDuplicateInstanceIds(state.collection).length === 0, "ID 重複");
+    check(game.getLoadoutValidation().valid, "預設組牌無效");
+  });
+
+  test("收藏與組牌可增刪、排序", function () {
+    const oldFirst = game.loadoutIds[0];
+    check(game.removeFromLoadout(oldFirst).ok, "不能移出");
+    check(game.addToLoadout(oldFirst).ok, "不能重新加入");
+    check(game.moveLoadoutCard(oldFirst, -1).ok, "不能調整順序");
+    check(game.getLoadoutValidation().valid, "調整後無效");
+  });
+
+  test("升級使用 CardLevelProgression 且扣除點數", function () {
+    const id = game.collection[0].id;
+    const oldLevel = game.getCard(id).level;
+    const oldTokens = game.upgradeTokens;
+    const result = game.upgradeCard(id);
+    check(result.ok && game.getCard(id).level === oldLevel + 1, "升級沒有實際生效");
+    check(game.upgradeTokens === oldTokens - 1, "升級未消耗點數");
+  });
+
+  test("不合法牌組無法開始戰鬥", function () {
+    const originalIds = game.loadoutIds.slice();
+    game.loadoutIds = [];
+    check(game.start().started === false, "空牌組不該通過");
+    game.loadoutIds = originalIds;
+  });
+
+  test("可開始戰鬥，包含雙方、資源、牌庫與回合", function () {
+    const result = game.start();
+    check(result.started, "無法開始");
+    const state = game.snapshot().runtime;
+    check(state.battle.status === "playing", "不是進行中的戰鬥");
+    check(state.decks.player.hand.length === 5, "玩家未抽滿 5 張");
+    check(state.resources.player.action === 3 && state.resources.player.mana === 3, "資源異常");
+    check(state.turnOrder.currentRound === 1, "回合異常");
+  });
+
+  test("扇形手牌與舞台皆由公開零件實際控制", function () {
+    check(game.fan && game.fan.refresh().count === 5, "扇形沒有接線");
+    check(game.stageLayout && game.stageLayout.getSlot("enemy"), "舞台沒有接線");
+    check(fixture.querySelectorAll("[data-hand-fan-card]").length === 5, "手牌 DOM 異常");
+  });
+
+  test("指定手牌免費換牌，牌區與次數確實改變", function () {
+    const before = game.snapshot().runtime;
+    const oldId = before.decks.player.hand[1].id;
+    const result = game.mulligan(1);
+    check(result.ok, "換牌失敗");
+    const after = game.snapshot().runtime;
+    check(after.battle.freeSwaps === before.battle.freeSwaps - 1, "次數未減少");
+    check(after.decks.player.discardPile.some(card => card.id === oldId), "原卡未棄牌");
+  });
+
+  test("目標候選會提示選擇，取消時不扣費", function () {
+    const deck = game.decks.get("player");
+    const state = deck.snapshot();
+    const attacking = game.collection.find(card => card.cardId === "strike");
+    state.hand[0] = attacking;
+    deck.restore(state);
+    game.render();
+    const before = game.pools.get("player").getSnapshot();
+    const result = game.playCard(0);
+    check(!result.played && result.reason === "target-required", "應要求目標");
+    check(Boolean(game.pending), "未保留選擇狀態");
+    game.cancelTarget();
+    check(!game.pending, "未取消選擇");
+    check(JSON.stringify(before) === JSON.stringify(game.pools.get("player").getSnapshot()), "取消仍扣費");
+  });
+
+  test("選目標後攻擊可執行，HP 與資源同步更新", function () {
+    const enemyBefore = game.battle.participants.opponent.hp;
+    const actionBefore = game.pools.get("player").getAmount("action");
+    const result = game.playCard(0, { participantId: "opponent" });
+    check(result.played, result.reason || "出牌失敗");
+    check(game.battle.participants.opponent.hp < enemyBefore, "敵人 HP 未下降");
+    check(game.pools.get("player").getAmount("action") === actionBefore - 1, "資源未扣");
+  });
+
+  test("回合推進，電腦確實行動、玩家獲得下一回合", function () {
+    const beforeRound = game.turnOrder.getSnapshot().currentRound;
+    const result = game.endTurn();
+    check(result.ended, "回合未推進");
+    check(game.turnOrder.getSnapshot().currentRound === beforeRound + 1, "回合沒有增加");
+    check(game.battle.log.some(line => line.includes("電腦")), "電腦未參與");
+  });
+
+  test("Snapshot / restore 還原收藏、資源、牌區與回合", function () {
+    const before = game.snapshot();
+    game.upgradeTokens = 0;
+    game.pools.get("player").setAmount("action", 0);
+    game.restore(before);
+    check(JSON.stringify(game.snapshot()) === JSON.stringify(before), "快照還原不一致");
+  });
+
+  test("宿主可完整覆蓋勝負、升級費用及效果", function () {
+    const custom = mount({
+      rules: { minimumDeckSize: 1, deckSize: 20, checkVictory: () => null,
+        upgradeCost: () => 0 },
+      effects: { attack: context => CombatStats.damage(context.target, 9) },
+      feedback: { animation: false, vibration: false, sound: false }
+    });
+    check(custom.upgradeCard(custom.collection[0].id).ok, "免費升級覆蓋失效");
+    check(custom.upgradeTokens === 5, "免費升級仍扣點數");
+    check(custom.start().started, "自訂規則無法開始");
+    custom.battle.participants.opponent.hp = 0;
+    check(custom.checkVictory() === null, "仍偷偷執行預設血量勝負");
+    custom.destroy();
+  });
+
+  test("自訂效果拋錯能復原資源、HP 與牌區", function () {
+    const custom = mount({
+      cards: [
+        { cardId: "boom", name: "測試卡", copies: 5, cost: { action: 1 },
+          target: "none", effects: [{ type: "boom" }] }
+      ],
+      rules: { minimumDeckSize: 1, deckSize: 5, handSize: 5 },
+      effects: { boom() { throw new Error("測試中斷"); } },
+      feedback: { animation: false, vibration: false, sound: false }
+    });
+    check(custom.start().started, "測試牌組不能開始");
+    const before = custom.snapshot().runtime;
+    const result = custom.playCard(0);
+    check(result.played === false, "出錯仍回報成功");
+    const after = custom.snapshot().runtime;
+    check(JSON.stringify(before.decks) === JSON.stringify(after.decks), "失敗後牌區未復原");
+    check(JSON.stringify(before.resources) === JSON.stringify(after.resources), "失敗後資源未復原");
+    custom.destroy();
+  });
+
+  test("對手開局有手牌，棄牌及交換效果有合法候選", function () {
+    const custom = mount({ feedback: { animation: false, vibration: false, sound: false } });
+    check(custom.start().started, "不能開始");
+    check(custom.decks.get("opponent").snapshot().hand.length === 5, "電腦手牌不存在");
+    const discard = custom.collection.find(card => card.cardId === "discard");
+    const snapshot = custom.decks.get("player").snapshot();
+    snapshot.hand[0] = discard;
+    custom.decks.get("player").restore(snapshot);
+    const info = custom.resolveTargets(discard, "player");
+    check(info.candidates.length === 5, "無法取得敵方手牌候選");
+    const oldHand = custom.decks.get("opponent").snapshot().hand.length;
+    const candidate = info.candidates[0];
+    const played = custom.playCard(0, {
+      owner: candidate.owner, zone: candidate.zone, cardId: candidate.card.id
+    });
+    check(played.played, played.reason || "棄牌操作失敗");
+    check(custom.decks.get("opponent").snapshot().hand.length === oldHand - 1,
+      "敵方手牌沒有真正棄牌");
+    check(custom.decks.get("opponent").snapshot().discardPile.some(
+      card => card.id === candidate.card.id), "牌沒移到棄牌堆");
+    custom.destroy();
+  });
+
+  test("交換卡牌會跨不同 Deck 交換實體牌，不複製同類功能", function () {
+    const custom = mount({ feedback: { animation: false, vibration: false, sound: false } });
+    custom.start();
+    const exchange = custom.collection.find(card => card.cardId === "exchange");
+    const playerDeck = custom.decks.get("player");
+    const enemyDeck = custom.decks.get("opponent");
+    const snapshot = playerDeck.snapshot();
+    snapshot.hand[0] = exchange;
+    playerDeck.restore(snapshot);
+    const outgoing = playerDeck.snapshot().hand.find(card => card.id !== exchange.id).id;
+    const incoming = enemyDeck.snapshot().hand[0].id;
+    const played = custom.playCard(0, { owner: "opponent", zone: "hand", cardId: incoming });
+    check(played.played, played.reason || "交換失敗");
+    check(playerDeck.snapshot().hand.some(card => card.id === incoming), "未收到對方卡牌");
+    check(enemyDeck.snapshot().hand.some(card => card.id === outgoing), "對方未收到我方卡牌");
+    custom.destroy();
+  });
+
+  test("指定自己的另一張手牌來更換：先移動再抽牌", function () {
+    const custom = mount({ feedback: { animation: false, vibration: false, sound: false } });
+    custom.start();
+    const redraw = custom.collection.find(card => card.cardId === "redraw");
+    const playerDeck = custom.decks.get("player");
+    const snapshot = playerDeck.snapshot();
+    snapshot.hand[0] = redraw;
+    playerDeck.restore(snapshot);
+    const oldCard = playerDeck.snapshot().hand[1];
+    const result = custom.playCard(0, { owner: "player", zone: "hand", cardId: oldCard.id });
+    check(result.played, result.reason || "換牌效果失敗");
+    check(playerDeck.snapshot().discardPile.some(card => card.id === oldCard.id), "被換牌沒丟棄");
+    check(playerDeck.snapshot().discardPile.some(card => card.id === redraw.id), "使用卡沒有丟棄");
+    custom.destroy();
+  });
+
+  test("免費換牌按鈕會等待使用者選牌；取消不扣次數", function () {
+    const custom = mount({ feedback: { animation: false, vibration: false, sound: false } });
+    custom.start();
+    const before = custom.battle.freeSwaps;
+    const button = Array.from(fixture.querySelectorAll("button")).find(
+      candidate => candidate.textContent.includes("免費換牌")
+    );
+    check(button, "找不到免費換牌按鈕");
+    button.click();
+    check(custom.pending?.mode === "mulligan", "沒有進入選牌模式");
+    custom.cancelTarget();
+    check(custom.battle.freeSwaps === before, "取消後免費次數被扣");
+    custom.destroy();
+  });
+
+  test("預設勝負達成時停止對戰", function () {
+    const custom = mount({ feedback: { animation: false, vibration: false, sound: false } });
+    custom.start();
+    custom.battle.participants.opponent.hp = 1;
+    const strike = custom.collection.find(card => card.cardId === "strike");
+    const deck = custom.decks.get("player");
+    const snapshot = deck.snapshot();
+    snapshot.hand[0] = strike;
+    deck.restore(snapshot);
+    const result = custom.playCard(0, { participantId: "opponent" });
+    check(result.played, result.reason || "攻擊失敗");
+    check(custom.battle.status === "finished", "對戰未結束");
+    check(custom.battle.winner === "player", "勝者判定錯誤");
+    custom.destroy();
+  });
+
+  test("完全停用預設卡牌效果會阻止出牌而不扣費", function () {
+    const custom = mount({
+      effects: { attack: false },
+      feedback: { animation: false, vibration: false, sound: false }
+    });
+    custom.start();
+    const strike = custom.collection.find(card => card.cardId === "strike");
+    const deck = custom.decks.get("player");
+    const snapshot = deck.snapshot();
+    snapshot.hand[0] = strike;
+    deck.restore(snapshot);
+    const before = custom.pools.get("player").getAmount("action");
+    const result = custom.playCard(0, { participantId: "opponent" });
+    check(!result.played, "已停用效果仍可使用");
+    check(custom.pools.get("player").getAmount("action") === before, "停用效果仍扣費");
+    custom.destroy();
+  });
+
+  test("缺少必要依賴時明確拒絕 mount", function () {
+    const original = window.CardTargetSelection;
+    window.CardTargetSelection = undefined;
+    try {
+      let message = "";
+      try { mount(); } catch (error) { message = error.message; }
+      check(message.includes("CardTargetSelection"), "沒有指出缺少的依賴");
+    } finally {
+      window.CardTargetSelection = original;
+    }
+  });
+
+  test("缺少必要依賴時能顯示錯誤，destroy 可以清理", function () {
+    const custom = mount();
+    custom.destroy();
+    check(!fixture.firstElementChild, "destroy 後 DOM 未移除");
+  });
+</script>
+</body>
+</html>

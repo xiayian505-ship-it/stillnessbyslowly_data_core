@@ -1,0 +1,293 @@
+/* =========================================================
+   Slowly Card Strategy Component｜必要布局／可操作性 CSS
+   僅作用於 .slowly-card-strategy，沒有專屬色碼或美術素材。
+   宿主可覆寫 --scs-* 變數，也可完全替換 Renderer / CSS。
+========================================================= */
+.slowly-card-strategy {
+  --scs-gap: 0.75rem;
+  --scs-border: color-mix(in srgb, currentColor 40%, transparent);
+  --scs-surface: transparent;
+  --scs-text: inherit;
+  --scs-card-width: 112px;
+  --scs-card-height: 156px;
+  --scs-meter-background: color-mix(in srgb, currentColor 13%, transparent);
+  --scs-meter-fill: currentColor;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  container-type: inline-size;
+  color: var(--scs-text);
+  line-height: 1.45;
+}
+
+.slowly-card-strategy *,
+.slowly-card-strategy *::before,
+.slowly-card-strategy *::after {
+  box-sizing: border-box;
+}
+
+.slowly-card-strategy [hidden] {
+  display: none !important;
+}
+
+.slowly-card-strategy button {
+  appearance: none;
+  font: inherit;
+  color: inherit;
+  background: var(--scs-surface);
+  border: 1px solid var(--scs-border);
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  min-height: 36px;
+  cursor: pointer;
+}
+
+.slowly-card-strategy button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.slowly-card-strategy button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.slowly-card-strategy .scs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--scs-gap);
+  padding-bottom: var(--scs-gap);
+  border-bottom: 1px solid var(--scs-border);
+}
+
+.slowly-card-strategy .scs-title {
+  font-size: 1.15em;
+}
+
+.slowly-card-strategy .scs-nav,
+.slowly-card-strategy .scs-controls,
+.slowly-card-strategy .scs-resources,
+.slowly-card-strategy .scs-enemy-hand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.slowly-card-strategy .scs-nav button[aria-current="true"] {
+  outline: 1px solid currentColor;
+  outline-offset: -3px;
+  font-weight: 700;
+}
+
+.slowly-card-strategy .scs-message {
+  min-height: 1.5em;
+  margin: 0.75rem 0;
+}
+
+.slowly-card-strategy .scs-page {
+  min-width: 0;
+}
+
+.slowly-card-strategy .scs-page > h2 {
+  font-size: 1.1em;
+  margin: 0.75rem 0;
+}
+
+.slowly-card-strategy .scs-page > button {
+  margin-top: var(--scs-gap);
+}
+
+.slowly-card-strategy .scs-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr));
+  gap: var(--scs-gap);
+  margin-bottom: var(--scs-gap);
+}
+
+.slowly-card-strategy .scs-collection-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  gap: 0.45rem;
+  border: 1px solid var(--scs-border);
+  background: var(--scs-surface);
+  border-radius: 0.4rem;
+  padding: 0.7rem;
+  overflow-wrap: anywhere;
+}
+
+.slowly-card-strategy .scs-collection-card p {
+  margin: 0;
+  flex: 1;
+}
+
+.slowly-card-strategy .scs-collection-card small,
+.slowly-card-strategy .scs-muted {
+  opacity: 0.75;
+}
+
+.slowly-card-strategy .scs-validation {
+  border: 1px solid var(--scs-border);
+  padding: 0.5rem;
+}
+
+.slowly-card-strategy .scs-stage {
+  --slowly-stage-gap: var(--scs-gap);
+  min-width: 0;
+  position: relative;
+}
+
+.slowly-card-strategy .scs-slot {
+  min-width: 0;
+  border: 1px solid var(--scs-border);
+  border-radius: 0.4rem;
+  padding: 0.6rem;
+  background: var(--scs-surface);
+}
+
+.slowly-card-strategy .scs-enemy,
+.slowly-card-strategy .scs-player {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.slowly-card-strategy .scs-combatant {
+  min-width: 0;
+}
+
+.slowly-card-strategy .scs-combatant-name,
+.slowly-card-strategy .scs-stat {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.slowly-card-strategy .scs-meter {
+  width: 100%;
+  height: 0.6rem;
+  overflow: hidden;
+  border: 1px solid var(--scs-border);
+  border-radius: 50rem;
+  background: var(--scs-meter-background);
+}
+
+.slowly-card-strategy .scs-meter-fill {
+  display: block;
+  height: 100%;
+  background: var(--scs-meter-fill);
+  transition: width 150ms ease-out;
+}
+
+.slowly-card-strategy .scs-resource {
+  border: 1px solid var(--scs-border);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+}
+
+.slowly-card-strategy .scs-log {
+  margin: 0.4rem 0;
+  padding-left: 1.5rem;
+  max-height: 7rem;
+  overflow: auto;
+}
+
+.slowly-card-strategy .scs-prompt {
+  font-weight: 700;
+}
+
+.slowly-card-strategy .scs-enemy-hand button {
+  min-width: 3.6rem;
+}
+
+.slowly-card-strategy .scs-hand-slot {
+  overflow: hidden;
+  padding-bottom: 3rem;
+}
+
+.slowly-card-strategy .scs-hand-title {
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.slowly-card-strategy .scs-hand {
+  width: 100%;
+  min-height: calc(var(--scs-card-height) + 3.5rem);
+  padding: 1rem 0 0.3rem;
+  /* 卡片的扇形角度、重疊、位移由 HandFanLayout 管理，不在此重寫。 */
+}
+
+.slowly-card-strategy .scs-hand-card {
+  width: var(--scs-card-width);
+  min-width: var(--scs-card-width);
+  height: var(--scs-card-height);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.4rem;
+  text-align: left;
+  padding: 0.5rem;
+  overflow: hidden;
+  background: var(--scs-surface);
+  border: 1px solid var(--scs-border);
+  border-radius: 0.4rem;
+}
+
+.slowly-card-strategy .scs-hand-card strong,
+.slowly-card-strategy .scs-hand-card small {
+  overflow-wrap: anywhere;
+}
+
+.slowly-card-strategy .scs-hand-card small:last-child {
+  margin-top: auto;
+}
+
+.slowly-card-strategy .scs-controls {
+  align-content: start;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+@container (max-width: 420px) {
+  .slowly-card-strategy .scs-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .slowly-card-strategy .scs-nav {
+    width: 100%;
+  }
+
+  .slowly-card-strategy .scs-nav button {
+    flex: 1 1 auto;
+  }
+
+  /* 手機窄版保留扇形旋轉的左右外緣，避免首尾卡被裁切。 */
+  .slowly-card-strategy .scs-hand {
+    width: calc(100% - 76px);
+    margin-inline: auto;
+  }
+
+  .slowly-card-strategy .scs-hand-card small:first-of-type {
+    /* 窄容器優先保留名稱、等級和費用；完整說明仍存在 title / 卡牌資料。 */
+    display: none;
+  }
+
+  .slowly-card-strategy .scs-hand-card strong {
+    font-size: 0.86em;
+  }
+
+  .slowly-card-strategy .scs-hand-card {
+    width: min(var(--scs-card-width), 28cqw);
+    min-width: min(var(--scs-card-width), 28cqw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slowly-card-strategy .scs-meter-fill {
+    transition: none;
+  }
+}
