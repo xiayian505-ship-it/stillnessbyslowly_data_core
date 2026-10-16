@@ -2299,6 +2299,66 @@ window.SlowlyLibraryIndex = [
             ]
           }
         ]
+      },
+      {
+        "id": "layout",
+        "title": "Layout / 版面配置",
+        "subpage": true,
+        "desc": "卡片扇形排列與具名插槽舞台等通用 UI 布局積木，角色、內容與使用規則由宿主決定。",
+        "items": [
+          {
+            "title": "Hand Fan Layout",
+            "desc": "依卡片數量、卡片寬度與容器可用空間動態計算扇形角度、重疊間距及上下錯位；支援選取上浮、容器尺寸變更與重算排列。不建立卡牌、不處理出牌或遊戲規則，卡面與互動由宿主決定。",
+            "links": [
+              {
+                "label": "hand_fan_layout.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.js"
+              },
+              {
+                "label": "hand_fan_layout.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/hand_fan_layout_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/test_hand_fan_layout.html"
+              }
+            ]
+          },
+          {
+            "title": "Slot Stage Layout",
+            "desc": "通用具名插槽舞台布局，接受宿主設定的 CSS Grid 區域與多組容器寬度配置，依可用寬度切換排列；不固定敵我站位、不建立角色或控制戰鬥流程。",
+            "links": [
+              {
+                "label": "slot_stage_layout.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.js"
+              },
+              {
+                "label": "slot_stage_layout.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/slot_stage_layout_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/layout/test_slot_stage_layout.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -3895,6 +3955,40 @@ window.SlowlyLibraryIndex = [
         ],
         "subpage": true,
         "desc": "Feedback / 回饋 特效積木。"
+      },
+      {
+        "id": "motion",
+        "title": "Motion / 移動動畫",
+        "subpage": true,
+        "desc": "元素位置移動與飛行等通用視覺動畫，事件與業務結果由宿主決定。",
+        "items": [
+          {
+            "title": "Element Flight",
+            "desc": "將來源元素的視覺副本沿弧線飛往指定目標，支援時間、弧高、縮放、旋轉和中途取消；原始元素不移動，完成後清理副本，不內建命中、傷害或其他遊戲效果。",
+            "links": [
+              {
+                "label": "element_flight.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight.js"
+              },
+              {
+                "label": "element_flight.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/test_element_flight.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
