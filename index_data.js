@@ -1347,6 +1347,28 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/state/test_dialogue_sequence.html"
               }
             ]
+          },
+          {
+            "title": "Hold Charge Control",
+            "desc": "通用按住蓄力生命週期，管理按下、隨時間更新蓄力進度、放開、取消及重設；蓄力數值引用軍火庫既有 ChargeState，實際發射力道與操作介面由宿主決定。",
+            "links": [
+              {
+                "label": "hold_charge_control.js",
+                "href": "https://lib.stillnessbyslowly.com/state/hold_charge_control.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/hold_charge_control_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/hold_charge_control_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_hold_charge_control.html"
+              }
+            ]
           }
         ]
       },
@@ -2343,6 +2365,28 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/ui/input/test_virtual_joystick.html"
+              }
+            ]
+          },
+          {
+            "title": "Digital Action Input",
+            "desc": "通用鍵盤與 Pointer 數位動作輸入，將宿主指定的按鍵及觸控區轉為按下／放開狀態，支援多指與多來源同時按住、取消、失焦復位及銷毀；Canvas 座標換算引用既有 CanvasRectDrag。",
+            "links": [
+              {
+                "label": "digital_action_input.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/digital_action_input.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/digital_action_input_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/digital_action_input_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/test_digital_action_input.html"
               }
             ]
           }
@@ -4247,6 +4291,28 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_canvas_floating_text.html"
               }
             ]
+          },
+          {
+            "title": "Gamepad Vibration",
+            "desc": "通用遊戲手把震動回饋，支援偵測相容手把、設定馬達強度與持續時間、停止及不支援時安全處理；僅使用 Gamepad 震動介面，手機震動沿用既有 Device Vibration。",
+            "links": [
+              {
+                "label": "gamepad_vibration.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_gamepad_vibration.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -5405,6 +5471,102 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/game/collision/test_circle_collision.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "physics",
+        "title": "Physics / 物理運動",
+        "subpage": true,
+        "desc": "通用二維物理運動與碰撞反應積木，分離幾何接觸、反彈、轉軸運動及時間步進，場景與玩法由宿主決定。",
+        "items": [
+          {
+            "title": "Circle Segment Collision",
+            "desc": "通用圓形與有限線段接觸幾何，計算線段最近點、接觸法線、相切與重疊深度，支援線段端點及退化情況；不修改物體座標、速度或負責碰撞反彈。",
+            "links": [
+              {
+                "label": "circle_segment_collision.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_circle_segment_collision.html"
+              }
+            ]
+          },
+          {
+            "title": "Collision Response 2D",
+            "desc": "通用二維碰撞速度反應，依接觸法線、物體與表面相對速度、反彈係數計算碰後速度與撞擊強度；不搜尋碰撞、不重做幾何偵測或繪製。",
+            "links": [
+              {
+                "label": "collision_response_2d.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/collision_response_2d.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/collision_response_2d_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/collision_response_2d_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_collision_response_2d.html"
+              }
+            ]
+          },
+          {
+            "title": "Hinged Segment Motion",
+            "desc": "通用轉軸線段運動，計算旋轉線段端點、目標角度步進、角速度與接觸點表面速度，可配合碰撞反應使用；不綁定彈珠台、固定左右彈板或按鍵。",
+            "links": [
+              {
+                "label": "hinged_segment_motion.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_hinged_segment_motion.html"
+              }
+            ]
+          },
+          {
+            "title": "Body Motion 2D",
+            "desc": "通用二維物體時間步進，依加速度、重力、速度上限與時間差更新速度及位置；不包含碰撞偵測、反彈、繪圖或完整剛體物理引擎。",
+            "links": [
+              {
+                "label": "body_motion_2d.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/body_motion_2d.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/body_motion_2d_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/body_motion_2d_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_body_motion_2d.html"
               }
             ]
           }
