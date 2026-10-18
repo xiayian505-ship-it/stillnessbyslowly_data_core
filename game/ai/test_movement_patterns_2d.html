@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Movement Patterns 2D Test</title>
+</head>
+<body>
+  <h1>Movement Patterns 2D Test</h1>
+  <p>以下為實際執行的獨立檢查；錯誤會顯示 FAIL，沒有固定假 PASS。</p>
+  <pre id="test_results"></pre>
+  <script src="https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d.js"></script>
+  <script>
+    const test_results = document.querySelector('#test_results');
+    let passes = 0;
+    let failures = 0;
+    const lines = [];
+    function check(label, run) {
+      try {
+        if (run() !== true) throw new Error('檢查結果不符合預期');
+        passes += 1;
+        lines.push('PASS ' + label);
+      } catch (error) {
+        failures += 1;
+        lines.push('FAIL ' + label + '：' + error.message);
+      }
+    }
+    function approx(first, second, tolerance = 0.000001) {
+      return Math.abs(first - second) <= tolerance;
+    }
+    function throws(run) {
+      try { run(); return false; } catch (error) { return true; }
+    }
+
+    const patterns = SlowlyMovementPatterns2D;
+    const bounds = { min_x: 0, max_x: 100, min_y: 0, max_y: 100 };
+    check('反彈正常位移', () => approx(patterns.bounce({ x: 30, y: 20, velocity_x: 10, velocity_y: 0 }, bounds, 2).x, 50));
+    check('穿越右邊界反向', () => { const result = patterns.bounce({ x: 95, y: 50, velocity_x: 20, velocity_y: 0 }, bounds, 1); return approx(result.x, 85) && result.velocity_x < 0; });
+    check('穿越左邊界反向', () => { const result = patterns.bounce({ x: 5, y: 50, velocity_x: -20, velocity_y: 0 }, bounds, 1); return approx(result.x, 15) && result.velocity_x > 0; });
+    check('碰撞半徑生效', () => approx(patterns.bounce({ x: 85, y: 50, velocity_x: 20, velocity_y: 0, radius: 10 }, bounds, 1).x, 75));
+    check('可跨越多次反彈', () => approx(patterns.bounce({ x: 10, y: 10, velocity_x: 150, velocity_y: 0 }, bounds, 2).x, 90));
+    check('追蹤接近目標', () => approx(patterns.chase({ x: 0, y: 0 }, { x: 10, y: 0 }, { speed: 5, delta_seconds: 1 }).x, 5));
+    check('追蹤不越過目標', () => approx(patterns.chase({ x: 0, y: 0 }, { x: 10, y: 0 }, { speed: 50, delta_seconds: 1 }).x, 10));
+    check('追蹤零距離安全', () => patterns.chase({ x: 3, y: 3 }, { x: 3, y: 3 }, { speed: 5, delta_seconds: 1 }).reached);
+    check('追蹤停止距離', () => approx(patterns.chase({ x: 0, y: 0 }, { x: 10, y: 0 }, { speed: 50, delta_seconds: 1, stopping_distance: 3 }).x, 7));
+    check('巡邏正常前進', () => approx(patterns.patrol({ x: 2, y: 5 }, { x: 0, y: 5 }, { x: 10, y: 5 }, { speed: 3, delta_seconds: 1 }).x, 5));
+    check('巡邏折返方向', () => { const result = patterns.patrol({ x: 9, y: 5 }, { x: 0, y: 5 }, { x: 10, y: 5 }, { speed: 3, delta_seconds: 1 }); return approx(result.x, 8) && result.direction === -1; });
+    check('時間為零不動', () => approx(patterns.patrol({ x: 2, y: 5 }, { x: 0, y: 5 }, { x: 10, y: 5 }, { speed: 3, delta_seconds: 0 }).x, 2));
+    check('相同參數可重現', () => JSON.stringify(patterns.chase({ x: 1, y: 1 }, { x: 10, y: 10 }, { speed: 3, delta_seconds: 1 })) === JSON.stringify(patterns.chase({ x: 1, y: 1 }, { x: 10, y: 10 }, { speed: 3, delta_seconds: 1 })));
+    check('邊界處已朝內移動不誤反向', () => patterns.bounce({ x: 100, y: 50, velocity_x: -2, velocity_y: 0 }, bounds, 0).velocity_x === -2);
+    check('邊界處朝外移動立刻反向', () => patterns.bounce({ x: 0, y: 50, velocity_x: -2, velocity_y: 0 }, bounds, 0).velocity_x === 2);
+    check('拒絕負時間', () => throws(() => patterns.bounce({ x: 10, y: 10, velocity_x: 2, velocity_y: 3 }, bounds, -1)));
+    check('拒絕非數值速度', () => throws(() => patterns.chase({ x: 0, y: 0 }, { x: 10, y: 0 }, { speed: NaN, delta_seconds: 1 })));
+    check('拒絕非法範圍', () => throws(() => patterns.bounce({ x: 5, y: 5, velocity_x: 1, velocity_y: 0, radius: 10 }, { min_x: 0, max_x: 5, min_y: 0, max_y: 5 }, 1)));
+
+    lines.push('總計：' + passes + ' PASS / ' + failures + ' FAIL');
+    test_results.textContent = lines.join('\n');
+    document.body.dataset.test_status = failures === 0 ? 'PASS' : 'FAIL';
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dialogue Sequence Demo</title>
+</head>
+<body>
+  <h1>Dialogue Sequence Demo</h1>
+  <p>逐字動畫使用軍火庫既有 SlowlyTypewriter；新零件只管對話切換。</p>
+  <p><button id="start">開始</button> <button id="next">下一步／補全</button> <button id="reset">重置</button></p>
+  <p id="speaker"></p><p id="line"></p><pre id="output"></pre>
+  <script src="https://lib.stillnessbyslowly.com/effects/typography/typewriter.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/state/dialogue_sequence.js"></script>
+  <script>
+    const speaker = document.querySelector('#speaker');
+    const text = document.querySelector('#line');
+    const output = document.querySelector('#output');
+    const example_lines = [
+      { speaker: '甲', text: '這是第一句中性示範文字。' },
+      { speaker: '乙', text: '再按一次就會換到下一句。' }
+    ];
+    let typewriter = null;
+    function stop_typing() {
+      if (typewriter) typewriter.destroy();
+      typewriter = null;
+    }
+    const dialogue = SlowlyDialogueSequence.create({
+      on_line_start(line) {
+        stop_typing();
+        speaker.textContent = line.speaker;
+        text.textContent = '';
+        // 既有 Typewriter 沒有 skip API；跳過時先停止，再交由宿主補全文字。
+        typewriter = SlowlyTypewriter.create({ target: text, phrases: [line.text],
+          typeMin: 70, typeJitter: 0, holdDelay: 3600000, loop: false });
+        typewriter.start();
+      },
+      on_line_complete(line) {
+        stop_typing();
+        text.textContent = line.text;
+      },
+      on_finished() {
+        stop_typing();
+        speaker.textContent = '完成';
+      },
+      on_changed(state) {
+        output.textContent = JSON.stringify({ index: state.index, count: state.count,
+          running: state.running, revealed: state.revealed, finished: state.finished }, null, 2);
+      }
+    });
+    document.querySelector('#start').onclick = () => dialogue.start(example_lines);
+    document.querySelector('#next').onclick = () => dialogue.advance();
+    document.querySelector('#reset').onclick = () => {
+      stop_typing(); dialogue.reset(); speaker.textContent = ''; text.textContent = '';
+    };
+    window.addEventListener('pagehide', () => { stop_typing(); dialogue.destroy(); }, { once: true });
+  </script>
+</body>
+</html>

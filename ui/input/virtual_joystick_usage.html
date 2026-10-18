@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Virtual Joystick 使用說明</title>
+</head>
+<body>
+  <h1>Virtual Joystick 使用說明</h1>
+  <p>手指或滑鼠在宿主指定元素上拖曳，輸出方向、距離與強度。零件不建立按鈕、不繪製搖桿，也不移動角色。</p>
+  <h2>部署引用與順序</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/ui/canvas/canvas_rect_drag.js"&gt;&lt;/script&gt;
+  &lt;script src="https://lib.stillnessbyslowly.com/ui/input/virtual_joystick.js"&gt;&lt;/script&gt;</code></pre>
+  <h2>公開 API：window.SlowlyVirtualJoystick</h2>
+  <pre><code>create({target, dead_zone=10, max_distance=70, enabled=true, on_change?}) → instance。
+  instance.snapshot() → {active, enabled, pointer_id, origin, current, direction_x, direction_y, strength, distance}。
+  instance.set_enabled(boolean) → snapshot；instance.destroy() → 釋放事件監聽及 Pointer 捕捉。
+  Canvas 元素必須先載入 CanvasRectDrag，並由其 pointFromEvent 完成座標映射。
+  一般 DOM 元素則使用該元素自身的局部座標。宿主需設定操作區 touch-action:none，否則手機瀏覽器可能優先捲動頁面。單一實例一次追蹤一個 Pointer ID，其他指標不會奪取控制。</code></pre>
+  <h2>宿主呼叫範例</h2>
+  <pre><code>const joystick = SlowlyVirtualJoystick.create({
+    target: document.querySelector('#touch_area'),
+    dead_zone: 10,
+    max_distance: 70,
+    on_change: (state) =&gt; {
+      // direction_x / direction_y 是正規化方向，strength 為 0～1。
+      console.log(state.direction_x, state.direction_y, state.strength);
+    }
+  });
+
+  console.log(joystick.snapshot());
+  joystick.set_enabled(false);
+  joystick.destroy();</code></pre>
+  <h2>使用邊界</h2>
+  <p>本零件遵循 IIFE + window 全域 API。宿主決定顏色、字型、角色、遊戲規則、渲染與操作 UI。凡涉及現有軍火庫能力，僅透過上方 HTTPS 絕對 URL 載入，不複製原碼。</p>
+  <p>程式未壓縮，Demo 僅供操作，Test 會逐項實際 PASS／FAIL。手機操作與跨瀏覽器相容性仍請以部署後設備實測。</p>
+</body>
+</html>

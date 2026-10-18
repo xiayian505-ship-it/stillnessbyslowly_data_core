@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Slowly SVG Converter Component｜使用說明</title>
+</head>
+<body>
+    <main>
+        <h1>Slowly SVG Converter Component｜使用說明</h1>
+        <p>本完成品負責 SVG 預覽與 PNG／GIF／影片輸出的操作組裝；不改寫底層零件。宿主可以自行覆蓋版型、色彩、字型、設定與匯出後處理方式。</p>
+        <h2>全部依賴與 HTTPS 載入順序</h2>
+        <pre><code>&lt;link rel="stylesheet" href="https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.css"&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/data/file/filename_sanitize.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/Image/svg/svg_viewer.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/Image/gif/gif_encoder.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/video/recording/mime_type.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/video/recording/canvas_video_export.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.js"&gt;&lt;/script&gt;</code></pre>
+        <p>此完成品刻意直接呼叫既有零件的公開 API：Blob URL、FilenameSanitize、SVG Viewer、Frame Extractor、Canvas PNG、GIF Encoder、Canvas Video Export 與錄影三件組。不能把底層程式複製進完成品目錄。</p>
+
+        <h2>最小組裝範例</h2>
+        <pre><code>&lt;div id="svg_converter"&gt;&lt;/div&gt;
+&lt;script&gt;
+const converter = SlowlySVGConverterComponent.mount("#svg_converter", {
+    width: 320,
+    duration_seconds: 2,
+    frames_per_second: 10,
+    transparent: true,
+    on_export(result) {
+        console.log(result.file_name, result.blob);
+    }
+});
+// 也可由宿主程式載入：
+// await converter.load_text(svg_xml_string, "example.svg");
+// const gif_blob = await converter.export_gif();
+// await converter.destroy();
+&lt;/script&gt;</code></pre>
+
+        <h2>公開 API：window.SlowlySVGConverterComponent</h2>
+        <ul>
+            <li><code>mount(target, options?)</code>：target 是容器元素或 CSS 選擇器；回傳完成品實例。</li>
+            <li><code>instance.load_file(file)</code>、<code>await instance.load_text(svg_text, name?)</code>：載入本機檔案或字串，回傳狀態。</li>
+            <li><code>instance.set_zoom(number)</code>、<code>await instance.replay()</code>：預覽縮放與重播。</li>
+            <li><code>await instance.export_png()</code>、<code>await instance.export_gif()</code>、<code>await instance.export_video()</code>：回傳 Blob，並在完成品結果區提供預覽／下載連結；不自動下載。</li>
+            <li><code>instance.cancel_export()</code>：對 GIF 擷取／影片錄製發出取消；PNG 完成當前擷取後停止提交結果。GIF 編碼本身是既有同步工作的非即時取消限制。</li>
+            <li><code>instance.get_state()</code>：取得目前檔案、支援格式、匯出可用狀態與工作狀態。</li>
+            <li><code>await instance.clear()</code>、<code>await instance.destroy()</code>：等待工作中斷、回收 Blob URL 與內部 SVG 擷取節點；destroy 會清空該容器。</li>
+        </ul>
+
+        <h2>設定 options</h2>
+        <ul>
+            <li><code>width</code>：預設輸出寬度；宿主可從 UI 修改，預設 480。</li>
+            <li><code>duration_seconds</code>：GIF／影片時長，預設 2，允許大於 0 至 60 秒。</li>
+            <li><code>frames_per_second</code>：GIF／影片 FPS，預設 10，允許 1～60。</li>
+            <li><code>transparent</code>：預設 true。影片即使不填底色，其實際 alpha 支援仍取決於編碼器，建議影片選不透明背景。</li>
+            <li><code>background</code>：不透明背景色，預設 #ffffff；由 Frame Extractor 驗證。</li>
+            <li><code>maximum_upload_bytes</code>：SVG 大小限制，預設 8 MiB。</li>
+            <li><code>maximum_frame_bytes</code>：GIF 全部 RGBA 影格的最大記憶體，預設 96 MiB。</li>
+            <li><code>maximum_output_dimension</code>：最大寬／高，預設 2048；Frame Extractor 最高仍為 4096。</li>
+            <li><code>zoom</code>：預覽初始滑桿倍率，完成品操作介面提供 25%～400%。</li>
+            <li><code>show_controls</code>：設為 false 隱藏右側轉檔設定；仍可透過 API 呼叫。</li>
+            <li><code>on_state(state)</code>、<code>on_error(error)</code>、<code>on_export({blob, extension, mime_type, file_name})</code>：宿主回呼。</li>
+        </ul>
+
+        <h2>輸出流程與安全限制</h2>
+        <p>Viewer 採 <code>&lt;img&gt;</code> 安全預覽；Frame Extractor 使用隔離 Shadow DOM 取得 CSS／SMIL 狀態，驗證規則更嚴格。若來源只通過 Viewer 而未通過 Extractor，仍能預覽但不能轉檔，完成品會顯示原因。</p>
+        <p>PNG：Extractor.capture → SlowlyCanvasPNG.toBlob；GIF：Extractor.capture_frames → SlowlyGIFEncoder.encode；影片：CanvasVideoExport.create，透過 draw_frame 回呼擷取每一幀，再交給既有 MIME、MediaRecorder、RecordedChunks 零件。</p>
+        <p>GIF 因為需要保存所有原始 RGBA 影格，可能很耗記憶體；請減少寬度／FPS／時長。影片依瀏覽器實際支援顯示 WebM 或 MP4 選項，不包含 MP4 轉碼。錄影是即時錄製，所需時間約等於選定的秒數。複雜 SVG path morph、腳本動畫、外部字型和其他不支援來源不保證能還原。</p>
+        <p>文件、預覽和匯出在使用者本機瀏覽器處理，不需上傳伺服器。是否上傳輸出由宿主自行實作。完成品不會設定全站 body、字型、背景或品牌配色；可以直接覆蓋 <code>component/svg/svg_converter_component.css</code> 的選擇器。</p>
+
+        <h2>驗收頁</h2>
+        <p><a href="https://lib.stillnessbyslowly.com/component/svg/svg_converter_component_demo.html">互動 Demo</a>、
+            <a href="https://lib.stillnessbyslowly.com/component/svg/test_svg_converter_component.html">功能測試</a></p>
+    </main>
+</body>
+</html>

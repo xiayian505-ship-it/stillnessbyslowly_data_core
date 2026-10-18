@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dash State 使用說明</title>
+</head>
+<body>
+  <h1>Dash State 使用說明</h1>
+  <p>衝刺持續時間、方向、速度倍率及生命週期。冷卻直接使用軍火庫 CooldownGate，不實作第二套冷卻鎖。</p>
+  <h2>部署引用與順序</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/state/cooldown_gate.js"&gt;&lt;/script&gt;
+  &lt;script src="https://lib.stillnessbyslowly.com/game/movement/dash_state.js"&gt;&lt;/script&gt;</code></pre>
+  <h2>公開 API：window.SlowlyDashState</h2>
+  <pre><code>依賴 CooldownGate.create({duration, now})，duration 單位為毫秒；本零件公開 duration_seconds、cooldown_seconds、update(delta_seconds) 使用秒。
+  create({duration_seconds>0, cooldown_seconds>=0, speed_multiplier>0, allow_steering=false}) → instance。
+  try_start(direction, fallback_direction?) → {allowed, reason, snapshot}；零向量無 fallback 時不消耗冷卻。
+  update(delta_seconds, steering_direction?) → snapshot；snapshot() → {active, remaining_seconds, cooldown_remaining_seconds, ready, direction, speed_multiplier}。
+  cancel() 只結束衝刺；reset() 重置冷卻。冷卻依遊戲 update 累積的時間計算，不使用真實牆上時間。零件不賦予無敵、不移動角色。</code></pre>
+  <h2>宿主呼叫範例</h2>
+  <pre><code>const dash = SlowlyDashState.create({
+    duration_seconds: 0.18,
+    cooldown_seconds: 1.6,
+    speed_multiplier: 3,
+    allow_steering: false
+  });
+  const start_result = dash.try_start({ x: 1, y: 0 });
+
+  // 宿主在每幀更新；遊戲暫停就不呼叫 update。
+  const state = dash.update(1 / 60);
+  const effective_speed = walk_speed * state.speed_multiplier;
+  const move_direction = state.direction;
+
+  // 衝刺中 direction 固定，除非設定 allow_steering:true。
+  dash.cancel(); // 不取消冷卻
+  dash.reset();  // 同時重置衝刺與冷卻
+  dash.destroy();</code></pre>
+  <h2>使用邊界</h2>
+  <p>本零件遵循 IIFE + window 全域 API。宿主決定顏色、字型、角色、遊戲規則、渲染與操作 UI。凡涉及現有軍火庫能力，僅透過上方 HTTPS 絕對 URL 載入，不複製原碼。</p>
+  <p>程式未壓縮，Demo 僅供操作，Test 會逐項實際 PASS／FAIL。手機操作與跨瀏覽器相容性仍請以部署後設備實測。</p>
+</body>
+</html>

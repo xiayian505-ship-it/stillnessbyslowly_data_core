@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Slowly SVG Converter Component｜完成品 Demo</title>
+    <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.css">
+</head>
+<body>
+    <main>
+        <h1>SVG 預覽與轉檔完成品</h1>
+        <p>可選擇本機 SVG，也可以按下方按鈕載入內建的動態 SVG。檔案留在本機瀏覽器，不會上傳伺服器。</p>
+        <p><button id="load_sample" type="button">載入示範 SVG 動畫</button></p>
+        <div id="svg_converter"></div>
+        <p>影片僅在瀏覽器原生支援相應格式時可輸出；GIF 大尺寸或高 FPS 請留意記憶體限制。</p>
+    </main>
+
+    <!-- 所有共用能力直接引用軍火庫 HTTPS 絕對路徑，沒有 vendor 或副本。 -->
+    <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/data/file/filename_sanitize.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/svg/svg_viewer.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/gif/gif_encoder.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/mime_type.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/canvas_video_export.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.js"></script>
+    <script>
+        const svg_converter = SlowlySVGConverterComponent.mount("#svg_converter", {
+            width: 240,
+            duration_seconds: 1.6,
+            frames_per_second: 8,
+            transparent: true
+        });
+
+        document.getElementById("load_sample").addEventListener("click", async () => {
+            const sample_svg = `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140">
+                <rect x="0" y="0" width="240" height="140" fill="#ffffff"/>
+                <circle cx="32" cy="70" r="20" fill="#404040">
+                    <animate attributeName="cx" values="32;208;32" dur="1.6s" repeatCount="indefinite"/>
+                </circle>
+            </svg>`;
+            await svg_converter.load_text(sample_svg, "demo_movement.svg");
+        });
+    </script>
+</body>
+</html>

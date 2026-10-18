@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Virtual Joystick Test</title>
+</head>
+<body>
+  <h1>Virtual Joystick Test</h1>
+  <p>以下為實際執行的獨立檢查；錯誤會顯示 FAIL，沒有固定假 PASS。</p>
+  <pre id="test_results"></pre>
+  <div id="test_area" style="width:220px;height:200px;touch-action:none;"></div>
+  <div id="other_area" style="width:100px;height:100px;"></div>
+  <canvas id="test_canvas" width="200" height="100" style="width:200px;height:100px;"></canvas>
+  <script src="https://lib.stillnessbyslowly.com/ui/canvas/canvas_rect_drag.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/ui/input/virtual_joystick.js"></script>
+  <script>
+    const test_results = document.querySelector('#test_results');
+    let passes = 0;
+    let failures = 0;
+    const lines = [];
+    function check(label, run) {
+      try {
+        if (run() !== true) throw new Error('檢查結果不符合預期');
+        passes += 1;
+        lines.push('PASS ' + label);
+      } catch (error) {
+        failures += 1;
+        lines.push('FAIL ' + label + '：' + error.message);
+      }
+    }
+    function approx(first, second, tolerance = 0.000001) {
+      return Math.abs(first - second) <= tolerance;
+    }
+    function throws(run) {
+      try { run(); return false; } catch (error) { return true; }
+    }
+
+    const target = document.querySelector('#test_area');
+    // 測試人工 PointerEvent；Pointer 捕捉由瀏覽器事件系統負責，這裡模擬取得／釋放。
+    let captured_pointer = null;
+    target.setPointerCapture = (identifier) => { captured_pointer = identifier; };
+    target.hasPointerCapture = (identifier) => captured_pointer === identifier;
+    target.releasePointerCapture = (identifier) => { if (captured_pointer === identifier) captured_pointer = null; };
+    const changes = [];
+    const joystick = SlowlyVirtualJoystick.create({target, dead_zone:10, max_distance:100, on_change:(value)=>changes.push(value)});
+    const box = target.getBoundingClientRect();
+    function pointer(type, x, y, identifier = 7) {
+      target.dispatchEvent(new PointerEvent(type, {bubbles:true,pointerId:identifier,pointerType:'touch',isPrimary:true,clientX:box.left+x,clientY:box.top+y,button:0}));
+    }
+    check('初始不啟用', () => !joystick.snapshot().active);
+    check('按下後啟用', () => { pointer('pointerdown',100,100); return joystick.snapshot().active; });
+    check('死區方向為零', () => { pointer('pointermove',105,100); return joystick.snapshot().strength === 0; });
+    check('向右正規化', () => { pointer('pointermove',150,100); return approx(joystick.snapshot().direction_x,1); });
+    check('斜向不額外加速', () => { pointer('pointermove',180,180); const state=joystick.snapshot(); return approx(Math.hypot(state.direction_x,state.direction_y),1) && state.strength <= 1; });
+    check('強度不超過 1', () => { pointer('pointermove',400,400); return joystick.snapshot().strength === 1; });
+    check('第二指不奪取操作權', () => { pointer('pointerdown',10,10,99); return joystick.snapshot().pointer_id === 7; });
+    check('不相關 Pointer 的釋放不影響', () => { pointer('pointerup',0,0,99); return joystick.snapshot().active; });
+    check('Pointer Cancel 清零', () => { pointer('pointercancel',180,180); return !joystick.snapshot().active && joystick.snapshot().strength === 0; });
+    check('可停用', () => !joystick.set_enabled(false).enabled);
+    check('停用後拒絕操作', () => { pointer('pointerdown',100,100); return !joystick.snapshot().active; });
+    check('啟用後恢復', () => joystick.set_enabled(true).enabled);
+    check('有輸出 on_change 通知', () => changes.length > 1);
+    check('兩個實例獨立', () => { const other = SlowlyVirtualJoystick.create({target:document.querySelector('#other_area')}); const ok = !other.snapshot().active; other.destroy(); return ok; });
+    check('拒絕不合法最大距離', () => throws(() => SlowlyVirtualJoystick.create({target,dead_zone:100,max_distance:20})));
+    check('銷毀後拒絕修改', () => { joystick.destroy(); return throws(() => joystick.set_enabled(false)); });
+    check('Canvas 必須引用 CanvasRectDrag 座標函式', () => {
+      const canvas=document.querySelector('#test_canvas');
+      const instance=SlowlyVirtualJoystick.create({target:canvas});
+      const result=typeof CanvasRectDrag.pointFromEvent === 'function';
+      instance.destroy();
+      return result;
+    });
+
+    lines.push('總計：' + passes + ' PASS / ' + failures + ' FAIL');
+    test_results.textContent = lines.join('\n');
+    document.body.dataset.test_status = failures === 0 ? 'PASS' : 'FAIL';
+  </script>
+</body>
+</html>

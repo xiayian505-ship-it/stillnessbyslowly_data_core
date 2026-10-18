@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SVG Converter Component｜功能測試</title>
+    <link rel="stylesheet" href="https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.css">
+</head>
+<body>
+    <h1>SVG Converter Component 功能測試</h1>
+    <p>依照真實結果逐項顯示 PASS／FAIL；影片錄製若瀏覽器不支援則顯示 SKIP。</p>
+    <div id="test_results" aria-live="polite"></div>
+    <div id="test_mount"></div>
+    <div id="test_second"></div>
+
+    <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/data/file/filename_sanitize.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/svg/svg_viewer.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/gif/gif_encoder.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/mime_type.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/canvas_video_export.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.js"></script>
+    <script>
+        (async function run_tests() {
+            "use strict";
+            const results = document.getElementById("test_results");
+            let passed = 0;
+            let failed = 0;
+            let skipped = 0;
+            const messages = [];
+
+            function report(label, status, detail = "") {
+                const line = document.createElement("p");
+                line.textContent = `${status}：${label}${detail ? "｜" + detail : ""}`;
+                results.appendChild(line);
+                if (status === "PASS") passed++;
+                else if (status === "FAIL") failed++;
+                else skipped++;
+            }
+
+            async function test(label, callback) {
+                try {
+                    const outcome = await callback();
+                    if (outcome === false) throw new Error("斷言結果為 false");
+                    report(label, "PASS");
+                } catch (error) {
+                    messages.push(`${label}: ${error.message}`);
+                    report(label, "FAIL", error.message);
+                }
+            }
+
+            function assert(value, message) {
+                if (!value) throw new Error(message);
+            }
+
+            async function expect_rejection(callback) {
+                let threw = false;
+                try { await callback(); }
+                catch { threw = true; }
+                assert(threw, "應拒絕不合法操作");
+            }
+
+            const animated_svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80" viewBox="0 0 120 80">
+                <rect width="120" height="80" fill="#ffffff" />
+                <circle cx="20" cy="40" r="12" fill="#333333">
+                    <animate attributeName="cx" values="20;100;20" dur="1s" repeatCount="indefinite" />
+                </circle>
+            </svg>`;
+
+            try {
+                await test("缺少宿主元素拒絕 mount", () => {
+                    let threw = false;
+                    try { SlowlySVGConverterComponent.mount("#not_found_test"); }
+                    catch { threw = true; }
+                    return threw;
+                });
+                await test("不合法設定拒絕 mount", () => {
+                    let threw = false;
+                    try { SlowlySVGConverterComponent.mount("#test_mount", { frames_per_second: -1 }); }
+                    catch { threw = true; }
+                    return threw;
+                });
+
+                const exported = [];
+                const converter = SlowlySVGConverterComponent.mount("#test_mount", {
+                    width: 80,
+                    duration_seconds: 0.6,
+                    frames_per_second: 5,
+                    on_export(result) { exported.push(result); }
+                });
+                const second = SlowlySVGConverterComponent.mount("#test_second", { width: 60 });
+                const root = document.getElementById("test_mount");
+
+                await test("完成品建立獨立控制介面", () =>
+                    root.querySelector('[data-role="file"]') instanceof HTMLInputElement &&
+                    root.querySelector('[data-role="viewport"]') instanceof HTMLElement
+                );
+                await test("同一宿主容器不能重複掛載", () => {
+                    let threw = false;
+                    try { SlowlySVGConverterComponent.mount("#test_mount"); }
+                    catch { threw = true; }
+                    return threw;
+                });
+                await test("初始輸出按鈕不可用", () => root.querySelector('[data-role="gif"]').disabled);
+                await test("第二個實例初始保持獨立", () => second.get_state().info === null);
+                await test("SVG 載入回報來源尺寸與動畫", async () => {
+                    const result = await converter.load_text(animated_svg, "sample_test.svg");
+                    return result.info.width === 120 && result.info.height === 80 && result.info.animated && result.export_available;
+                });
+                await test("真實 SVG 使用 img Blob URL 預覽", () => {
+                    const image = root.querySelector('[data-role="image"]');
+                    return image.src.startsWith("blob:") && !image.hidden;
+                });
+                await test("沒有替第二個實例載入來源", () => second.get_state().info === null);
+                await test("縮放操作更新狀態", () => {
+                    converter.set_zoom(1.75);
+                    return converter.get_state().zoom === 1.75;
+                });
+                await test("預覽可重新播放", async () => {
+                    await converter.replay();
+                    return converter.get_state().info.width === 120;
+                });
+                await test("載入無效 SVG 應拒絕", async () => {
+                    await expect_rejection(() => converter.load_text("<div>invalid</div>", "wrong.svg"));
+                    await converter.load_text(animated_svg, "sample_test.svg");
+                });
+                await test("檔名安全化不帶非法字元", async () => {
+                    await converter.load_text(animated_svg, 'unsafe:name.svg');
+                    const blob = await converter.export_png();
+                    return blob.type === "image/png" && !exported.at(-1).file_name.includes(":");
+                });
+                await test("PNG 為真正可解碼影像且尺寸正確", async () => {
+                    const image_bitmap = await createImageBitmap(exported.at(-1).blob);
+                    const valid = image_bitmap.width === 80 && image_bitmap.height === 53;
+                    image_bitmap.close();
+                    return valid;
+                });
+                await test("PNG 下載連結由宿主控制", () => {
+                    const link = root.querySelector('[data-role="result"] a[download]');
+                    return link?.href.startsWith("blob:") && link?.download.endsWith(".png");
+                });
+                await test("GIF 實際產生 GIF89a Blob", async () => {
+                    const blob = await converter.export_gif();
+                    const signature = new TextDecoder().decode((await blob.slice(0, 6).arrayBuffer()));
+                    return blob.type === "image/gif" && blob.size > 64 && signature === "GIF89a";
+                });
+                await test("GIF 可以實際解碼", async () => {
+                    const image_bitmap = await createImageBitmap(exported.at(-1).blob);
+                    const valid = image_bitmap.width === 80 && image_bitmap.height === 53;
+                    image_bitmap.close();
+                    return valid;
+                });
+                await test("GIF 匯出進度達 100%", () => root.querySelector('[data-role="progress"]').value === 1);
+                await test("GIF 超過記憶體限制時拒絕", async () => {
+                    root.querySelector('[data-role="width"]').value = "1200";
+                    root.querySelector('[data-role="duration"]').value = "60";
+                    root.querySelector('[data-role="fps"]').value = "60";
+                    await expect_rejection(() => converter.export_gif());
+                    root.querySelector('[data-role="width"]').value = "80";
+                    root.querySelector('[data-role="duration"]').value = "0.6";
+                    root.querySelector('[data-role="fps"]').value = "5";
+                });
+                await test("執行中的 GIF 可以取消並恢復待命", async () => {
+                    root.querySelector('[data-role="fps"]').value = "12";
+                    root.querySelector('[data-role="duration"]').value = "2";
+                    const job = converter.export_gif();
+                    const accepted = converter.cancel_export();
+                    await expect_rejection(() => job);
+                    root.querySelector('[data-role="fps"]').value = "5";
+                    root.querySelector('[data-role="duration"]').value = "0.6";
+                    return accepted && converter.get_state().busy_action === null;
+                });
+                await test("出錯後仍能再次匯出 PNG", async () => {
+                    const blob = await converter.export_png();
+                    return blob.size > 100;
+                });
+
+                const formats = converter.get_state().supported_video_formats;
+                const working_format = Object.keys(formats).find(name => formats[name]);
+                if (working_format) {
+                    await test(`影片 ${working_format} 真正可錄製`, async () => {
+                        const blob = await converter.export_video();
+                        return blob.size > 100 && blob.type.startsWith("video/");
+                    });
+                    await test("影片結果包含可下載檔案", () => {
+                        return root.querySelector('[data-role="result"] video') instanceof HTMLVideoElement &&
+                            exported.at(-1).extension === working_format;
+                    });
+                } else {
+                    report("瀏覽器沒有原生 MediaRecorder 影片格式支援", "SKIP");
+                }
+
+                await test("清除會歸零狀態及輸出結果", async () => {
+                    await converter.clear();
+                    return converter.get_state().info === null &&
+                        root.querySelector('[data-role="result"]').children.length === 0;
+                });
+                await test("清除後可重新載入", async () => {
+                    await converter.load_text(animated_svg, "reloaded.svg");
+                    return converter.get_state().export_available;
+                });
+                await test("雙實例可分別工作", async () => {
+                    await second.load_text(animated_svg, "second.svg");
+                    return second.get_state().info.name === "second.svg" &&
+                        converter.get_state().info.name === "reloaded.svg";
+                });
+                await test("destroy 清空內容並停用 API", async () => {
+                    await converter.destroy();
+                    await expect_rejection(() => converter.load_text(animated_svg));
+                    return root.children.length === 0;
+                });
+                await test("第二個實例能自行銷毀", async () => {
+                    await second.destroy();
+                    return document.getElementById("test_second").children.length === 0;
+                });
+            } catch (fatal_error) {
+                report("未預期的測試中斷", "FAIL", fatal_error.message);
+            }
+
+            const final_report = document.createElement("strong");
+            final_report.textContent = `合計：${passed} PASS、${failed} FAIL、${skipped} SKIP`;
+            results.appendChild(final_report);
+            document.body.dataset.test_status = failed === 0 ? "PASS" : "FAIL";
+            document.body.dataset.test_passed = String(passed);
+            document.body.dataset.test_failed = String(failed);
+            document.body.dataset.test_skipped = String(skipped);
+        })();
+    </script>
+</body>
+</html>

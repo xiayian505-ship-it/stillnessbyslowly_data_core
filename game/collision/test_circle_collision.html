@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Circle Collision Test</title>
+</head>
+<body>
+  <h1>Circle Collision Test</h1>
+  <p>以下為實際執行的獨立檢查；錯誤會顯示 FAIL，沒有固定假 PASS。</p>
+  <pre id="test_results"></pre>
+  <script src="https://lib.stillnessbyslowly.com/game/collision/circle_collision.js"></script>
+  <script>
+    const test_results = document.querySelector('#test_results');
+    let passes = 0;
+    let failures = 0;
+    const lines = [];
+    function check(label, run) {
+      try {
+        if (run() !== true) throw new Error('檢查結果不符合預期');
+        passes += 1;
+        lines.push('PASS ' + label);
+      } catch (error) {
+        failures += 1;
+        lines.push('FAIL ' + label + '：' + error.message);
+      }
+    }
+    function approx(first, second, tolerance = 0.000001) {
+      return Math.abs(first - second) <= tolerance;
+    }
+    function throws(run) {
+      try { run(); return false; } catch (error) { return true; }
+    }
+
+    const collision = SlowlyCircleCollision;
+    const a = { x: 0, y: 0, radius: 5 };
+    check('兩圓分離', () => !collision.touches(a, { x: 20, y: 0, radius: 5 }));
+    check('重疊深度正確', () => approx(collision.inspect(a, { x: 8, y: 0, radius: 5 }).overlap_depth, 2));
+    check('剛好相切算接觸', () => collision.inspect(a, { x: 10, y: 0, radius: 5 }).touching);
+    check('可設定相切不算接觸', () => !collision.touches(a, { x: 10, y: 0, radius: 5 }, { inclusive: false }));
+    check('完全包含仍接觸', () => collision.touches(a, { x: 0, y: 0, radius: 1 }));
+    check('兩個零半徑圓接觸', () => collision.touches({ x: 0, y: 0, radius: 0 }, { x: 0, y: 0, radius: 0 }));
+    check('平移不改變距離', () => approx(collision.inspect(a, { x: 3, y: 4, radius: 2 }).distance,
+      collision.inspect({ x: 30, y: 40, radius: 5 }, { x: 33, y: 44, radius: 2 }).distance));
+    check('拒絕負半徑', () => throws(() => collision.inspect(a, { x: 0, y: 0, radius: -2 })));
+    check('拒絕 NaN', () => throws(() => collision.touches(a, { x: NaN, y: 0, radius: 2 })));
+    check('拒絕 Infinity', () => throws(() => collision.touches(a, { x: Infinity, y: 0, radius: 2 })));
+
+    lines.push('總計：' + passes + ' PASS / ' + failures + ' FAIL');
+    test_results.textContent = lines.join('\n');
+    document.body.dataset.test_status = failures === 0 ? 'PASS' : 'FAIL';
+  </script>
+</body>
+</html>

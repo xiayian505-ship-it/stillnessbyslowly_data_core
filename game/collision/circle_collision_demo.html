@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Circle Collision Demo</title>
+</head>
+<body>
+  <h1>Circle Collision Demo</h1>
+  <p>點擊或拖曳圓 B；調整其位置，觀察距離與接觸判定。剛好相切也算碰撞。</p>
+  <canvas id="stage" width="360" height="210" style="width:360px;max-width:95vw;border:1px solid;touch-action:none;"></canvas>
+  <p><label>圓 B 的 X <input id="position" type="range" min="10" max="350" value="250"></label></p>
+  <pre id="output"></pre>
+  <script src="https://lib.stillnessbyslowly.com/game/collision/circle_collision.js"></script>
+  <script>
+    const canvas = document.querySelector('#stage');
+    const context = canvas.getContext('2d');
+    const output = document.querySelector('#output');
+    const position = document.querySelector('#position');
+    const first = { x: 100, y: 100, radius: 50 };
+    const second = { x: 250, y: 100, radius: 40 };
+    function draw() {
+      second.x = Number(position.value);
+      const result = SlowlyCircleCollision.inspect(first, second);
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      for (const circle of [first, second]) {
+        context.beginPath(); context.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2); context.stroke();
+      }
+      output.textContent = JSON.stringify(result, null, 2);
+    }
+    position.addEventListener('input', draw);
+    canvas.addEventListener('pointerdown', (event) => {
+      const box = canvas.getBoundingClientRect();
+      position.value = String(Math.round((event.clientX - box.left) * canvas.width / box.width));
+      draw();
+    });
+    draw();
+  </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canvas Floating Text Test</title>
+</head>
+<body>
+  <h1>Canvas Floating Text Test</h1>
+  <p>以下為實際執行的獨立檢查；錯誤會顯示 FAIL，沒有固定假 PASS。</p>
+  <pre id="test_results"></pre>
+  <canvas id="test_stage" width="220" height="140" style="width:220px;height:140px;"></canvas>
+  <script src="https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text.js"></script>
+  <script>
+    const test_results = document.querySelector('#test_results');
+    let passes = 0;
+    let failures = 0;
+    const lines = [];
+    function check(label, run) {
+      try {
+        if (run() !== true) throw new Error('檢查結果不符合預期');
+        passes += 1;
+        lines.push('PASS ' + label);
+      } catch (error) {
+        failures += 1;
+        lines.push('FAIL ' + label + '：' + error.message);
+      }
+    }
+    function approx(first, second, tolerance = 0.000001) {
+      return Math.abs(first - second) <= tolerance;
+    }
+    function throws(run) {
+      try { run(); return false; } catch (error) { return true; }
+    }
+
+    const canvas = document.querySelector('#test_stage');
+    const context = canvas.getContext('2d');
+    context.font = '20px sans-serif';
+    context.fillStyle = '#000000';
+    context.textAlign = 'left';
+    context.globalAlpha = 0.8;
+    const floating = SlowlyCanvasFloatingText.create({context});
+    check('新增文字', () => { floating.add({text:'+1',x:50,y:60,lifetime_seconds:1,velocity_y:-40}); return floating.snapshot().length === 1; });
+    check('文字移動', () => { floating.update(0.5); return approx(floating.snapshot()[0].y, 40); });
+    check('可設定透明度', () => { floating.add({text:'A',x:100,y:80,start_alpha:0.3,end_alpha:0.7}); return floating.snapshot()[1].start_alpha === 0.3; });
+    check('繪圖數量正確', () => floating.draw() === 2);
+    check('Canvas 狀態還原', () => context.globalAlpha === 0.8 && context.fillStyle === '#000000' && context.textAlign === 'left' && context.font === '20px sans-serif');
+    check('畫面實際有文字像素', () => context.getImageData(40, 35, 70, 60).data.some((value, index) => index % 4 === 3 && value > 0));
+    check('存活時間耗盡移除', () => { floating.update(0.5); return floating.snapshot().length === 1; });
+    check('零時長不加入', () => { floating.add({text:'zero',x:1,y:1,lifetime_seconds:0}); return floating.snapshot().length === 1; });
+    check('清空文字', () => { floating.clear(); return floating.snapshot().length === 0; });
+    check('拒絕缺少文字', () => throws(() => floating.add({x:1,y:1})));
+    check('拒絕非法透明度', () => throws(() => floating.add({text:'X',x:1,y:1,start_alpha:2})));
+    check('拒絕負時間', () => throws(() => floating.update(-1)));
+    check('多實例互不干擾', () => { const other = SlowlyCanvasFloatingText.create({context}); other.add({text:'O',x:2,y:2}); const ok = floating.snapshot().length === 0 && other.snapshot().length === 1; other.destroy(); return ok; });
+    check('銷毀後不可新增', () => { floating.destroy(); return throws(() => floating.add({text:'X',x:1,y:1})); });
+
+    lines.push('總計：' + passes + ' PASS / ' + failures + ' FAIL');
+    test_results.textContent = lines.join('\n');
+    document.body.dataset.test_status = failures === 0 ? 'PASS' : 'FAIL';
+  </script>
+</body>
+</html>

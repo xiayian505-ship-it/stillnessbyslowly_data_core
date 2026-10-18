@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canvas Floating Text 使用說明</title>
+</head>
+<body>
+  <h1>Canvas Floating Text 使用說明</h1>
+  <p>Canvas 世界座標內的短暫文字，逐幀移動並淡出。零件不指定文字、配色、字型、獎勵規則。</p>
+  <h2>部署引用與順序</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text.js"&gt;&lt;/script&gt;</code></pre>
+  <h2>公開 API：window.SlowlyCanvasFloatingText</h2>
+  <pre><code>create({context?}) → instance；add({text,x,y,lifetime_seconds=1.1,velocity_x=0,velocity_y=-40,start_alpha=1,end_alpha=0,font?,fill_style?,text_align?,text_baseline?}) → 新項目快照。
+  update(delta_seconds) → 目前項目陣列；draw(context?) → 繪製的項目數。context 可於 create 傳入或 draw 時指定。
+  snapshot() → 不可直接修改的項目陣列；clear()、destroy() 釋放資料。
+  字體／文字顏色若未指定，直接沿用宿主 Context。每個項目獨立 save/restore，原有狀態不被污染。畫布不會自行清空，宿主掌管每幀刷新。</code></pre>
+  <h2>宿主呼叫範例</h2>
+  <pre><code>const floating_text = SlowlyCanvasFloatingText.create({ context });
+  floating_text.add({
+    text: '+10', x: 120, y: 90,
+    lifetime_seconds: 1.1,
+    velocity_x: 0, velocity_y: -40,
+    font: '18px sans-serif', fill_style: '#000',
+    text_align: 'center'
+  });
+  function render(delta_seconds) {
+    floating_text.update(delta_seconds);
+    floating_text.draw(context);
+  }
+  floating_text.clear();
+  floating_text.destroy();</code></pre>
+  <h2>使用邊界</h2>
+  <p>本零件遵循 IIFE + window 全域 API。宿主決定顏色、字型、角色、遊戲規則、渲染與操作 UI。凡涉及現有軍火庫能力，僅透過上方 HTTPS 絕對 URL 載入，不複製原碼。</p>
+  <p>程式未壓縮，Demo 僅供操作，Test 會逐項實際 PASS／FAIL。手機操作與跨瀏覽器相容性仍請以部署後設備實測。</p>
+</body>
+</html>

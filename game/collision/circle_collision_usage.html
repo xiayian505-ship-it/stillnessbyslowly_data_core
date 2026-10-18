@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Circle Collision 使用說明</title>
+</head>
+<body>
+  <h1>Circle Collision 使用說明</h1>
+  <p>獨立判定兩個圓形的接觸與重疊深度，圓形恰好相切預設算接觸。</p>
+  <h2>部署引用與順序</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/collision/circle_collision.js"&gt;&lt;/script&gt;</code></pre>
+  <h2>公開 API：window.SlowlyCircleCollision</h2>
+  <pre><code>inspect(first_circle, second_circle, {inclusive=true}) → {distance, radius_sum, touching, exactly_tangent, overlap_depth}。
+  touches(first_circle, second_circle, options?) → boolean。
+  輸入 x/y/radius 必須為有限數字，半徑不可為負數；半徑 0 合法。
+  只回傳幾何資料，不執行扣血、擊退、獎勵或物理碰撞回應。</code></pre>
+  <h2>宿主呼叫範例</h2>
+  <pre><code>const result = SlowlyCircleCollision.inspect(
+    { x: 20, y: 30, radius: 10 },
+    { x: 36, y: 30, radius: 8 }
+  );
+  console.log(result.touching, result.distance, result.overlap_depth);
+
+  // 若要「必須穿透才算」：
+  const touching_only_if_overlapping = SlowlyCircleCollision.touches(
+    first_circle, second_circle, { inclusive: false }
+  );</code></pre>
+  <h2>使用邊界</h2>
+  <p>本零件遵循 IIFE + window 全域 API。宿主決定顏色、字型、角色、遊戲規則、渲染與操作 UI。凡涉及現有軍火庫能力，僅透過上方 HTTPS 絕對 URL 載入，不複製原碼。</p>
+  <p>程式未壓縮，Demo 僅供操作，Test 會逐項實際 PASS／FAIL。手機操作與跨瀏覽器相容性仍請以部署後設備實測。</p>
+</body>
+</html>

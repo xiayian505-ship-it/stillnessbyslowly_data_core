@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Movement Patterns 2D 使用說明</title>
+</head>
+<body>
+  <h1>Movement Patterns 2D 使用說明</h1>
+  <p>不修改傳入位置，回傳反彈、追蹤、兩端往返巡邏的下一個 2D 座標。全部時間使用秒。</p>
+  <h2>部署引用與順序</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d.js"&gt;&lt;/script&gt;</code></pre>
+  <h2>公開 API：window.SlowlyMovementPatterns2D</h2>
+  <pre><code>bounce(position, bounds, delta_seconds) → {x, y, velocity_x, velocity_y, radius}。position 必須在 bounds 範圍內，並可設 radius；長時間步長會依反射數學跨越多次邊界。
+  chase(position, target, {speed, delta_seconds, stopping_distance=0}) → {x,y,direction_x,direction_y,velocity_x,velocity_y,reached}；追蹤不越過停止距離。
+  patrol(position, start, end, {speed, delta_seconds, direction=1|-1}) → {x,y,direction}；方向於兩端折返。
+  原作 Patroller 使用正弦波改變 Y；這顆將「往返」通用化為任意兩端點線段運動，並未複製原場景振幅和週期。宿主自行決定座標、敵人造型、碰撞和渲染。</code></pre>
+  <h2>宿主呼叫範例</h2>
+  <pre><code>const new_bouncer = SlowlyMovementPatterns2D.bounce(
+    { x: 10, y: 20, velocity_x: 60, velocity_y: -20, radius: 6 },
+    { min_x: 0, max_x: 400, min_y: 0, max_y: 200 },
+    1 / 60
+  );
+
+  const new_chaser = SlowlyMovementPatterns2D.chase(
+    { x: 10, y: 10 }, { x: 180, y: 90 },
+    { speed: 55, delta_seconds: 1 / 60, stopping_distance: 0 }
+  );
+
+  const new_patroller = SlowlyMovementPatterns2D.patrol(
+    { x: 20, y: 60, direction: 1 },
+    { x: 20, y: 60 }, { x: 180, y: 60 },
+    { speed: 80, delta_seconds: 1 / 60 }
+  );</code></pre>
+  <h2>使用邊界</h2>
+  <p>本零件遵循 IIFE + window 全域 API。宿主決定顏色、字型、角色、遊戲規則、渲染與操作 UI。凡涉及現有軍火庫能力，僅透過上方 HTTPS 絕對 URL 載入，不複製原碼。</p>
+  <p>程式未壓縮，Demo 僅供操作，Test 會逐項實際 PASS／FAIL。手機操作與跨瀏覽器相容性仍請以部署後設備實測。</p>
+</body>
+</html>

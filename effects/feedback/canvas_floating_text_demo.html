@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canvas Floating Text Demo</title>
+</head>
+<body>
+  <h1>Canvas Floating Text Demo</h1>
+  <p>點擊畫布新增飄字；字體與字色由宿主的 Canvas Context 決定。</p>
+  <p><label>上升速度 <input id="speed" type="range" min="0" max="130" value="40"></label>
+  <label>存活秒數 <input id="duration" type="range" min="1" max="5" value="2"></label>
+  <button id="clear">清空</button></p>
+  <canvas id="stage" width="400" height="220" style="width:400px;max-width:95vw;border:1px solid;"></canvas>
+  <pre id="output"></pre>
+  <script src="https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text.js"></script>
+  <script>
+    const stage = document.querySelector('#stage');
+    const context = stage.getContext('2d');
+    const output = document.querySelector('#output');
+    const floating_text = SlowlyCanvasFloatingText.create({ context });
+    context.font = '20px sans-serif';
+    context.textAlign = 'center';
+    context.fillStyle = '#000000';
+    stage.addEventListener('pointerdown', (event) => {
+      const rect = stage.getBoundingClientRect();
+      floating_text.add({
+        text: '+10',
+        x: (event.clientX - rect.left) * stage.width / rect.width,
+        y: (event.clientY - rect.top) * stage.height / rect.height,
+        velocity_y: -Number(document.querySelector('#speed').value),
+        lifetime_seconds: Number(document.querySelector('#duration').value)
+      });
+    });
+    document.querySelector('#clear').onclick = () => floating_text.clear();
+    let last_timestamp = 0;
+    function frame(timestamp) {
+      const seconds = last_timestamp ? Math.min(0.05, (timestamp - last_timestamp) / 1000) : 0;
+      last_timestamp = timestamp;
+      context.clearRect(0, 0, stage.width, stage.height);
+      floating_text.update(seconds);
+      floating_text.draw();
+      output.textContent = '目前文字數：' + floating_text.snapshot().length;
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    window.addEventListener('pagehide', () => floating_text.destroy(), { once: true });
+  </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dialogue Sequence 使用說明</title>
+</head>
+<body>
+  <h1>Dialogue Sequence 使用說明</h1>
+  <p>只有對話資料與操作順序，沒有逐字動畫演算法。宿主若需要逐字顯示，直接用 SlowlyTypewriter。</p>
+  <h2>部署引用與順序</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/effects/typography/typewriter.js"&gt;&lt;/script&gt;
+  &lt;script src="https://lib.stillnessbyslowly.com/state/dialogue_sequence.js"&gt;&lt;/script&gt;</code></pre>
+  <h2>公開 API：window.SlowlyDialogueSequence</h2>
+  <pre><code>create({on_line_start?, on_line_complete?, on_finished?, on_changed?, allow_skip=true}) → instance。
+  start(lines?) 支援 {text:string, ...宿主資料}[]；空陣列立即結束。
+  advance()：未補全且 allow_skip=true 時改成 complete_current()；已補全才換下一句。
+  complete_current() 可供宿主的 Typewriter 自然輸出完成時主動呼叫；不會自己逐字輸出。
+  snapshot() → {index,count,running,revealed,finished,line}。
+  reset() 清除播放狀態並保留對話資料；destroy() 清除參照。
+  既有 SlowlyTypewriter.create({target, phrases,...}) 有 start/stop/destroy，但沒有 skip 方法：需要立刻補全時，宿主先 stop() 再寫入完整 textContent，屬於對話接線，不是重新寫打字機。</code></pre>
+  <h2>宿主呼叫範例</h2>
+  <pre><code>const sequence = SlowlyDialogueSequence.create({
+    on_line_start: (line, index) =&gt; {
+      // 宿主啟動自己的文字呈現，或 SlowlyTypewriter.create(...).start()。
+      console.log('開始句子', index, line.text);
+    },
+    on_line_complete: (line, index) =&gt; {
+      // 宿主停止動畫並把整句顯示出來。
+      console.log('補全文字', line.text);
+    },
+    on_finished: () =&gt; console.log('全部結束')
+  });
+  sequence.start([{ text: '第一句' }, { text: '第二句' }]);
+  sequence.advance(); // 首次：補全目前句
+  sequence.advance(); // 再次：下一句
+  sequence.reset();
+  sequence.destroy();</code></pre>
+  <h2>使用邊界</h2>
+  <p>本零件遵循 IIFE + window 全域 API。宿主決定顏色、字型、角色、遊戲規則、渲染與操作 UI。凡涉及現有軍火庫能力，僅透過上方 HTTPS 絕對 URL 載入，不複製原碼。</p>
+  <p>程式未壓縮，Demo 僅供操作，Test 會逐項實際 PASS／FAIL。手機操作與跨瀏覽器相容性仍請以部署後設備實測。</p>
+</body>
+</html>

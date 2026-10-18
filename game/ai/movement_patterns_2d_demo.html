@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Movement Patterns 2D Demo</title>
+</head>
+<body>
+  <h1>Movement Patterns 2D Demo</h1>
+  <p>三種模式共用座標更新函式；只用圓點辨識，不載入原遊戲場景。</p>
+  <p><label>模式 <select id="mode"><option value="bounce">Bouncer</option><option value="chase">Chaser</option><option value="patrol">Patroller</option></select></label>
+  <label>速度 <input id="speed" type="range" min="10" max="140" value="65"></label></p>
+  <canvas id="stage" width="400" height="220" style="width:400px;max-width:95vw;border:1px solid;"></canvas>
+  <pre id="output"></pre>
+  <script src="https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d.js"></script>
+  <script>
+    const context = document.querySelector('#stage').getContext('2d');
+    const output = document.querySelector('#output');
+    const stage = document.querySelector('#stage');
+    let mover = { x: 50, y: 80, velocity_x: 65, velocity_y: 44, radius: 10, direction: 1 };
+    let target = { x: 300, y: 130 };
+    let last_timestamp = 0;
+    stage.addEventListener('pointerdown', (event) => {
+      const rect = stage.getBoundingClientRect();
+      target = { x: (event.clientX - rect.left) * stage.width / rect.width,
+                 y: (event.clientY - rect.top) * stage.height / rect.height };
+    });
+    document.querySelector('#mode').addEventListener('change', () => {
+      mover = { x: 50, y: 80, velocity_x: 65, velocity_y: 44, radius: 10, direction: 1 };
+    });
+    function frame(timestamp) {
+      const seconds = last_timestamp ? Math.min((timestamp - last_timestamp) / 1000, 0.05) : 0;
+      last_timestamp = timestamp;
+      const speed = Number(document.querySelector('#speed').value);
+      const mode = document.querySelector('#mode').value;
+      if (mode === 'bounce') {
+        mover = SlowlyMovementPatterns2D.bounce({ ...mover, velocity_x: Math.sign(mover.velocity_x || 1) * speed, velocity_y: mover.velocity_y },
+          { min_x: 0, max_x: 400, min_y: 0, max_y: 220 }, seconds);
+      } else if (mode === 'chase') {
+        mover = SlowlyMovementPatterns2D.chase(mover, target, { speed, delta_seconds: seconds, stopping_distance: 10 });
+      } else {
+        mover = SlowlyMovementPatterns2D.patrol(mover, { x: 50, y: 80 }, { x: 350, y: 80 },
+          { speed, delta_seconds: seconds, direction: mover.direction });
+      }
+      context.clearRect(0, 0, 400, 220);
+      context.beginPath(); context.arc(target.x, target.y, 4, 0, Math.PI * 2); context.stroke();
+      context.beginPath(); context.arc(mover.x, mover.y, 10, 0, Math.PI * 2); context.stroke();
+      output.textContent = JSON.stringify({ mode, ...mover }, null, 2);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

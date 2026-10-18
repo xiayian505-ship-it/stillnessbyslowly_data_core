@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dash State Test</title>
+</head>
+<body>
+  <h1>Dash State Test</h1>
+  <p>以下為實際執行的獨立檢查；錯誤會顯示 FAIL，沒有固定假 PASS。</p>
+  <pre id="test_results"></pre>
+  <script src="https://lib.stillnessbyslowly.com/state/cooldown_gate.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/movement/dash_state.js"></script>
+  <script>
+    const test_results = document.querySelector('#test_results');
+    let passes = 0;
+    let failures = 0;
+    const lines = [];
+    function check(label, run) {
+      try {
+        if (run() !== true) throw new Error('檢查結果不符合預期');
+        passes += 1;
+        lines.push('PASS ' + label);
+      } catch (error) {
+        failures += 1;
+        lines.push('FAIL ' + label + '：' + error.message);
+      }
+    }
+    function approx(first, second, tolerance = 0.000001) {
+      return Math.abs(first - second) <= tolerance;
+    }
+    function throws(run) {
+      try { run(); return false; } catch (error) { return true; }
+    }
+
+    const dash = SlowlyDashState.create({ duration_seconds: 0.2, speed_multiplier: 3, cooldown_seconds: 1 });
+    check('初始可衝刺', () => dash.snapshot().ready);
+    check('啟動衝刺', () => dash.try_start({ x: 10, y: 0 }).allowed && dash.snapshot().active);
+    check('方向正規化', () => approx(dash.snapshot().direction.x, 1));
+    check('衝刺速度倍率', () => dash.snapshot().speed_multiplier === 3);
+    check('進行中不可重複衝刺', () => dash.try_start({ x: 1, y: 0 }).reason === 'already_active');
+    check('衝刺會結束', () => !dash.update(0.2).active);
+    check('冷卻中拒絕觸發', () => dash.try_start({ x: 1, y: 0 }).reason === 'cooldown');
+    check('冷卻與毫秒單位正確', () => approx(dash.update(0.8).cooldown_remaining_seconds, 0));
+    check('冷卻結束可再啟動', () => dash.try_start({ x: 0, y: 1 }).allowed);
+    check('取消不清除冷卻', () => { dash.cancel(); return !dash.snapshot().ready && !dash.snapshot().active; });
+    check('重置會清除冷卻', () => dash.reset().ready);
+    check('零方向不消耗冷卻', () => !dash.try_start({ x: 0, y: 0 }).allowed && dash.snapshot().ready);
+    check('備用方向可啟動', () => dash.try_start({ x: 0, y: 0 }, { x: -1, y: 0 }).allowed);
+    check('不可轉向時方向固定', () => dash.update(0.05, { x: 0, y: 1 }).direction.x < 0);
+    check('可轉向設定生效', () => { const instance = SlowlyDashState.create({allow_steering: true}); instance.try_start({x:1,y:0}); const direction = instance.update(0.01,{x:0,y:1}).direction; instance.destroy(); return approx(direction.y,1); });
+    check('多個實例互不干擾', () => { const other = SlowlyDashState.create(); const ok = other.snapshot().ready; other.destroy(); return ok; });
+    check('拒絕負時間', () => throws(() => dash.update(-1)));
+    check('銷毀後不能使用', () => { dash.destroy(); return throws(() => dash.try_start({x:1,y:0})); });
+
+    lines.push('總計：' + passes + ' PASS / ' + failures + ' FAIL');
+    test_results.textContent = lines.join('\n');
+    document.body.dataset.test_status = failures === 0 ? 'PASS' : 'FAIL';
+  </script>
+</body>
+</html>

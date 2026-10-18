@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Virtual Joystick Demo</title>
+</head>
+<body>
+  <h1>Virtual Joystick Demo</h1>
+  <p>請在下方操作區按住拖曳；手機可直接用手指。搖桿只輸出狀態，不繪製固定皮膚。</p>
+  <div id="touch_area" style="width:320px;height:200px;max-width:90vw;border:1px solid;touch-action:none;user-select:none;">拖曳操作區</div>
+  <p><label><input id="enabled" type="checkbox" checked> 啟用</label></p>
+  <pre id="output"></pre>
+  <script src="https://lib.stillnessbyslowly.com/ui/canvas/canvas_rect_drag.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/ui/input/virtual_joystick.js"></script>
+  <script>
+    const output = document.querySelector('#output');
+    const joystick = SlowlyVirtualJoystick.create({
+      target: document.querySelector('#touch_area'),
+      dead_zone: 10,
+      max_distance: 90,
+      on_change: show_state
+    });
+    function show_state(state) {
+      output.textContent = JSON.stringify(state, null, 2);
+    }
+    document.querySelector('#enabled').addEventListener('change', (event) => {
+      joystick.set_enabled(event.target.checked);
+    });
+    show_state(joystick.snapshot());
+    window.addEventListener('pagehide', () => joystick.destroy(), { once: true });
+  </script>
+</body>
+</html>

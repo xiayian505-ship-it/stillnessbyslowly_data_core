@@ -3835,6 +3835,124 @@ window.SlowlyLibraryIndex = [
         "desc": "3D / Spatial 特效積木。"
       },
       {
+        "id": "camera",
+        "title": "Camera / 運鏡",
+        "items": [
+          {
+            "title": "Camera Projection",
+            "desc": "以宿主提供的攝影機位置、方向、焦距與視口尺寸，將三維世界座標轉換成二維透視投影資訊；不繪製場景或提供 3D 引擎。",
+            "links": [
+              {
+                "label": "camera_projection.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_projection.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_projection_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_projection_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_projection.html"
+              }
+            ]
+          },
+          {
+            "title": "Camera Movement Presets",
+            "desc": "九種通用運鏡參數計算：Pan、Tilt、Zoom In、Dolly In、Tracking、Orbit、Whip Pan、Rack Focus、Crane Up；由宿主提供目標及參數，不負責播放或畫面繪製。",
+            "links": [
+              {
+                "label": "camera_movement_presets.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_movement_presets.html"
+              }
+            ]
+          },
+          {
+            "title": "Camera Movement Player",
+            "desc": "獨立運鏡時間軸控制，提供播放、暫停、跳轉進度、重新開始、循環與銷毀，透過宿主回呼通知進度；不綁定特定場景與運鏡樣式。",
+            "links": [
+              {
+                "label": "camera_movement_player.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_movement_player.html"
+              }
+            ]
+          },
+          {
+            "title": "Camera Depth of Field",
+            "desc": "通用景深近似處理，依物件深度與焦平面距離計算模糊量，並可選擇套用 Canvas；對焦對象、模糊強度及畫面外觀均由宿主決定。",
+            "links": [
+              {
+                "label": "camera_depth_of_field.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_depth_of_field.html"
+              }
+            ]
+          },
+          {
+            "title": "Camera Motion Blur",
+            "desc": "對宿主已繪製的 Canvas 畫面套用可控制方向與強度的動態模糊，適用於甩鏡與快速移動，管理獨立暫存及清理；不負責攝影機旋轉或場景內容。",
+            "links": [
+              {
+                "label": "camera_motion_blur.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_motion_blur.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "虛擬攝影機的投影、運鏡、時間軸、景深與動態模糊零件；宿主提供場景、渲染與外觀。"
+      },
+      {
         "id": "particle",
         "title": "Particle / 粒子",
         "items": [
@@ -4239,6 +4357,88 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/Image/png/test_png_download.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "svg",
+        "title": "SVG",
+        "subpage": true,
+        "desc": "SVG 檢視、動畫時間取樣與影格擷取零件；不包含完整轉檔介面。",
+        "items": [
+          {
+            "title": "SVG Viewer",
+            "desc": "通用 SVG 檢視積木，接收宿主提供的 SVG 與預覽元素，讀取尺寸、viewBox 與動畫資訊，支援預覽、縮放和資源清理；不包含固定檢視器介面或視覺皮膚。",
+            "links": [
+              {
+                "label": "svg_viewer.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_viewer.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_viewer_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_viewer_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/test_svg_viewer.html"
+              }
+            ]
+          },
+          {
+            "title": "SVG Animation Frame Extractor",
+            "desc": "將 SVG 靜態畫面或可支援的 CSS／SMIL 動畫定格於指定時間點，擷取 Canvas／RGBA 影格，供其他圖片或影片處理流程使用；不負責 GIF、影片編碼或下載。",
+            "links": [
+              {
+                "label": "svg_animation_frame_extractor.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/test_svg_animation_frame_extractor.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "gif",
+        "title": "GIF",
+        "subpage": true,
+        "desc": "通用 GIF 影格編碼積木，圖片來源及輸出流程由宿主決定。",
+        "items": [
+          {
+            "title": "GIF Encoder",
+            "desc": "接收宿主提供的 RGBA 影格與時間設定，編碼成 GIF Blob；不限制影格來源為 SVG，不負責產生影格、預覽介面或下載。",
+            "links": [
+              {
+                "label": "gif_encoder.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/gif/gif_encoder.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/gif/gif_encoder_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/gif/gif_encoder_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/gif/test_gif_encoder.html"
               }
             ]
           }
@@ -4667,6 +4867,28 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/video/recording/test_recorded_chunks.html"
+              }
+            ]
+          },
+          {
+            "title": "Canvas Video Export",
+            "desc": "接收 Canvas 與宿主提供的畫面更新流程，結合既有 MIME、MediaRecorder、Recorded Chunks 積木產生影片 Blob；宿主決定錄製內容與儲存方式，輸出格式依瀏覽器實際支援。",
+            "links": [
+              {
+                "label": "canvas_video_export.js",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/canvas_video_export.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/canvas_video_export_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/canvas_video_export_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/test_canvas_video_export.html"
               }
             ]
           }

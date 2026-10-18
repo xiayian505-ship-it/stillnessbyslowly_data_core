@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dash State Demo</title>
+</head>
+<body>
+  <h1>Dash State Demo</h1>
+  <p>試試先啟動衝刺、等冷卻歸零，再啟動一次。下面的圓點由宿主以簡單 Canvas 繪製。</p>
+  <p><button id="start">向右衝刺</button> <button id="cancel">取消衝刺</button> <button id="reset">重置冷卻</button></p>
+  <canvas id="stage" width="400" height="80" style="max-width:90vw;border:1px solid;"></canvas>
+  <pre id="output"></pre>
+  <script src="https://lib.stillnessbyslowly.com/state/cooldown_gate.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/movement/dash_state.js"></script>
+  <script>
+    const context = document.querySelector('#stage').getContext('2d');
+    const output = document.querySelector('#output');
+    const dash = SlowlyDashState.create({ duration_seconds: 0.55, cooldown_seconds: 2, speed_multiplier: 3 });
+    let position_x = 20;
+    let last_timestamp = 0;
+    document.querySelector('#start').onclick = () => dash.try_start({ x: 1, y: 0 });
+    document.querySelector('#cancel').onclick = () => dash.cancel();
+    document.querySelector('#reset').onclick = () => { dash.reset(); position_x = 20; };
+    function frame(timestamp) {
+      const delta_seconds = last_timestamp ? Math.min((timestamp - last_timestamp) / 1000, 0.05) : 0;
+      last_timestamp = timestamp;
+      const state_before_update = dash.snapshot();
+      position_x += 28 * state_before_update.speed_multiplier * delta_seconds;
+      if (position_x > 400) position_x = 20;
+      const state = dash.update(delta_seconds);
+      context.clearRect(0, 0, 400, 80);
+      context.beginPath();
+      context.arc(position_x, 40, 8, 0, Math.PI * 2);
+      context.stroke();
+      output.textContent = JSON.stringify(state, null, 2);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    window.addEventListener('pagehide', () => dash.destroy(), { once: true });
+  </script>
+</body>
+</html>
