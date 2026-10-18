@@ -493,6 +493,32 @@ window.SlowlyLibraryIndex = [
             "href": "https://lib.stillnessbyslowly.com/component/text_generator/test_text_generator_horizontal.html"
           }
         ]
+      },
+      {
+        "title": "Slowly SVG Converter",
+        "desc": "可直接掛載的 SVG 檢視與轉檔完成品，組合軍火庫既有 SVG Viewer、Animation Frame Extractor、GIF Encoder、Canvas PNG、Blob URL 與 Canvas Video Export 零件，提供 SVG 預覽、縮放、單幀 PNG、動畫 GIF 及瀏覽器支援的影片輸出。宿主可覆蓋設定與必要 CSS；不包含藝術字站專屬外觀，MP4 依瀏覽器錄製支援而定。",
+        "links": [
+          {
+            "label": "svg_converter_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.js"
+          },
+          {
+            "label": "svg_converter_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component_usage.html"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/test_svg_converter_component.html"
+          }
+        ]
       }
     ]
   },
@@ -1297,6 +1323,28 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/state/test_derived_result.html"
+              }
+            ]
+          },
+          {
+            "title": "Dialogue Sequence",
+            "desc": "通用對話順序與狀態控制，支援開始、顯示完整當前句、進入下一句、結束與事件回呼；逐字文字效果由宿主搭配既有 SlowlyTypewriter，不綁劇情、角色或對話框外觀。",
+            "links": [
+              {
+                "label": "dialogue_sequence.js",
+                "href": "https://lib.stillnessbyslowly.com/state/dialogue_sequence.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/dialogue_sequence_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/dialogue_sequence_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_dialogue_sequence.html"
               }
             ]
           }
@@ -2265,6 +2313,36 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/ui/progress/test_stat_bar.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "input",
+        "title": "Input / 操作輸入",
+        "subpage": true,
+        "desc": "通用的指標與觸控方向控制積木；由宿主決定操作區域、畫面與遊戲行為。",
+        "items": [
+          {
+            "title": "Virtual Joystick",
+            "desc": "通用 Pointer 虛擬搖桿，支援滑鼠／觸控拖曳、方向正規化、死區、力度、取消與銷毀。Canvas 座標換算引用既有 CanvasRectDrag；不繪製搖桿皮膚，也不替宿主移動角色。",
+            "links": [
+              {
+                "label": "virtual_joystick.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/virtual_joystick.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/virtual_joystick_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/virtual_joystick_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/test_virtual_joystick.html"
               }
             ]
           }
@@ -4147,6 +4225,28 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_device_vibration.html"
               }
             ]
+          },
+          {
+            "title": "Canvas Floating Text",
+            "desc": "在宿主 Canvas 世界座標中建立、更新與繪製即時飄字，支援位置、速度、存活時間與透明度變化，並復原 Canvas 繪圖狀態；文字、字型、色彩與傷害／獎勵規則由宿主決定。",
+            "links": [
+              {
+                "label": "canvas_floating_text.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_canvas_floating_text.html"
+              }
+            ]
           }
         ],
         "subpage": true,
@@ -5251,6 +5351,66 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "movement",
+        "title": "Movement / 移動",
+        "subpage": true,
+        "desc": "可組合的即時角色運動狀態積木；角色、速度與規則由宿主自行控制。",
+        "items": [
+          {
+            "title": "Dash State",
+            "desc": "通用角色衝刺狀態，提供方向、速度倍率、持續時間、取消與查詢，冷卻判斷直接引用既有 CooldownGate；宿主決定移動方式、是否無敵、受傷和衝刺外觀。",
+            "links": [
+              {
+                "label": "dash_state.js",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/dash_state.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/dash_state_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/dash_state_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/test_dash_state.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "collision",
+        "title": "Collision / 碰撞",
+        "subpage": true,
+        "desc": "通用二維幾何接觸判斷；不執行傷害、拾取或其他遊戲規則。",
+        "items": [
+          {
+            "title": "Circle Collision",
+            "desc": "通用 2D 圓形幾何碰撞，提供圓心距離、是否接觸、相切與重疊深度判定；相切是否算碰撞可由宿主控制，不處理扣血、拾取或物理推擠。",
+            "links": [
+              {
+                "label": "circle_collision.js",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/circle_collision.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/circle_collision_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/circle_collision_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/test_circle_collision.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "combat",
         "title": "Combat / 戰鬥",
         "subpage": true,
@@ -5351,6 +5511,28 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/game/ai/action_pattern_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Movement Patterns 2D",
+            "desc": "獨立的二維移動計算，提供邊界反彈、追蹤目標與兩端巡邏；依宿主座標、速度、邊界及時間步長回傳位置，不綁定怪物造型、碰撞傷害或完整敵人 AI。",
+            "links": [
+              {
+                "label": "movement_patterns_2d.js",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/test_movement_patterns_2d.html"
               }
             ]
           }
