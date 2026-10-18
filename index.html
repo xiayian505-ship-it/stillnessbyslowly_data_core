@@ -72,8 +72,9 @@
 </section>
 <section class="page" data-page-panel="examples">
 <h2 class="section-title">完成品使用</h2>
+<nav id="examples-pagination-top" class="pagination" aria-label="完成品上方分頁" style="margin-bottom: 24px;"></nav>
 <div class="list"></div>
-<nav id="examples-pagination" class="pagination" aria-label="完成品分頁"></nav>
+<nav id="examples-pagination-bottom" class="pagination" aria-label="完成品下方分頁"></nav>
 </section>
 <section class="page" data-page-panel="data">
 <h2 class="section-title">Data</h2>
@@ -135,6 +136,18 @@
 
 <script src="./index_data.js"></script><script>
     const libraryData = window.SlowlyLibraryIndex || [];
+
+    // 完成品以英文標題自動排序，不改動 index_data.js 的資料順序。
+    // 下面建立清單、分頁與搜尋索引時必須使用同一份排序結果。
+    const examplesData = libraryData.find((entry) => entry.page === "examples");
+    const exampleTitleCollator = new Intl.Collator("en", {
+      sensitivity: "base",
+      numeric: true
+    });
+    const sortedExampleItems = [...(examplesData?.items || [])].sort((firstItem, secondItem) =>
+      exampleTitleCollator.compare(firstItem.title || "", secondItem.title || "")
+    );
+
     const navButtons = document.querySelectorAll("[data-page]");
     const pages = document.querySelectorAll("[data-page-panel]");
 
@@ -202,12 +215,11 @@
     function setExamplesPage(pageNumber, options = {}) {
       const examplesPanel = document.querySelector('[data-page-panel="examples"]');
       const list = examplesPanel?.querySelector(".list");
-      const pagination = document.getElementById("examples-pagination");
-      const examplesData = libraryData.find((entry) => entry.page === "examples");
-      const totalItems = examplesData?.items?.length || 0;
+      const paginationContainers = examplesPanel?.querySelectorAll(".pagination");
+      const totalItems = sortedExampleItems.length;
       const totalPages = Math.max(1, Math.ceil(totalItems / EXAMPLES_PAGE_SIZE));
 
-      if (!list || !pagination) return;
+      if (!list || !paginationContainers?.length) return;
 
       const targetPage = Math.min(Math.max(Number(pageNumber) || 1, 1), totalPages);
       examplesCurrentPage = targetPage;
@@ -219,32 +231,31 @@
         card.hidden = !(index >= start && index < end);
       });
 
-      pagination.replaceChildren();
+      // 上下分頁共用同一個 examplesCurrentPage；任一邊切換時都同步更新。
+      paginationContainers.forEach((pagination) => {
+        pagination.replaceChildren();
+        pagination.hidden = totalPages <= 1;
 
-      if (totalPages <= 1) {
-        pagination.hidden = true;
-        return;
-      }
+        if (totalPages <= 1) return;
 
-      pagination.hidden = false;
+        for (let page = 1; page <= totalPages; page += 1) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "pagination-button";
+          button.textContent = String(page);
+          button.setAttribute("aria-label", `第 ${page} 頁`);
 
-      for (let page = 1; page <= totalPages; page += 1) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "pagination-button";
-        button.textContent = String(page);
-        button.setAttribute("aria-label", `第 ${page} 頁`);
+          if (page === targetPage) {
+            button.setAttribute("aria-current", "page");
+          }
 
-        if (page === targetPage) {
-          button.setAttribute("aria-current", "page");
+          button.addEventListener("click", () => {
+            setExamplesPage(page, { scroll: true });
+          });
+
+          pagination.appendChild(button);
         }
-
-        button.addEventListener("click", () => {
-          setExamplesPage(page, { scroll: true });
-        });
-
-        pagination.appendChild(button);
-      }
+      });
 
       if (options.scroll === true) {
         examplesPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -259,7 +270,8 @@
         if (Array.isArray(group.items)) {
           const list = panel.querySelector(".list");
           if (!list) return;
-          group.items.forEach((item, index) => {
+          const items = group.page === "examples" ? sortedExampleItems : group.items;
+          items.forEach((item, index) => {
             list.appendChild(createItem(item, { page: group.page, index }));
           });
           return;
@@ -355,7 +367,9 @@
       }
 
       libraryData.forEach((group) => {
-        if (Array.isArray(group.items)) addItems(group, group.items);
+        if (Array.isArray(group.items)) {
+          addItems(group, group.page === "examples" ? sortedExampleItems : group.items);
+        }
 
         if (Array.isArray(group.groups)) {
           group.groups.forEach((subgroup) => {
