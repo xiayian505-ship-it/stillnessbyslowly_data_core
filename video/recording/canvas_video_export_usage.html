@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Canvas Video Export｜使用說明</title>
+</head>
+<body>
+    <main>
+        <h1>Canvas Video Export｜使用說明</h1>
+        <p>慢慢軍火庫獨立零件。由宿主決定輸入、操作、外觀和結果如何使用。零件不建立網站 UI。</p>
+        <h2>載入順序</h2>
+        <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/video/recording/mime_type.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/video/recording/canvas_video_export.js"&gt;&lt;/script&gt;</code></pre>
+        <h2>公開 API：window.SlowlyCanvasVideoExport</h2>
+        <pre><code>const supported = SlowlyCanvasVideoExport.get_supported_formats();
+const session = SlowlyCanvasVideoExport.create({
+    canvas: document.querySelector(&quot;#drawing_canvas&quot;),
+    duration_seconds: 3,
+    frames_per_second: 20,
+    format: &quot;webm&quot;,  // 支援 MP4 時可改成 &quot;mp4&quot;
+    video_bits_per_second: 3500000,
+    async draw_frame({ canvas, context, elapsed_seconds, frame_index }) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fillRect(Math.floor(elapsed_seconds * 40), 20, 30, 30);
+    },
+    on_progress(ratio) { console.log(ratio); },
+    signal: abort_controller.signal
+});
+const result = await session.start();
+// result: { blob, mime_type, format, width, height, duration_seconds }
+// session.stop() 可提前完成輸出；session.cancel() 中止且 reject。</code></pre>
+        <h2>參數、回傳值與限制</h2>
+        <p>get_supported_formats() 回傳 {webm: mime_or_null, mp4: mime_or_null}；內容直接來自 SlowlyVideoRecorderMime.choose()。</p>
+        <p>create({canvas,draw_frame,duration_seconds,frames_per_second,format,video_bits_per_second,on_progress,signal}) 建立單次錄製實例。</p>
+        <p>start() 開始真實時間錄製，完成後回傳影片 Blob 與格式資訊；只能呼叫一次。</p>
+        <p>stop() 提前結束並輸出已錄製內容；cancel() / signal.abort() 取消並拒絕 Promise。</p>
+        <p>state 可查詢 idle、recording、finished、failed 或 cancelled；mime_type 是原生錄製格式。</p>
+        <p>錄製需要 Canvas.captureStream 與 MediaRecorder；WebM / MP4 是否可輸出取決於瀏覽器實際支援，絕不自動轉碼。</p>
+        <p>使用既有軍火庫三顆錄影零件，不重寫 MIME / Recorder / Chunks；宿主處理下載、保存與 CSS。</p>
+        <h2>獨立頁面</h2>
+        <p><a href="https://lib.stillnessbyslowly.com/video/recording/canvas_video_export_demo.html">互動 Demo</a>、
+           <a href="https://lib.stillnessbyslowly.com/video/recording/test_canvas_video_export.html">功能測試</a></p>
+        <p>Demo / Test 只有必要的功能排列，不含網站主題或裝飾 CSS。</p>
+    </main>
+</body>
+</html>
+

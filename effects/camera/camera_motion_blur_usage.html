@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Motion Blur｜畫面空間動態模糊｜使用說明</title>
+    <style>pre { overflow-x: auto; white-space: pre-wrap; }</style>
+</head>
+<body>
+    <main>
+        <h1>Camera Motion Blur｜畫面空間動態模糊</h1>
+        <p>在宿主已經完成繪製的 Canvas 上，把原畫面採樣為多份平移副本並平均疊合；不旋轉相機。</p>
+        <p><a href="camera_motion_blur_demo.html">可操作 Demo</a> ｜ <a href="test_camera_motion_blur.html">功能測試</a></p>
+        <h2>載入方式（完整 HTTPS 絕對路徑）</h2>
+        <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur.js"&gt;&lt;/script&gt;</code></pre>
+        <h2>公開 API 與回傳值</h2>
+        <pre><code>const blur = SlowlyCameraMotionBlur.create({ sample_count: 8 });
+blur.apply(canvas, blur_pixels, { direction: &quot;horizontal&quot;, sample_count: 8 });
+  → true（已套用）/ false（零模糊時未變更像素）。
+blur.destroy()：銷毀暫存 Canvas；destroy 後不得再 apply。</code></pre>
+        <h2>宿主呼叫示例</h2>
+        <pre><code>const motion_blur = SlowlyCameraMotionBlur.create({ sample_count: 8 });
+// 宿主先在 canvas 上畫好自己的場景。
+motion_blur.apply(canvas, 24, { direction: &quot;horizontal&quot; });
+// 卸載時：motion_blur.destroy();</code></pre>
+        <h2>參數、生命週期與座標約定</h2>
+        <pre>支援水平與垂直方向；sample_count 2～64。每一個 create() 實例擁有獨立的暫存 Canvas，resize 時自動配合尺寸更新；Canvas context 的 transform、alpha 和 composite 在執行後均恢復。宿主可獨立控制 blur_pixels，或接 Movement Presets 的 motion_blur_pixels。</pre>
+        <h2>功能邊界與例外</h2>
+        <p>本零件只處理 2D Canvas 已繪圖結果，不處理 DOM、3D 場景或影片。偏移畫面邊界可能露出透明區；超大 Canvas／大量取樣會增加效能成本。</p>
+        <p>這是獨立零件：場景、人物、繪圖、美術、DOM、外觀、觸發時機皆由宿主決定。未提供額外 CSS，不依賴原運鏡 Demo。</p>
+    </main>
+</body>
+</html>

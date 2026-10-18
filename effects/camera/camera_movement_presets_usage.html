@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Movement Presets｜九種運鏡計算｜使用說明</title>
+    <style>pre { overflow-x: auto; white-space: pre-wrap; }</style>
+</head>
+<body>
+    <main>
+        <h1>Camera Movement Presets｜九種運鏡計算</h1>
+        <p>以進度 0～1、初始攝影機和宿主參數，純計算九種運鏡鏡頭狀態；不改初始輸入、不建立播放循環。</p>
+        <p><a href="camera_movement_presets_demo.html">可操作 Demo</a> ｜ <a href="test_camera_movement_presets.html">功能測試</a></p>
+        <h2>載入方式（完整 HTTPS 絕對路徑）</h2>
+        <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets.js"&gt;&lt;/script&gt;</code></pre>
+        <h2>公開 API 與回傳值</h2>
+        <pre><code>SlowlyCameraMovementPresets.list()
+  → [{ id, name, duration_seconds }, ...] 九個模式的副本。
+SlowlyCameraMovementPresets.get(movement_id)
+  → 單個描述副本，未知 ID 回傳 null。
+SlowlyCameraMovementPresets.calculate(movement_id, progress, initial_camera = {}, options = {})
+  → 全新 camera 物件（x/y/z、yaw/pitch、focal，以及依需要的 focus_depth / motion_blur_pixels）。</code></pre>
+        <h2>宿主呼叫示例</h2>
+        <pre><code>const start_camera = { x: 0, y: 20, z: 0, yaw: 0, pitch: 0, focal: 600 };
+const camera = SlowlyCameraMovementPresets.calculate(
+    &quot;orbit&quot;,
+    0.5,
+    start_camera,
+    { center: { x: 0, y: 20, z: 500 }, radius: 400 }
+);
+// 再交給 Projection 或宿主自己的 Renderer。</code></pre>
+        <h2>參數、生命週期與座標約定</h2>
+        <pre>pan: from_yaw / to_yaw；tilt: from_pitch / to_pitch；zoom_in: from_focal / to_focal；dolly_in: from_z / to_z。
+tracking: target_start / target_end，或 target_at(progress) 回呼，配合 offset {x,y,z}。
+orbit: center {x,y,z}、radius、start_angle、sweep_angle、camera_y、aim_vertical。
+whip_pan: from_yaw / to_yaw、whip_start / whip_end、max_blur_pixels。
+rack_focus: from_focus_depth / to_focus_depth；crane_up: from_y / to_y、from_pitch / to_pitch。
+全部提供 easing: &quot;linear&quot;、&quot;ease_in_out&quot; 或 easing(progress)；角度為弧度。progress 超出範圍會夾到 0～1。追蹤目標由宿主控制。</pre>
+        <h2>功能邊界與例外</h2>
+        <p>camera 為快照而非增量變化；每幀傳入相同起始值才能精確 seek。whip_pan 回傳的是動態模糊強度，並不自己模糊。target_at 為宿主回呼，必須回傳完整 {x,y,z}。</p>
+        <p>這是獨立零件：場景、人物、繪圖、美術、DOM、外觀、觸發時機皆由宿主決定。未提供額外 CSS，不依賴原運鏡 Demo。</p>
+    </main>
+</body>
+</html>

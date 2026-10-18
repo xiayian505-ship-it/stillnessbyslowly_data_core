@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GIF Encoder｜Demo</title>
+</head>
+<body>
+    <h1>GIF Encoder｜Demo</h1>
+    <p>以程式產生 RGBA 影格，驗證不依賴 SVG 的 GIF 編碼。</p>
+    <label>FPS <input type="number" id="fps" value="10" min="1" max="100"></label>
+    <button type="button" id="encode">產生動畫 GIF</button>
+    <p id="status" role="status"></p>
+    <img id="preview" alt="GIF 編碼結果" hidden>
+    <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/gif/gif_encoder.js"></script>
+    <script>
+        "use strict";
+        let current_url = null;
+        document.querySelector("#encode").addEventListener("click", async () => {
+            const width = 100;
+            const height = 80;
+            const frames = [];
+            const temporary_canvas = document.createElement("canvas");
+            temporary_canvas.width = width;
+            temporary_canvas.height = height;
+            const context = temporary_canvas.getContext("2d");
+            const status = document.querySelector("#status");
+            try {
+                for (let frame_index = 0; frame_index < 12; frame_index++) {
+                    context.clearRect(0, 0, width, height);
+                    context.fillStyle = "black";
+                    context.fillRect(frame_index * 6, 22, 20, 20);
+                    frames.push(new Uint8ClampedArray(context.getImageData(0, 0, width, height).data));
+                }
+                const blob = await SlowlyGIFEncoder.encode({
+                    frames,
+                    width,
+                    height,
+                    fps: Number(document.querySelector("#fps").value),
+                    transparent: true,
+                    onProgress(ratio) { status.textContent = `編碼中：${Math.round(ratio * 100)}%`; }
+                });
+                if (current_url) SlowlyBlobURL.revoke(current_url);
+                current_url = SlowlyBlobURL.create(blob);
+                const preview = document.querySelector("#preview");
+                preview.src = current_url;
+                preview.hidden = false;
+                status.textContent = `完成：${blob.type}、${blob.size} bytes`;
+            } catch (error) {
+                status.textContent = `ERROR：${error.message}`;
+            }
+        });
+        window.addEventListener("pagehide", () => {
+            if (current_url) SlowlyBlobURL.revoke(current_url);
+        });
+    </script>
+</body>
+</html>

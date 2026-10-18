@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Depth of Field｜景深模糊｜功能測試</title>
+    <style>pre { white-space: pre-wrap; }</style>
+</head>
+<body>
+    <h1>Camera Depth of Field｜景深模糊｜PASS／FAIL 功能測試</h1>
+    <p><a href="camera_depth_of_field_demo.html">可操作 Demo</a> ｜ <a href="camera_depth_of_field_usage.html">使用說明</a></p>
+    <button id="run_tests">重新執行測試</button>
+    <pre id="test_results" aria-live="polite"></pre>
+    <script src="./camera_depth_of_field.js"></script>
+    <script>
+        function throws(callback) {
+            try { callback(); return false; } catch (error) { return true; }
+        }
+
+        function runTests() {
+            const results = [];
+            try {
+                function test(name, condition) { results.push({ name, pass: Boolean(condition) }); }
+                const depth = SlowlyCameraDepthOfField;
+                test("對焦位置完全清晰", depth.calculateBlur(400, 400) === 0);
+                test("焦距越遠模糊越強", depth.calculateBlur(800, 400) >= depth.calculateBlur(500, 400));
+                test("上限可控", depth.calculateBlur(10000, 400, { max_blur: 5 }) === 5);
+                test("可完整停用", depth.calculateBlur(900, 400, { enabled: false }) === 0);
+                test("null 焦平面不失焦", depth.calculateBlur(900, null) === 0);
+                test("非法負倍率遭拒", throws(() => depth.calculateBlur(800, 200, { strength: -1 })));
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                context.filter = "none";
+                let active_filter = "";
+                const callback_result = depth.withContext(context, 4, draw_context => { active_filter = draw_context.filter; return 17; });
+                test("Canvas 模糊套用並回傳值", active_filter === "blur(4px)" && callback_result === 17);
+                test("Canvas filter 會恢復", context.filter === "none");
+                test("即使繪圖拋錯也恢復 filter", (() => {
+                    try { depth.withContext(context, 2, () => { throw new Error("test"); }); } catch (_) {}
+                    return context.filter === "none";
+                })());
+
+            } catch (error) {
+                results.push({ name: "測試腳本例外：" + error.message, pass: false });
+            }
+            const passed = results.filter(result => result.pass).length;
+            document.getElementById("test_results").textContent = results
+                .map(result => (result.pass ? "PASS" : "FAIL") + "：" + result.name)
+                .join("\n") + "\n\n總計：" + passed + " / " + results.length + " PASS";
+            document.body.dataset.test_status = passed === results.length ? "pass" : "fail";
+        }
+        document.getElementById("run_tests").addEventListener("click", runTests);
+        runTests();
+    </script>
+</body>
+</html>

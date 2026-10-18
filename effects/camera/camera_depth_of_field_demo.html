@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Depth of Field｜景深模糊｜Demo</title>
+    <style>
+        /* 僅為操作及畫布尺寸所需，沒有產品皮膚。 */
+        .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        canvas { display: block; max-width: 100%; }
+        pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    </style>
+</head>
+<body>
+    <h1>Camera Depth of Field｜景深模糊｜可操作 Demo</h1>
+    <p>原 Demo 的簡易失焦距離模糊；可純計算，也可暫時套用 Canvas filter 後呼叫宿主繪圖。</p>
+    <p><a href="camera_depth_of_field_usage.html">使用說明</a> ｜ <a href="test_camera_depth_of_field.html">功能測試</a></p>
+    <div class="controls">
+    <label>焦平面距離 <input id="focus" type="range" min="100" max="700" step="10" value="400"></label>
+    <label>失焦倍率 <input id="strength" type="number" min="0" step="0.01" value="0.02"></label>
+    <button id="render">重新繪製</button>
+</div>
+<canvas id="scene" width="420" height="160"></canvas>
+<pre id="result"></pre>
+    <script src="./camera_depth_of_field.js"></script>
+    <script>
+        const depth_of_field = SlowlyCameraDepthOfField;
+        const canvas = document.getElementById("scene");
+        const context = canvas.getContext("2d");
+        function render() {
+            const focus = Number(document.getElementById("focus").value);
+            const strength = Number(document.getElementById("strength").value);
+            const depths = [150, 400, 650];
+            const results = [];
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            depths.forEach((depth, index) => {
+                const blur_pixels = depth_of_field.calculateBlur(depth, focus, { strength });
+                depth_of_field.withContext(context, blur_pixels, drawing_context => {
+                    const left = 30 + index * 140;
+                    drawing_context.strokeRect(left, 30, 75, 75);
+                    drawing_context.fillText("深度 " + depth, left, 130);
+                    drawing_context.beginPath();
+                    drawing_context.moveTo(left, 30);
+                    drawing_context.lineTo(left + 75, 105);
+                    drawing_context.stroke();
+                });
+                results.push({ depth, blur_pixels });
+            });
+            document.getElementById("result").textContent = "焦平面：" + focus + "｜" + JSON.stringify(results);
+        }
+        document.getElementById("focus").addEventListener("input", render);
+        document.getElementById("render").addEventListener("click", render);
+        render();
+    </script>
+</body>
+</html>

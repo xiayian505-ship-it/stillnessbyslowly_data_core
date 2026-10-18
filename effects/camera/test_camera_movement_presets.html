@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Movement Presets｜九種運鏡計算｜功能測試</title>
+    <style>pre { white-space: pre-wrap; }</style>
+</head>
+<body>
+    <h1>Camera Movement Presets｜九種運鏡計算｜PASS／FAIL 功能測試</h1>
+    <p><a href="camera_movement_presets_demo.html">可操作 Demo</a> ｜ <a href="camera_movement_presets_usage.html">使用說明</a></p>
+    <button id="run_tests">重新執行測試</button>
+    <pre id="test_results" aria-live="polite"></pre>
+    <script src="./camera_movement_presets.js"></script>
+    <script>
+        function throws(callback) {
+            try { callback(); return false; } catch (error) { return true; }
+        }
+
+        function runTests() {
+            const results = [];
+            try {
+                function test(name, condition) { results.push({ name, pass: Boolean(condition) }); }
+                const presets = SlowlyCameraMovementPresets;
+                const names = ["pan", "tilt", "zoom_in", "dolly_in", "tracking", "orbit", "whip_pan", "rack_focus", "crane_up"];
+                test("九種運鏡皆存在", names.every(id => presets.get(id)) && presets.list().length === 9);
+                const original = { x: 0, y: 0, z: 0, yaw: 0, pitch: 0, focal: 600 };
+                test("同參數可重現", JSON.stringify(presets.calculate("orbit", 0.5, original)) === JSON.stringify(presets.calculate("orbit", 0.5, original)));
+                test("初始 camera 不被修改", (() => { const before = JSON.stringify(original); presets.calculate("tracking", 0.5, original); return JSON.stringify(original) === before; })());
+                test("水平搖攝端點", presets.calculate("pan", 1, original, { from_yaw: -1, to_yaw: 1 }).yaw === 1);
+                test("垂直搖攝端點", presets.calculate("tilt", 0, original, { from_pitch: -0.5, to_pitch: 0.5 }).pitch === -0.5);
+                test("變焦只更改焦距", (() => { const result = presets.calculate("zoom_in", 1, original); return result.focal > original.focal && result.z === original.z; })());
+                test("Dolly 只前進不變焦", (() => { const result = presets.calculate("dolly_in", 1, original); return result.z > original.z && result.focal === original.focal; })());
+                test("宿主追蹤目標", presets.calculate("tracking", 0.5, original, { target_at: () => ({ x: 100, y: 30, z: 200 }), offset: { x: 0, y: 0, z: -30 } }).x === 100);
+                test("宿主環繞中心", (() => { const result = presets.calculate("orbit", 0, original, { center: { x: 200, y: 0, z: 500 }, radius: 100 }); return Math.abs(result.x - 200) < 0.001 && Math.abs(result.z - 400) < 0.001; })());
+                test("甩鏡產生模糊參數", presets.calculate("whip_pan", 0.475, original).motion_blur_pixels > 0);
+                test("Rack Focus 更新焦點", presets.calculate("rack_focus", 1, original, { to_focus_depth: 900 }).focus_depth === 900);
+                test("Crane Up 增加高度", presets.calculate("crane_up", 1, original).y > original.y);
+                test("進度會夾入 0～1", presets.calculate("pan", -10, original).yaw === presets.calculate("pan", 0, original).yaw);
+                test("無效參數拒絕", throws(() => presets.calculate("orbit", 1, original, { radius: -1 })));
+
+            } catch (error) {
+                results.push({ name: "測試腳本例外：" + error.message, pass: false });
+            }
+            const passed = results.filter(result => result.pass).length;
+            document.getElementById("test_results").textContent = results
+                .map(result => (result.pass ? "PASS" : "FAIL") + "：" + result.name)
+                .join("\n") + "\n\n總計：" + passed + " / " + results.length + " PASS";
+            document.body.dataset.test_status = passed === results.length ? "pass" : "fail";
+        }
+        document.getElementById("run_tests").addEventListener("click", runTests);
+        runTests();
+    </script>
+</body>
+</html>

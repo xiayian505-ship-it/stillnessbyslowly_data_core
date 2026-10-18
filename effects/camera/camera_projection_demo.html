@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Projection｜鏡頭透視投影｜Demo</title>
+    <style>
+        /* 僅為操作及畫布尺寸所需，沒有產品皮膚。 */
+        .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        canvas { display: block; max-width: 100%; }
+        pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    </style>
+</head>
+<body>
+    <h1>Camera Projection｜鏡頭透視投影｜可操作 Demo</h1>
+    <p>原 Demo 的簡易 3D 透視投影核心；宿主提供世界座標、攝影機與 viewport，回傳畫面座標，不繪圖。</p>
+    <p><a href="camera_projection_usage.html">使用說明</a> ｜ <a href="test_camera_projection.html">功能測試</a></p>
+    <div class="controls">
+    <label>焦距 <input id="focal" type="number" value="270" min="1" step="10"></label>
+    <label>Yaw（弧度） <input id="yaw" type="number" value="0" step="0.1"></label>
+    <label>Pitch（弧度） <input id="pitch" type="number" value="0" step="0.1"></label>
+    <label>相機 Z <input id="camera_z" type="number" value="0" step="50"></label>
+    <button id="project">重新投影</button>
+</div>
+<canvas id="viewport" width="400" height="240" aria-label="基本透視投影畫布"></canvas>
+<pre id="result"></pre>
+    <script src="./camera_projection.js"></script>
+    <script>
+        const projection = SlowlyCameraProjection;
+        const canvas = document.getElementById("viewport");
+        const context = canvas.getContext("2d");
+        const points = [
+            { x: -120, y: 0, z: 500 },
+            { x: 120, y: 0, z: 500 },
+            { x: -120, y: 0, z: 900 },
+            { x: 120, y: 0, z: 900 }
+        ];
+        function renderProjection() {
+            const camera = {
+                x: 0, y: 0, z: Number(document.getElementById("camera_z").value),
+                yaw: Number(document.getElementById("yaw").value),
+                pitch: Number(document.getElementById("pitch").value),
+                focal: Number(document.getElementById("focal").value)
+            };
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.strokeRect(0, 0, canvas.width, canvas.height);
+            const results = points.map((point, index) => {
+                const projected = projection.project(camera, point, { width: canvas.width, height: canvas.height });
+                if (projected.visible) {
+                    context.beginPath();
+                    context.arc(projected.x, projected.y, 5 * projected.scale, 0, Math.PI * 2);
+                    context.stroke();
+                    context.fillText(String(index + 1), projected.x + 8, projected.y);
+                }
+                return { point, projected };
+            });
+            document.getElementById("result").textContent = JSON.stringify(results, null, 2);
+        }
+        document.getElementById("project").addEventListener("click", renderProjection);
+        renderProjection();
+    </script>
+</body>
+</html>

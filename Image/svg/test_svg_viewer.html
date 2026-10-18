@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SVG Viewer｜功能測試</title>
+</head>
+<body>
+    <h1>SVG Viewer｜功能測試</h1>
+    <p>這是獨立 PASS／FAIL 測試頁；不含網站外觀樣式。</p>
+    <div id="viewport" style="width:240px;height:170px;overflow:auto">
+        <div id="stage"><img id="preview" alt="test image" hidden></div>
+    </div>
+    <ol id="results"></ol>
+    <p id="summary" role="status">測試進行中……</p>
+    <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/svg/svg_viewer.js"></script>
+    <script>
+        "use strict";
+        window.test_results = [];
+        window.tests_done = false;
+        const output = document.querySelector("#results");
+
+        function assert(condition, message) {
+            if (!condition) throw new Error(message);
+        }
+
+        async function expect_failure(action) {
+            let failed = false;
+            try { await action(); }
+            catch { failed = true; }
+            assert(failed, "應拒絕無效輸入");
+        }
+
+        async function run_case(name, action) {
+            try {
+                await action();
+                window.test_results.push({ name, pass: true });
+                const item = document.createElement("li");
+                item.textContent = `PASS：${name}`;
+                output.appendChild(item);
+            } catch (error) {
+                window.test_results.push({ name, pass: false, error: error.message });
+                const item = document.createElement("li");
+                item.textContent = `FAIL：${name}（${error.message}）`;
+                output.appendChild(item);
+            }
+        }
+
+        async function run_tests() {
+            await run_case("原始 API 已載入", () => {
+                assert(typeof SlowlySVGViewer.create === "function", "create 不存在");
+            });
+            await run_case("正確解析 width、height 與 viewBox", () => {
+                const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="80" viewBox="0 0 100 80"><circle cx="20" cy="20" r="10"/></svg>';
+                const info = SlowlySVGViewer.inspect_svg(svg);
+                assert(info.width === 100 && info.height === 80, "尺寸錯誤");
+                assert(info.view_box === "0 0 100 80", "viewBox 錯誤");
+            });
+            await run_case("拒絕 script 與 DOCTYPE", async () => {
+                await expect_failure(() => SlowlySVGViewer.inspect_svg('<svg xmlns="http://www.w3.org/2000/svg"><script/></svg>'));
+                await expect_failure(() => SlowlySVGViewer.inspect_svg('<!DOCTYPE svg><svg xmlns="http://www.w3.org/2000/svg"/>'));
+            });
+            await run_case("拒絕不合法 SVG", () => expect_failure(() => SlowlySVGViewer.inspect_svg('<div></div>')));
+            await run_case("載入、縮放、清除與釋放", async () => {
+                const image = document.querySelector("#preview");
+                const viewer = SlowlySVGViewer.create({
+                    image, stage: document.querySelector("#stage"), viewport: document.querySelector("#viewport")
+                });
+                const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><rect width="80" height="50" fill="black"/></svg>';
+                const info = await viewer.load_text(svg);
+                assert(info.width === 80, "載入失敗");
+                viewer.set_zoom(1.5);
+                await expect_failure(() => viewer.set_zoom(50));
+                viewer.clear();
+                assert(viewer.get_info() === null && !image.hasAttribute("src"), "資源未釋放");
+                viewer.destroy();
+                await expect_failure(() => viewer.load_text(svg));
+            });
+            const passed = window.test_results.filter(test => test.pass).length;
+            document.querySelector("#summary").textContent = `${passed} / ${window.test_results.length} PASS`;
+            window.tests_done = true;
+        }
+        run_tests();
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GIF Encoder｜功能測試</title>
+</head>
+<body>
+    <h1>GIF Encoder｜功能測試</h1>
+    <p>這是獨立 PASS／FAIL 測試頁；不含網站外觀樣式。</p>
+
+    <ol id="results"></ol>
+    <p id="summary" role="status">測試進行中……</p>
+    <script src="https://lib.stillnessbyslowly.com/Image/gif/gif_encoder.js"></script>
+    <script>
+        "use strict";
+        window.test_results = [];
+        window.tests_done = false;
+        const output = document.querySelector("#results");
+
+        function assert(condition, message) {
+            if (!condition) throw new Error(message);
+        }
+
+        async function expect_failure(action) {
+            let failed = false;
+            try { await action(); }
+            catch { failed = true; }
+            assert(failed, "應拒絕無效輸入");
+        }
+
+        async function run_case(name, action) {
+            try {
+                await action();
+                window.test_results.push({ name, pass: true });
+                const item = document.createElement("li");
+                item.textContent = `PASS：${name}`;
+                output.appendChild(item);
+            } catch (error) {
+                window.test_results.push({ name, pass: false, error: error.message });
+                const item = document.createElement("li");
+                item.textContent = `FAIL：${name}（${error.message}）`;
+                output.appendChild(item);
+            }
+        }
+
+        async function run_tests() {
+            const width = 16;
+            const height = 16;
+            const first = new Uint8ClampedArray(width * height * 4);
+            const second = new Uint8ClampedArray(width * height * 4);
+            for (let pixel = 0; pixel < width * height; pixel++) {
+                first[pixel * 4] = 255;
+                first[pixel * 4 + 3] = 255;
+                second[pixel * 4 + 2] = 255;
+                second[pixel * 4 + 3] = 255;
+            }
+            await run_case("API 已載入", () => assert(typeof SlowlyGIFEncoder.encode === "function", "encode 不存在"));
+            await run_case("單幀 GIF Blob 與標頭", async () => {
+                const blob = await SlowlyGIFEncoder.encode({ frames: [first], width, height, fps: 10 });
+                const header = new TextDecoder().decode(await blob.slice(0, 6).arrayBuffer());
+                assert(blob.type === "image/gif" && blob.size > 100, "Blob 資料錯誤");
+                assert(header === "GIF89a", "GIF 標頭錯誤");
+            });
+            await run_case("多幀編碼並通知進度", async () => {
+                let progress = 0;
+                const blob = await SlowlyGIFEncoder.encode({
+                    frames: [first, second, first], width, height, fps: 12,
+                    transparent: true,
+                    onProgress(ratio) { progress = ratio; }
+                });
+                assert(progress === 1 && blob.size > 100, "多幀輸出錯誤");
+                const bitmap = await createImageBitmap(blob);
+                assert(bitmap.width === width && bitmap.height === height, "GIF 無法解碼");
+                bitmap.close();
+            });
+            await run_case("拒絕空幀、錯誤 RGBA、錯誤 FPS", async () => {
+                await expect_failure(() => SlowlyGIFEncoder.encode({ frames: [], width, height, fps: 10 }));
+                await expect_failure(() => SlowlyGIFEncoder.encode({ frames: [new Uint8ClampedArray(5)], width, height, fps: 10 }));
+                await expect_failure(() => SlowlyGIFEncoder.encode({ frames: [first], width, height, fps: 0 }));
+            });
+            const passed = window.test_results.filter(test => test.pass).length;
+            document.querySelector("#summary").textContent = `${passed} / ${window.test_results.length} PASS`;
+            window.tests_done = true;
+        }
+        run_tests();
+    </script>
+</body>
+</html>

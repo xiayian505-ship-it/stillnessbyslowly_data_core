@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GIF Encoder｜使用說明</title>
+</head>
+<body>
+    <main>
+        <h1>GIF Encoder｜使用說明</h1>
+        <p>慢慢軍火庫獨立零件。由宿主決定輸入、操作、外觀和結果如何使用。零件不建立網站 UI。</p>
+        <h2>載入順序</h2>
+        <pre><code>
+&lt;script src="https://lib.stillnessbyslowly.com/Image/gif/gif_encoder.js"&gt;&lt;/script&gt;</code></pre>
+        <h2>公開 API：window.SlowlyGIFEncoder</h2>
+        <pre><code>const frame_pixels = context.getImageData(0, 0, width, height).data;
+const gif_blob = await SlowlyGIFEncoder.encode({
+    frames: [new Uint8ClampedArray(frame_pixels)],
+    width,
+    height,
+    fps: 10,
+    transparent: true,
+    onProgress(ratio) { console.log(ratio); }
+});
+// gif_blob 是 Blob；預覽 / 下載交由宿主決定。</code></pre>
+        <h2>參數、回傳值與限制</h2>
+        <p>encode({frames,width,height,fps,transparent,onProgress}) 回傳 Promise&lt;Blob&gt;，Blob.type = image/gif。</p>
+        <p>frames 必須是非空 Uint8ClampedArray[]，每幀 length 必須等於 width * height * 4。</p>
+        <p>width/height 是 1～65535 的整數，fps &gt; 0 且 &lt;= 100（GIF 延遲單位 1/100 秒）。</p>
+        <p>transparent 預設 false；alpha 小於 128 會對應透明色索引。GIF 無法完整保留半透明邊緣。</p>
+        <p>調色盤最高 256 色，所有影格共用調色盤；不保證無損還原色彩。</p>
+        <p>此模組不解析 SVG、不建立 Canvas、不下載檔案，也不做視覺外觀。</p>
+        <h2>獨立頁面</h2>
+        <p><a href="https://lib.stillnessbyslowly.com/Image/gif/gif_encoder_demo.html">互動 Demo</a>、
+           <a href="https://lib.stillnessbyslowly.com/Image/gif/test_gif_encoder.html">功能測試</a></p>
+        <p>Demo / Test 只有必要的功能排列，不含網站主題或裝飾 CSS。</p>
+    </main>
+</body>
+</html>
+

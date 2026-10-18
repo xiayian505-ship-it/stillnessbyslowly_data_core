@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Depth of Field｜景深模糊｜使用說明</title>
+    <style>pre { overflow-x: auto; white-space: pre-wrap; }</style>
+</head>
+<body>
+    <main>
+        <h1>Camera Depth of Field｜景深模糊</h1>
+        <p>原 Demo 的簡易失焦距離模糊；可純計算，也可暫時套用 Canvas filter 後呼叫宿主繪圖。</p>
+        <p><a href="camera_depth_of_field_demo.html">可操作 Demo</a> ｜ <a href="test_camera_depth_of_field.html">功能測試</a></p>
+        <h2>載入方式（完整 HTTPS 絕對路徑）</h2>
+        <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field.js"&gt;&lt;/script&gt;</code></pre>
+        <h2>公開 API 與回傳值</h2>
+        <pre><code>SlowlyCameraDepthOfField.calculateBlur(object_depth, focus_depth, options = {})
+  → 非負模糊像素。focus_depth=null / undefined 或 options.enabled=false 時回傳 0。
+options: strength（預設 0.02）、max_blur（預設 7）、threshold（預設 0.3）。
+SlowlyCameraDepthOfField.withContext(context, blur_pixels, draw(context))
+  → 執行 draw 的回傳值；以 save()/restore() 保留宿主 Canvas 狀態。</code></pre>
+        <h2>宿主呼叫示例</h2>
+        <pre><code>const blur_pixels = SlowlyCameraDepthOfField.calculateBlur(400, 250, {
+    strength: 0.02,
+    max_blur: 7
+});
+SlowlyCameraDepthOfField.withContext(context, blur_pixels, function (drawing_context) {
+    drawing_context.fillRect(50, 50, 40, 40);
+});</code></pre>
+        <h2>參數、生命週期與座標約定</h2>
+        <pre>depth 使用宿主場景單位；模糊量使用 Canvas 像素。不預設前景角色或場景圖像。withContext 在缺少 filter 支援時直接繪圖，成功或異常都恢復 context 狀態。</pre>
+        <h2>功能邊界與例外</h2>
+        <p>景深只是線性距離近似，非真實散景。需要宿主自己把物件逐個繪製；無法對已經合成的整張 Canvas 自動分離深度。</p>
+        <p>這是獨立零件：場景、人物、繪圖、美術、DOM、外觀、觸發時機皆由宿主決定。未提供額外 CSS，不依賴原運鏡 Demo。</p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Motion Blur｜畫面空間動態模糊｜Demo</title>
+    <style>
+        /* 僅為操作及畫布尺寸所需，沒有產品皮膚。 */
+        .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        canvas { display: block; max-width: 100%; }
+        pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    </style>
+</head>
+<body>
+    <h1>Camera Motion Blur｜畫面空間動態模糊｜可操作 Demo</h1>
+    <p>在宿主已經完成繪製的 Canvas 上，把原畫面採樣為多份平移副本並平均疊合；不旋轉相機。</p>
+    <p><a href="camera_motion_blur_usage.html">使用說明</a> ｜ <a href="test_camera_motion_blur.html">功能測試</a></p>
+    <div class="controls">
+    <label>模糊像素 <input id="blur" type="range" min="0" max="80" value="20"></label>
+    <label>方向 <select id="direction"><option value="horizontal">水平</option><option value="vertical">垂直</option></select></label>
+    <button id="draw">重繪原圖</button><button id="apply">套用模糊</button>
+</div>
+<canvas id="scene" width="420" height="160"></canvas>
+<output id="result"></output>
+    <script src="./camera_motion_blur.js"></script>
+    <script>
+        const canvas = document.getElementById("scene");
+        const context = canvas.getContext("2d");
+        const motion_blur = SlowlyCameraMotionBlur.create();
+        function drawPattern() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.strokeRect(0, 0, canvas.width, canvas.height);
+            context.fillRect(165, 50, 55, 55);
+            context.beginPath();
+            context.moveTo(80, 20);
+            context.lineTo(80, 140);
+            context.moveTo(300, 20);
+            context.lineTo(300, 140);
+            context.stroke();
+            document.getElementById("result").textContent = "已繪製原圖";
+        }
+        document.getElementById("draw").addEventListener("click", drawPattern);
+        document.getElementById("apply").addEventListener("click", () => {
+            drawPattern();
+            const pixels = Number(document.getElementById("blur").value);
+            const direction = document.getElementById("direction").value;
+            const applied = motion_blur.apply(canvas, pixels, { direction });
+            document.getElementById("result").textContent = applied ? "已套用 " + pixels + "px " + direction : "零模糊：原圖不變";
+        });
+        window.addEventListener("pagehide", () => motion_blur.destroy(), { once: true });
+        drawPattern();
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Movement Presets｜九種運鏡計算｜Demo</title>
+    <style>
+        /* 僅為操作及畫布尺寸所需，沒有產品皮膚。 */
+        .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        canvas { display: block; max-width: 100%; }
+        pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    </style>
+</head>
+<body>
+    <h1>Camera Movement Presets｜九種運鏡計算｜可操作 Demo</h1>
+    <p>以進度 0～1、初始攝影機和宿主參數，純計算九種運鏡鏡頭狀態；不改初始輸入、不建立播放循環。</p>
+    <p><a href="camera_movement_presets_usage.html">使用說明</a> ｜ <a href="test_camera_movement_presets.html">功能測試</a></p>
+    <div class="controls">
+    <label>運鏡 <select id="movement"></select></label>
+    <label>進度 <input id="progress" type="range" min="0" max="100" value="50"></label>
+    <label>起始焦距 <input id="focal" type="number" min="1" value="600"></label>
+    <label>終點焦距 <input id="to_focal" type="number" min="1" value="1200"></label>
+    <label>終點 Yaw <input id="to_yaw" type="number" value="1.2" step="0.1"></label>
+    <button id="calculate">重新計算</button>
+</div>
+<pre id="result"></pre>
+    <script src="./camera_movement_presets.js"></script>
+    <script>
+        const presets = SlowlyCameraMovementPresets;
+        const select = document.getElementById("movement");
+        for (const movement of presets.list()) {
+            const option = document.createElement("option");
+            option.value = movement.id;
+            option.textContent = movement.id + "｜" + movement.name;
+            select.appendChild(option);
+        }
+        function updateValues() {
+            const start_camera = { x: 0, y: 100, z: 0, yaw: 0, pitch: 0, focal: Number(document.getElementById("focal").value) };
+            const options = {
+                to_focal: Number(document.getElementById("to_focal").value),
+                to_yaw: Number(document.getElementById("to_yaw").value),
+                target_start: { x: 0, y: 0, z: 500 },
+                target_end: { x: 700, y: 0, z: 500 },
+                center: { x: 0, y: 0, z: 500 }
+            };
+            try {
+                const result = presets.calculate(select.value, Number(document.getElementById("progress").value) / 100, start_camera, options);
+                document.getElementById("result").textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById("result").textContent = error.message;
+            }
+        }
+        select.addEventListener("change", updateValues);
+        document.getElementById("progress").addEventListener("input", updateValues);
+        document.getElementById("calculate").addEventListener("click", updateValues);
+        updateValues();
+    </script>
+</body>
+</html>

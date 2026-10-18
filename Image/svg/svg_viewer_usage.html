@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SVG Viewer｜使用說明</title>
+</head>
+<body>
+    <main>
+        <h1>SVG Viewer｜使用說明</h1>
+        <p>慢慢軍火庫獨立零件。由宿主決定輸入、操作、外觀和結果如何使用。零件不建立網站 UI。</p>
+        <h2>載入順序</h2>
+        <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/Image/svg/svg_viewer.js"&gt;&lt;/script&gt;</code></pre>
+        <h2>公開 API：window.SlowlySVGViewer</h2>
+        <pre><code>const viewer = SlowlySVGViewer.create({
+    image: document.querySelector(&quot;#svg_image&quot;),
+    stage: document.querySelector(&quot;#svg_stage&quot;),
+    viewport: document.querySelector(&quot;#svg_viewport&quot;),
+    on_state({ info, zoom, message, is_error }) {
+        console.log(info, zoom, message, is_error);
+    },
+    maximum_bytes: 15728640,
+    minimum_zoom: 0.1,
+    maximum_zoom: 16,
+    padding: 20
+});
+await viewer.open_file(file);               // 也可以 viewer.load_text(svg_text, name)
+viewer.set_zoom(2);
+const information = viewer.get_info();
+viewer.clear();
+viewer.destroy();</code></pre>
+        <h2>參數、回傳值與限制</h2>
+        <p>create(options) 建立獨立檢視實例；image 必須是 img；stage 與 viewport 由宿主提供。</p>
+        <p>load_text(svg_text, name) / open_file(file) 非同步載入 SVG，回傳尺寸與動畫標記的資訊物件。</p>
+        <p>set_zoom(number) 設定倍率（預設 0.1～16），超界拋 RangeError。</p>
+        <p>get_info() 回傳資訊複本或 null；clear() 清空；destroy() 移除監聽、回收網址。</p>
+        <p>錯誤會拋出；on_state 用來接收一般訊息與顯示失敗通知。</p>
+        <p>預覽使用 img 而非 SVG innerHTML。CSS / SMIL 是否播放取決於瀏覽器；本模組不會保證安全展示所有 SVG。</p>
+        <h2>獨立頁面</h2>
+        <p><a href="https://lib.stillnessbyslowly.com/Image/svg/svg_viewer_demo.html">互動 Demo</a>、
+           <a href="https://lib.stillnessbyslowly.com/Image/svg/test_svg_viewer.html">功能測試</a></p>
+        <p>Demo / Test 只有必要的功能排列，不含網站主題或裝飾 CSS。</p>
+    </main>
+</body>
+</html>
+

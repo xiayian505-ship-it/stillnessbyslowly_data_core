@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SVG Animation Frame Extractor｜Demo</title>
+    <style>
+        #svg_text { max-width: 100%; }
+        #preview { max-width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>SVG Animation Frame Extractor｜Demo</h1>
+    <p>載入 SVG，選定時間擷取單幀，或連續取得影格陣列。</p>
+    <label for="svg_text">SVG 原始碼</label>
+    <textarea id="svg_text" rows="7" cols="68"></textarea>
+    <button type="button" id="load_svg">載入</button>
+    <label>秒數 <input type="number" id="time_seconds" value="0.5" min="0" step="0.1"></label>
+    <label>寬度 <input type="number" id="width" value="180" min="1"></label>
+    <label>高度 <input type="number" id="height" value="120" min="1"></label>
+    <button type="button" id="capture">擷取影格</button>
+    <button type="button" id="capture_frames">連續擷取 10 幀</button>
+    <p id="status" role="status"></p>
+    <canvas id="preview" width="180" height="120"></canvas>
+    <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor.js"></script>
+    <script>
+        "use strict";
+        const extractor = SlowlySVGAnimationFrameExtractor.create();
+        function output_message(message) {
+            document.querySelector("#status").textContent = message;
+        }
+        async function perform(action) {
+            try { await action(); }
+            catch (error) { output_message(`ERROR：${error.message}`); }
+        }
+        function dimensions() {
+            return {
+                width: Number(document.querySelector("#width").value),
+                height: Number(document.querySelector("#height").value),
+                transparent: true
+            };
+        }
+        document.querySelector("#load_svg").addEventListener("click", () => perform(() => {
+            const info = extractor.load(document.querySelector("#svg_text").value);
+            output_message(`已載入 ${info.width}×${info.height}，動畫：${info.animated}`);
+        }));
+        document.querySelector("#capture").addEventListener("click", () => perform(async () => {
+            const frame = await extractor.capture({ ...dimensions(), time_seconds: Number(document.querySelector("#time_seconds").value) });
+            const preview = document.querySelector("#preview");
+            preview.width = frame.width;
+            preview.height = frame.height;
+            preview.getContext("2d").drawImage(frame.canvas, 0, 0);
+            output_message(`已擷取 ${frame.time_seconds} 秒，共 ${frame.pixels.length} 個 RGBA bytes`);
+        }));
+        document.querySelector("#capture_frames").addEventListener("click", () => perform(async () => {
+            const result = await extractor.capture_frames({ ...dimensions(), duration_seconds: 1, frames_per_second: 10 });
+            output_message(`完成 ${result.frames.length} 幀，共 ${result.frames.reduce((total, pixels) => total + pixels.length, 0)} bytes`);
+        }));
+        window.addEventListener("pagehide", () => extractor.destroy());
+        const SAMPLE_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"180\" height=\"120\" viewBox=\"0 0 180 120\">\n    <rect width=\"180\" height=\"120\" fill=\"white\" />\n    <circle cx=\"30\" cy=\"60\" r=\"22\" fill=\"black\">\n        <animate attributeName=\"cx\" from=\"30\" to=\"150\" dur=\"2s\" repeatCount=\"indefinite\" />\n    </circle>\n</svg>";
+        document.querySelector("#svg_text").value = SAMPLE_SVG;
+    </script>
+</body>
+</html>

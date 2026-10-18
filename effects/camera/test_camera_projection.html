@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Projection｜鏡頭透視投影｜功能測試</title>
+    <style>pre { white-space: pre-wrap; }</style>
+</head>
+<body>
+    <h1>Camera Projection｜鏡頭透視投影｜PASS／FAIL 功能測試</h1>
+    <p><a href="camera_projection_demo.html">可操作 Demo</a> ｜ <a href="camera_projection_usage.html">使用說明</a></p>
+    <button id="run_tests">重新執行測試</button>
+    <pre id="test_results" aria-live="polite"></pre>
+    <script src="./camera_projection.js"></script>
+    <script>
+        function throws(callback) {
+            try { callback(); return false; } catch (error) { return true; }
+        }
+
+        function runTests() {
+            const results = [];
+            try {
+                function test(name, condition) { results.push({ name, pass: Boolean(condition) }); }
+                const projection = SlowlyCameraProjection;
+                const camera = { x: 0, y: 0, z: 0, yaw: 0, pitch: 0, focal: 200 };
+                const viewport = { width: 400, height: 200, near_clip: 1 };
+                const center = projection.project(camera, { x: 0, y: 0, z: 400 }, viewport);
+                test("鏡頭中心投影", center.visible && center.x === 200 && center.y === 100);
+                test("焦距／深度縮放", center.scale === 0.5);
+                test("世界 X 正方向向右", projection.project(camera, { x: 50, y: 0, z: 400 }, viewport).x > center.x);
+                test("世界 Y 正方向向上", projection.project(camera, { x: 0, y: 50, z: 400 }, viewport).y < center.y);
+                test("深度增加影像縮小", projection.project(camera, { x: 50, y: 0, z: 800 }, viewport).x < projection.project(camera, { x: 50, y: 0, z: 400 }, viewport).x);
+                test("鏡頭背後正確裁切", projection.project(camera, { x: 0, y: 0, z: -1 }, viewport).visible === false);
+                test("near_clip 正確裁切", projection.project(camera, { x: 0, y: 0, z: 0.5 }, viewport).x === null);
+                test("yaw 可改變投影", projection.project({ ...camera, yaw: 0.2 }, { x: 0, y: 0, z: 400 }, viewport).x !== center.x);
+                test("變焦與前推透視比例不同", (() => {
+                    const near = { x: 30, y: 0, z: 400 };
+                    const far = { x: 30, y: 0, z: 800 };
+                    const zoom = { ...camera, focal: 300 };
+                    const dolly = { ...camera, z: 100 };
+                    const zoom_ratio = (projection.project(zoom, near, viewport).x - 200) / (projection.project(zoom, far, viewport).x - 200);
+                    const dolly_ratio = (projection.project(dolly, near, viewport).x - 200) / (projection.project(dolly, far, viewport).x - 200);
+                    return Math.abs(zoom_ratio - dolly_ratio) > 0.1;
+                })());
+                test("拒絕非法焦距", throws(() => projection.project({ ...camera, focal: 0 }, { x: 0, y: 0, z: 400 }, viewport)));
+
+            } catch (error) {
+                results.push({ name: "測試腳本例外：" + error.message, pass: false });
+            }
+            const passed = results.filter(result => result.pass).length;
+            document.getElementById("test_results").textContent = results
+                .map(result => (result.pass ? "PASS" : "FAIL") + "：" + result.name)
+                .join("\n") + "\n\n總計：" + passed + " / " + results.length + " PASS";
+            document.body.dataset.test_status = passed === results.length ? "pass" : "fail";
+        }
+        document.getElementById("run_tests").addEventListener("click", runTests);
+        runTests();
+    </script>
+</body>
+</html>

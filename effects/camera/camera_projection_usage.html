@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Projection｜鏡頭透視投影｜使用說明</title>
+    <style>pre { overflow-x: auto; white-space: pre-wrap; }</style>
+</head>
+<body>
+    <main>
+        <h1>Camera Projection｜鏡頭透視投影</h1>
+        <p>原 Demo 的簡易 3D 透視投影核心；宿主提供世界座標、攝影機與 viewport，回傳畫面座標，不繪圖。</p>
+        <p><a href="camera_projection_demo.html">可操作 Demo</a> ｜ <a href="test_camera_projection.html">功能測試</a></p>
+        <h2>載入方式（完整 HTTPS 絕對路徑）</h2>
+        <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/effects/camera/camera_projection.js"&gt;&lt;/script&gt;</code></pre>
+        <h2>公開 API 與回傳值</h2>
+        <pre><code>SlowlyCameraProjection.toCameraSpace(camera, point)
+  → {x, y, depth}：世界點轉鏡頭座標。
+SlowlyCameraProjection.toScreen(camera, camera_point, viewport)
+  → {visible, x, y, scale, depth, in_viewport}。
+SlowlyCameraProjection.project(camera, point, viewport)
+  → 一步完成兩次轉換。</code></pre>
+        <h2>宿主呼叫示例</h2>
+        <pre><code>const camera = { x: 0, y: 0, z: 0, yaw: 0, pitch: 0, focal: 300 };
+const point = { x: 70, y: 0, z: 400 };
+const viewport = { width: 400, height: 240, near_clip: 0.1 };
+const projected = SlowlyCameraProjection.project(camera, point, viewport);
+if (projected.visible) {
+    // 宿主在 (projected.x, projected.y) 自行繪製內容。
+}</code></pre>
+        <h2>參數、生命週期與座標約定</h2>
+        <pre>角度使用弧度；世界 +X 向右、+Y 向上、+Z 向前。yaw 向右為正；pitch 向上為正。near_clip 預設 0.01，背後／過近位置 visible=false 且 x、y、scale 為 null。in_viewport 只測單一投影點，不代表整個物件可見。鏡頭 focal 是像素基準焦距，不是真實鏡頭 mm 值。</pre>
+        <h2>功能邊界與例外</h2>
+        <p>不是完整 3D 引擎；不處理物件遮擋、深度排序、網格裁切、光影及 WebGL。非法數值會拋出 TypeError / RangeError。</p>
+        <p>這是獨立零件：場景、人物、繪圖、美術、DOM、外觀、觸發時機皆由宿主決定。未提供額外 CSS，不依賴原運鏡 Demo。</p>
+    </main>
+</body>
+</html>

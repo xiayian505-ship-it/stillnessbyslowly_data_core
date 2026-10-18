@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SVG Animation Frame Extractor｜功能測試</title>
+</head>
+<body>
+    <h1>SVG Animation Frame Extractor｜功能測試</h1>
+    <p>這是獨立 PASS／FAIL 測試頁；不含網站外觀樣式。</p>
+
+    <ol id="results"></ol>
+    <p id="summary" role="status">測試進行中……</p>
+    <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor.js"></script>
+    <script>
+        "use strict";
+        window.test_results = [];
+        window.tests_done = false;
+        const output = document.querySelector("#results");
+
+        function assert(condition, message) {
+            if (!condition) throw new Error(message);
+        }
+
+        async function expect_failure(action) {
+            let failed = false;
+            try { await action(); }
+            catch { failed = true; }
+            assert(failed, "應拒絕無效輸入");
+        }
+
+        async function run_case(name, action) {
+            try {
+                await action();
+                window.test_results.push({ name, pass: true });
+                const item = document.createElement("li");
+                item.textContent = `PASS：${name}`;
+                output.appendChild(item);
+            } catch (error) {
+                window.test_results.push({ name, pass: false, error: error.message });
+                const item = document.createElement("li");
+                item.textContent = `FAIL：${name}（${error.message}）`;
+                output.appendChild(item);
+            }
+        }
+
+        async function run_tests() {
+            const animated_svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 80\"><rect width=\"100\" height=\"80\" fill=\"white\"/><circle cx=\"15\" cy=\"40\" r=\"12\" fill=\"black\"><animate attributeName=\"cx\" from=\"15\" to=\"85\" dur=\"1s\" fill=\"freeze\"/></circle></svg>";
+            const css_svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"80\"><style>@keyframes move { from { transform:translateX(0px); } to { transform:translateX(70px); } } circle { animation:move 1s linear both; }</style><rect width=\"100\" height=\"80\" fill=\"white\"/><circle cx=\"15\" cy=\"40\" r=\"12\" fill=\"black\"/></svg>";
+            await run_case("API 已載入與來源尺寸", () => {
+                assert(typeof SlowlySVGAnimationFrameExtractor.create === "function", "create 不存在");
+                const extractor = SlowlySVGAnimationFrameExtractor.create();
+                const info = extractor.load(animated_svg);
+                assert(info.width === 100 && info.height === 80 && info.animated, "SVG 資訊錯誤");
+                extractor.destroy();
+            });
+            await run_case("拒絕腳本、外部資源與 XML 宣告", async () => {
+                const extractor = SlowlySVGAnimationFrameExtractor.create();
+                await expect_failure(() => extractor.load('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><script/></svg>'));
+                await expect_failure(() => extractor.load('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><image href="https://example.com/p.png"/></svg>'));
+                await expect_failure(() => extractor.load('<!DOCTYPE svg><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"/>'));
+                extractor.destroy();
+            });
+            await run_case("擷取 RGBA、Canvas、透明／背景與尺寸", async () => {
+                const extractor = SlowlySVGAnimationFrameExtractor.create();
+                extractor.load(animated_svg);
+                const frame = await extractor.capture({ width: 120, height: 90, time_seconds: 0.1, transparent: false });
+                assert(frame.canvas.width === 120 && frame.pixels.length === 120 * 90 * 4, "影格尺寸錯誤");
+                assert(frame.pixels[3] === 255, "不透明背景錯誤");
+                await expect_failure(() => extractor.capture({ width: -1 }));
+                extractor.destroy();
+            });
+            await run_case("SMIL 動畫不同時間的像素不同", async () => {
+                const extractor = SlowlySVGAnimationFrameExtractor.create();
+                extractor.load(animated_svg);
+                const first = await extractor.capture({ time_seconds: 0.1, width: 100, height: 80 });
+                const later = await extractor.capture({ time_seconds: 0.8, width: 100, height: 80 });
+                const changed = first.pixels.some((value, index) => value !== later.pixels[index]);
+                assert(changed, "兩個時間點影格完全相同");
+                extractor.destroy();
+            });
+            await run_case("CSS 動畫不同時間的像素不同", async () => {
+                const extractor = SlowlySVGAnimationFrameExtractor.create();
+                extractor.load(css_svg);
+                const first = await extractor.capture({ time_seconds: 0.1, width: 100, height: 80 });
+                const later = await extractor.capture({ time_seconds: 0.8, width: 100, height: 80 });
+                const changed = first.pixels.some((value, index) => value !== later.pixels[index]);
+                assert(changed, "CSS 動畫時間擷取失敗");
+                extractor.destroy();
+            });
+            await run_case("批次幀數與記憶體上限", async () => {
+                const extractor = SlowlySVGAnimationFrameExtractor.create({ maximum_frame_bytes: 100 * 80 * 4 * 4 });
+                extractor.load(animated_svg);
+                const animation = await extractor.capture_frames({ duration_seconds: 0.3, frames_per_second: 10, width: 100, height: 80 });
+                assert(animation.frames.length === 3, "幀數錯誤");
+                await expect_failure(() => extractor.capture_frames({ duration_seconds: 2, frames_per_second: 10, width: 100, height: 80 }));
+                extractor.destroy();
+            });
+            const passed = window.test_results.filter(test => test.pass).length;
+            document.querySelector("#summary").textContent = `${passed} / ${window.test_results.length} PASS`;
+            window.tests_done = true;
+        }
+        run_tests();
+    </script>
+</body>
+</html>

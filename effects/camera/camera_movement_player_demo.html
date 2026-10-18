@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Movement Player｜時間軸播放器｜Demo</title>
+    <style>
+        /* 僅為操作及畫布尺寸所需，沒有產品皮膚。 */
+        .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        canvas { display: block; max-width: 100%; }
+        pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    </style>
+</head>
+<body>
+    <h1>Camera Movement Player｜時間軸播放器｜可操作 Demo</h1>
+    <p>管理 RAF 播放、暫停、seek、重播、停止、循環及銷毀。每幀只呼叫宿主的 on_progress，不決定鏡頭種類。</p>
+    <p><a href="camera_movement_player_usage.html">使用說明</a> ｜ <a href="test_camera_movement_player.html">功能測試</a></p>
+    <div class="controls">
+    <button id="play">播放</button><button id="pause">暫停</button>
+    <button id="restart">重新播放</button><button id="stop">停止</button>
+    <label>循環 <input id="loop" type="checkbox"></label>
+    <label>進度 <input id="progress" type="range" min="0" max="100" value="0"></label>
+</div>
+<output id="result" aria-live="polite"></output>
+    <script src="./camera_movement_player.js"></script>
+    <script>
+        const slider = document.getElementById("progress");
+        const output = document.getElementById("result");
+        const player = SlowlyCameraMovementPlayer.create({
+            duration_ms: 3000,
+            on_progress(progress, state) {
+                slider.value = String(Math.round(progress * 100));
+                output.textContent = "進度：" + progress.toFixed(3) + "｜播放中：" + state.is_playing;
+            },
+            on_complete() { output.textContent += "｜已到終點"; }
+        });
+        document.getElementById("play").addEventListener("click", () => player.play());
+        document.getElementById("pause").addEventListener("click", () => player.pause());
+        document.getElementById("restart").addEventListener("click", () => player.restart());
+        document.getElementById("stop").addEventListener("click", () => player.stop());
+        document.getElementById("loop").addEventListener("change", event => player.setLoop(event.target.checked));
+        slider.addEventListener("input", () => player.seek(Number(slider.value) / 100));
+        window.addEventListener("pagehide", () => player.destroy(), { once: true });
+        player.seek(0);
+    </script>
+</body>
+</html>

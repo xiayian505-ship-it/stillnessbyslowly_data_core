@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Canvas Video Export｜功能測試</title>
+</head>
+<body>
+    <h1>Canvas Video Export｜功能測試</h1>
+    <p>這是獨立 PASS／FAIL 測試頁；不含網站外觀樣式。</p>
+    <canvas id="canvas" width="140" height="100"></canvas>
+    <ol id="results"></ol>
+    <p id="summary" role="status">測試進行中……</p>
+    <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/mime_type.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/canvas_video_export.js"></script>
+    <script>
+        "use strict";
+        window.test_results = [];
+        window.tests_done = false;
+        const output = document.querySelector("#results");
+
+        function assert(condition, message) {
+            if (!condition) throw new Error(message);
+        }
+
+        async function expect_failure(action) {
+            let failed = false;
+            try { await action(); }
+            catch { failed = true; }
+            assert(failed, "應拒絕無效輸入");
+        }
+
+        async function run_case(name, action) {
+            try {
+                await action();
+                window.test_results.push({ name, pass: true });
+                const item = document.createElement("li");
+                item.textContent = `PASS：${name}`;
+                output.appendChild(item);
+            } catch (error) {
+                window.test_results.push({ name, pass: false, error: error.message });
+                const item = document.createElement("li");
+                item.textContent = `FAIL：${name}（${error.message}）`;
+                output.appendChild(item);
+            }
+        }
+
+        async function run_tests() {
+            const canvas = document.querySelector("#canvas");
+            const supported = SlowlyCanvasVideoExport.get_supported_formats();
+            await run_case("API 與 MIME 查詢正確", () => {
+                assert(typeof SlowlyCanvasVideoExport.create === "function", "create 不存在");
+                assert(Object.hasOwn(supported, "webm") && Object.hasOwn(supported, "mp4"), "格式查詢缺少欄位");
+            });
+            await run_case("拒絕沒有 draw_frame 的呼叫", () => {
+                if (!supported.webm && !supported.mp4) return;
+                const format = supported.webm ? "webm" : "mp4";
+                return expect_failure(() => SlowlyCanvasVideoExport.create({ canvas, format }));
+            });
+            if (!supported.webm && !supported.mp4) {
+                await run_case("錄影不支援時能安全略過", () => {
+                    assert(supported.webm === null && supported.mp4 === null, "支援偵測錯誤");
+                });
+                return;
+            }
+            const format = supported.webm ? "webm" : "mp4";
+            await run_case("真實錄製並輸出影片 Blob", async () => {
+                const session = SlowlyCanvasVideoExport.create({
+                    canvas, duration_seconds: 0.6, frames_per_second: 12, format,
+                    draw_frame({ context, elapsed_seconds }) {
+                        context.clearRect(0, 0, 140, 100);
+                        context.fillStyle = "black";
+                        context.fillRect(Math.floor(elapsed_seconds * 60), 20, 30, 30);
+                    }
+                });
+                const result = await session.start();
+                assert(session.state === "finished", "錄影未完成");
+                assert(result.blob.size > 0 && result.blob.type.startsWith("video/"), "影片 Blob 無效");
+                const video_url = SlowlyBlobURL.create(result.blob);
+                const video = document.createElement("video");
+                try {
+                    await new Promise((resolve, reject) => {
+                        const timeout = setTimeout(() => reject(new Error("影片 metadata 讀取逾時")), 6000);
+                        video.onloadedmetadata = () => { clearTimeout(timeout); resolve(); };
+                        video.onerror = () => { clearTimeout(timeout); reject(new Error("影片格式不能解碼")); };
+                        video.preload = "metadata";
+                        video.src = video_url;
+                    });
+                    assert(video.videoWidth === canvas.width && video.videoHeight === canvas.height, "錄影尺寸錯誤");
+                } finally {
+                    video.removeAttribute("src");
+                    video.load();
+                    SlowlyBlobURL.revoke(video_url);
+                }
+                await expect_failure(() => session.start());
+            });
+            await run_case("取消錄製時拒絕輸出並清理", async () => {
+                const session = SlowlyCanvasVideoExport.create({
+                    canvas, duration_seconds: 2, frames_per_second: 12, format,
+                    draw_frame({ context }) { context.fillRect(0, 0, 5, 5); }
+                });
+                const promise = session.start();
+                setTimeout(() => session.cancel(), 170);
+                await expect_failure(() => promise);
+                assert(session.state === "cancelled", "取消狀態錯誤");
+            });
+            await run_case("手動停止可提前輸出", async () => {
+                const session = SlowlyCanvasVideoExport.create({
+                    canvas, duration_seconds: 3, frames_per_second: 12, format,
+                    draw_frame({ context }) { context.fillRect(0, 0, 5, 5); }
+                });
+                const promise = session.start();
+                setTimeout(() => session.stop(), 280);
+                const result = await promise;
+                assert(result.blob.size > 0 && result.duration_seconds < 3, "停止失敗");
+            });
+            const passed = window.test_results.filter(test => test.pass).length;
+            document.querySelector("#summary").textContent = `${passed} / ${window.test_results.length} PASS`;
+            window.tests_done = true;
+        }
+        run_tests();
+    </script>
+</body>
+</html>

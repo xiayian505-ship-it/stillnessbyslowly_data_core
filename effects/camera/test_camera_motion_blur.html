@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Motion Blur｜畫面空間動態模糊｜功能測試</title>
+    <style>pre { white-space: pre-wrap; }</style>
+</head>
+<body>
+    <h1>Camera Motion Blur｜畫面空間動態模糊｜PASS／FAIL 功能測試</h1>
+    <p><a href="camera_motion_blur_demo.html">可操作 Demo</a> ｜ <a href="camera_motion_blur_usage.html">使用說明</a></p>
+    <button id="run_tests">重新執行測試</button>
+    <pre id="test_results" aria-live="polite"></pre>
+    <script src="./camera_motion_blur.js"></script>
+    <script>
+        function throws(callback) {
+            try { callback(); return false; } catch (error) { return true; }
+        }
+
+        function runTests() {
+            const results = [];
+            try {
+                function test(name, condition) { results.push({ name, pass: Boolean(condition) }); }
+                function makeCanvas(width, height) {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = width;
+                    canvas.height = height;
+                    return canvas;
+                }
+                const canvas = makeCanvas(120, 70);
+                const context = canvas.getContext("2d");
+                context.fillRect(45, 20, 20, 20);
+                const before = context.getImageData(0, 0, 120, 70).data;
+                const blur = SlowlyCameraMotionBlur.create({ sample_count: 8 });
+                test("零模糊不修改像素", !blur.apply(canvas, 0));
+                test("零模糊畫面一致", context.getImageData(0, 0, 120, 70).data.every((value, index) => value === before[index]));
+                context.globalAlpha = 0.7;
+                context.translate(3, 5);
+                test("可以套用水平模糊", blur.apply(canvas, 24, { direction: "horizontal" }));
+                test("保留宿主 globalAlpha", Math.abs(context.globalAlpha - 0.7) < 0.001);
+                test("保留宿主 transform", context.getTransform().e === 3 && context.getTransform().f === 5);
+                const affected = context.getImageData(34, 25, 1, 1).data[3];
+                test("模糊會改變原本外緣像素", affected > 0);
+                context.resetTransform();
+                test("可以套用垂直模糊", blur.apply(canvas, 12, { direction: "vertical" }));
+                canvas.width = 160;
+                canvas.height = 80;
+                context.fillRect(65, 20, 10, 10);
+                test("尺寸變更可再次運作", blur.apply(canvas, 15));
+                test("拒絕無效強度", throws(() => blur.apply(canvas, -3)));
+                test("拒絕不支援方向", throws(() => blur.apply(canvas, 3, { direction: "diagonal" })));
+                const second_canvas = makeCanvas(50, 50);
+                const second = SlowlyCameraMotionBlur.create();
+                second_canvas.getContext("2d").fillRect(10, 10, 10, 10);
+                test("雙實例各自運作", second.apply(second_canvas, 7));
+                second.destroy();
+                blur.destroy();
+                test("destroy 後禁止重用", throws(() => blur.apply(canvas, 4)));
+
+            } catch (error) {
+                results.push({ name: "測試腳本例外：" + error.message, pass: false });
+            }
+            const passed = results.filter(result => result.pass).length;
+            document.getElementById("test_results").textContent = results
+                .map(result => (result.pass ? "PASS" : "FAIL") + "：" + result.name)
+                .join("\n") + "\n\n總計：" + passed + " / " + results.length + " PASS";
+            document.body.dataset.test_status = passed === results.length ? "pass" : "fail";
+        }
+        document.getElementById("run_tests").addEventListener("click", runTests);
+        runTests();
+    </script>
+</body>
+</html>

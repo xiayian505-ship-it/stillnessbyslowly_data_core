@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SVG Animation Frame Extractor｜使用說明</title>
+</head>
+<body>
+    <main>
+        <h1>SVG Animation Frame Extractor｜使用說明</h1>
+        <p>慢慢軍火庫獨立零件。由宿主決定輸入、操作、外觀和結果如何使用。零件不建立網站 UI。</p>
+        <h2>載入順序</h2>
+        <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor.js"&gt;&lt;/script&gt;</code></pre>
+        <h2>公開 API：window.SlowlySVGAnimationFrameExtractor</h2>
+        <pre><code>const extractor = SlowlySVGAnimationFrameExtractor.create({
+    maximum_frame_bytes: 96 * 1024 * 1024
+});
+const info = extractor.load(svg_text); // { width, height, animated }
+const frame = await extractor.capture({
+    time_seconds: 0.5,
+    width: 320,
+    height: 240,
+    transparent: true,
+    background: &quot;#ffffff&quot;
+});
+// frame: { canvas, pixels: Uint8ClampedArray, width, height, time_seconds }
+const animation = await extractor.capture_frames({
+    duration_seconds: 2,
+    frames_per_second: 10,
+    width: 320,
+    height: 240,
+    transparent: true,
+    on_progress(ratio) { console.log(ratio); },
+    signal: abort_controller.signal
+});
+// animation.frames 可直接傳給 SlowlyGIFEncoder.encode()
+extractor.destroy();</code></pre>
+        <h2>參數、回傳值與限制</h2>
+        <p>create(options) 建立獨立擷取實例；load(svg_text) 載入受限 SVG 字串並回傳尺寸資訊。</p>
+        <p>get_info() 回傳來源尺寸、是否存在可辨識動畫。</p>
+        <p>capture({time_seconds,width,height,transparent,background}) 回傳 canvas 和 RGBA pixels。</p>
+        <p>capture_frames({duration_seconds,frames_per_second,width,height,transparent,on_progress,signal}) 回傳 {frames,width,height,frames_per_second}；frames 是 RGBA Uint8ClampedArray 陣列。</p>
+        <p>預設影格記憶體上限 96MiB，可在 create() 指定 maximum_frame_bytes；超界拋 RangeError。</p>
+        <p>destroy() 釋放隔離容器，不可在擷取中呼叫；取消可使用 signal。</p>
+        <p>來源 SVG 禁止 DOCTYPE、腳本、外部連結與樣式資源。透過隔離 Shadow DOM 計算動畫，再將影格凍結成獨立 SVG 畫入 Canvas。</p>
+        <p>不保證外部素材、複雜 path morph、script 動畫、跨瀏覽器 CSS / SMIL 動畫的完全一致性。</p>
+        <p>Canvas 獨立回傳，不做 PNG/GIF/影片編碼或下載；快照結果屬於目前瀏覽器的取樣結果。</p>
+        <h2>獨立頁面</h2>
+        <p><a href="https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor_demo.html">互動 Demo</a>、
+           <a href="https://lib.stillnessbyslowly.com/Image/svg/test_svg_animation_frame_extractor.html">功能測試</a></p>
+        <p>Demo / Test 只有必要的功能排列，不含網站主題或裝飾 CSS。</p>
+    </main>
+</body>
+</html>
+

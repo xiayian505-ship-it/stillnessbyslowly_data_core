@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Movement Player｜時間軸播放器｜功能測試</title>
+    <style>pre { white-space: pre-wrap; }</style>
+</head>
+<body>
+    <h1>Camera Movement Player｜時間軸播放器｜PASS／FAIL 功能測試</h1>
+    <p><a href="camera_movement_player_demo.html">可操作 Demo</a> ｜ <a href="camera_movement_player_usage.html">使用說明</a></p>
+    <button id="run_tests">重新執行測試</button>
+    <pre id="test_results" aria-live="polite"></pre>
+    <script src="./camera_movement_player.js"></script>
+    <script>
+        function throws(callback) {
+            try { callback(); return false; } catch (error) { return true; }
+        }
+
+        function runTests() {
+            const results = [];
+            try {
+                function test(name, condition) { results.push({ name, pass: Boolean(condition) }); }
+                let next_id = 0;
+                let scheduled = new Map();
+                function request_frame(callback) { const id = ++next_id; scheduled.set(id, callback); return id; }
+                function cancel_frame(id) { scheduled.delete(id); }
+                function advance(time) { const jobs = [...scheduled.values()]; scheduled = new Map(); for (const callback of jobs) callback(time); }
+                const history = [];
+                let completed = 0;
+                const player = SlowlyCameraMovementPlayer.create({ duration_ms: 1000, request_frame, cancel_frame, on_progress(progress) { history.push(progress); }, on_complete() { completed += 1; } });
+                player.play();
+                player.play();
+                test("重複 play 不建立兩條迴圈", scheduled.size === 1);
+                advance(0);
+                advance(500);
+                test("時間軸推進到中間", Math.abs(player.getState().progress - 0.5) < 0.001);
+                player.pause();
+                test("pause 取消 RAF", scheduled.size === 0 && !player.getState().is_playing);
+                player.play();
+                advance(10000);
+                test("暫停恢復沒有跳秒", Math.abs(player.getState().progress - 0.5) < 0.001);
+                advance(10500);
+                test("非循環到終點", player.getState().progress === 1 && !player.getState().is_playing && completed === 1);
+                player.seek(0.2);
+                test("seek 並通知回呼", player.getState().progress === 0.2 && history.at(-1) === 0.2);
+                player.stop();
+                test("stop 回到起點", player.getState().progress === 0);
+                player.setLoop(true);
+                player.play();
+                advance(20000);
+                advance(21500);
+                test("循環會取模", Math.abs(player.getState().progress - 0.5) < 0.001 && player.getState().is_playing);
+                player.destroy();
+                test("destroy 取消影格", scheduled.size === 0 && player.getState().destroyed);
+                test("destroy 後拒絕操作", throws(() => player.play()));
+                const second = SlowlyCameraMovementPlayer.create({ request_frame, cancel_frame });
+                test("第二實例獨立", second.getState().progress === 0);
+                second.destroy();
+
+            } catch (error) {
+                results.push({ name: "測試腳本例外：" + error.message, pass: false });
+            }
+            const passed = results.filter(result => result.pass).length;
+            document.getElementById("test_results").textContent = results
+                .map(result => (result.pass ? "PASS" : "FAIL") + "：" + result.name)
+                .join("\n") + "\n\n總計：" + passed + " / " + results.length + " PASS";
+            document.body.dataset.test_status = passed === results.length ? "pass" : "fail";
+        }
+        document.getElementById("run_tests").addEventListener("click", runTests);
+        runTests();
+    </script>
+</body>
+</html>

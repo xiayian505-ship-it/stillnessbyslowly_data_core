@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Canvas Video Export｜Demo</title>
+    <style>
+        #drawing_canvas { max-width: 100%; }
+        #video_preview { max-width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>Canvas Video Export｜Demo</h1>
+    <p>Canvas 畫面由宿主繪製；零件負責錄製協調，不負責 UI 或下載。</p>
+    <label>輸出格式 <select id="format"><option value="webm">WebM</option><option value="mp4">MP4（需要瀏覽器支援）</option></select></label>
+    <button type="button" id="start">開始錄製（2 秒）</button>
+    <button type="button" id="stop">提早停止</button>
+    <button type="button" id="cancel">取消</button>
+    <p id="supported_formats"></p>
+    <p id="status" role="status"></p>
+    <canvas id="drawing_canvas" width="200" height="140"></canvas>
+    <video id="video_preview" controls playsinline hidden></video>
+    <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/mime_type.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/video/recording/canvas_video_export.js"></script>
+    <script>
+        "use strict";
+        const formats = SlowlyCanvasVideoExport.get_supported_formats();
+        document.querySelector("#supported_formats").textContent = JSON.stringify(formats);
+        let current_session = null;
+        let preview_url = null;
+        document.querySelector("#start").addEventListener("click", async () => {
+            const status = document.querySelector("#status");
+            try {
+                current_session = SlowlyCanvasVideoExport.create({
+                    canvas: document.querySelector("#drawing_canvas"),
+                    duration_seconds: 2,
+                    frames_per_second: 15,
+                    format: document.querySelector("#format").value,
+                    draw_frame({ canvas, context, elapsed_seconds }) {
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+                        context.fillStyle = "black";
+                        context.fillRect(Math.round(elapsed_seconds * 70), 45, 40, 40);
+                    },
+                    on_progress(ratio) { status.textContent = `錄製中：${Math.round(ratio * 100)}%`; }
+                });
+                const result = await current_session.start();
+                if (preview_url) SlowlyBlobURL.revoke(preview_url);
+                preview_url = SlowlyBlobURL.create(result.blob);
+                const video = document.querySelector("#video_preview");
+                video.src = preview_url;
+                video.hidden = false;
+                status.textContent = `完成：${result.mime_type}、${result.blob.size} bytes`;
+            } catch (error) {
+                status.textContent = `ERROR：${error.message}`;
+            }
+        });
+        document.querySelector("#stop").addEventListener("click", () => current_session?.stop());
+        document.querySelector("#cancel").addEventListener("click", () => current_session?.cancel());
+        window.addEventListener("pagehide", () => {
+            current_session?.cancel();
+            if (preview_url) SlowlyBlobURL.revoke(preview_url);
+        });
+    </script>
+</body>
+</html>

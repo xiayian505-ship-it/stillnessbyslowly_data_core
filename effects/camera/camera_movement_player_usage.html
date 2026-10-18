@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Movement Player｜時間軸播放器｜使用說明</title>
+    <style>pre { overflow-x: auto; white-space: pre-wrap; }</style>
+</head>
+<body>
+    <main>
+        <h1>Camera Movement Player｜時間軸播放器</h1>
+        <p>管理 RAF 播放、暫停、seek、重播、停止、循環及銷毀。每幀只呼叫宿主的 on_progress，不決定鏡頭種類。</p>
+        <p><a href="camera_movement_player_demo.html">可操作 Demo</a> ｜ <a href="test_camera_movement_player.html">功能測試</a></p>
+        <h2>載入方式（完整 HTTPS 絕對路徑）</h2>
+        <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player.js"&gt;&lt;/script&gt;</code></pre>
+        <h2>公開 API 與回傳值</h2>
+        <pre><code>const player = SlowlyCameraMovementPlayer.create(options)
+options: duration_ms（正數，預設 5000）、loop（boolean）、on_progress(progress,state)、on_complete(state)。
+實例：play()、pause()、seek(progress)、restart()、stop()、setLoop(boolean)、getState()、destroy()。
+getState(): {progress, is_playing, loop, duration_ms, destroyed}。</code></pre>
+        <h2>宿主呼叫示例</h2>
+        <pre><code>const initial_camera = { x: 0, y: 0, z: 0, focal: 600 };
+const player = SlowlyCameraMovementPlayer.create({
+    duration_ms: 5000,
+    on_progress(progress) {
+        const camera = SlowlyCameraMovementPresets.calculate(&quot;pan&quot;, progress, initial_camera);
+        // 宿主在這裡繪圖，不由播放器繪圖。
+    }
+});
+player.play();
+// 卸載頁面時 player.destroy();</code></pre>
+        <h2>參數、生命週期與座標約定</h2>
+        <pre>首次 play() 立即通知目前進度，下一 RAF 建立起始時間，不跳秒。pause() 取消未執行 RAF，恢復時不補算暫停時間。非循環結束停在 1 並呼叫 on_complete；loop 會取模循環。seek() 可在暫停狀態使用，且會重置上一影格時間。stop() 回到 0；restart() 回到 0 並播放。</pre>
+        <h2>功能邊界與例外</h2>
+        <p>不支援離線直接匯出影片（請搭配軍火庫 video/recording/）；on_progress 若自行拋錯，例外會直接由宿主處理。destroy() 後操作會明確拋錯。</p>
+        <p>這是獨立零件：場景、人物、繪圖、美術、DOM、外觀、觸發時機皆由宿主決定。未提供額外 CSS，不依賴原運鏡 Demo。</p>
+    </main>
+</body>
+</html>

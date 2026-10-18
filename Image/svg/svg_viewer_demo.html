@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SVG Viewer｜Demo</title>
+    <style>
+        #viewport {
+            width: 100%;
+            max-width: 680px;
+            height: 360px;
+            overflow: auto;
+        }
+        #stage {
+            min-width: 100%;
+            min-height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>SVG Viewer｜Demo</h1>
+    <p>選擇本機 SVG 或使用內建簡單動畫。只示範檢視零件，不提供轉檔功能。</p>
+    <label>SVG 檔案 <input type="file" id="svg_file" accept=".svg,image/svg+xml"></label>
+    <button type="button" id="load_sample">載入測試 SVG</button>
+    <label>縮放 <input type="number" id="zoom" value="1" min="0.1" max="16" step="0.1"></label>
+    <button type="button" id="apply_zoom">套用縮放</button>
+    <button type="button" id="clear">清除</button>
+    <p id="status" role="status"></p>
+    <pre id="info"></pre>
+    <div id="viewport"><div id="stage"><img id="preview" alt="SVG 預覽" hidden></div></div>
+    <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url.js"></script>
+    <script src="https://lib.stillnessbyslowly.com/Image/svg/svg_viewer.js"></script>
+    <script>
+        "use strict";
+        const viewer = SlowlySVGViewer.create({
+            image: document.querySelector("#preview"),
+            stage: document.querySelector("#stage"),
+            viewport: document.querySelector("#viewport"),
+            on_state({ info, message, is_error }) {
+                document.querySelector("#status").textContent = message;
+                document.querySelector("#info").textContent = info ? JSON.stringify(info, null, 2) : "";
+            }
+        });
+        async function with_error(callback) {
+            try { await callback(); }
+            catch (error) { document.querySelector("#status").textContent = `ERROR：${error.message}`; }
+        }
+        document.querySelector("#svg_file").addEventListener("change", event => {
+            if (event.target.files[0]) with_error(() => viewer.open_file(event.target.files[0]));
+        });
+        document.querySelector("#load_sample").addEventListener("click", () => {
+            with_error(() => viewer.load_text(SAMPLE_SVG, "sample.svg"));
+        });
+        document.querySelector("#apply_zoom").addEventListener("click", () => {
+            with_error(() => viewer.set_zoom(Number(document.querySelector("#zoom").value)));
+        });
+        document.querySelector("#clear").addEventListener("click", () => viewer.clear());
+        window.addEventListener("pagehide", () => viewer.destroy());
+        const SAMPLE_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"180\" height=\"120\" viewBox=\"0 0 180 120\"><rect width=\"180\" height=\"120\" fill=\"white\"/><circle cx=\"32\" cy=\"60\" r=\"20\" fill=\"black\"><animate attributeName=\"cx\" from=\"32\" to=\"148\" dur=\"2s\" repeatCount=\"indefinite\"/></circle></svg>";
+    </script>
+</body>
+</html>
