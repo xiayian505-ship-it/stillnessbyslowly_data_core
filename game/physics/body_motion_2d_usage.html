@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Body Motion 2D 使用說明</title>
+</head>
+<body>
+<h1>Body Motion 2D｜使用說明</h1>
+<p>二維質點的加速度、速度與位置更新，來源彈珠台 physics() 的非碰撞段。</p>
+<h2>檔案與載入順序</h2>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/physics/body_motion_2d.js"&gt;&lt;/script&gt;</code></pre>
+<h2>公開 API</h2><p><code>window.SlowlyBodyMotion2D</code></p>
+<ul><li><code>step({position:{x,y}, velocity:{x,y}, acceleration?:{x,y}, gravity?:{x,y}, delta_seconds, maximum_speed?}) → {position, velocity, speed}</code></li></ul>
+<h2>選項、數值與輸出</h2><ul><li>position 是宿主世界座標；velocity 是單位／秒；acceleration / gravity 是單位／秒²。</li><li>gravity 與 acceleration 會相加；預設均為 (0,0)。</li><li>delta_seconds 必須 ≥0；maximum_speed 預設無限制，若傳入則必須為非負有限數字。</li><li>採半隱式 Euler：先加速、限速，再更新位置。</li></ul>
+<h2>使用範例（請先按上列順序載入腳本）</h2><pre><code>const next = SlowlyBodyMotion2D.step({
+  position:{x:0,y:0}, velocity:{x:20,y:0},
+  gravity:{x:0,y:400}, delta_seconds:1/60,
+  maximum_speed:800
+});
+console.log(next.position, next.velocity);</code></pre>
+<h2>錯誤、清理與限制</h2><p>不是剛體模擬引擎；不含碰撞、牆壁與子步進策略。高速碰撞由宿主自行拆分較小 delta_seconds。與 Grid Gravity 格子下落無關。</p>
+<p>若輸入格式錯誤、非法負值或非有限數字，原則上拋出 TypeError 或 RangeError。
+需保留狀態的物件可使用 reset/cancel/clear/destroy 或非同步 stop，實際方法以上列 API 為準。</p>
+<p>這顆 JS 不附加遊戲造型、不依賴打包工具，使用獨立 IIFE ＋ window API。
+本頁文中的 HTTPS 新零件網址須等使用者部署後才會可用。</p>
+<p><a href="https://lib.stillnessbyslowly.com/game/physics/body_motion_2d_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/physics/test_body_motion_2d.html">功能測試</a></p>
+
+</body>
+</html>

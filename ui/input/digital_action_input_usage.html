@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Action Input 使用說明</title>
+</head>
+<body>
+<h1>Digital Action Input｜使用說明</h1>
+<p>鍵盤和多指 Pointer 融合成數位按下／放開事件，來源彈珠台 KEYMAP、press 與 Pointer 控制。</p>
+<h2>檔案與載入順序</h2>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/ui/canvas/canvas_rect_drag.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/ui/input/digital_action_input.js"&gt;&lt;/script&gt;</code></pre>
+<h2>公開 API</h2><p><code>window.SlowlyDigitalActionInput</code></p>
+<ul><li><code>create({key_map?, pointer_targets?, keyboard_target?, blur_target?, on_change?, prevent_default?, enabled?}) → instance</code></li><li><code>instance.pressed(action) → boolean</code></li><li><code>instance.snapshot() → {enabled, actions}</code></li><li><code>instance.clear()；instance.set_enabled(boolean)；instance.destroy()</code></li></ul>
+<h2>選項、數值與輸出</h2><ul><li>key_map：鍵碼（KeyboardEvent.code）到任意 action 字串，例如 {Space:&quot;launch&quot;}。</li><li>pointer_targets 陣列：{element, action:&quot;launch&quot;} 或 {element, resolve_action(event,local_point)}。</li><li>on_change(event) 回傳 {action,type:&quot;pressed&quot;/&quot;released&quot;,pressed,source}；多個來源共用同一動作只觸發一次轉換。</li><li>Canvas resolve_action 會引用 CanvasRectDrag.pointFromEvent，因此需要先載入既有 CanvasRectDrag。</li><li>blur、pointercancel、lostpointercapture、停用和 destroy 都清理來源。</li></ul>
+<h2>使用範例（請先按上列順序載入腳本）</h2><pre><code>const actions = SlowlyDigitalActionInput.create({
+  key_map: { Space:&quot;launch&quot;, ArrowLeft:&quot;move_left&quot; },
+  pointer_targets: [{ element: document.getElementById(&quot;launch&quot;), action:&quot;launch&quot; }],
+  on_change: event =&gt; console.log(event.action, event.type)
+});
+console.log(actions.pressed(&quot;launch&quot;));
+// 頁面卸載或控制器不再需要時呼叫 actions.destroy();</code></pre>
+<h2>錯誤、清理與限制</h2><p>只監聽宿主提供的目標，不替宿主建立 UI；無虛擬搖桿向量控制功能。手指多來源狀態不應互相覆蓋；destroy 移除所有監聽。</p>
+<p>若輸入格式錯誤、非法負值或非有限數字，原則上拋出 TypeError 或 RangeError。
+需保留狀態的物件可使用 reset/cancel/clear/destroy 或非同步 stop，實際方法以上列 API 為準。</p>
+<p>這顆 JS 不附加遊戲造型、不依賴打包工具，使用獨立 IIFE ＋ window API。
+本頁文中的 HTTPS 新零件網址須等使用者部署後才會可用。</p>
+<p><a href="https://lib.stillnessbyslowly.com/ui/input/digital_action_input_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/ui/input/test_digital_action_input.html">功能測試</a></p>
+
+</body>
+</html>

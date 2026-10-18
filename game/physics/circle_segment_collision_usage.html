@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Circle Segment Collision 使用說明</title>
+</head>
+<body>
+<h1>Circle Segment Collision｜使用說明</h1>
+<p>圓形接觸有限線段的幾何檢查；來源為原彈珠台 hitSeg 最近點計算。純計算、不修改球體。</p>
+<h2>檔案與載入順序</h2>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision.js"&gt;&lt;/script&gt;</code></pre>
+<h2>公開 API</h2><p><code>window.SlowlyCircleSegmentCollision</code></p>
+<ul><li><code>inspect({ circle: {x, y, radius}, segment: {start:{x,y}, end:{x,y}}, thickness?, inclusive?, fallback_normal? }) → 接觸結果</code></li><li><code>touches(options) → boolean</code></li></ul>
+<h2>選項、數值與輸出</h2><ul><li>圓心與線段端點均為有限數字；radius / thickness ≥ 0。</li><li>inclusive 預設 true；相切算接觸。</li><li>fallback_normal 為同點退化時可選的非零向量。</li><li>回傳 touching、distance、collision_distance、overlap_depth、exactly_tangent、segment_parameter、closest_point、normal、degenerate_segment、normal_was_fallback。</li></ul>
+<h2>使用範例（請先按上列順序載入腳本）</h2><pre><code>const contact = SlowlyCircleSegmentCollision.inspect({
+  circle: { x: 40, y: 30, radius: 12 },
+  segment: { start: { x: 0, y: 45 }, end: { x: 100, y: 45 } },
+  thickness: 3
+});
+if (contact.touching) console.log(contact.normal, contact.overlap_depth);</code></pre>
+<h2>錯誤、清理與限制</h2><p>normal 指向從線段最近點到圓心；同點時先採備援向量，否則線段左法線，再否則 (1,0)。幾何結果不推進時間、不修改位置。若要反彈，另外引用 Collision Response 2D。</p>
+<p>若輸入格式錯誤、非法負值或非有限數字，原則上拋出 TypeError 或 RangeError。
+需保留狀態的物件可使用 reset/cancel/clear/destroy 或非同步 stop，實際方法以上列 API 為準。</p>
+<p>這顆 JS 不附加遊戲造型、不依賴打包工具，使用獨立 IIFE ＋ window API。
+本頁文中的 HTTPS 新零件網址須等使用者部署後才會可用。</p>
+<p><a href="https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/physics/test_circle_segment_collision.html">功能測試</a></p>
+
+</body>
+</html>

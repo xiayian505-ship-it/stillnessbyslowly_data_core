@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Body Motion 2D Tests</title>
+</head>
+<body>
+<h1>Body Motion 2D｜真實 PASS / FAIL 測試</h1>
+
+<p id="summary">執行中…</p><pre id="details" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/physics/body_motion_2d.js"></script>
+<script>
+"use strict";
+const results = [];
+function assert(condition, message = "Assertion failed") {
+  if (!condition) throw new Error(message);
+}
+function approximately(actual, expected, tolerance = 1e-8) {
+  assert(typeof actual === "number" && Math.abs(actual - expected) <= tolerance,
+    "Expected " + expected + ", received " + actual);
+}
+function expect_throw(callback, error_type) {
+  let caught = null;
+  try { callback(); } catch (error) { caught = error; }
+  assert(caught !== null, "Expected exception");
+  if (error_type) assert(caught instanceof error_type, "Wrong exception type: " + caught);
+}
+async function test(name, callback) {
+  try {
+    await callback();
+    results.push({ name, status: "PASS" });
+  } catch (error) {
+    results.push({ name, status: "FAIL", detail: String(error?.stack ?? error) });
+  }
+}
+function show_results() {
+  const passed = results.filter(item => item.status === "PASS").length;
+  const failed = results.length - passed;
+  window.__slowly_test_results = { passed, failed, details: results };
+  const summary = document.getElementById("summary");
+  summary.textContent = `PASS: ${passed} / FAIL: ${failed} / TOTAL: ${results.length}`;
+  const output = document.getElementById("details");
+  output.textContent = results.map(item => item.status + "｜" + item.name +
+    (item.detail ? "\n" + item.detail : "")).join("\n");
+}
+
+(async function run_tests() {
+const tool=SlowlyBodyMotion2D;
+const setup=(more={})=>({position:{x:3,y:4},velocity:{x:5,y:7},delta_seconds:1,...more});
+await test("等速更新位置",()=>{
+  const r=tool.step(setup());approximately(r.position.x,8);approximately(r.position.y,11);
+});
+await test("靜止點不移動",()=>{
+  const r=tool.step(setup({velocity:{x:0,y:0}}));approximately(r.speed,0);approximately(r.position.x,3);
+});
+await test("重力先加速再位移",()=>{
+  const r=tool.step(setup({velocity:{x:0,y:0},gravity:{x:0,y:10}}));
+  approximately(r.velocity.y,10);approximately(r.position.y,14);
+});
+await test("一般加速度與重力疊加",()=>{
+  const r=tool.step(setup({velocity:{x:0,y:0},acceleration:{x:4,y:6},gravity:{x:0,y:-2}}));
+  approximately(r.velocity.x,4);approximately(r.velocity.y,4);
+});
+await test("最高速度限制向量",()=>{
+  const r=tool.step(setup({velocity:{x:30,y:40},maximum_speed:10}));
+  approximately(r.speed,10);approximately(r.velocity.x,6);
+});
+await test("零最高速度",()=>{
+  const r=tool.step(setup({maximum_speed:0}));approximately(r.speed,0);
+});
+await test("零時間速度座標均不變",()=>{
+  const r=tool.step(setup({delta_seconds:0,gravity:{x:0,y:200}}));
+  approximately(r.position.y,4);approximately(r.velocity.y,7);
+});
+await test("負重力允許",()=>{
+  const r=tool.step(setup({velocity:{x:0,y:0},gravity:{x:0,y:-8}}));
+  approximately(r.position.y,-4);
+});
+await test("小步進可自行拆兩次",()=>{
+  const once=tool.step(setup({velocity:{x:0,y:0},gravity:{x:0,y:8},delta_seconds:1}));
+  const first=tool.step(setup({velocity:{x:0,y:0},gravity:{x:0,y:8},delta_seconds:0.5}));
+  const twice=tool.step({position:first.position,velocity:first.velocity,gravity:{x:0,y:8},delta_seconds:0.5});
+  approximately(once.velocity.y,twice.velocity.y);assert(once.position.y!==twice.position.y);
+});
+await test("非法負時間拒絕",()=>expect_throw(()=>tool.step(setup({delta_seconds:-1})),RangeError));
+await test("非法最大速度拒絕",()=>expect_throw(()=>tool.step(setup({maximum_speed:-4})),RangeError));
+await test("非法數值拒絕",()=>expect_throw(()=>tool.step(setup({velocity:{x:Infinity,y:0}})),TypeError));
+await test("不修改宿主物件",()=>{
+  const input=setup({gravity:{x:0,y:9.8}}),before=JSON.stringify(input);
+  tool.step(input);assert(JSON.stringify(input)===before);
+});
+
+show_results();
+})();
+</script>
+
+</body>
+</html>

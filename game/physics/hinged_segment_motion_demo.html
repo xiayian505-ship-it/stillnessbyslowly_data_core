@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hinged Segment Motion Demo</title>
+<style>
+button, input { margin: 0.3em; }
+canvas { border: 1px solid #777; max-width: 100%; touch-action: none; } label { display: inline-block; margin: 0.3em 1em 0.3em 0; }
+</style>
+</head>
+<body>
+<h1>Hinged Segment Motion｜操作示範</h1>
+<p>移動目標角度，觀察轉軸端點及端點切線速度；可暫停動畫。</p>
+<label>目標角度（度） <input id="target" type="range" min="-110" max="110" value="45"></label>
+<label>最大角速度（度／秒） <input id="speed" type="range" min="0" max="720" value="220"></label>
+<button id="pause">暫停／繼續</button>
+<div><canvas id="scene" width="440" height="260"></canvas></div>
+<pre id="output" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion.js"></script>
+<script>
+"use strict";
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d");
+const pivot = { x: 220, y: 130 };
+let angle = 0;
+let running = true;
+let last_time = null;
+const radians = degrees => degrees * Math.PI / 180;
+function animate(timestamp) {
+  const delta_seconds = last_time === null ? 0 : Math.min(0.05, (timestamp - last_time) / 1000);
+  last_time = timestamp;
+  const result = SlowlyHingedSegmentMotion.step({
+    pivot, length: 100, angle,
+    target_angle: radians(Number(document.getElementById("target").value)),
+    maximum_angular_speed: radians(Number(document.getElementById("speed").value)),
+    delta_seconds: running ? delta_seconds : 0
+  });
+  angle = result.angle;
+  const surface = SlowlyHingedSegmentMotion.point_velocity({
+    pivot, point: result.end_point, angular_velocity: result.angular_velocity
+  });
+  ctx.clearRect(0, 0, 440, 260);
+  ctx.strokeStyle = "#222"; ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.moveTo(pivot.x, pivot.y);
+  ctx.lineTo(result.end_point.x, result.end_point.y); ctx.stroke();
+  ctx.fillStyle = "#222"; ctx.beginPath(); ctx.arc(pivot.x, pivot.y, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "#777"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(result.end_point.x, result.end_point.y);
+  ctx.lineTo(result.end_point.x + surface.x * 0.12, result.end_point.y + surface.y * 0.12); ctx.stroke();
+  document.getElementById("output").textContent = JSON.stringify({
+    angle_radians: result.angle, angular_velocity: result.angular_velocity,
+    end_point: result.end_point, contact_velocity: surface
+  }, null, 2);
+  requestAnimationFrame(animate);
+}
+document.getElementById("pause").addEventListener("click", () => { running = !running; });
+requestAnimationFrame(animate);
+</script>
+
+</body>
+</html>

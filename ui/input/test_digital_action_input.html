@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Action Input Tests</title>
+<style>
+canvas { width:200px; height:80px; border:1px solid #555; touch-action:none; }
+</style>
+</head>
+<body>
+<h1>Digital Action Input｜真實 PASS / FAIL 測試</h1>
+<button id="first">來源 A</button> <button id="second">來源 B</button> <canvas id="test_canvas" width="200" height="80"></canvas>
+<p id="summary">執行中…</p><pre id="details" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/ui/canvas/canvas_rect_drag.js"></script>
+<script src="https://lib.stillnessbyslowly.com/ui/input/digital_action_input.js"></script>
+<script>
+"use strict";
+const results = [];
+function assert(condition, message = "Assertion failed") {
+  if (!condition) throw new Error(message);
+}
+function approximately(actual, expected, tolerance = 1e-8) {
+  assert(typeof actual === "number" && Math.abs(actual - expected) <= tolerance,
+    "Expected " + expected + ", received " + actual);
+}
+function expect_throw(callback, error_type) {
+  let caught = null;
+  try { callback(); } catch (error) { caught = error; }
+  assert(caught !== null, "Expected exception");
+  if (error_type) assert(caught instanceof error_type, "Wrong exception type: " + caught);
+}
+async function test(name, callback) {
+  try {
+    await callback();
+    results.push({ name, status: "PASS" });
+  } catch (error) {
+    results.push({ name, status: "FAIL", detail: String(error?.stack ?? error) });
+  }
+}
+function show_results() {
+  const passed = results.filter(item => item.status === "PASS").length;
+  const failed = results.length - passed;
+  window.__slowly_test_results = { passed, failed, details: results };
+  const summary = document.getElementById("summary");
+  summary.textContent = `PASS: ${passed} / FAIL: ${failed} / TOTAL: ${results.length}`;
+  const output = document.getElementById("details");
+  output.textContent = results.map(item => item.status + "｜" + item.name +
+    (item.detail ? "\n" + item.detail : "")).join("\n");
+}
+
+(async function run_tests() {
+const tool=SlowlyDigitalActionInput;
+const first=document.getElementById("first");
+const second=document.getElementById("second");
+const canvas=document.getElementById("test_canvas");
+const changes=[];
+const controller=tool.create({
+  key_map:{KeyA:"left",Space:"launch"},
+  pointer_targets:[
+    {element:first,action:"left"},
+    {element:second,action:"left"},
+    {element:canvas,resolve_action:(event,position)=>position.x < canvas.width/2?"left":"right"}
+  ],
+  on_change:event=>changes.push(event)
+});
+function key_event(type,code,repeat=false) {
+  const event=new KeyboardEvent(type,{code,bubbles:true,cancelable:true,repeat});
+  window.dispatchEvent(event);return event;
+}
+function pointer_event(target,type,id,options={}) {
+  const rect=target.getBoundingClientRect();
+  const event=new PointerEvent(type,{
+    pointerId:id,pointerType:"touch",button:0,bubbles:true,cancelable:true,
+    clientX:rect.left+20,clientY:rect.top+20,...options
+  });
+  target.dispatchEvent(event);return event;
+}
+await test("鍵盤按下與放開",()=>{
+  key_event("keydown","KeyA");assert(controller.pressed("left"));
+  key_event("keyup","KeyA");assert(!controller.pressed("left"));
+});
+await test("重複 keydown 不雙重觸發",()=>{
+  const old=changes.length;key_event("keydown","KeyA");key_event("keydown","KeyA",true);
+  assert(changes.length===old+1);key_event("keyup","KeyA");
+});
+await test("兩根手指同一動作不互相覆蓋",()=>{
+  pointer_event(first,"pointerdown",101);pointer_event(first,"pointerdown",102);
+  assert(controller.pressed("left"));pointer_event(first,"pointerup",101);
+  assert(controller.pressed("left"));pointer_event(first,"pointerup",102);
+  assert(!controller.pressed("left"));
+});
+await test("不同按鈕同一動作保留來源",()=>{
+  pointer_event(first,"pointerdown",103);pointer_event(second,"pointerdown",104);
+  pointer_event(first,"pointerup",103);assert(controller.pressed("left"));
+  pointer_event(second,"pointerup",104);assert(!controller.pressed("left"));
+});
+await test("鍵盤與觸控共同維持按下",()=>{
+  key_event("keydown","KeyA");pointer_event(first,"pointerdown",105);
+  key_event("keyup","KeyA");assert(controller.pressed("left"));
+  pointer_event(first,"pointerup",105);assert(!controller.pressed("left"));
+});
+await test("Pointer 遺失捕捉後釋放",()=>{
+  pointer_event(second,"pointerdown",115);pointer_event(second,"lostpointercapture",115);
+  assert(!controller.pressed("left"));
+});
+await test("Pointer 取消釋放",()=>{
+  pointer_event(second,"pointerdown",106);pointer_event(second,"pointercancel",106);
+  assert(!controller.pressed("left"));
+});
+await test("Canvas 左右區域以 CanvasRectDrag 換算",()=>{
+  const rect=canvas.getBoundingClientRect();
+  pointer_event(canvas,"pointerdown",107,{clientX:rect.left+rect.width*0.8});
+  assert(controller.pressed("right"));pointer_event(canvas,"pointerup",107);
+  assert(!controller.pressed("right"));
+});
+await test("blur 清理鍵盤及 Pointer",()=>{
+  key_event("keydown","KeyA");pointer_event(second,"pointerdown",108);
+  window.dispatchEvent(new Event("blur"));assert(!controller.pressed("left"));
+});
+await test("失焦後舊來源不殘留",()=>{
+  pointer_event(second,"pointerdown",108);assert(controller.pressed("left"));
+  pointer_event(second,"pointerup",108);assert(!controller.pressed("left"));
+});
+await test("停用清理全部按壓",()=>{
+  key_event("keydown","KeyA");controller.set_enabled(false);
+  assert(!controller.pressed("left"));key_event("keydown","KeyA");assert(!controller.pressed("left"));
+  controller.set_enabled(true);
+});
+await test("KeyboardEvent 預設阻止已映射鍵",()=>{
+  const event=key_event("keydown","Space");assert(event.defaultPrevented);key_event("keyup","Space");
+});
+await test("狀態快照提供 action",()=>assert(controller.snapshot().actions.left===false));
+await test("錯誤按鍵表拒絕",()=>expect_throw(()=>tool.create({key_map:{KeyA:3}}),TypeError));
+await test("兩個實例可獨立停用",()=>{
+  const another=tool.create({key_map:{KeyA:"left"}});
+  another.set_enabled(false);key_event("keydown","KeyA");
+  assert(controller.pressed("left")&&!another.pressed("left"));
+  key_event("keyup","KeyA");another.destroy();
+});
+await test("destroy 後不再接收事件",()=>{
+  controller.destroy();key_event("keydown","KeyA");
+  pointer_event(first,"pointerdown",109);assert(!controller.pressed("left"));
+});
+
+show_results();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collision Response 2D Demo</title>
+<style>
+button, input { margin: 0.3em; }
+canvas { border: 1px solid #777; max-width: 100%; touch-action: none; } label { display: inline-block; margin: 0.3em 1em 0.3em 0; }
+</style>
+</head>
+<body>
+<h1>Collision Response 2D｜操作示範</h1>
+<p>輸入撞擊方向與表面速度，觀察碰後速度。線條代表接觸法線方向。</p>
+<label>速度 X <input id="vx" type="number" value="40"></label>
+<label>速度 Y <input id="vy" type="number" value="100"></label>
+<label>表面速度 Y <input id="sy" type="number" value="-20"></label>
+<label>反彈係數 <input id="bounce" type="range" min="0" max="100" value="70"></label>
+<label>低速閾值 <input id="minimum" type="number" min="0" value="5"></label>
+<button id="calculate">計算撞擊</button>
+<div><canvas id="scene" width="440" height="180"></canvas></div>
+<pre id="output" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/physics/collision_response_2d.js"></script>
+<script>
+"use strict";
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d");
+function calculate() {
+  const number = id => Number(document.getElementById(id).value);
+  try {
+    const velocity = { x: number("vx"), y: number("vy") };
+    const result = SlowlyCollisionResponse2D.calculate({
+      velocity, normal: { x: 0, y: -1 },
+      surface_velocity: { x: 0, y: number("sy") },
+      restitution: number("bounce") / 100,
+      minimum_bounce_speed: number("minimum")
+    });
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = "#555";
+    ctx.beginPath(); ctx.moveTo(40, 110); ctx.lineTo(400, 110); ctx.stroke();
+    ctx.beginPath(); ctx.arc(220, 80, 15, 0, Math.PI * 2); ctx.stroke();
+    function arrow(vector, color, label) {
+      ctx.strokeStyle = color; ctx.fillStyle = color;
+      ctx.beginPath(); ctx.moveTo(220, 80);
+      ctx.lineTo(220 + vector.x * 0.55, 80 + vector.y * 0.55); ctx.stroke();
+      ctx.fillText(label, 220 + vector.x * 0.55, 75 + vector.y * 0.55);
+    }
+    arrow(velocity, "#555", "原速度");
+    arrow(result.velocity, "#111", "新速度");
+    document.getElementById("output").textContent = JSON.stringify(result, null, 2);
+  } catch (error) {
+    document.getElementById("output").textContent = "參數錯誤：" + error.message;
+  }
+}
+document.getElementById("calculate").addEventListener("click", calculate);
+calculate();
+</script>
+
+</body>
+</html>

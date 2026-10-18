@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Circle Segment Collision Tests</title>
+</head>
+<body>
+<h1>Circle Segment Collision｜真實 PASS / FAIL 測試</h1>
+
+<p id="summary">執行中…</p><pre id="details" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision.js"></script>
+<script>
+"use strict";
+const results = [];
+function assert(condition, message = "Assertion failed") {
+  if (!condition) throw new Error(message);
+}
+function approximately(actual, expected, tolerance = 1e-8) {
+  assert(typeof actual === "number" && Math.abs(actual - expected) <= tolerance,
+    "Expected " + expected + ", received " + actual);
+}
+function expect_throw(callback, error_type) {
+  let caught = null;
+  try { callback(); } catch (error) { caught = error; }
+  assert(caught !== null, "Expected exception");
+  if (error_type) assert(caught instanceof error_type, "Wrong exception type: " + caught);
+}
+async function test(name, callback) {
+  try {
+    await callback();
+    results.push({ name, status: "PASS" });
+  } catch (error) {
+    results.push({ name, status: "FAIL", detail: String(error?.stack ?? error) });
+  }
+}
+function show_results() {
+  const passed = results.filter(item => item.status === "PASS").length;
+  const failed = results.length - passed;
+  window.__slowly_test_results = { passed, failed, details: results };
+  const summary = document.getElementById("summary");
+  summary.textContent = `PASS: ${passed} / FAIL: ${failed} / TOTAL: ${results.length}`;
+  const output = document.getElementById("details");
+  output.textContent = results.map(item => item.status + "｜" + item.name +
+    (item.detail ? "\n" + item.detail : "")).join("\n");
+}
+
+(async function run_tests() {
+const tool = SlowlyCircleSegmentCollision;
+const geometry = (x,y,radius,ax,ay,bx,by,additional={})=>({
+  circle:{x,y,radius},segment:{start:{x:ax,y:ay},end:{x:bx,y:by}},...additional
+});
+await test("線段中段穿透",()=>{
+  const result=tool.inspect(geometry(5,1,2,0,0,10,0));
+  assert(result.touching); approximately(result.overlap_depth,1); approximately(result.segment_parameter,0.5);
+});
+await test("分離時沒有碰撞",()=>assert(!tool.touches(geometry(5,5,2,0,0,10,0))));
+await test("相切預設為碰撞",()=>{
+  const result=tool.inspect(geometry(5,2,2,0,0,10,0));
+  assert(result.touching&&result.exactly_tangent); approximately(result.overlap_depth,0);
+});
+await test("相切排除模式",()=>assert(!tool.touches(geometry(5,2,2,0,0,10,0,{inclusive:false}))));
+await test("線段端點最近點",()=>{
+  const result=tool.inspect(geometry(11,0,2,0,0,10,0));
+  approximately(result.closest_point.x,10); approximately(result.segment_parameter,1);
+});
+await test("線段外端負方向投影",()=>approximately(tool.inspect(geometry(-2,0,4,0,0,10,0)).segment_parameter,0));
+await test("線段厚度參與接觸",()=>assert(tool.touches(geometry(5,5,3,0,0,10,0,{thickness:3}))));
+await test("零長度線段接觸",()=>{
+  const r=tool.inspect(geometry(1,0,2,0,0,0,0));
+  assert(r.degenerate_segment&&r.touching); approximately(r.normal.x,1);
+});
+await test("同點退化不產生 NaN",()=>{
+  const r=tool.inspect(geometry(0,0,2,0,0,10,0));
+  assert(r.touching&&r.normal_was_fallback);
+  assert(Number.isFinite(r.normal.x)&&Number.isFinite(r.normal.y));
+});
+await test("同點可指定備援法線",()=>{
+  const r=tool.inspect(geometry(0,0,2,0,0,0,0,{fallback_normal:{x:0,y:-5}}));
+  approximately(r.normal.y,-1);
+});
+await test("零半徑在同點符合 inclusive",()=>assert(tool.touches(geometry(0,0,0,0,0,10,0))));
+await test("負半徑拒絕",()=>expect_throw(()=>tool.inspect(geometry(5,0,-1,0,0,10,0)),RangeError));
+await test("非法座標拒絕",()=>expect_throw(()=>tool.inspect(geometry(NaN,0,1,0,0,10,0)),TypeError));
+await test("零備援法線拒絕",()=>expect_throw(()=>tool.inspect(geometry(0,0,1,0,0,0,0,{fallback_normal:{x:0,y:0}})),RangeError));
+await test("無副作用且可重現",()=>{
+  const input=geometry(5,1,2,0,0,10,0),before=JSON.stringify(input);
+  const first=tool.inspect(input),second=tool.inspect(input);
+  assert(JSON.stringify(first)===JSON.stringify(second)); assert(JSON.stringify(input)===before);
+});
+
+show_results();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hinged Segment Motion 使用說明</title>
+</head>
+<body>
+<h1>Hinged Segment Motion｜使用說明</h1>
+<p>以轉軸旋轉有長度的線段，計算端點與接觸點切線速度；來源 tip 與 stepFlipper。</p>
+<h2>檔案與載入順序</h2>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion.js"&gt;&lt;/script&gt;</code></pre>
+<h2>公開 API</h2><p><code>window.SlowlyHingedSegmentMotion</code></p>
+<ul><li><code>step({pivot:{x,y}, length, angle, target_angle, maximum_angular_speed, delta_seconds}) → {angle, angular_velocity, end_point, reached_target}</code></li><li><code>end_point({pivot, length, angle}) → {x,y}</code></li><li><code>point_velocity({pivot, point:{x,y}, angular_velocity}) → {x,y}</code></li></ul>
+<h2>選項、數值與輸出</h2><ul><li>角度使用弧度，角速度為弧度／秒；delta_seconds 為秒。</li><li>length、maximum_angular_speed、delta_seconds 必須 ≥0。</li><li>角度直接朝目標值前進（不採最短環繞路徑）；可讓宿主控制角度上下限。</li><li>端點等於 pivot + length × (cos(angle), sin(angle))。</li></ul>
+<h2>使用範例（請先按上列順序載入腳本）</h2><pre><code>const moved = SlowlyHingedSegmentMotion.step({
+  pivot:{x:100,y:120}, length:80, angle:0,
+  target_angle:-0.6, maximum_angular_speed:4, delta_seconds:1/60
+});
+const surface = SlowlyHingedSegmentMotion.point_velocity({
+  pivot:{x:100,y:120}, point:moved.end_point,
+  angular_velocity:moved.angular_velocity
+});</code></pre>
+<h2>錯誤、清理與限制</h2><p>在 Canvas y 軸向下的畫面，正角度看起來是順時針；無時間步長時角速度歸零、不除以 0。沒有碰撞與按鍵邏輯。</p>
+<p>若輸入格式錯誤、非法負值或非有限數字，原則上拋出 TypeError 或 RangeError。
+需保留狀態的物件可使用 reset/cancel/clear/destroy 或非同步 stop，實際方法以上列 API 為準。</p>
+<p>這顆 JS 不附加遊戲造型、不依賴打包工具，使用獨立 IIFE ＋ window API。
+本頁文中的 HTTPS 新零件網址須等使用者部署後才會可用。</p>
+<p><a href="https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/physics/test_hinged_segment_motion.html">功能測試</a></p>
+
+</body>
+</html>

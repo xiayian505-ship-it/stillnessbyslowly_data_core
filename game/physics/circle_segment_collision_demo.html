@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Circle Segment Collision Demo</title>
+<style>
+button, input { margin: 0.3em; }
+canvas { border: 1px solid #777; max-width: 100%; touch-action: none; } label { display: inline-block; margin: 0.3em 1em 0.3em 0; }
+</style>
+</head>
+<body>
+<h1>Circle Segment Collision｜操作示範</h1>
+<p>拖曳滑桿改變球與線段。圓圈、最近點、法線均由本零件計算結果繪出。</p>
+<label>球 X <input id="ball_x" type="range" min="0" max="480" value="200"></label>
+<label>球 Y <input id="ball_y" type="range" min="0" max="280" value="130"></label>
+<label>半徑 <input id="radius" type="range" min="0" max="70" value="24"></label>
+<label>線段角度 <input id="angle" type="range" min="-90" max="90" value="15"></label>
+<label>厚度 <input id="thickness" type="range" min="0" max="30" value="4"></label>
+<div><canvas id="scene" width="480" height="280"></canvas></div>
+<pre id="output" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision.js"></script>
+<script>
+"use strict";
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d");
+function render() {
+  const value = name => Number(document.getElementById(name).value);
+  const radians = value("angle") * Math.PI / 180;
+  const start = { x: 80, y: 165 - Math.sin(radians) * 120 };
+  const end = { x: 400, y: 165 + Math.sin(radians) * 120 };
+  const circle = { x: value("ball_x"), y: value("ball_y"), radius: value("radius") };
+  const result = SlowlyCircleSegmentCollision.inspect({
+    circle, segment: { start, end }, thickness: value("thickness")
+  });
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "#555";
+  ctx.lineWidth = Math.max(1, value("thickness") * 2);
+  ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.lineTo(end.x, end.y); ctx.stroke();
+  ctx.strokeStyle = result.touching ? "#a22" : "#222";
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2); ctx.stroke();
+  ctx.fillStyle = "#222";
+  ctx.beginPath(); ctx.arc(result.closest_point.x, result.closest_point.y, 4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(result.closest_point.x, result.closest_point.y);
+  ctx.lineTo(result.closest_point.x + result.normal.x * 35, result.closest_point.y + result.normal.y * 35);
+  ctx.stroke();
+  document.getElementById("output").textContent = JSON.stringify(result, null, 2);
+}
+document.querySelectorAll("input").forEach(input => input.addEventListener("input", render));
+render();
+</script>
+
+</body>
+</html>

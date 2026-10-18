@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gamepad Vibration 使用說明</title>
+</head>
+<body>
+<h1>Gamepad Vibration｜使用說明</h1>
+<p>對相容的已連接手把使用 Gamepad 震動 API；從彈珠台 Haptics.pulse 的手把部分抽離。</p>
+<h2>檔案與載入順序</h2>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration.js"&gt;&lt;/script&gt;</code></pre>
+<h2>公開 API</h2><p><code>window.SlowlyGamepadVibration</code></p>
+<ul><li><code>create({enabled?, get_gamepads?}) → instance（get_gamepads 可供測試注入）</code></li><li><code>instance.find_gamepads() → 支援的陣列索引</code></li><li><code>instance.is_supported() → boolean</code></li><li><code>await instance.trigger({duration_ms?, strong_magnitude?, weak_magnitude?, gamepad_index?}) → {attempted, succeeded, results}</code></li><li><code>await instance.stop(gamepad_index?) → {attempted, succeeded, results}</code></li><li><code>await instance.set_enabled(boolean) → boolean；instance.get_state() → 狀態快照</code></li></ul>
+<h2>選項、數值與輸出</h2><ul><li>強／弱馬達強度 0..1；duration_ms ≥0。</li><li>當指定 gamepad_index 時只選該索引，留空表示全部相容手把。</li><li>優先使用 vibrationActuator / vibrationActuators 的 playEffect；其次 pulse。</li><li>不支援或無手把時回報 attempted=0，不宣稱實體成功；Promise 拒絕回報 failure。</li></ul>
+<h2>使用範例（請先按上列順序載入腳本）</h2><pre><code>const rumble = SlowlyGamepadVibration.create();
+console.log(rumble.find_gamepads());
+const result = await rumble.trigger({
+  duration_ms:150, strong_magnitude:0.7, weak_magnitude:0.3
+});
+console.log(result.attempted, result.succeeded);
+await rumble.stop();</code></pre>
+<h2>錯誤、清理與限制</h2><p>震動效果會受實體手把、瀏覽器、權限、焦點限制影響。Demo 必須由真實手把手動驗收；自動測試只驗證注入假致動器的 API 邏輯。手機震動請引用既有 SlowlyDeviceVibration。</p>
+<p>若輸入格式錯誤、非法負值或非有限數字，原則上拋出 TypeError 或 RangeError。
+需保留狀態的物件可使用 reset/cancel/clear/destroy 或非同步 stop，實際方法以上列 API 為準。</p>
+<p>這顆 JS 不附加遊戲造型、不依賴打包工具，使用獨立 IIFE ＋ window API。
+本頁文中的 HTTPS 新零件網址須等使用者部署後才會可用。</p>
+<p><a href="https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/effects/feedback/test_gamepad_vibration.html">功能測試</a></p>
+
+</body>
+</html>

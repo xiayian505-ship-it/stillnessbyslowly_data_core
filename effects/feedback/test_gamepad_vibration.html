@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gamepad Vibration Tests</title>
+</head>
+<body>
+<h1>Gamepad Vibration｜真實 PASS / FAIL 測試</h1>
+<p>僅模擬 Gamepad API；未連接與驗證實體手把。</p>
+<p id="summary">執行中…</p><pre id="details" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration.js"></script>
+<script>
+"use strict";
+const results = [];
+function assert(condition, message = "Assertion failed") {
+  if (!condition) throw new Error(message);
+}
+function approximately(actual, expected, tolerance = 1e-8) {
+  assert(typeof actual === "number" && Math.abs(actual - expected) <= tolerance,
+    "Expected " + expected + ", received " + actual);
+}
+function expect_throw(callback, error_type) {
+  let caught = null;
+  try { callback(); } catch (error) { caught = error; }
+  assert(caught !== null, "Expected exception");
+  if (error_type) assert(caught instanceof error_type, "Wrong exception type: " + caught);
+}
+async function test(name, callback) {
+  try {
+    await callback();
+    results.push({ name, status: "PASS" });
+  } catch (error) {
+    results.push({ name, status: "FAIL", detail: String(error?.stack ?? error) });
+  }
+}
+function show_results() {
+  const passed = results.filter(item => item.status === "PASS").length;
+  const failed = results.length - passed;
+  window.__slowly_test_results = { passed, failed, details: results };
+  const summary = document.getElementById("summary");
+  summary.textContent = `PASS: ${passed} / FAIL: ${failed} / TOTAL: ${results.length}`;
+  const output = document.getElementById("details");
+  output.textContent = results.map(item => item.status + "｜" + item.name +
+    (item.detail ? "\n" + item.detail : "")).join("\n");
+}
+
+(async function run_tests() {
+const tool=SlowlyGamepadVibration;
+function fake_gamepad(play_effect,stop_effect) {
+  return { vibrationActuator: {
+    playEffect:play_effect ?? (()=>Promise.resolve("complete")),
+    reset:stop_effect ?? (()=>Promise.resolve("complete"))
+  }};
+}
+await test("無手把安全降級",async()=>{
+  const pad=tool.create({get_gamepads:()=>[]});
+  assert(!pad.is_supported());const r=await pad.trigger();assert(r.attempted===0);
+});
+await test("沒有震動致動器不算支援",()=>{
+  const pad=tool.create({get_gamepads:()=>[{id:"no-rumble"}]});assert(!pad.is_supported());
+});
+await test("找到支援震動的索引",()=>{
+  const pad=tool.create({get_gamepads:()=>[null,fake_gamepad(),{id:"none"}]});
+  assert(JSON.stringify(pad.find_gamepads())==="[1]");
+});
+await test("正確傳給雙馬達數值",async()=>{
+  let observed=null;
+  const pad=tool.create({get_gamepads:()=>[fake_gamepad((type,settings)=>{observed={type,settings};return "complete";})]});
+  const result=await pad.trigger({duration_ms:210,strong_magnitude:0.8,weak_magnitude:0.3});
+  assert(result.attempted===1&&result.succeeded===1);
+  assert(observed.type==="dual-rumble"&&observed.settings.duration===210);
+  approximately(observed.settings.strongMagnitude,0.8);
+});
+await test("選定索引只控制指定手把",async()=>{
+  let count=0;
+  const pads=[fake_gamepad(()=>{count++;return "complete";}),fake_gamepad(()=>{count++;return "complete";})];
+  const pad=tool.create({get_gamepads:()=>pads});const result=await pad.trigger({gamepad_index:1});
+  assert(result.attempted===1&&count===1&&result.results[0].index===1);
+});
+await test("播放拒絕 Promise 記錄失敗",async()=>{
+  const pad=tool.create({get_gamepads:()=>[fake_gamepad(()=>Promise.reject(new Error("blocked")))]});
+  const result=await pad.trigger();assert(result.attempted===1&&result.succeeded===0&&result.results[0].error.includes("blocked"));
+});
+await test("not-supported 播放狀態回報失敗",async()=>{
+  const pad=tool.create({get_gamepads:()=>[fake_gamepad(()=>"not-supported")]});
+  const r=await pad.trigger();assert(r.attempted===1&&r.succeeded===0);
+});
+await test("不支援的播放結果回報失敗",async()=>{
+  const pad=tool.create({get_gamepads:()=>[fake_gamepad(()=>false)]});
+  const r=await pad.trigger();assert(r.succeeded===0);
+});
+await test("停止呼叫 reset",async()=>{
+  let stopped=0;
+  const pad=tool.create({get_gamepads:()=>[fake_gamepad(null,()=>{stopped++;return "complete";})]});
+  const r=await pad.stop();assert(r.succeeded===1&&stopped===1);
+});
+await test("沒有 reset 時以零震動停止",async()=>{
+  let values=null;
+  const pad=tool.create({get_gamepads:()=>[{vibrationActuator:{playEffect:(name,args)=>{values=args;return "complete";}}}]});
+  await pad.stop();assert(values.strongMagnitude===0&&values.duration===0);
+});
+await test("停用後不會觸發",async()=>{
+  let called=0;
+  const pad=tool.create({enabled:false,get_gamepads:()=>[fake_gamepad(()=>{called++;return "complete";})]});
+  const r=await pad.trigger();assert(r.attempted===0&&called===0);
+});
+await test("切換停用時停止",async()=>{
+  let stops=0;
+  const pad=tool.create({get_gamepads:()=>[fake_gamepad(null,()=>{stops++;return "complete";})]});
+  await pad.set_enabled(false);assert(stops===1&&!pad.get_state().enabled);
+});
+await test("拒絕非法強度",async()=>{
+  const pad=tool.create({get_gamepads:()=>[]});
+  try { await pad.trigger({strong_magnitude:2});throw new Error("Should reject"); }
+  catch(error){ assert(error instanceof RangeError); }
+});
+await test("pulse 後備實作",async()=>{
+  let value=null;
+  const pad=tool.create({get_gamepads:()=>[{vibrationActuator:{pulse:(a,b)=>{value=[a,b];return true;}}}]});
+  const result=await pad.trigger({strong_magnitude:0.4,duration_ms:100});
+  assert(result.succeeded===1);approximately(value[0],0.4);approximately(value[1],100);
+});
+
+show_results();
+})();
+</script>
+
+</body>
+</html>

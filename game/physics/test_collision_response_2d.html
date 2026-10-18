@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collision Response 2D Tests</title>
+</head>
+<body>
+<h1>Collision Response 2D｜真實 PASS / FAIL 測試</h1>
+
+<p id="summary">執行中…</p><pre id="details" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/physics/collision_response_2d.js"></script>
+<script>
+"use strict";
+const results = [];
+function assert(condition, message = "Assertion failed") {
+  if (!condition) throw new Error(message);
+}
+function approximately(actual, expected, tolerance = 1e-8) {
+  assert(typeof actual === "number" && Math.abs(actual - expected) <= tolerance,
+    "Expected " + expected + ", received " + actual);
+}
+function expect_throw(callback, error_type) {
+  let caught = null;
+  try { callback(); } catch (error) { caught = error; }
+  assert(caught !== null, "Expected exception");
+  if (error_type) assert(caught instanceof error_type, "Wrong exception type: " + caught);
+}
+async function test(name, callback) {
+  try {
+    await callback();
+    results.push({ name, status: "PASS" });
+  } catch (error) {
+    results.push({ name, status: "FAIL", detail: String(error?.stack ?? error) });
+  }
+}
+function show_results() {
+  const passed = results.filter(item => item.status === "PASS").length;
+  const failed = results.length - passed;
+  window.__slowly_test_results = { passed, failed, details: results };
+  const summary = document.getElementById("summary");
+  summary.textContent = `PASS: ${passed} / FAIL: ${failed} / TOTAL: ${results.length}`;
+  const output = document.getElementById("details");
+  output.textContent = results.map(item => item.status + "｜" + item.name +
+    (item.detail ? "\n" + item.detail : "")).join("\n");
+}
+
+(async function run_tests() {
+const tool=SlowlyCollisionResponse2D;
+const impact=(velocity,more={})=>tool.calculate({velocity,normal:{x:0,y:-1},...more});
+await test("向下撞靜止牆反彈",()=>{
+  const r=impact({x:5,y:10},{restitution:0.5});
+  assert(r.collided); approximately(r.velocity.x,5);approximately(r.velocity.y,-5);approximately(r.impact_speed,10);
+});
+await test("遠離表面不反彈",()=>{
+  const r=impact({x:2,y:-10}); assert(!r.collided);approximately(r.velocity.y,-10);
+});
+await test("零反彈只移除法向速度",()=>approximately(impact({x:6,y:10},{restitution:0}).velocity.y,0));
+await test("完全彈性反彈",()=>approximately(impact({x:0,y:10},{restitution:1}).velocity.y,-10));
+await test("低速門檻消除彈跳",()=>{
+  const r=impact({x:2,y:3},{restitution:0.8,minimum_bounce_speed:4});
+  approximately(r.velocity.y,0);approximately(r.restitution_applied,0);
+});
+await test("切向速度保留",()=>approximately(impact({x:123,y:10}).velocity.x,123));
+await test("動態表面給球額外速度",()=>{
+  const r=impact({x:0,y:0},{surface_velocity:{x:0,y:8},restitution:1});
+  assert(!r.collided); // 表面往下遠離靜止球，不應無故反彈。
+  const pushed=impact({x:0,y:10},{surface_velocity:{x:0,y:-8},restitution:1});
+  approximately(pushed.velocity.y,-26);
+});
+await test("法線自動正規化",()=>approximately(tool.calculate({velocity:{x:0,y:10},normal:{x:0,y:-9},restitution:1}).velocity.y,-10));
+await test("非軸對齊法線",()=>{
+  const r=tool.calculate({velocity:{x:-2,y:0},normal:{x:1,y:0},restitution:1});
+  approximately(r.velocity.x,2);
+});
+await test("零法線拒絕",()=>expect_throw(()=>impact({x:0,y:1},{normal:{x:0,y:0}}),RangeError));
+await test("非法反彈係數拒絕",()=>expect_throw(()=>impact({x:0,y:1},{restitution:1.5}),RangeError));
+await test("負門檻拒絕",()=>expect_throw(()=>impact({x:0,y:1},{minimum_bounce_speed:-1}),RangeError));
+await test("輸入維持不變",()=>{
+  const o={velocity:{x:2,y:3},normal:{x:0,y:-1}};
+  const before=JSON.stringify(o);tool.calculate(o);assert(JSON.stringify(o)===before);
+});
+
+show_results();
+})();
+</script>
+
+</body>
+</html>

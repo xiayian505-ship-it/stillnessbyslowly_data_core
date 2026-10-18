@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Action Input Demo</title>
+<style>
+button, input { margin: 0.3em; }
+canvas { border: 1px solid #777; max-width: 100%; touch-action: none; } label { display: inline-block; margin: 0.3em 1em 0.3em 0; }
+</style>
+</head>
+<body>
+<h1>Digital Action Input｜操作示範</h1>
+<p>用鍵盤 A、D、空白鍵，或觸控按鈕及畫布左右區域。試試兩根手指按住同一個動作。</p>
+<button id="left_button" style="touch-action: none;">左動作</button>
+<button id="right_button" style="touch-action: none;">右動作</button>
+<button id="launch_button" style="touch-action: none;">發射</button>
+<button id="disable">停用／啟用</button>
+<div><canvas id="touch_area" width="440" height="140"></canvas></div>
+<pre id="output" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/ui/canvas/canvas_rect_drag.js"></script>
+<script src="https://lib.stillnessbyslowly.com/ui/input/digital_action_input.js"></script>
+<script>
+"use strict";
+const area=document.getElementById("touch_area");
+const ctx=area.getContext("2d");
+let log=[];
+const actions=SlowlyDigitalActionInput.create({
+  key_map:{KeyA:"move_left",KeyD:"move_right",Space:"launch"},
+  pointer_targets:[
+    {element:document.getElementById("left_button"),action:"move_left"},
+    {element:document.getElementById("right_button"),action:"move_right"},
+    {element:document.getElementById("launch_button"),action:"launch"},
+    {element:area,resolve_action:(event,point)=>point.x<area.width/2?"move_left":"move_right"}
+  ],
+  on_change:event=>{log.push(event.action+" "+event.type); log=log.slice(-8); render();}
+});
+function render(){
+  const state=actions.snapshot();
+  ctx.clearRect(0,0,area.width,area.height);
+  ctx.strokeStyle="#777";
+  ctx.beginPath();ctx.moveTo(area.width/2,0);ctx.lineTo(area.width/2,140);ctx.stroke();
+  ctx.fillStyle="#222";
+  ctx.fillText("左區域："+(actions.pressed("move_left")?"按住":"放開"),30,70);
+  ctx.fillText("右區域："+(actions.pressed("move_right")?"按住":"放開"),250,70);
+  document.getElementById("output").textContent=JSON.stringify(state,null,2)+"\n事件：\n"+log.join("\n");
+}
+document.getElementById("disable").addEventListener("click",()=>{
+  actions.set_enabled(!actions.snapshot().enabled);render();
+});
+render();
+</script>
+
+</body>
+</html>

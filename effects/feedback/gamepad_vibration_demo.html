@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gamepad Vibration Demo</title>
+<style>
+button, input { margin: 0.3em; }
+</style>
+</head>
+<body>
+<h1>Gamepad Vibration｜操作示範</h1>
+<p>先以瀏覽器連接相容手把，再按「掃描」。無手把時本頁不會假裝硬體測試通過。</p>
+<label>強馬達 <input id="strong" type="range" min="0" max="100" value="75"></label>
+<label>弱馬達 <input id="weak" type="range" min="0" max="100" value="35"></label>
+<label>震動毫秒 <input id="duration" type="number" min="0" value="180"></label>
+<button id="scan">掃描手把</button><button id="trigger">開始震動</button><button id="stop">停止震動</button>
+<pre id="output" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration.js"></script>
+<script>
+"use strict";
+const rumble=SlowlyGamepadVibration.create();
+const output=document.getElementById("output");
+function scan() {
+  const supported=rumble.find_gamepads();
+  output.textContent=supported.length
+    ? "偵測到可能支援震動的手把索引："+supported.join(", ")+"。請操作實機驗證。"
+    : "無可用的震動手把：本頁無法驗證實體震動。";
+}
+document.getElementById("scan").addEventListener("click",scan);
+document.getElementById("trigger").addEventListener("click",async()=>{
+  const result=await rumble.trigger({
+    strong_magnitude:Number(document.getElementById("strong").value)/100,
+    weak_magnitude:Number(document.getElementById("weak").value)/100,
+    duration_ms:Number(document.getElementById("duration").value)
+  });
+  output.textContent="API 呼叫結果（不代表已人工確認實際觸感）：\n"+JSON.stringify(result,null,2);
+});
+document.getElementById("stop").addEventListener("click",async()=>{
+  output.textContent="停止呼叫："+JSON.stringify(await rumble.stop(),null,2);
+});
+window.addEventListener("gamepadconnected",scan);
+window.addEventListener("gamepaddisconnected",scan);
+scan();
+</script>
+
+</body>
+</html>

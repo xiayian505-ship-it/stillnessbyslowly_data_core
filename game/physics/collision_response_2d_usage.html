@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collision Response 2D 使用說明</title>
+</head>
+<body>
+<h1>Collision Response 2D｜使用說明</h1>
+<p>使用已知法線、物體速度和表面速度求碰後速度；來源為 hitSeg 的法線反彈計算。</p>
+<h2>檔案與載入順序</h2>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/physics/collision_response_2d.js"&gt;&lt;/script&gt;</code></pre>
+<h2>公開 API</h2><p><code>window.SlowlyCollisionResponse2D</code></p>
+<ul><li><code>calculate({ velocity:{x,y}, normal:{x,y}, surface_velocity?:{x,y}, restitution?, minimum_bounce_speed? }) → 碰後運動資訊</code></li></ul>
+<h2>選項、數值與輸出</h2><ul><li>速度與表面速度：宿主座標單位／秒；預設表面靜止。</li><li>法線必須是非零向量，函式會正規化。</li><li>restitution 介於 0..1，預設 0.5；minimum_bounce_speed ≥0，預設 0。</li><li>回傳 collided、impact_speed、normal_speed、restitution_applied、impulse_per_unit_mass、velocity、normal。</li></ul>
+<h2>使用範例（請先按上列順序載入腳本）</h2><pre><code>const impact = SlowlyCollisionResponse2D.calculate({
+  velocity: { x: 10, y: 50 }, normal: { x: 0, y: -1 },
+  restitution: 0.6, minimum_bounce_speed: 2
+});
+console.log(impact.velocity, impact.impact_speed);</code></pre>
+<h2>錯誤、清理與限制</h2><p>只在相對法線速度小於零時反彈；遠離表面的物體原速返回。碰撞幾何、位移修正及接觸物件搜索由宿主與其他零件提供。</p>
+<p>若輸入格式錯誤、非法負值或非有限數字，原則上拋出 TypeError 或 RangeError。
+需保留狀態的物件可使用 reset/cancel/clear/destroy 或非同步 stop，實際方法以上列 API 為準。</p>
+<p>這顆 JS 不附加遊戲造型、不依賴打包工具，使用獨立 IIFE ＋ window API。
+本頁文中的 HTTPS 新零件網址須等使用者部署後才會可用。</p>
+<p><a href="https://lib.stillnessbyslowly.com/game/physics/collision_response_2d_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/physics/test_collision_response_2d.html">功能測試</a></p>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Body Motion 2D Demo</title>
+<style>
+button, input { margin: 0.3em; }
+canvas { border: 1px solid #777; max-width: 100%; touch-action: none; } label { display: inline-block; margin: 0.3em 1em 0.3em 0; }
+</style>
+</head>
+<body>
+<h1>Body Motion 2D｜操作示範</h1>
+<p>觀察無碰撞的二維質點運動；由宿主決定更新時間、重力、速度上限。</p>
+<label>重力 Y <input id="gravity" type="range" min="-800" max="800" value="180"></label>
+<label>加速度 X <input id="horizontal" type="range" min="-400" max="400" value="60"></label>
+<label>速度上限 <input id="limit" type="range" min="0" max="500" value="320"></label>
+<button id="reset">重置運動</button><button id="pause">暫停／繼續</button>
+<div><canvas id="scene" width="440" height="260"></canvas></div>
+<pre id="output" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/physics/body_motion_2d.js"></script>
+<script>
+"use strict";
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d");
+let body = { position:{x:50,y:60}, velocity:{x:20,y:0} };
+let last_time = null;
+let running = true;
+function reset() { body = { position:{x:50,y:60}, velocity:{x:20,y:0} }; }
+function frame(timestamp) {
+  const delta_seconds = last_time === null ? 0 : Math.min(0.04, (timestamp - last_time) / 1000);
+  last_time = timestamp;
+  if (running) {
+    const result = SlowlyBodyMotion2D.step({
+      ...body, acceleration:{x:Number(document.getElementById("horizontal").value),y:0},
+      gravity:{x:0,y:Number(document.getElementById("gravity").value)},
+      maximum_speed:Number(document.getElementById("limit").value),
+      delta_seconds
+    });
+    body = { position:result.position, velocity:result.velocity };
+    if (body.position.x > 460 || body.position.x < -20 || body.position.y > 280 || body.position.y < -20) reset();
+  }
+  ctx.clearRect(0,0,440,260);
+  ctx.strokeStyle = "#222";
+  ctx.beginPath(); ctx.arc(body.position.x,body.position.y,11,0,2*Math.PI); ctx.stroke();
+  document.getElementById("output").textContent = JSON.stringify(body,null,2);
+  requestAnimationFrame(frame);
+}
+document.getElementById("reset").addEventListener("click",reset);
+document.getElementById("pause").addEventListener("click",()=>{ running=!running; });
+requestAnimationFrame(frame);
+</script>
+
+</body>
+</html>

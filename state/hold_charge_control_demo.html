@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hold Charge Control Demo</title>
+<style>
+button, input { margin: 0.3em; }
+progress { width: 220px; }
+</style>
+</head>
+<body>
+<h1>Hold Charge Control｜操作示範</h1>
+<p>按住「蓄力」並放開，得到一次蓄力比例。進度數值交給原有 ChargeState 管理。</p>
+<label>蓄滿時間（秒） <input id="duration" type="number" min="0.1" step="0.1" value="1.5"></label>
+<button id="recreate">套用蓄力時間</button>
+<button id="charge" style="touch-action: none;">按住蓄力</button>
+<button id="cancel">取消</button>
+<progress id="progress" value="0" max="1"></progress>
+<pre id="output" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/combat/charge_state.js"></script>
+<script src="https://lib.stillnessbyslowly.com/state/hold_charge_control.js"></script>
+<script>
+"use strict";
+let controller;
+function create_controller() {
+  try {
+    controller = SlowlyHoldChargeControl.create({
+      duration_seconds:Number(document.getElementById("duration").value),
+      on_release:result=>{ document.getElementById("output").textContent="放開結果："+JSON.stringify(result,null,2); }
+    });
+  } catch(error) {
+    document.getElementById("output").textContent=error.message;
+  }
+}
+const button=document.getElementById("charge");
+button.addEventListener("pointerdown",event=>{
+  event.preventDefault();
+  if (!controller) return;
+  controller.press();
+  try { button.setPointerCapture(event.pointerId); } catch(error) { /* 捕捉非必需 */ }
+});
+button.addEventListener("pointerup",()=>{ if(controller) controller.release(); });
+button.addEventListener("pointercancel",()=>{ if(controller) controller.cancel(); });
+button.addEventListener("lostpointercapture",()=>{ if(controller) controller.cancel(); });
+document.getElementById("cancel").addEventListener("click",()=>{ if(controller) controller.cancel(); });
+document.getElementById("recreate").addEventListener("click",create_controller);
+let last_time=performance.now();
+function frame(now) {
+  const dt=Math.max(0,Math.min(0.1,(now-last_time)/1000)); last_time=now;
+  if(controller) {
+    const state=controller.update(dt);
+    document.getElementById("progress").value=state.progress;
+  }
+  requestAnimationFrame(frame);
+}
+create_controller(); requestAnimationFrame(frame);
+</script>
+
+</body>
+</html>

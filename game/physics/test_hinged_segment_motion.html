@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hinged Segment Motion Tests</title>
+</head>
+<body>
+<h1>Hinged Segment Motion｜真實 PASS / FAIL 測試</h1>
+
+<p id="summary">執行中…</p><pre id="details" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion.js"></script>
+<script>
+"use strict";
+const results = [];
+function assert(condition, message = "Assertion failed") {
+  if (!condition) throw new Error(message);
+}
+function approximately(actual, expected, tolerance = 1e-8) {
+  assert(typeof actual === "number" && Math.abs(actual - expected) <= tolerance,
+    "Expected " + expected + ", received " + actual);
+}
+function expect_throw(callback, error_type) {
+  let caught = null;
+  try { callback(); } catch (error) { caught = error; }
+  assert(caught !== null, "Expected exception");
+  if (error_type) assert(caught instanceof error_type, "Wrong exception type: " + caught);
+}
+async function test(name, callback) {
+  try {
+    await callback();
+    results.push({ name, status: "PASS" });
+  } catch (error) {
+    results.push({ name, status: "FAIL", detail: String(error?.stack ?? error) });
+  }
+}
+function show_results() {
+  const passed = results.filter(item => item.status === "PASS").length;
+  const failed = results.length - passed;
+  window.__slowly_test_results = { passed, failed, details: results };
+  const summary = document.getElementById("summary");
+  summary.textContent = `PASS: ${passed} / FAIL: ${failed} / TOTAL: ${results.length}`;
+  const output = document.getElementById("details");
+  output.textContent = results.map(item => item.status + "｜" + item.name +
+    (item.detail ? "\n" + item.detail : "")).join("\n");
+}
+
+(async function run_tests() {
+const tool=SlowlyHingedSegmentMotion;
+const option=(more={})=>({pivot:{x:3,y:4},length:10,angle:0,target_angle:Math.PI/2,
+  maximum_angular_speed:Math.PI,delta_seconds:0.25,...more});
+await test("逐步轉向目標",()=>approximately(tool.step(option()).angle,Math.PI/4));
+await test("到達目標不超過",()=>{
+  const r=tool.step(option({delta_seconds:1}));approximately(r.angle,Math.PI/2);assert(r.reached_target);
+});
+await test("反方向旋轉",()=>{
+  const r=tool.step(option({target_angle:-Math.PI/2}));approximately(r.angle,-Math.PI/4);assert(r.angular_velocity<0);
+});
+await test("零時間不旋轉",()=>{
+  const r=tool.step(option({delta_seconds:0}));approximately(r.angle,0);approximately(r.angular_velocity,0);
+});
+await test("速度零不旋轉",()=>approximately(tool.step(option({maximum_angular_speed:0})).angle,0));
+await test("角速度上限",()=>approximately(tool.step(option()).angular_velocity,Math.PI));
+await test("端點長度固定",()=>{
+  const r=tool.step(option()); approximately(Math.hypot(r.end_point.x-3,r.end_point.y-4),10);
+});
+await test("角度零端點",()=>{
+  const end=tool.end_point({pivot:{x:3,y:4},length:10,angle:0});
+  approximately(end.x,13);approximately(end.y,4);
+});
+await test("接觸點切線速度",()=>{
+  const r=tool.point_velocity({pivot:{x:0,y:0},point:{x:5,y:0},angular_velocity:2});
+  approximately(r.x,0);approximately(r.y,10);
+});
+await test("順逆角速度反向",()=>{
+  const r=tool.point_velocity({pivot:{x:0,y:0},point:{x:0,y:5},angular_velocity:-2});
+  approximately(r.x,10);approximately(r.y,0);
+});
+await test("不同實例無全域狀態互相影響",()=>{
+  const a=tool.step(option({angle:0}));const b=tool.step(option({angle:-1}));
+  assert(a.angle!==b.angle);approximately(tool.step(option({angle:0})).angle,a.angle);
+});
+await test("拒絕負時間",()=>expect_throw(()=>tool.step(option({delta_seconds:-1})),RangeError));
+await test("拒絕負長度",()=>expect_throw(()=>tool.step(option({length:-1})),RangeError));
+await test("拒絕非法角度",()=>expect_throw(()=>tool.step(option({angle:Infinity})),TypeError));
+
+show_results();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hold Charge Control Tests</title>
+</head>
+<body>
+<h1>Hold Charge Control｜真實 PASS / FAIL 測試</h1>
+
+<p id="summary">執行中…</p><pre id="details" aria-live="polite"></pre>
+<script src="https://lib.stillnessbyslowly.com/game/combat/charge_state.js"></script>
+<script src="https://lib.stillnessbyslowly.com/state/hold_charge_control.js"></script>
+<script>
+"use strict";
+const results = [];
+function assert(condition, message = "Assertion failed") {
+  if (!condition) throw new Error(message);
+}
+function approximately(actual, expected, tolerance = 1e-8) {
+  assert(typeof actual === "number" && Math.abs(actual - expected) <= tolerance,
+    "Expected " + expected + ", received " + actual);
+}
+function expect_throw(callback, error_type) {
+  let caught = null;
+  try { callback(); } catch (error) { caught = error; }
+  assert(caught !== null, "Expected exception");
+  if (error_type) assert(caught instanceof error_type, "Wrong exception type: " + caught);
+}
+async function test(name, callback) {
+  try {
+    await callback();
+    results.push({ name, status: "PASS" });
+  } catch (error) {
+    results.push({ name, status: "FAIL", detail: String(error?.stack ?? error) });
+  }
+}
+function show_results() {
+  const passed = results.filter(item => item.status === "PASS").length;
+  const failed = results.length - passed;
+  window.__slowly_test_results = { passed, failed, details: results };
+  const summary = document.getElementById("summary");
+  summary.textContent = `PASS: ${passed} / FAIL: ${failed} / TOTAL: ${results.length}`;
+  const output = document.getElementById("details");
+  output.textContent = results.map(item => item.status + "｜" + item.name +
+    (item.detail ? "\n" + item.detail : "")).join("\n");
+}
+
+(async function run_tests() {
+const tool=SlowlyHoldChargeControl;
+await test("依賴 ChargeState 正式 API",()=>assert(typeof ChargeState.create==="function"));
+await test("按下後為 charging",()=>{
+  const charge=tool.create({duration_seconds:2});assert(charge.press());assert(charge.get_state().charging);
+});
+await test("重複按下不重啟",()=>{
+  const charge=tool.create({duration_seconds:2});charge.press();charge.update(1);
+  assert(charge.press()===false);approximately(charge.get_state().progress,0.5);
+});
+await test("放開回傳時間與進度",()=>{
+  const charge=tool.create({duration_seconds:2});charge.press();charge.update(1);
+  const value=charge.release();approximately(value.progress,0.5);approximately(value.elapsed_seconds,1);
+});
+await test("進度達上限後維持 1",()=>{
+  const charge=tool.create({duration_seconds:1});charge.press();charge.update(4);
+  approximately(charge.get_state().progress,1);approximately(charge.release().progress,1);
+});
+await test("最低與最高進度比例",()=>{
+  const charge=tool.create({duration_seconds:2,minimum_progress:0.2,maximum_progress:0.8});
+  charge.press();charge.update(1);approximately(charge.release().progress,0.5);
+});
+await test("未按就放開為 null",()=>assert(tool.create().release()===null));
+await test("取消後不觸發回呼",()=>{
+  let called=0;const charge=tool.create({on_release:()=>called++});
+  charge.press();charge.update(0.3);assert(charge.cancel());assert(charge.release()===null);assert(called===0);
+});
+await test("回呼只觸發一次",()=>{
+  let called=0;const charge=tool.create({on_release:()=>called++});
+  charge.press();charge.release();charge.release();assert(called===1);
+});
+await test("快速按放最小值",()=>{
+  const charge=tool.create({minimum_progress:0.15});charge.press();approximately(charge.release().progress,0.15);
+});
+await test("重置清空最後放開結果",()=>{
+  const charge=tool.create();charge.press();charge.release();charge.reset();
+  assert(charge.get_state().last_release_progress===null);
+});
+await test("多實例相互獨立",()=>{
+  const a=tool.create(),b=tool.create();a.press();a.update(0.5);
+  assert(!b.get_state().charging);approximately(b.get_state().progress,0);
+});
+await test("零時間不變",()=>{
+  const a=tool.create();a.press();a.update(0);approximately(a.get_state().progress,0);
+});
+await test("非法負時間拒絕",()=>expect_throw(()=>tool.create().update(-1),RangeError));
+await test("非法設定拒絕",()=>expect_throw(()=>tool.create({duration_seconds:0}),RangeError));
+await test("不合法進度拒絕",()=>expect_throw(()=>tool.create({minimum_progress:1.5}),RangeError));
+
+show_results();
+})();
+</script>
+
+</body>
+</html>
