@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>one_way_platform_contact｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+<h1>one_way_platform_contact｜使用說明</h1>
+<p><strong>功能：</strong>依上下幀腳底跨越與下降方向計算單向平台落地</p>
+<h2>公開 API</h2>
+<p>`SlowlyOneWayPlatformContact.inspect_landing(options)`。</p>
+<h2>依賴與載入順序</h2>
+<p><code>game/collision/rectangle_overlap_2d.js</code></p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/physics/one_way_platform_contact.js"&gt;&lt;/script&gt;</code></pre>
+<p>以上是部署後的 HTTPS 絕對網址，必須先上傳新零件才會存在；依賴 JS 必須先載入。</p>
+<h2>輸入參數</h2>
+<p>`options.previous_body`、`current_body`、`platform`：`{x,y,width,height}`（畫面 y 往下為正）；`velocity_y`：速度為正表示下降；`horizontal_margin`：可選非負橫向容差。</p>
+<h2>回傳結果</h2>
+<p>`{landed,corrected_y,suggested_velocity_y,platform_top}`；成功時將宿主角色 y 修正到平台頂面，垂直速度設為零，沒有副作用。</p>
+<h2>宿主實際接法</h2>
+<pre><code>const result = SlowlyOneWayPlatformContact.inspect_landing({
+  previous_body: { x: 10, y: 10, width: 8, height: 8 },
+  current_body: { x: 10, y: 20, width: 8, height: 8 },
+  platform: { x: 0, y: 25, width: 30, height: 5 },
+  velocity_y: 10
+});
+if (result.landed) console.log(result.corrected_y);</code></pre>
+<h2>限制與錯誤</h2>
+<p>橫向區間檢查引用 `SlowlyRectangleOverlap2D`；不幫宿主移動玩家、不做重力與畫面滾動，預設向下 y 正方向。</p>
+<p>JS 會針對非法資料或缺少依賴明確拋出錯誤；宿主應自行 try/catch 處理使用者輸入。純計算零件沒有 destroy 生命週期；Undo 使用 clear 清空歷史。外觀、聲音與動畫完全由宿主控制。</p>
+<h2>驗收入口</h2>
+<p><a href="https://lib.stillnessbyslowly.com/game/physics/one_way_platform_contact_demo.html">可操作 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/game/physics/test_one_way_platform_contact.html">功能測試 PASS／FAIL</a></p>
+</body>
+</html>

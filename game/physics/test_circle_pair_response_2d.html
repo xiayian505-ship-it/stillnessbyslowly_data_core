@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyCirclePairResponse2D｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyCirclePairResponse2D｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/collision/circle_collision.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/physics/circle_pair_response_2d.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyCirclePairResponse2D;
+const a={x:0,y:0,radius:1,vx:2,vy:0},b={x:1.5,y:0,radius:1,vx:-2,vy:0};
+const solve=(opt={})=>api.resolve_pair(a,b,{first_mass:1,second_mass:1,restitution:1,...opt});
+test('等質量彈性對撞交換速度',()=>{let s=solve();approx(s.first.vx,-2);approx(s.second.vx,2);});
+test('兩球完全分開',()=>{let s=solve();approx(s.second.x-s.first.x,2);});
+test('零反彈完全非彈性',()=>{let s=solve({restitution:0});approx(s.first.vx,0);approx(s.second.vx,0);});
+test('不等質量衝量不同',()=>{let s=solve({first_mass:1,second_mass:3});assert(Math.abs(s.first.vx-2)>Math.abs(s.second.vx+2));});
+test('移動圓不重疊',()=>{let s=api.resolve_pair(a,{...b,x:9},{first_mass:1,second_mass:1});assert(!s.collided);});
+test('相切且相向會反彈',()=>{let s=api.resolve_pair(a,{...b,x:2},{first_mass:1,second_mass:1});assert(s.collided&&s.impact_speed>0);});
+test('背離接觸只做分離',()=>{let s=api.resolve_pair({...a,vx:-1},{...b,vx:1},{first_mass:1,second_mass:1});approx(s.first.vx,-1);});
+test('靜止無限質量不動',()=>{let s=solve({first_mass:Infinity});approx(s.first.x,0);approx(s.first.vx,2);});
+test('雙方固定不變',()=>{let s=solve({first_mass:Infinity,second_mass:Infinity});approx(s.first.x,0);approx(s.second.x,1.5);});
+test('同心沒有法線拒絕',()=>throws(()=>api.resolve_pair(a,{...b,x:0},{first_mass:1,second_mass:1})));
+test('同心可提供備援法線',()=>{let s=api.resolve_pair(a,{...b,x:0},{fallback_normal:{x:1,y:0},first_mass:1,second_mass:1});assert(s.first.x<s.second.x);});
+test('無效質量拒絕',()=>throws(()=>solve({first_mass:0})));
+test('原輸入不修改',()=>{let before=JSON.stringify(a);solve();equal(JSON.stringify(a),before);});
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

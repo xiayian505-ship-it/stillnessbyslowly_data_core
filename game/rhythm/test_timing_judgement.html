@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyTimingJudgement｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyTimingJudgement｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/rhythm/timing_judgement.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyTimingJudgement;
+const j=delta=>api.judge({expected_ms:1000,actual_ms:1000+delta});
+test('完美零誤差',()=>{let s=j(0);equal(s.label,'perfect');equal(s.timing,'exact');});
+test('正負 60 等價',()=>equal(j(-60).label,j(60).label));
+test('Perfect 邊界',()=>equal(j(60).label,'perfect'));
+test('Great 起點',()=>equal(j(61).label,'great'));
+test('Great 邊界',()=>equal(j(120).label,'great'));
+test('Good 起點',()=>equal(j(121).label,'good'));
+test('Good 邊界',()=>equal(j(200).label,'good'));
+test('超界 Miss',()=>equal(j(201).label,'miss'));
+test('提早方向',()=>equal(j(-100).timing,'early'));
+test('落後方向',()=>equal(j(100).timing,'late'));
+test('自訂時間窗',()=>equal(api.judge({expected_ms:0,actual_ms:5,windows:[{label:'hit',within_ms:5}]}).label,'hit'));
+test('拒絕亂序時間窗',()=>throws(()=>api.judge({expected_ms:0,actual_ms:2,windows:[{label:'A',within_ms:10},{label:'B',within_ms:8}]})));
+test('拒絕負值時間窗',()=>throws(()=>api.judge({expected_ms:0,actual_ms:2,windows:[{label:'A',within_ms:-1}]})));
+test('拒絕非法時間',()=>throws(()=>api.judge({expected_ms:Infinity,actual_ms:0})));
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

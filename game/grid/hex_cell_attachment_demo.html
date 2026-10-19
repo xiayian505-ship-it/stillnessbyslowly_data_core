@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hex Cell Attachment｜合法吸附位置｜Demo</title>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(var(--columns, 5), minmax(32px, 42px)); gap: 3px; margin: 12px 0; }
+  .cell { min-height: 37px; touch-action: manipulation; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; }
+  canvas { border: 1px solid; max-width: 100%; }
+  output, pre { display: block; white-space: pre-wrap; margin: 10px 0; }
+  button { padding: 5px; }
+</style>
+</head>
+<body>
+<h1>Hex Cell Attachment｜合法吸附位置</h1>
+<p>本頁直接呼叫軍火庫零件；只提供辨識與操作必要的尺寸／排列。</p>
+
+<div class="row"><label>落點 X <input id="point_x" type="number" value="56"></label><label>落點 Y <input id="point_y" type="number" value="67"></label><button id="find">尋找吸附格</button><button id="reset">重設</button></div>
+<div id="board" class="grid" style="--columns:6"></div>
+<p>點格子切換佔用；勾選「使用命中格」可指定一格已佔位置優先找鄰居。</p>
+<div class="row"><label><input id="use_hit" type="checkbox" checked>使用命中格</label><label>命中列 <input id="hit_row" type="number" min="0" max="3" value="1"></label><label>命中欄 <input id="hit_column" type="number" min="0" max="5" value="2"></label></div>
+
+<output id="result" aria-live="polite"></output>
+<script src="https://lib.stillnessbyslowly.com/game/grid/hex_grid_geometry.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/grid/hex_cell_attachment.js"></script>
+<script>
+(function () {
+  "use strict";
+  const result_element = document.getElementById("result");
+  function show(value) {
+    result_element.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  }
+  function report_error(error) {
+    show("操作失敗：" + error.message);
+    console.error(error);
+  }
+
+  const element=document.getElementById('board');
+  let grid=[];let marked=null;
+  const key=position=>`${position.r}:${position.c}`;
+  function render(){
+    element.replaceChildren();
+    grid.forEach((row,row_index)=>row.forEach((cell,column_index)=>{
+      const position={r:row_index,c:column_index};
+      const button=document.createElement('button');button.className='cell';
+      button.textContent=marked===key(position)?'★':cell?'●':'·';
+      button.title=key(position);
+      button.addEventListener('click',()=>{grid[row_index][column_index]=cell?null:{occupied:true};marked=null;render();});
+      element.appendChild(button);
+    }));
+  }
+  function reset(){grid=Array.from({length:4},()=>Array(6).fill(null));grid[1][2]={occupied:true};marked=null;render();show('點格子更改佔用，再尋找合法吸附位置。');}
+  document.getElementById('reset').addEventListener('click',reset);
+  document.getElementById('find').addEventListener('click',()=>{
+    try{
+      const hit=document.getElementById('use_hit').checked?{r:Number(document.getElementById('hit_row').value),c:Number(document.getElementById('hit_column').value)}:undefined;
+      const response=SlowlyHexCellAttachment.find_attachment({
+        grid,point:{x:Number(document.getElementById('point_x').value),y:Number(document.getElementById('point_y').value)},
+        hit_position:hit,geometry_options:{radius:11}
+      });
+      marked=response.found?key(response.position):null;
+      render();show(response);
+    }catch(error){report_error(error);}
+  });reset();
+
+})();
+</script>
+</body>
+</html>

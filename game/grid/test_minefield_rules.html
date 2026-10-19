@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyMinefieldRules｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyMinefieldRules｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/data/random/random.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/grid/minefield_rules.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyMinefieldRules;
+const deterministic={rows:3,columns:4,mines:3,first_position:{r:1,c:1},random_int:lo=>lo};
+test('首格絕不放雷',()=>assert(!api.create_board(deterministic).grid[1][1].mine));
+test('雷數精確',()=>{let b=api.create_board(deterministic);equal(b.grid.flat().filter(c=>c.mine).length,3);});
+test('八鄰域中央計算',()=>{let b=api.create_board({rows:3,columns:3,mines:1,first_position:{r:1,c:1},random_int:lo=>lo});equal(b.grid[1][1].around,1);});
+test('角落計算',()=>{let b=api.create_board({rows:2,columns:2,mines:1,first_position:{r:1,c:1},random_int:lo=>lo});equal(b.grid[1][1].around,1);});
+test('零雷',()=>{let b=api.create_board({rows:2,columns:2,mines:0,first_position:{r:0,c:0}});equal(b.grid[1][1].around,0);});
+test('最大雷數',()=>{let b=api.create_board({rows:2,columns:2,mines:3,first_position:{r:0,c:0},random_int:lo=>lo});equal(b.grid.flat().filter(c=>c.mine).length,3);});
+test('超過安全容量拒絕',()=>throws(()=>api.create_board({...deterministic,mines:12})));
+test('負雷數拒絕',()=>throws(()=>api.create_board({...deterministic,mines:-1})));
+test('首格越界拒絕',()=>throws(()=>api.create_board({...deterministic,first_position:{r:9,c:0}})));
+test('零欄拒絕',()=>throws(()=>api.create_board({...deterministic,columns:0})));
+test('失控隨機值拒絕',()=>throws(()=>api.create_board({...deterministic,random_int:()=>99})));
+test('固定亂數可重現',()=>equal(JSON.stringify(api.create_board(deterministic).grid),JSON.stringify(api.create_board(deterministic).grid)));
+test('首格周圍不保證安全',()=>{let b=api.create_board({rows:2,columns:2,mines:1,first_position:{r:1,c:1},random_int:lo=>lo});equal(b.grid[1][1].around,1);});
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

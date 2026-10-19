@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyHexCellAttachment｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyHexCellAttachment｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/grid/hex_grid_geometry.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/grid/hex_cell_attachment.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyHexCellAttachment;
+const options={geometry_options:{radius:10},point:{x:30,y:30}};
+const grid=()=>Array.from({length:4},()=>Array(5).fill(null));
+test('命中附近優先吸附',()=>{let g=grid();g[1][1]='a';let s=api.find_attachment({...options,grid:g,hit_position:{r:1,c:1}});assert(s.found&&s.reason==='near_hit');});
+test('不修改原始格',()=>{let g=grid();g[1][1]='a';let before=JSON.stringify(g);api.find_attachment({...options,grid:g,hit_position:{r:1,c:1}});equal(JSON.stringify(g),before);});
+test('空棋盤選上排',()=>{let s=api.find_attachment({...options,grid:grid()});assert(s.found&&s.position.r===0);});
+test('滿盤沒有位置',()=>{let g=grid().map(row=>row.map(()=>1));equal(api.find_attachment({...options,grid:g}).found,false);});
+test('命中鄰居滿則退到錨格',()=>{let g=grid();g[1][1]=1;for(let n of SlowlyHexGridGeometry.neighbors({r:1,c:1},{rows:4,columns:5,radius:10}))g[n.r][n.c]=1;let s=api.find_attachment({...options,grid:g,hit_position:{r:1,c:1}});assert(s.found&&s.reason==='anchored_fallback');});
+test('命中空格拒絕',()=>throws(()=>api.find_attachment({...options,grid:grid(),hit_position:{r:1,c:1}})));
+test('命中越界拒絕',()=>throws(()=>api.find_attachment({...options,grid:grid(),hit_position:{r:9,c:0}})));
+test('無效落點拒絕',()=>throws(()=>api.find_attachment({...options,grid:grid(),point:{x:NaN,y:0}})));
+test('同距離決策穩定',()=>{let a=api.find_attachment({...options,grid:grid(),point:{x:20,y:10}});let b=api.find_attachment({...options,grid:grid(),point:{x:20,y:10}});equal(JSON.stringify(a),JSON.stringify(b));});
+test('未帶半徑拒絕',()=>throws(()=>api.find_attachment({...options,grid:grid(),geometry_options:{}})));
+test('依賴缺失報錯',()=>{let previous=window.SlowlyHexGridGeometry;delete window.SlowlyHexGridGeometry;try{throws(()=>api.find_attachment({...options,grid:grid()}));}finally{window.SlowlyHexGridGeometry=previous;}});
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

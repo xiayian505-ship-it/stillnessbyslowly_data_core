@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>pushable_object｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+<h1>pushable_object｜使用說明</h1>
+<p><strong>功能：</strong>單一可推動佔位物件的下一格推動方案</p>
+<h2>公開 API</h2>
+<p>`SlowlyPushableObject.plan_push(options)`。</p>
+<h2>依賴與載入順序</h2>
+<p><code>game/grid/grid_occupancy.js</code></p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/grid/grid_occupancy.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/grid/pushable_object.js"&gt;&lt;/script&gt;</code></pre>
+<p>以上是部署後的 HTTPS 絕對網址，必須先上傳新零件才會存在；依賴 JS 必須先載入。</p>
+<h2>輸入參數</h2>
+<p>`options.position={r,c}`：目前被推物體所在格；`options.direction={r,c}`：恰好一步的上下左右向量；`options.occupancy_options`：原樣交給 `SlowlyGridOccupancy.inspect` 的完整尺寸與 callback。</p>
+<h2>回傳結果</h2>
+<p>`{allowed,from,to,reason}`；拒絕原因含 `source_not_occupied`、`source_blocked`、`destination_occupied`、`destination_blocked`、`destination_out_of_bounds`。完全不修改物件集合。</p>
+<h2>宿主實際接法</h2>
+<pre><code>const boxes = new Set([&quot;2:2&quot;]);
+const occupancy_options = {
+  rows: 5, columns: 5,
+  is_blocked: position =&gt; position.r === 1 &amp;&amp; position.c === 3,
+  is_occupied: position =&gt; boxes.has(`${position.r}:${position.c}`)
+};
+const plan = SlowlyPushableObject.plan_push({
+  position: { r: 2, c: 2 },
+  direction: { r: 0, c: 1 },
+  occupancy_options
+});
+if (plan.allowed) {
+  boxes.delete(`${plan.from.r}:${plan.from.c}`);
+  boxes.add(`${plan.to.r}:${plan.to.c}`);
+}</code></pre>
+<h2>限制與錯誤</h2>
+<p>只推一件、一格；不移動玩家、不提交箱子狀態、不做求解器。依賴 `SlowlyGridOccupancy.inspect`，缺少即報錯。</p>
+<p>JS 會針對非法資料或缺少依賴明確拋出錯誤；宿主應自行 try/catch 處理使用者輸入。純計算零件沒有 destroy 生命週期；Undo 使用 clear 清空歷史。外觀、聲音與動畫完全由宿主控制。</p>
+<h2>驗收入口</h2>
+<p><a href="https://lib.stillnessbyslowly.com/game/grid/pushable_object_demo.html">可操作 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/game/grid/test_pushable_object.html">功能測試 PASS／FAIL</a></p>
+</body>
+</html>

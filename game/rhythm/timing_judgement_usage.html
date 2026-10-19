@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>timing_judgement｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+<h1>timing_judgement｜使用說明</h1>
+<p><strong>功能：</strong>節奏音符時間差純判定：Perfect／Great／Good／Miss</p>
+<h2>公開 API</h2>
+<p>`SlowlyTimingJudgement.judge(options)`。</p>
+<h2>依賴與載入順序</h2>
+<p>無（零件本體沒有其他軍火庫依賴）</p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/rhythm/timing_judgement.js"&gt;&lt;/script&gt;</code></pre>
+<p>以上是部署後的 HTTPS 絕對網址，必須先上傳新零件才會存在；依賴 JS 必須先載入。</p>
+<h2>輸入參數</h2>
+<p>`expected_ms`：預定音符時間；`actual_ms`：按鍵時間；`windows`：由嚴到寬，`[{label:&quot;perfect&quot;,within_ms:60}, ...]`，必須嚴格遞增，皆非負有限數。</p>
+<h2>回傳結果</h2>
+<p>`{label,delta_ms,absolute_delta_ms,timing,hit}`；負值為 early、正值為 late、0 為 exact。超出最後一窗為 miss。</p>
+<h2>宿主實際接法</h2>
+<pre><code>const judgement = SlowlyTimingJudgement.judge({
+  expected_ms: 1000, actual_ms: 1098,
+  windows: [
+    { label: &quot;perfect&quot;, within_ms: 60 },
+    { label: &quot;great&quot;, within_ms: 120 },
+    { label: &quot;good&quot;, within_ms: 200 }
+  ]
+});
+console.log(judgement.label); // great</code></pre>
+<h2>限制與錯誤</h2>
+<p>不處理 BPM 轉換（請用 `BeatTime`）、譜面、Combo、分數或排名。時間值單位固定毫秒，示範閾值可由宿主完全覆寫。</p>
+<p>JS 會針對非法資料或缺少依賴明確拋出錯誤；宿主應自行 try/catch 處理使用者輸入。純計算零件沒有 destroy 生命週期；Undo 使用 clear 清空歷史。外觀、聲音與動畫完全由宿主控制。</p>
+<h2>驗收入口</h2>
+<p><a href="https://lib.stillnessbyslowly.com/game/rhythm/timing_judgement_demo.html">可操作 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/game/rhythm/test_timing_judgement.html">功能測試 PASS／FAIL</a></p>
+</body>
+</html>

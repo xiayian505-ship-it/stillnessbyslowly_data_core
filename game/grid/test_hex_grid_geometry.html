@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyHexGridGeometry｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyHexGridGeometry｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/grid/hex_grid_geometry.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyHexGridGeometry;
+const o={rows:5,columns:6,radius:10};
+test('偶列中心坐標',()=>{let p=api.cell_center({r:0,c:0},o);approx(p.x,10);approx(p.y,10);});
+test('奇列位移半徑',()=>approx(api.cell_center({r:1,c:0},o).x,20));
+test('垂直間距',()=>approx(api.cell_center({r:1,c:0},o).y-10,Math.sqrt(3)*10));
+test('偶列六鄰居',()=>equal(api.neighbors({r:2,c:2},o).length,6));
+test('奇列六鄰居',()=>equal(api.neighbors({r:1,c:2},o).length,6));
+test('最上角有兩鄰居',()=>equal(api.neighbors({r:0,c:0},o).length,2));
+test('最後一格有效',()=>equal(api.in_bounds({r:4,c:5},o),true));
+test('負列不可用',()=>equal(api.in_bounds({r:-1,c:0},o),false));
+test('替代偶列位移',()=>{let p=api.cell_center({r:0,c:0},{...o,odd_row_offset:false});approx(p.x,20);});
+test('兩相鄰格中心距離一致',()=>{let a=api.cell_center({r:2,c:2},o);for(let n of api.neighbors({r:2,c:2},o)){let b=api.cell_center(n,o);approx(Math.hypot(a.x-b.x,a.y-b.y),20);}});
+test('單列兩端鄰居',()=>equal(api.neighbors({r:0,c:0},{rows:1,columns:3,radius:10}).length,1));
+test('非法半徑拒絕',()=>throws(()=>api.neighbors({r:1,c:1},{...o,radius:0})));
+test('無效中心拒絕',()=>throws(()=>api.cell_center({r:9,c:0},o)));
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minefield Rules｜首次安全布雷｜Demo</title>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(var(--columns, 5), minmax(32px, 42px)); gap: 3px; margin: 12px 0; }
+  .cell { min-height: 37px; touch-action: manipulation; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; }
+  canvas { border: 1px solid; max-width: 100%; }
+  output, pre { display: block; white-space: pre-wrap; margin: 10px 0; }
+  button { padding: 5px; }
+</style>
+</head>
+<body>
+<h1>Minefield Rules｜首次安全布雷</h1>
+<p>本頁直接呼叫軍火庫零件；只提供辨識與操作必要的尺寸／排列。</p>
+
+<div class="row"><label>列 <input id="rows" type="number" value="5" min="1" max="12"></label><label>欄 <input id="columns" type="number" value="7" min="1" max="12"></label><label>雷數 <input id="mines" type="number" value="6" min="0"></label><label><input id="reveal" type="checkbox">顯示全部雷格</label><button id="reset">重新選首格</button></div>
+<div id="board" class="grid" style="--columns:7"></div>
+<p>請點一格作為首次點擊，程式才會安全布雷；再次選首格可重建棋盤。</p>
+
+<output id="result" aria-live="polite"></output>
+<script src="https://lib.stillnessbyslowly.com/data/random/random.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/grid/minefield_rules.js"></script>
+<script>
+(function () {
+  "use strict";
+  const result_element = document.getElementById("result");
+  function show(value) {
+    result_element.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  }
+  function report_error(error) {
+    show("操作失敗：" + error.message);
+    console.error(error);
+  }
+
+  let generated=null;
+  const board_element=document.getElementById('board');
+  function draw(){
+    const rows=Number(document.getElementById('rows').value);
+    const columns=Number(document.getElementById('columns').value);
+    const reveal=document.getElementById('reveal').checked;
+    board_element.style.setProperty('--columns',String(columns));
+    board_element.replaceChildren();
+    for(let row=0;row<rows;row++)for(let column=0;column<columns;column++){
+      const button=document.createElement('button');
+      button.className='cell';
+      const item=generated?.grid[row]?.[column];
+      button.textContent=item?(item.mine?(reveal?'雷':'?'):String(item.around)):'□';
+      button.addEventListener('click',()=>{
+        try{
+          generated=SlowlyMinefieldRules.create_board({rows,columns,mines:Number(document.getElementById('mines').value),first_position:{r:row,c:column}});
+          draw();show({first_position:{r:row,c:column},mine_count:generated.mines,first_cell:generated.grid[row][column]});
+        }catch(error){report_error(error);}
+      });
+      board_element.appendChild(button);
+    }
+  }
+  document.getElementById('reset').addEventListener('click',()=>{generated=null;draw();show('請選擇首次點擊格。');});
+  for(const id of ['rows','columns','reveal'])document.getElementById(id).addEventListener('change',()=>{generated=null;draw();show('請重新選首格。');});
+  draw();show('尚未布雷，點一個方格。');
+
+})();
+</script>
+</body>
+</html>

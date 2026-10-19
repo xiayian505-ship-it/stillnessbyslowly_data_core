@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyRectangleOverlap2D｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyRectangleOverlap2D｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyRectangleOverlap2D;
+const a={x:0,y:0,width:10,height:10};
+test('完全分離',()=>assert(!api.overlaps(a,{x:30,y:0,width:10,height:10})));
+test('部分重疊',()=>assert(api.overlaps(a,{x:5,y:5,width:10,height:10})));
+test('完全包含',()=>assert(api.overlaps(a,{x:2,y:2,width:2,height:2})));
+test('接邊預設不算',()=>assert(!api.overlaps(a,{x:10,y:0,width:3,height:4})));
+test('接邊 inclusive 算',()=>assert(api.overlaps(a,{x:10,y:0,width:3,height:4},{inclusive:true})));
+test('接角 inclusive 算',()=>assert(api.overlaps(a,{x:10,y:10,width:3,height:4},{inclusive:true})));
+test('零面積不算',()=>assert(!api.overlaps(a,{x:2,y:2,width:0,height:10},{inclusive:true})));
+test('負尺寸拒絕',()=>throws(()=>api.overlaps(a,{x:2,y:2,width:-1,height:10})));
+test('重疊深度',()=>{let s=api.inspect(a,{x:7,y:6,width:10,height:10});equal(s.overlap_x,3);equal(s.overlap_y,4);});
+test('交換對稱',()=>{let b={x:3,y:7,width:4,height:3};equal(api.overlaps(a,b),api.overlaps(b,a));});
+test('負座標支援',()=>assert(api.overlaps(a,{x:-5,y:-5,width:7,height:7})));
+test('非有限資料拒絕',()=>throws(()=>api.overlaps(a,{x:NaN,y:0,width:1,height:1})));
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

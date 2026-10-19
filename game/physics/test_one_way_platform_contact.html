@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyOneWayPlatformContact｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyOneWayPlatformContact｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/physics/one_way_platform_contact.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyOneWayPlatformContact;
+const platform={x:0,y:10,width:10,height:2};
+const previous_body={x:3,y:4,width:2,height:4};
+const current_body={x:3,y:7,width:2,height:4};
+const inspect=(extra={})=>api.inspect_landing({previous_body,current_body,platform,velocity_y:3,...extra});
+test('向下跨越頂面會落地',()=>{let s=inspect();assert(s.landed&&s.corrected_y===6&&s.suggested_velocity_y===0);});
+test('向上移動穿越',()=>assert(!inspect({velocity_y:-3}).landed));
+test('靜止不落地',()=>assert(!inspect({velocity_y:0}).landed));
+test('原本在平台下方不落地',()=>assert(!inspect({previous_body:{...previous_body,y:12}}).landed));
+test('水平完全分離',()=>assert(!inspect({current_body:{...current_body,x:30}}).landed));
+test('水平擦邊預設不算',()=>assert(!inspect({current_body:{...current_body,x:10}}).landed));
+test('水平 margin 可擴大',()=>assert(inspect({current_body:{...current_body,x:10},horizontal_margin:1}).landed));
+test('腳底恰好落到頂面',()=>assert(inspect({current_body:{...current_body,y:6}}).landed));
+test('跨越多距離也落地',()=>assert(inspect({current_body:{...current_body,y:100}}).landed));
+test('負寬度拒絕',()=>throws(()=>inspect({current_body:{...current_body,width:-1}})));
+test('非法速度拒絕',()=>throws(()=>inspect({velocity_y:NaN})));
+test('不修改宿主坐標',()=>{let s=JSON.stringify(current_body);inspect();equal(JSON.stringify(current_body),s);});
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

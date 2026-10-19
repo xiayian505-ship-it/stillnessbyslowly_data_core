@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>circle_pair_response_2d｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+<h1>circle_pair_response_2d｜使用說明</h1>
+<p><strong>功能：</strong>兩個自由移動圓形的分離與質量加權反彈</p>
+<h2>公開 API</h2>
+<p>`SlowlyCirclePairResponse2D.resolve_pair(first_circle,second_circle,options?)`。</p>
+<h2>依賴與載入順序</h2>
+<p><code>game/collision/circle_collision.js</code></p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/collision/circle_collision.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/physics/circle_pair_response_2d.js"&gt;&lt;/script&gt;</code></pre>
+<p>以上是部署後的 HTTPS 絕對網址，必須先上傳新零件才會存在；依賴 JS 必須先載入。</p>
+<h2>輸入參數</h2>
+<p>`circle={x,y,radius,vx,vy}`；`options.first_mass`、`second_mass` 為正質量或 Infinity（固定）；未提供則使用 radius²、最小 1；`restitution` 0～1；球心重合需 `fallback_normal={x,y}`。</p>
+<h2>回傳結果</h2>
+<p>`{collided,first,second,penetration,impact_speed}`；新位置／速度在 `first`、`second` 中，不會改動輸入。質量模型是通用化修正，不宣稱原大西瓜已採用完整質量模型。</p>
+<h2>宿主實際接法</h2>
+<pre><code>const first = { x: 0, y: 0, radius: 10, vx: 40, vy: 0 };
+const second = { x: 15, y: 0, radius: 10, vx: -10, vy: 0 };
+const result = SlowlyCirclePairResponse2D.resolve_pair(first, second, {
+  first_mass: 2, second_mass: 1, restitution: 0.7
+});
+console.log(result.first.vx, result.second.vx);</code></pre>
+<h2>限制與錯誤</h2>
+<p>必須先載入既有 `SlowlyCircleCollision` 幾何檢查；本件不計算重力、時間步進、碰牆、不合成水果。兩個都 Infinity 時都不會移動。</p>
+<p>JS 會針對非法資料或缺少依賴明確拋出錯誤；宿主應自行 try/catch 處理使用者輸入。純計算零件沒有 destroy 生命週期；Undo 使用 clear 清空歷史。外觀、聲音與動畫完全由宿主控制。</p>
+<h2>驗收入口</h2>
+<p><a href="https://lib.stillnessbyslowly.com/game/physics/circle_pair_response_2d_demo.html">可操作 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/game/physics/test_circle_pair_response_2d.html">功能測試 PASS／FAIL</a></p>
+</body>
+</html>

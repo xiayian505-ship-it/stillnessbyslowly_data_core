@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyUndoSnapshotStack｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyUndoSnapshotStack｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/state/undo_snapshot_stack.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyUndoSnapshotStack;
+test('空堆疊無可復原項',()=>{let s=api.create();equal(s.undo(),null);equal(s.can_undo(),false);});
+test('基本保存還原',()=>{let s=api.create();s.push({n:1});equal(s.undo().n,1);});
+test('後進先出',()=>{let s=api.create();s.push(1);s.push(2);equal(s.undo(),2);equal(s.undo(),1);});
+test('容量淘汰最舊',()=>{let s=api.create({capacity:2});s.push(1);s.push(2);s.push(3);equal(s.size(),2);equal(s.undo(),3);equal(s.undo(),2);});
+test('清除後不可撤銷',()=>{let s=api.create();s.push(1);s.clear();assert(!s.can_undo()&&s.size()===0);});
+test('Set 保留類型',()=>{let s=api.create();s.push({positions:new Set(['a'])});let v=s.undo();assert(v.positions instanceof Set&&v.positions.has('a'));});
+test('保存後原物件改變不影響歷史',()=>{let s=api.create();let v={arr:[1]};s.push(v);v.arr.push(2);equal(s.undo().arr.length,1);});
+test('返回快照是獨立副本',()=>{let s=api.create();let v={arr:[1]};s.push(v);let result=s.undo();result.arr.push(2);equal(v.arr.length,1);});
+test('兩實例獨立',()=>{let a=api.create(),b=api.create();a.push(3);equal(b.size(),0);});
+test('快照中繼資料',()=>{let s=api.create({capacity:4});s.push(9);equal(s.snapshot().capacity,4);equal(s.snapshot().size,1);});
+test('拒絕零容量',()=>throws(()=>api.create({capacity:0})));
+test('拒絕錯誤 clone',()=>throws(()=>api.create({clone:12})));
+test('clone 可注入',()=>{let s=api.create({clone:v=>JSON.parse(JSON.stringify(v))});s.push({n:1});equal(s.undo().n,1);});
+test('禁止同參照 clone',()=>{let s=api.create({clone:v=>v});throws(()=>s.push({n:1}));});
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

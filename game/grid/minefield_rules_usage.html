@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>minefield_rules｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+<h1>minefield_rules｜使用說明</h1>
+<p><strong>功能：</strong>只排除首次點擊格的掃雷布雷與八鄰域雷數</p>
+<h2>公開 API</h2>
+<p>`SlowlyMinefieldRules.create_board(options)`。</p>
+<h2>依賴與載入順序</h2>
+<p><code>data/random/random.js</code></p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/data/random/random.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/grid/minefield_rules.js"&gt;&lt;/script&gt;</code></pre>
+<p>以上是部署後的 HTTPS 絕對網址，必須先上傳新零件才會存在；依賴 JS 必須先載入。</p>
+<h2>輸入參數</h2>
+<p>`rows`、`columns`：正整數；`mines`：0 到格數−1；`first_position={r,c}`：合法首格；`random_int(lower,upper)`：可選，須回傳含端點的整數；預設直接使用 `SlowlyRandom.int`。</p>
+<h2>回傳結果</h2>
+<p>`{rows,columns,mines,first_position,grid}`，每格 `{mine:boolean,around:number|null}`，雷格的 `around=null`；棋盤的外層陣列與格子為唯讀。</p>
+<h2>宿主實際接法</h2>
+<pre><code>const board = SlowlyMinefieldRules.create_board({
+  rows: 6, columns: 8, mines: 8, first_position: { r: 2, c: 3 }
+});
+console.log(board.grid[2][3].mine); // false
+// 開啟零格區域時，宿主可另以 SlowlyGridChainExpand.expand(...) 計算擴散。</code></pre>
+<h2>限制與錯誤</h2>
+<p>**只保證首格沒有雷，不保證相鄰八格安全。** 不管理插旗、開格、勝負、音效；零格擴張使用既有 `SlowlyGridChainExpand`，不在此實作 BFS。</p>
+<p>JS 會針對非法資料或缺少依賴明確拋出錯誤；宿主應自行 try/catch 處理使用者輸入。純計算零件沒有 destroy 生命週期；Undo 使用 clear 清空歷史。外觀、聲音與動畫完全由宿主控制。</p>
+<h2>驗收入口</h2>
+<p><a href="https://lib.stillnessbyslowly.com/game/grid/minefield_rules_demo.html">可操作 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/game/grid/test_minefield_rules.html">功能測試 PASS／FAIL</a></p>
+</body>
+</html>

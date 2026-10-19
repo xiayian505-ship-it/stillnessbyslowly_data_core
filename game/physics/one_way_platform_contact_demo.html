@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>One Way Platform Contact｜單向平台｜Demo</title>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(var(--columns, 5), minmax(32px, 42px)); gap: 3px; margin: 12px 0; }
+  .cell { min-height: 37px; touch-action: manipulation; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; }
+  canvas { border: 1px solid; max-width: 100%; }
+  output, pre { display: block; white-space: pre-wrap; margin: 10px 0; }
+  button { padding: 5px; }
+</style>
+</head>
+<body>
+<h1>One Way Platform Contact｜單向平台</h1>
+<p>本頁直接呼叫軍火庫零件；只提供辨識與操作必要的尺寸／排列。</p>
+
+<div class="row"><label>上一幀角色 Y <input id="previous_y" type="number" value="45"></label><label>本幀角色 Y <input id="current_y" type="number" value="62"></label><label>垂直速度 <input id="velocity_y" type="number" value="17"></label><button id="calculate">檢查著陸</button></div>
+<div class="row"><button id="drop">上方落下</button><button id="rise">由下往上</button></div>
+<canvas id="canvas" width="230" height="125"></canvas>
+
+<output id="result" aria-live="polite"></output>
+<script src="https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/physics/one_way_platform_contact.js"></script>
+<script>
+(function () {
+  "use strict";
+  const result_element = document.getElementById("result");
+  function show(value) {
+    result_element.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  }
+  function report_error(error) {
+    show("操作失敗：" + error.message);
+    console.error(error);
+  }
+
+  const canvas=document.getElementById('canvas');const context=canvas.getContext('2d');
+  function run(){
+    try{
+      const previous_body={x:80,y:Number(document.getElementById('previous_y').value),width:20,height:20};
+      const current_body={...previous_body,y:Number(document.getElementById('current_y').value)};
+      const platform={x:35,y:75,width:160,height:12};
+      const response=SlowlyOneWayPlatformContact.inspect_landing({previous_body,current_body,platform,
+        velocity_y:Number(document.getElementById('velocity_y').value)});
+      context.clearRect(0,0,canvas.width,canvas.height);
+      context.strokeRect(platform.x,platform.y,platform.width,platform.height);
+      context.strokeRect(current_body.x,response.landed?response.corrected_y:current_body.y,current_body.width,current_body.height);
+      show(response);
+    }catch(error){report_error(error);}
+  }
+  function preset(previous,current,velocity){document.getElementById('previous_y').value=previous;document.getElementById('current_y').value=current;document.getElementById('velocity_y').value=velocity;run();}
+  document.getElementById('calculate').addEventListener('click',run);
+  document.getElementById('drop').addEventListener('click',()=>preset(45,62,17));
+  document.getElementById('rise').addEventListener('click',()=>preset(80,50,-30));run();
+
+})();
+</script>
+</body>
+</html>

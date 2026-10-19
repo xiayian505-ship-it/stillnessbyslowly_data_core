@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Edge Tile｜平面麻將開邊｜Demo</title>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(var(--columns, 5), minmax(32px, 42px)); gap: 3px; margin: 12px 0; }
+  .cell { min-height: 37px; touch-action: manipulation; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; }
+  canvas { border: 1px solid; max-width: 100%; }
+  output, pre { display: block; white-space: pre-wrap; margin: 10px 0; }
+  button { padding: 5px; }
+</style>
+</head>
+<body>
+<h1>Free Edge Tile｜平面麻將開邊</h1>
+<p>本頁直接呼叫軍火庫零件；只提供辨識與操作必要的尺寸／排列。</p>
+
+<div class="row"><button id="reset">重設牌陣</button></div>
+<div id="board" class="grid" style="--columns:5"></div>
+<p>只有左或右至少一側開放的牌可以移除；這裡不處理配對與立體遮蓋。</p>
+
+<output id="result" aria-live="polite"></output>
+<script src="https://lib.stillnessbyslowly.com/game/grid/free_edge_tile.js"></script>
+<script>
+(function () {
+  "use strict";
+  const result_element = document.getElementById("result");
+  function show(value) {
+    result_element.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  }
+  function report_error(error) {
+    show("操作失敗：" + error.message);
+    console.error(error);
+  }
+
+  let board=[];
+  const element=document.getElementById('board');
+  function render(){
+    element.replaceChildren();
+    board.forEach((row,row_index)=>row.forEach((cell,column_index)=>{
+      const position={r:row_index,c:column_index};
+      const check=SlowlyFreeEdgeTile.inspect(board,position);
+      const button=document.createElement('button');button.className='cell';
+      button.textContent=cell.removed?'·':check.selectable?'可':'鎖';
+      button.disabled=cell.removed;
+      button.addEventListener('click',()=>{
+        if(check.selectable)cell.removed=true;
+        show({position,...check,removed_now:cell.removed});render();
+      });element.append(button);
+    }));
+  }
+  function reset(){board=Array.from({length:2},()=>Array.from({length:5},()=>({removed:false})));render();show('左右邊緣可先移除。');}
+  document.getElementById('reset').addEventListener('click',reset);reset();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>rectangle_overlap_2d｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+<h1>rectangle_overlap_2d｜使用說明</h1>
+<p><strong>功能：</strong>純二維軸對齊矩形 AABB 重疊檢查</p>
+<h2>公開 API</h2>
+<p>`SlowlyRectangleOverlap2D.inspect(first_rectangle,second_rectangle,options?)`、`overlaps(...)`。</p>
+<h2>依賴與載入順序</h2>
+<p>無（零件本體沒有其他軍火庫依賴）</p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d.js"&gt;&lt;/script&gt;</code></pre>
+<p>以上是部署後的 HTTPS 絕對網址，必須先上傳新零件才會存在；依賴 JS 必須先載入。</p>
+<h2>輸入參數</h2>
+<p>`rectangle={x,y,width,height}`，寬高非負；`options.inclusive=true` 時正面積矩形只接邊亦視為接觸，預設接邊不算重疊。零面積永不視為碰撞。</p>
+<h2>回傳結果</h2>
+<p>`inspect` 回傳 `{overlapping,overlap_x,overlap_y,touching}`；`overlaps` 回傳布林。</p>
+<h2>宿主實際接法</h2>
+<pre><code>const first = { x: 0, y: 0, width: 20, height: 15 };
+const second = { x: 18, y: 3, width: 10, height: 12 };
+const overlap = SlowlyRectangleOverlap2D.inspect(first, second);
+console.log(overlap.overlapping, overlap.overlap_x);</code></pre>
+<h2>限制與錯誤</h2>
+<p>不支援旋轉矩形、反彈、物理推離、角色扣血；非法／負尺寸明確拒絕。</p>
+<p>JS 會針對非法資料或缺少依賴明確拋出錯誤；宿主應自行 try/catch 處理使用者輸入。純計算零件沒有 destroy 生命週期；Undo 使用 clear 清空歷史。外觀、聲音與動畫完全由宿主控制。</p>
+<h2>驗收入口</h2>
+<p><a href="https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d_demo.html">可操作 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/game/collision/test_rectangle_overlap_2d.html">功能測試 PASS／FAIL</a></p>
+</body>
+</html>

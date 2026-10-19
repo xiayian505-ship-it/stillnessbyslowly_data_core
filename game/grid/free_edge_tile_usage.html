@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>free_edge_tile｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+<h1>free_edge_tile｜使用說明</h1>
+<p><strong>功能：</strong>平面矩形麻將牌列的左右開邊可選檢查</p>
+<h2>公開 API</h2>
+<p>`SlowlyFreeEdgeTile.inspect(board, position, options?)`。</p>
+<h2>依賴與載入順序</h2>
+<p>無（零件本體沒有其他軍火庫依賴）</p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/grid/free_edge_tile.js"&gt;&lt;/script&gt;</code></pre>
+<p>以上是部署後的 HTTPS 絕對網址，必須先上傳新零件才會存在；依賴 JS 必須先載入。</p>
+<h2>輸入參數</h2>
+<p>`board`：非空矩形二維陣列；`position={r,c}`；`options.is_removed(cell,position)`：可選回呼，預設值為 `cell?.removed === true` 或 `cell == null`。</p>
+<h2>回傳結果</h2>
+<p>`{selectable,left_open,right_open,reason}`；理由有 `available`、`surrounded`、`removed`、`out_of_bounds`。選取資格不會修改牌陣。</p>
+<h2>宿主實際接法</h2>
+<pre><code>const tiles = [[
+  { removed: false }, { removed: false }, { removed: true }
+]];
+const check = SlowlyFreeEdgeTile.inspect(tiles, { r: 0, c: 1 });
+console.log(check.selectable); // true（右側已移除）</code></pre>
+<h2>限制與錯誤</h2>
+<p>這是平面左右解鎖，沒有立體遮牌、配對、保證可解的生成算法；輸入必須是規則矩形。</p>
+<p>JS 會針對非法資料或缺少依賴明確拋出錯誤；宿主應自行 try/catch 處理使用者輸入。純計算零件沒有 destroy 生命週期；Undo 使用 clear 清空歷史。外觀、聲音與動畫完全由宿主控制。</p>
+<h2>驗收入口</h2>
+<p><a href="https://lib.stillnessbyslowly.com/game/grid/free_edge_tile_demo.html">可操作 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/game/grid/test_free_edge_tile.html">功能測試 PASS／FAIL</a></p>
+</body>
+</html>

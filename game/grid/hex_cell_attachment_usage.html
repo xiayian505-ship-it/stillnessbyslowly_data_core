@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>hex_cell_attachment｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+<h1>hex_cell_attachment｜使用說明</h1>
+<p><strong>功能：</strong>泡泡撞擊後挑選最近合法六角空格</p>
+<h2>公開 API</h2>
+<p>`SlowlyHexCellAttachment.find_attachment(options)`。</p>
+<h2>依賴與載入順序</h2>
+<p><code>game/grid/hex_grid_geometry.js</code></p>
+<pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/grid/hex_grid_geometry.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/grid/hex_cell_attachment.js"&gt;&lt;/script&gt;</code></pre>
+<p>以上是部署後的 HTTPS 絕對網址，必須先上傳新零件才會存在；依賴 JS 必須先載入。</p>
+<h2>輸入參數</h2>
+<p>`grid`：矩形二維陣列；`point={x,y}`：飛行物落點；`hit_position={r,c}` 可選（必須指向被佔的合法格）；`geometry_options={radius,odd_row_offset?,origin_x?,origin_y?}`；`is_occupied` 可選。</p>
+<h2>回傳結果</h2>
+<p>`{found,position,distance,reason}`。有命中格時先比六鄰格空位；全滿再尋找頂排或鄰接既有佔位的空格；同距離依列、欄升序決定。</p>
+<h2>宿主實際接法</h2>
+<pre><code>const grid = [
+  [null, { color: &quot;red&quot; }, null],
+  [null, null, null]
+];
+const result = SlowlyHexCellAttachment.find_attachment({
+  grid, point: { x: 45, y: 25 }, hit_position: { r: 0, c: 1 },
+  geometry_options: { radius: 10 }
+});
+if (result.found) grid[result.position.r][result.position.c] = { color: &quot;blue&quot; };</code></pre>
+<h2>限制與錯誤</h2>
+<p>六角中心、鄰居全部引用 `SlowlyHexGridGeometry`；不做命中偵測、顏色判定、泡泡放置或同色連鎖。無格可放回傳 `found:false`。</p>
+<p>JS 會針對非法資料或缺少依賴明確拋出錯誤；宿主應自行 try/catch 處理使用者輸入。純計算零件沒有 destroy 生命週期；Undo 使用 clear 清空歷史。外觀、聲音與動畫完全由宿主控制。</p>
+<h2>驗收入口</h2>
+<p><a href="https://lib.stillnessbyslowly.com/game/grid/hex_cell_attachment_demo.html">可操作 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/game/grid/test_hex_cell_attachment.html">功能測試 PASS／FAIL</a></p>
+</body>
+</html>

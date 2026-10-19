@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyFreeEdgeTile｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyFreeEdgeTile｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/grid/free_edge_tile.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyFreeEdgeTile;
+const b=[[{removed:false},{removed:false},{removed:false},{removed:false}],[{removed:false},{removed:false},{removed:false},{removed:false}]];
+test('最左開放',()=>assert(api.inspect(b,{r:0,c:0}).selectable));
+test('最右開放',()=>assert(api.inspect(b,{r:0,c:3}).selectable));
+test('中央被兩側擋住',()=>{let s=api.inspect(b,{r:0,c:1});assert(!s.selectable&&s.reason==='surrounded');});
+test('左側已移除',()=>{b[0][0].removed=true;assert(api.inspect(b,{r:0,c:1}).left_open);});
+test('右側已移除',()=>{b[0][2].removed=true;assert(api.inspect(b,{r:0,c:1}).right_open);});
+test('雙側開放',()=>{let s=api.inspect(b,{r:0,c:1});assert(s.left_open&&s.right_open);});
+test('已移除牌不能選',()=>equal(api.inspect(b,{r:0,c:0}).reason,'removed'));
+test('越界處理',()=>equal(api.inspect(b,{r:-1,c:0}).reason,'out_of_bounds'));
+test('單欄可選',()=>assert(api.inspect([[{removed:false}]],{r:0,c:0}).selectable));
+test('客製 is_removed',()=>{let s=api.inspect([['X',null,'X']],{r:0,c:2},{is_removed:c=>c==null});assert(s.selectable);});
+test('非法矩形拒絕',()=>throws(()=>api.inspect([[1],[2,3]],{r:0,c:0})));
+test('不可突變輸入',()=>{let frozen=Object.freeze([{removed:false},{removed:false}]);let board=Object.freeze([frozen]);api.inspect(board,{r:0,c:0});equal(board[0].length,2);});
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

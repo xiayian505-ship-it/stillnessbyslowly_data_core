@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyGridOccupancy｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyGridOccupancy｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/grid/grid_occupancy.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api = SlowlyGridOccupancy;
+const blocked = new Set(['1:1']);
+const occupied = new Set(['2:3']);
+const options = { rows: 4, columns: 5, is_blocked: p => blocked.has(`${p.r}:${p.c}`), is_occupied: p => occupied.has(`${p.r}:${p.c}`) };
+test('空格可進入', () => equal(api.inspect({r:0,c:0},options).can_enter, true));
+test('已佔用不可進入', () => equal(api.inspect({r:2,c:3},options).occupied, true));
+test('牆不可進入', () => equal(api.inspect({r:1,c:1},options).blocked, true));
+test('負座標越界', () => equal(api.inspect({r:-1,c:0},options).in_bounds, false));
+test('底部邊界有效', () => equal(api.can_enter({r:3,c:4},options), true));
+test('右側越界', () => equal(api.can_enter({r:3,c:5},options), false));
+test('越界不查 callback', () => { let count=0; api.inspect({r:9,c:9},{...options,is_blocked:()=>{count++;return true}}); equal(count,0); });
+test('阻擋優先且兩值均回傳', () => { const s=api.inspect({r:1,c:1},{...options,is_occupied:()=>true}); assert(s.blocked&&s.occupied&&!s.can_enter); });
+test('無效尺寸拒絕', () => throws(()=>api.inspect({r:0,c:0},{rows:0,columns:1})));
+test('非整數座標拒絕', () => throws(()=>api.inspect({r:0.5,c:0},options)));
+test('無效回呼拒絕', () => throws(()=>api.inspect({r:0,c:0},{...options,is_blocked:true})));
+test('不更改宿主資料', () => { const p={r:0,c:0};api.inspect(p,options);equal(JSON.stringify(p),'{"r":0,"c":0}'); });
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

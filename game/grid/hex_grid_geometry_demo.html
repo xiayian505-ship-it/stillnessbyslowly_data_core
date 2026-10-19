@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hex Grid Geometry｜六角格座標｜Demo</title>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(var(--columns, 5), minmax(32px, 42px)); gap: 3px; margin: 12px 0; }
+  .cell { min-height: 37px; touch-action: manipulation; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; }
+  canvas { border: 1px solid; max-width: 100%; }
+  output, pre { display: block; white-space: pre-wrap; margin: 10px 0; }
+  button { padding: 5px; }
+</style>
+</head>
+<body>
+<h1>Hex Grid Geometry｜六角格座標</h1>
+<p>本頁直接呼叫軍火庫零件；只提供辨識與操作必要的尺寸／排列。</p>
+
+<div class="row"><label>半徑 <input id="radius" type="number" min="5" max="28" value="16"></label><label><input id="odd" type="checkbox" checked>奇數列偏移</label><button id="redraw">重新繪製</button></div>
+<canvas id="canvas" width="290" height="195"></canvas>
+<p>點擊圓點觀察六個鄰居及中心座標。</p>
+
+<output id="result" aria-live="polite"></output>
+<script src="https://lib.stillnessbyslowly.com/game/grid/hex_grid_geometry.js"></script>
+<script>
+(function () {
+  "use strict";
+  const result_element = document.getElementById("result");
+  function show(value) {
+    result_element.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  }
+  function report_error(error) {
+    show("操作失敗：" + error.message);
+    console.error(error);
+  }
+
+  const canvas=document.getElementById('canvas');
+  const context=canvas.getContext('2d');
+  let selected={r:2,c:2};
+  function settings(){return {rows:5,columns:7,radius:Number(document.getElementById('radius').value),odd_row_offset:document.getElementById('odd').checked};}
+  function render(){
+    try{
+      const options=settings();
+      const nearby=SlowlyHexGridGeometry.neighbors(selected,options);
+      context.clearRect(0,0,canvas.width,canvas.height);
+      for(let row=0;row<options.rows;row++)for(let column=0;column<options.columns;column++){
+        const position={r:row,c:column};
+        const point=SlowlyHexGridGeometry.cell_center(position,options);
+        context.beginPath();context.arc(point.x,point.y,options.radius-3,0,Math.PI*2);
+        context.stroke();
+        if(row===selected.r&&column===selected.c){context.fillStyle='#777';context.fill();}
+        else if(nearby.some(cell=>cell.r===row&&cell.c===column)){context.fillStyle='#ddd';context.fill();}
+      }
+      show({selected,center:SlowlyHexGridGeometry.cell_center(selected,options),neighbors:nearby});
+    }catch(error){report_error(error);}
+  }
+  canvas.addEventListener('click',event=>{
+    const bounds=canvas.getBoundingClientRect();
+    const clicked={x:(event.clientX-bounds.left)*canvas.width/bounds.width,y:(event.clientY-bounds.top)*canvas.height/bounds.height};
+    const options=settings();
+    let distance=Infinity;
+    for(let row=0;row<options.rows;row++)for(let column=0;column<options.columns;column++){
+      const center=SlowlyHexGridGeometry.cell_center({r:row,c:column},options);
+      const candidate=Math.hypot(clicked.x-center.x,clicked.y-center.y);
+      if(candidate<distance){distance=candidate;selected={r:row,c:column};}
+    }
+    render();
+  });
+  document.getElementById('redraw').addEventListener('click',render);render();
+
+})();
+</script>
+</body>
+</html>

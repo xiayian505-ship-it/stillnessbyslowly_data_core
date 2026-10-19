@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyTrickTakingRules｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyTrickTakingRules｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/card/trick_taking_rules.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyTrickTakingRules;
+const hearts=[{suit:'H',rank:2},{suit:'C',rank:9},{suit:'C',rank:3}];
+const trick=[{player:'north',card:{suit:'C',rank:2}}];
+test('首花色強制跟牌',()=>equal(api.legal_cards(hearts,trick).length,2));
+test('沒有該花色可任出',()=>equal(api.legal_cards([{suit:'H',rank:5}],trick).length,1));
+test('空手牌可出零張',()=>equal(api.legal_cards([],trick).length,0));
+test('無首牌可任出',()=>equal(api.legal_cards(hearts,[]).length,3));
+test('can_lead 排除紅心',()=>{let v=api.legal_cards(hearts,[],{can_lead:c=>c.suit!=='H'});equal(v.length,2);});
+test('缺花色 can_discard',()=>{let v=api.legal_cards([{suit:'H',rank:2},{suit:'S',rank:12}],trick,{can_discard:c=>c.suit!=='H'});equal(v.length,1);});
+test('全部不合格時可強制出',()=>{let v=api.legal_cards([{suit:'H',rank:2}],[],{can_lead:()=>false});equal(v.length,1);});
+test('可禁止無候選備援',()=>equal(api.legal_cards([{suit:'H',rank:2}],[],{can_lead:()=>false,allow_when_none:false}).length,0));
+test('墩勝者由首花色最大牌決定',()=>{let t=[...trick,{player:'south',card:{suit:'H',rank:14}},{player:'east',card:{suit:'C',rank:12}}];equal(api.resolve_trick(t).winner,'east');});
+test('自訂得分 callback',()=>{let t=[...trick,{player:'east',card:{suit:'H',rank:12}}];equal(api.resolve_trick(t,{score_card:c=>c.suit==='H'?5:0}).points,5);});
+test('自訂牌階比較',()=>{let t=[...trick,{player:'east',card:{suit:'C',rank:10}}];equal(api.resolve_trick(t,{compare_rank:(a,b)=>b-a}).winner,'north');});
+test('空墩回傳 null 勝者',()=>equal(api.resolve_trick([]).winner,null));
+test('單張牌即勝出',()=>equal(api.resolve_trick(trick).winner,'north'));
+test('非法得分拒絕',()=>throws(()=>api.resolve_trick(trick,{score_card:()=>NaN})));
+test('不修改原本手牌',()=>{let before=JSON.stringify(hearts);api.legal_cards(hearts,trick);equal(JSON.stringify(hearts),before);});
+test('牌資料不合法拒絕',()=>throws(()=>api.resolve_trick([{player:'x',card:{suit:'H'}}])));
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>

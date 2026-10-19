@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timing Judgement｜命中時間窗｜Demo</title>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(var(--columns, 5), minmax(32px, 42px)); gap: 3px; margin: 12px 0; }
+  .cell { min-height: 37px; touch-action: manipulation; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0; }
+  canvas { border: 1px solid; max-width: 100%; }
+  output, pre { display: block; white-space: pre-wrap; margin: 10px 0; }
+  button { padding: 5px; }
+</style>
+</head>
+<body>
+<h1>Timing Judgement｜命中時間窗</h1>
+<p>本頁直接呼叫軍火庫零件；只提供辨識與操作必要的尺寸／排列。</p>
+
+<div class="row"><label>時間差（毫秒） <input id="difference" type="number" value="95"></label><button id="judge">判定輸入時間差</button></div>
+<div class="row"><label>Perfect <input id="perfect" type="number" min="0" value="60"></label><label>Great <input id="great" type="number" min="0" value="120"></label><label>Good <input id="good" type="number" min="0" value="200"></label></div>
+<div class="row"><button id="arm">開始 2 秒倒數</button><button id="tap">打擊！</button></div>
+
+<output id="result" aria-live="polite"></output>
+<script src="https://lib.stillnessbyslowly.com/game/rhythm/timing_judgement.js"></script>
+<script>
+(function () {
+  "use strict";
+  const result_element = document.getElementById("result");
+  function show(value) {
+    result_element.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  }
+  function report_error(error) {
+    show("操作失敗：" + error.message);
+    console.error(error);
+  }
+
+  let expected_time=null;
+  function windows(){return [
+    {label:'perfect',within_ms:Number(document.getElementById('perfect').value)},
+    {label:'great',within_ms:Number(document.getElementById('great').value)},
+    {label:'good',within_ms:Number(document.getElementById('good').value)}
+  ];}
+  function judge(expected_ms,actual_ms){
+    try{show(SlowlyTimingJudgement.judge({expected_ms,actual_ms,windows:windows()}));}
+    catch(error){report_error(error);}
+  }
+  document.getElementById('judge').addEventListener('click',()=>judge(1000,1000+Number(document.getElementById('difference').value)));
+  document.getElementById('arm').addEventListener('click',()=>{expected_time=performance.now()+2000;show('已開始。請在大約 2 秒後按「打擊！」');});
+  document.getElementById('tap').addEventListener('click',()=>{
+    if(expected_time===null){show('請先開始倒數。');return;}
+    judge(expected_time,performance.now());expected_time=null;
+  });
+  document.getElementById('judge').click();
+
+})();
+</script>
+</body>
+</html>

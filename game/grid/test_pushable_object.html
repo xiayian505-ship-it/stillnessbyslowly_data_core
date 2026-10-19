@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlowlyPushableObject｜功能測試</title>
+</head>
+<body>
+<h1>SlowlyPushableObject｜獨立功能測試</h1>
+<p>僅執行 JavaScript 行為測試；每一項依真正結果顯示 PASS／FAIL。</p>
+<p id="summary" aria-live="polite">尚未執行</p>
+<ol id="results"></ol>
+<script src="https://lib.stillnessbyslowly.com/game/grid/grid_occupancy.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/grid/pushable_object.js"></script>
+<script>
+(function() {
+'use strict';
+
+const results=document.getElementById('results');
+let passed=0;
+let failed=0;
+function assert(condition,message='Assertion failed') {if(!condition)throw new Error(message);}
+function equal(actual,expected){assert(Object.is(actual,expected),`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);}
+function approx(actual,expected,tolerance=1e-8){assert(Math.abs(actual-expected)<=tolerance,`Expected ≈ ${expected}, got ${actual}`);}
+function throws(fn){let raised=false;try{fn();}catch(error){raised=true;}assert(raised,'Expected exception, but none occurred');}
+function test(label,fn){const row=document.createElement('li');try{fn();passed++;row.textContent=`PASS：${label}`;row.dataset.result='pass';}catch(error){failed++;row.textContent=`FAIL：${label} — ${error.message}`;row.dataset.result='fail';console.error(label,error);}results.appendChild(row);}
+
+try{
+
+const api=SlowlyPushableObject;
+const box=new Set(['2:2']);
+const wall=new Set(['2:4']);
+const occupancy_options={rows:5,columns:5,is_occupied:p=>box.has(`${p.r}:${p.c}`),is_blocked:p=>wall.has(`${p.r}:${p.c}`)};
+const push=(position,direction)=>api.plan_push({position,direction,occupancy_options});
+test('往右推動一步',()=>{let s=push({r:2,c:2},{r:0,c:1});assert(s.allowed&&s.to.c===3);});
+test('往左推動一步',()=>equal(push({r:2,c:2},{r:0,c:-1}).allowed,true));
+test('往上推動一步',()=>equal(push({r:2,c:2},{r:-1,c:0}).allowed,true));
+test('往下推動一步',()=>equal(push({r:2,c:2},{r:1,c:0}).allowed,true));
+test('來源必須有物件',()=>equal(push({r:0,c:0},{r:0,c:1}).reason,'source_not_occupied'));
+test('前方牆壁不可推',()=>{box.clear();box.add('2:3');equal(push({r:2,c:3},{r:0,c:1}).reason,'destination_blocked');});
+test('下一格有箱不能推',()=>{box.clear();box.add('2:2');box.add('2:3');equal(push({r:2,c:2},{r:0,c:1}).reason,'destination_occupied');});
+test('成功不會改箱子集合',()=>{box.delete('2:3');let before=[...box];push({r:2,c:2},{r:0,c:1});equal(JSON.stringify([...box]),JSON.stringify(before));});
+test('源頭越界',()=>equal(push({r:-1,c:2},{r:0,c:1}).reason,'source_out_of_bounds'));
+test('目的地越界',()=>{box.clear();box.add('0:0');equal(push({r:0,c:0},{r:-1,c:0}).reason,'destination_out_of_bounds');});
+test('禁止對角方向',()=>throws(()=>push({r:0,c:0},{r:1,c:1})));
+test('禁止不移動',()=>throws(()=>push({r:0,c:0},{r:0,c:0})));
+test('遺失依賴會報錯',()=>{let previous=window.SlowlyGridOccupancy;delete window.SlowlyGridOccupancy;try{throws(()=>push({r:0,c:0},{r:1,c:0}));}finally{window.SlowlyGridOccupancy=previous;}});
+
+}catch(error){test('載入與測試流程',()=>{throw error;});}
+document.getElementById('summary').textContent=`${passed} PASS / ${failed} FAIL`;
+document.body.dataset.failures=String(failed);
+document.body.dataset.passes=String(passed);
+})();
+</script>
+</body>
+</html>
