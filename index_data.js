@@ -553,6 +553,58 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "effects",
+        "title": "Effects / 音效",
+        "subpage": true,
+        "desc": "以既有 Noise、Oscillator、Filter、Gain 與 Envelope 等軍火庫聲音零件，組合可調參數的一次性程式化音效；不另建音訊引擎。",
+        "items": [
+          {
+            "title": "Impact Generator",
+            "desc": "通用程式化撞擊音效組合，透過既有 Oscillator 的低頻主體與 Noise 的短促瞬態，搭配 Filter、Gain 和 Envelope 合成可調頻率、長度、音量及兩層比例的單次撞擊聲；提供可停止的播放控制，不依賴預錄音檔。",
+            "links": [
+              {
+                "label": "impact_generator.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/impact_generator.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/impact_generator_demo.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/test_impact_generator.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/impact_generator_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Whoosh Generator",
+            "desc": "通用程式化呼嘯音效組合，以既有 Noise、Biquad Filter、Gain 與 Envelope 排程動態掃頻與音量包絡，可設定聲音時長、噪音類型、起始／高峰／結束頻率及音量；提供可停止的播放控制，不依賴預錄音檔。",
+            "links": [
+              {
+                "label": "whoosh_generator.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/whoosh_generator.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/whoosh_generator_demo.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/test_whoosh_generator.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/whoosh_generator_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "filter",
         "title": "Filter",
         "subpage": true,
