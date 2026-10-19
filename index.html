@@ -14,20 +14,20 @@
 <nav aria-label="倉庫分類" class="category-nav">
 <button aria-selected="true" data-page="directory" type="button">慢慢看</button>
 <button aria-selected="false" data-page="examples" type="button">完成品使用</button>
-<button aria-selected="false" data-page="data" type="button">Data</button>
-<button aria-selected="false" data-page="state" type="button">State</button>
-<button aria-selected="false" data-page="date" type="button">Date</button>
-<button aria-selected="false" data-page="calendar" type="button">Calendar</button>
-<button aria-selected="false" data-page="ui" type="button">UI</button>
-<button aria-selected="false" data-page="effects" type="button">Effects</button>
-<button aria-selected="false" data-page="canvas" type="button">Canvas</button>
-<button aria-selected="false" data-page="image" type="button">Image</button>
 <button aria-selected="false" data-page="audio" type="button">Audio</button>
-<button aria-selected="false" data-page="video" type="button">Video</button>
-<button aria-selected="false" data-page="game" type="button">Game</button>
-<button aria-selected="false" data-page="mail" type="button">Mail</button>
-<button aria-selected="false" data-page="external" type="button">External / 外部</button>
+<button aria-selected="false" data-page="calendar" type="button">Calendar</button>
+<button aria-selected="false" data-page="canvas" type="button">Canvas</button>
 <button aria-selected="false" data-page="comment" type="button">Comment</button>
+<button aria-selected="false" data-page="data" type="button">Data</button>
+<button aria-selected="false" data-page="date" type="button">Date</button>
+<button aria-selected="false" data-page="effects" type="button">Effects</button>
+<button aria-selected="false" data-page="external" type="button">External / 外部</button>
+<button aria-selected="false" data-page="game" type="button">Game</button>
+<button aria-selected="false" data-page="image" type="button">Image</button>
+<button aria-selected="false" data-page="mail" type="button">Mail</button>
+<button aria-selected="false" data-page="state" type="button">State</button>
+<button aria-selected="false" data-page="ui" type="button">UI</button>
+<button aria-selected="false" data-page="video" type="button">Video</button>
 </nav>
 <section class="page active" data-page-panel="directory">
   <h2 class="section-title">使用前，看一下</h2>
@@ -137,7 +137,7 @@
 <script src="./index_data.js"></script><script>
     const libraryData = window.SlowlyLibraryIndex || [];
 
-    // 完成品以英文標題自動排序，不改動 index_data.js 的資料順序。
+    // 完成品在 index_data.js 原始資料中已依英文 A～Z 排序；前端再次排序以維持分頁與搜尋結果一致。
     // 下面建立清單、分頁與搜尋索引時必須使用同一份排序結果。
     const examplesData = libraryData.find((entry) => entry.page === "examples");
     const exampleTitleCollator = new Intl.Collator("en", {

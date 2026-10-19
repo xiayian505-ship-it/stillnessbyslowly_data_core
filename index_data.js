@@ -27,84 +27,6 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
-        "title": "Spider Easy",
-        "desc": "可直接嵌入網站使用的 Spider 初階（單一花色）連環新接龍完成品，提供 104 張牌隨機開局、十欄牌區、合法移牌、五次補牌、同花色 K～A 自動收牌、主動結束及破關判定。引用軍火庫 Deck 與 Spider 共用規則引擎，全部透過 HTTPS 絕對路徑載入；僅提供必要的排列與操作樣式，外觀和進階功能由宿主決定，不含資料庫、UID、存檔、音效或特效。",
-        "links": [
-          {
-            "label": "Spider.js（共用規則）",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js"
-          },
-          {
-            "label": "Spider.css",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css"
-          },
-          {
-            "label": "SpiderEasy.js",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderEasy.js"
-          },
-          {
-            "label": "展示頁",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderEasy_demo.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderEasy_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Spider Medium",
-        "desc": "可直接嵌入網站使用的 Spider 中階（雙花色）連環新接龍完成品，提供 104 張牌隨機開局、十欄牌區、合法移牌、五次補牌、同花色 K～A 自動收牌、主動結束及破關判定。引用軍火庫 Deck 與 Spider 共用規則引擎，全部透過 HTTPS 絕對路徑載入；僅提供必要的排列與操作樣式，外觀和進階功能由宿主決定，不含資料庫、UID、存檔、音效或特效。",
-        "links": [
-          {
-            "label": "Spider.js（共用規則）",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js"
-          },
-          {
-            "label": "Spider.css",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css"
-          },
-          {
-            "label": "SpiderMedium.js",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium.js"
-          },
-          {
-            "label": "展示頁",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium_demo.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Spider Hard",
-        "desc": "可直接嵌入網站使用的 Spider 高階（四花色）連環新接龍完成品，提供 104 張牌隨機開局、十欄牌區、合法移牌、五次補牌、同花色 K～A 自動收牌、主動結束及破關判定。引用軍火庫 Deck 與 Spider 共用規則引擎，全部透過 HTTPS 絕對路徑載入；僅提供必要的排列與操作樣式，外觀和進階功能由宿主決定，不含資料庫、UID、存檔、音效或特效。",
-        "links": [
-          {
-            "label": "Spider.js（共用規則）",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js"
-          },
-          {
-            "label": "Spider.css",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css"
-          },
-          {
-            "label": "SpiderHard.js",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderHard.js"
-          },
-          {
-            "label": "展示頁",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderHard_demo.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderHard_usage.html"
-          }
-        ]
-      },
-      {
         "title": "Klondike Draw 1",
         "desc": "可直接嵌入網站使用的傳統接龍 Klondike 完成品，固定每次翻 1 張牌。提供 52 張牌隨機開局、七欄牌區、合法移牌、牌庫翻牌及棄牌回收、同花色 A～K 回收、主動結束、末盤自動收牌與破關判定。引用軍火庫 Deck 積木與 Klondike 共用規則引擎，全部採 HTTPS 絕對路徑；只提供必要的牌面排版，外觀與擴充交由宿主決定，不含資料庫、UID、存檔、音效或特效。",
         "links": [
@@ -153,72 +75,6 @@ window.SlowlyLibraryIndex = [
           {
             "label": "使用說明",
             "href": "https://lib.stillnessbyslowly.com/component/solitaire/Klondike/KlondikeDraw3_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Slowly Video Speed Player",
-        "desc": "可直接嵌入網站使用的影片倍速播放與錄製匯出完成品，提供本機影片載入、0.5～5 倍速、播放與暫停、進度、錄製匯出及提前停止；組合軍火庫 Video 與 Blob／檔案積木，透過 HTTPS 絕對路徑載入。採與 Slowly Piano 展示頁一致的粉紅色票，宿主可用 CSS 變數自由換皮；真實錄製功能請在裝置瀏覽器驗收。",
-        "links": [
-          {
-            "label": "video_speed_player_component.js",
-            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component.js"
-          },
-          {
-            "label": "video_speed_player_component.css",
-            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component.css"
-          },
-          {
-            "label": "展示頁",
-            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component_demo.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Slowly QRCode Print",
-        "desc": "可直接嵌入網站使用的 QRCode 列印完成品，支援一般 QRCode／Wi-Fi QRCode、多尺寸預覽、高解析 QR 內容正規化、固定 quiet zone、A4 排版與實際尺寸列印；列印尺寸曾以實體尺規校正。",
-        "links": [
-          {
-            "label": "QRCode Print Component",
-            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/qrcode_print_component.html"
-          },
-          {
-            "label": "qrcode_print_component.css",
-            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/qrcode_print_component.css"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/test_qrcode_print_component.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/qrcode_print_component_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Slowly Clipboard",
-        "desc": "可直接嵌入網站使用的剪貼簿操作完成品，組合 Clipboard Copy、Cut、Paste 與 Select 四顆零件，為 input / textarea 建立複製、剪下、貼上與全選的原生按鈕列；完成品 CSS 僅提供基本結構，外觀可由宿主覆寫。",
-        "links": [
-          {
-            "label": "clipboard_component.js",
-            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component.js"
-          },
-          {
-            "label": "clipboard_component.css",
-            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component.css"
-          },
-          {
-            "label": "展示頁",
-            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component_demo.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component_usage.html"
           }
         ]
       },
@@ -301,72 +157,24 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
-        "title": "Slowly Game Shell",
-        "desc": "可直接嵌入網站使用的通用遊戲外殼完成品，透過 Game Adapter 將遊戲內容與外殼生命週期解耦，提供手動／自動開始、暫停／繼續、重新開始、遊戲時間、可選存檔 Adapter 與自動存檔；不綁定特定遊戲、Storage、後端、排行榜、音效或視覺皮膚。",
+        "title": "Slowly Clipboard",
+        "desc": "可直接嵌入網站使用的剪貼簿操作完成品，組合 Clipboard Copy、Cut、Paste 與 Select 四顆零件，為 input / textarea 建立複製、剪下、貼上與全選的原生按鈕列；完成品 CSS 僅提供基本結構，外觀可由宿主覆寫。",
         "links": [
           {
-            "label": "game_shell_component.js",
-            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component.js"
+            "label": "clipboard_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component.js"
           },
           {
-            "label": "game_shell_component.css",
-            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component.css"
+            "label": "clipboard_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component.css"
           },
           {
             "label": "展示頁",
-            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component_demo.html"
+            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component_demo.html"
           },
           {
             "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Slowly Piano",
-        "desc": "可直接嵌入網站使用的觸控鋼琴完成品，整合音名轉頻率、AudioContext、Oscillator、Gain 與 Envelope，支援多指按鍵、按住持續發聲、音色切換、自訂音域（含標準 88 鍵 A0～C8）、垂直／水平捲動、每排白鍵數與可見排數設定；基礎 CSS 提供可覆寫變數，宿主可自行決定琴鍵顏色、尺寸與整體外觀。",
-        "links": [
-          {
-            "label": "piano_component.js",
-            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component.js"
-          },
-          {
-            "label": "piano_component.css",
-            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component.css"
-          },
-          {
-            "label": "piano_config.js",
-            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_config.js"
-          },
-          {
-            "label": "展示頁",
-            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component_demo.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component_usage.html"
-          }
-        ]
-      },
-      {
-        "title": "Slowly JSON Viewer",
-        "desc": "可直接使用的 JSON 檢視完成品，組合 JSON Viewer 與 Fiction Storage，支援貼上或匯入 JSON、結構顯示、搜尋標亮、全部展開／收合，以及將常用 JSON 儲存於 localStorage。",
-        "links": [
-          {
-            "label": "json_viewer_component.js",
-            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component.js"
-          },
-          {
-            "label": "json_viewer_component.css",
-            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component.css"
-          },
-          {
-            "label": "展示頁",
-            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component_demo.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component_usage.html"
+            "href": "https://lib.stillnessbyslowly.com/component/clipboard/clipboard_component_usage.html"
           }
         ]
       },
@@ -415,6 +223,124 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "title": "Slowly Game Shell",
+        "desc": "可直接嵌入網站使用的通用遊戲外殼完成品，透過 Game Adapter 將遊戲內容與外殼生命週期解耦，提供手動／自動開始、暫停／繼續、重新開始、遊戲時間、可選存檔 Adapter 與自動存檔；不綁定特定遊戲、Storage、後端、排行榜、音效或視覺皮膚。",
+        "links": [
+          {
+            "label": "game_shell_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component.js"
+          },
+          {
+            "label": "game_shell_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/game/game_shell_component_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Slowly JSON Viewer",
+        "desc": "可直接使用的 JSON 檢視完成品，組合 JSON Viewer 與 Fiction Storage，支援貼上或匯入 JSON、結構顯示、搜尋標亮、全部展開／收合，以及將常用 JSON 儲存於 localStorage。",
+        "links": [
+          {
+            "label": "json_viewer_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component.js"
+          },
+          {
+            "label": "json_viewer_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/json/json_viewer_component_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Slowly Piano",
+        "desc": "可直接嵌入網站使用的觸控鋼琴完成品，整合音名轉頻率、AudioContext、Oscillator、Gain 與 Envelope，支援多指按鍵、按住持續發聲、音色切換、自訂音域（含標準 88 鍵 A0～C8）、垂直／水平捲動、每排白鍵數與可見排數設定；基礎 CSS 提供可覆寫變數，宿主可自行決定琴鍵顏色、尺寸與整體外觀。",
+        "links": [
+          {
+            "label": "piano_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component.js"
+          },
+          {
+            "label": "piano_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component.css"
+          },
+          {
+            "label": "piano_config.js",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_config.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/piano/piano_component_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Slowly QRCode Print",
+        "desc": "可直接嵌入網站使用的 QRCode 列印完成品，支援一般 QRCode／Wi-Fi QRCode、多尺寸預覽、高解析 QR 內容正規化、固定 quiet zone、A4 排版與實際尺寸列印；列印尺寸曾以實體尺規校正。",
+        "links": [
+          {
+            "label": "QRCode Print Component",
+            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/qrcode_print_component.html"
+          },
+          {
+            "label": "qrcode_print_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/qrcode_print_component.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/test_qrcode_print_component.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/qrcode_print/qrcode_print_component_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Slowly SVG Converter",
+        "desc": "可直接掛載的 SVG 檢視與轉檔完成品，組合軍火庫既有 SVG Viewer、Animation Frame Extractor、GIF Encoder、Canvas PNG、Blob URL 與 Canvas Video Export 零件，提供 SVG 預覽、縮放、單幀 PNG、動畫 GIF 及瀏覽器支援的影片輸出。宿主可覆蓋設定與必要 CSS；不包含藝術字站專屬外觀，MP4 依瀏覽器錄製支援而定。",
+        "links": [
+          {
+            "label": "svg_converter_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.js"
+          },
+          {
+            "label": "svg_converter_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component_usage.html"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/component/svg/test_svg_converter_component.html"
+          }
+        ]
+      },
+      {
         "title": "Slowly Tax Calculator",
         "desc": "可直接嵌入網站使用的含稅金額拆分計算元件，輸入含稅金額與稅率後自動計算營業額與稅額；預設稅率為 5%，可自行修改。核心採用含稅金額 ÷（1＋稅率）的單一百分比稅率模型。",
         "links": [
@@ -433,6 +359,106 @@ window.SlowlyLibraryIndex = [
           {
             "label": "使用說明",
             "href": "https://lib.stillnessbyslowly.com/component/data/tax_calculator_component_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Slowly Video Speed Player",
+        "desc": "可直接嵌入網站使用的影片倍速播放與錄製匯出完成品，提供本機影片載入、0.5～5 倍速、播放與暫停、進度、錄製匯出及提前停止；組合軍火庫 Video 與 Blob／檔案積木，透過 HTTPS 絕對路徑載入。採與 Slowly Piano 展示頁一致的粉紅色票，宿主可用 CSS 變數自由換皮；真實錄製功能請在裝置瀏覽器驗收。",
+        "links": [
+          {
+            "label": "video_speed_player_component.js",
+            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component.js"
+          },
+          {
+            "label": "video_speed_player_component.css",
+            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component.css"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/video/video_speed_player_component_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Spider Easy",
+        "desc": "可直接嵌入網站使用的 Spider 初階（單一花色）連環新接龍完成品，提供 104 張牌隨機開局、十欄牌區、合法移牌、五次補牌、同花色 K～A 自動收牌、主動結束及破關判定。引用軍火庫 Deck 與 Spider 共用規則引擎，全部透過 HTTPS 絕對路徑載入；僅提供必要的排列與操作樣式，外觀和進階功能由宿主決定，不含資料庫、UID、存檔、音效或特效。",
+        "links": [
+          {
+            "label": "Spider.js（共用規則）",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js"
+          },
+          {
+            "label": "Spider.css",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css"
+          },
+          {
+            "label": "SpiderEasy.js",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderEasy.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderEasy_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderEasy_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Spider Hard",
+        "desc": "可直接嵌入網站使用的 Spider 高階（四花色）連環新接龍完成品，提供 104 張牌隨機開局、十欄牌區、合法移牌、五次補牌、同花色 K～A 自動收牌、主動結束及破關判定。引用軍火庫 Deck 與 Spider 共用規則引擎，全部透過 HTTPS 絕對路徑載入；僅提供必要的排列與操作樣式，外觀和進階功能由宿主決定，不含資料庫、UID、存檔、音效或特效。",
+        "links": [
+          {
+            "label": "Spider.js（共用規則）",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js"
+          },
+          {
+            "label": "Spider.css",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css"
+          },
+          {
+            "label": "SpiderHard.js",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderHard.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderHard_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderHard_usage.html"
+          }
+        ]
+      },
+      {
+        "title": "Spider Medium",
+        "desc": "可直接嵌入網站使用的 Spider 中階（雙花色）連環新接龍完成品，提供 104 張牌隨機開局、十欄牌區、合法移牌、五次補牌、同花色 K～A 自動收牌、主動結束及破關判定。引用軍火庫 Deck 與 Spider 共用規則引擎，全部透過 HTTPS 絕對路徑載入；僅提供必要的排列與操作樣式，外觀和進階功能由宿主決定，不含資料庫、UID、存檔、音效或特效。",
+        "links": [
+          {
+            "label": "Spider.js（共用規則）",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.js"
+          },
+          {
+            "label": "Spider.css",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/Spider.css"
+          },
+          {
+            "label": "SpiderMedium.js",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium.js"
+          },
+          {
+            "label": "展示頁",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium_demo.html"
+          },
+          {
+            "label": "使用說明",
+            "href": "https://lib.stillnessbyslowly.com/component/solitaire/Spider/SpiderMedium_usage.html"
           }
         ]
       },
@@ -493,30 +519,514 @@ window.SlowlyLibraryIndex = [
             "href": "https://lib.stillnessbyslowly.com/component/text_generator/test_text_generator_horizontal.html"
           }
         ]
+      }
+    ]
+  },
+  {
+    "page": "audio",
+    "title": "Audio",
+    "groups": [
+      {
+        "id": "context",
+        "title": "Context",
+        "subpage": true,
+        "desc": "AudioContext 建立、啟用、暫停、關閉與狀態管理等音訊環境核心。",
+        "items": [
+          {
+            "title": "Audio Context",
+            "desc": "通用 Web Audio 音訊環境核心，集中處理 AudioContext 的建立、啟用、暫停、關閉與狀態取得；不綁定音源、音高、UI 或播放流程。",
+            "links": [
+              {
+                "label": "audio_context.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/context/audio_context.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/context/test_audio_context.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/context/audio_context_usage.html"
+              }
+            ]
+          }
+        ]
       },
       {
-        "title": "Slowly SVG Converter",
-        "desc": "可直接掛載的 SVG 檢視與轉檔完成品，組合軍火庫既有 SVG Viewer、Animation Frame Extractor、GIF Encoder、Canvas PNG、Blob URL 與 Canvas Video Export 零件，提供 SVG 預覽、縮放、單幀 PNG、動畫 GIF 及瀏覽器支援的影片輸出。宿主可覆蓋設定與必要 CSS；不包含藝術字站專屬外觀，MP4 依瀏覽器錄製支援而定。",
+        "id": "filter",
+        "title": "Filter",
+        "subpage": true,
+        "desc": "BiquadFilter 等通用音訊濾波處理工具。",
+        "items": [
+          {
+            "title": "Biquad Filter",
+            "desc": "通用 BiquadFilterNode 濾波核心，負責建立濾波節點並設定類型、頻率與 Q 等基礎參數；不綁定特定音效預設。",
+            "links": [
+              {
+                "label": "biquad_filter.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/filter/biquad_filter.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/filter/test_biquad_filter.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/filter/biquad_filter_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "gain",
+        "title": "Gain",
+        "subpage": true,
+        "desc": "音量增益與 attack、release 等包絡控制工具。",
+        "items": [
+          {
+            "title": "Envelope",
+            "desc": "通用 AudioParam 包絡排程工具，集中處理 attack、release 與線性／指數漸變；不建立音源，也不綁定特定音效。",
+            "links": [
+              {
+                "label": "envelope.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/envelope.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/test_envelope.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/envelope_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Gain",
+            "desc": "通用 GainNode 增益核心，負責建立增益節點、設定音量與連接節點；不處理時間包絡或播放流程。",
+            "links": [
+              {
+                "label": "gain.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/gain.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/test_gain.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/gain/gain_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "pitch",
+        "title": "Pitch",
+        "subpage": true,
+        "desc": "音名、MIDI 與頻率之間的純資料與數值轉換工具。",
+        "items": [
+          {
+            "title": "MIDI Frequency",
+            "desc": "通用 MIDI 音高編號與頻率轉換工具，可在 MIDI note number 與 Hz 之間換算；不綁定樂譜或播放流程。",
+            "links": [
+              {
+                "label": "midi_frequency.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/midi_frequency.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/test_midi_frequency.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/midi_frequency_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Note Frequency",
+            "desc": "通用音名轉頻率工具，將含升降記號與八度的音名轉為 Hz；不建立 AudioContext，也不播放聲音。",
+            "links": [
+              {
+                "label": "note_frequency.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/note_frequency.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/test_note_frequency.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/pitch/note_frequency_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "source",
+        "title": "Source",
+        "subpage": true,
+        "desc": "Oscillator 等聲音來源的建立與基礎控制。",
+        "items": [
+          {
+            "title": "Noise",
+            "desc": "通用 Web Audio 噪音音源核心，支援 white、pink、brown noise，提供 AudioBuffer 與 BufferSource 建立；不管理 AudioContext、不管理音量、不自動 connect 或 start。",
+            "links": [
+              {
+                "label": "noise.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/noise.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/test_noise.html"
+              }
+            ]
+          },
+          {
+            "title": "Oscillator",
+            "desc": "通用 OscillatorNode 音源核心，負責建立振盪器、設定波形與頻率，以及開始、停止等基礎控制；不綁定音量、包絡或音樂流程。",
+            "links": [
+              {
+                "label": "oscillator.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/oscillator.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/test_oscillator.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/source/oscillator_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "tempo",
+        "title": "Tempo / 節拍",
+        "items": [
+          {
+            "title": "Beat Time",
+            "desc": "通用 BPM、拍數與秒數換算核心，提供每拍秒數、拍數轉秒數與秒數轉拍數；不綁 AudioContext、不負責排程，也不建立 Timer。",
+            "links": [
+              {
+                "label": "beat_time.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/tempo/beat_time.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/tempo/test_beat_time.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "tone",
+        "title": "Tone",
+        "subpage": true,
+        "desc": "以頻率、波形、時長、增益與滑音等參數播放單一合成音的組合工具。",
+        "items": [
+          {
+            "title": "Harmonic Chime",
+            "desc": "通用一次性多頻率和聲提示音核心，可設定頻率、各聲部增益、波形、錯開時間、attack 與 decay；不管理 AudioContext、不綁定特定頻率、情境或 UI。",
+            "links": [
+              {
+                "label": "harmonic_chime.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/harmonic_chime.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/test_harmonic_chime.html"
+              }
+            ]
+          },
+          {
+            "title": "Tone",
+            "desc": "通用單音播放組合工具，以頻率、波形、時長、增益與滑音等參數建立一次性的合成音；不綁定音樂、遊戲或 UI。",
+            "links": [
+              {
+                "label": "tone.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/tone.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/test_tone.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/tone/tone_usage.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "calendar",
+    "title": "Calendar",
+    "items": [
+      {
+        "title": "Calendar",
+        "desc": "1901–2100 西曆日曆資料生成與整合模組，提供年、月、日與星期結構，並可整合農曆與二十四節氣資料。顯示方式與視覺由使用端自行決定。",
         "links": [
           {
-            "label": "svg_converter_component.js",
-            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.js"
-          },
-          {
-            "label": "svg_converter_component.css",
-            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component.css"
-          },
-          {
-            "label": "展示頁",
-            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component_demo.html"
-          },
-          {
-            "label": "使用說明",
-            "href": "https://lib.stillnessbyslowly.com/component/svg/svg_converter_component_usage.html"
+            "label": "calendar.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar.js"
           },
           {
             "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/component/svg/test_svg_converter_component.html"
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_test.html"
+          },
+          {
+            "label": "顯示測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_view_test.html"
+          }
+        ]
+      },
+      {
+        "title": "Calendar Custom",
+        "desc": "使用者自訂事件管理模組，支援西曆與農曆事件、新增、查詢、修改、刪除、單次事件與每年重複，資料儲存於 localStorage。",
+        "links": [
+          {
+            "label": "calendar_custom.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_custom.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_custom_test.html"
+          },
+          {
+            "label": "操作測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_custom_view_test.html"
+          }
+        ]
+      },
+      {
+        "title": "Calendar Interaction",
+        "desc": "Slowly Calendar 的獨立互動橋接模組，在不修改 Calendar Component 的情況下取得目前選取日期、監聽日期變更，並支援替指定日期加入資料標記。",
+        "links": [
+          {
+            "label": "calendar_interaction.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_interaction.js"
+          },
+          {
+            "label": "calendar_interaction.css",
+            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_interaction.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/test_calendar_interaction.html"
+          }
+        ]
+      },
+      {
+        "title": "Lunar Calendar",
+        "desc": "1901–2100 國曆與農曆雙向轉換模組，包含閏月、月份天數與農曆日期資料。",
+        "links": [
+          {
+            "label": "lunar.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar.js"
+          },
+          {
+            "label": "lunar_data.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_data.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_test.html"
+          },
+          {
+            "label": "資料基準",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_reference.txt"
+          }
+        ]
+      },
+      {
+        "title": "Lunar Festivals",
+        "desc": "農曆節日查詢模組，依 Lunar 提供的農曆日期判定常用農曆年節，包含春節期間、元宵、端午、七夕、中元、中秋、重陽與除夕。",
+        "links": [
+          {
+            "label": "lunar_festivals.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals.js"
+          },
+          {
+            "label": "lunar_festivals_data.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals_data.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals_test.html"
+          },
+          {
+            "label": "資料基準",
+            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals_reference.txt"
+          }
+        ]
+      },
+      {
+        "title": "Month Grid View",
+        "desc": "通用單月七欄格狀 DOM renderer，使用宿主提供的 month data 建立月份格子，支援自訂星期、標題、日期內容與 class；不計算農曆、節氣、節日，也不要求 Calendar 模組存在。",
+        "links": [
+          {
+            "label": "month_grid_view.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/month_grid_view.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/test_month_grid_view.html"
+          }
+        ]
+      },
+      {
+        "title": "Month Sequence",
+        "desc": "通用年月位移與連續月份序列核心，提供月份正規化、前後位移與連續 N 個月份產生，並自動處理跨年；不產生日期內容、不處理曆法資料、不碰 DOM。",
+        "links": [
+          {
+            "label": "month_sequence.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/month_sequence.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/test_month_sequence.html"
+          }
+        ]
+      },
+      {
+        "title": "Solar Festivals",
+        "desc": "台灣常見固定西曆節日查詢模組，不包含農曆節日、節氣、星期規則與政府補假／補班資料。",
+        "links": [
+          {
+            "label": "solar_festivals.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_festivals.js"
+          },
+          {
+            "label": "solar_festivals_data.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_festivals_data.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_festivals_test.html"
+          }
+        ]
+      },
+      {
+        "title": "Solar Terms",
+        "desc": "1901–2100 二十四節氣查詢模組，提供年度節氣、日期查詢、指定節氣與下一節氣。",
+        "links": [
+          {
+            "label": "solar_terms.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms.js"
+          },
+          {
+            "label": "solar_terms_data.js",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms_data.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms_test.html"
+          },
+          {
+            "label": "資料基準",
+            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms_reference.txt"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "canvas",
+    "title": "Canvas",
+    "groups": [
+      {
+        "id": "icons",
+        "title": "Icons / 圖示",
+        "subpage": true,
+        "desc": "可由宿主呼叫的 Canvas 向量圖示家族。圖示只負責怎麼畫，尺寸、顏色、粗細與比例由宿主決定；Playground 可即時試參數。",
+        "items": [
+          {
+            "title": "Arrow Icons",
+            "desc": "Canvas 方向箭頭家族，包含八方向單箭頭、水平／垂直雙向箭頭、上下堆疊雙箭頭、斜向重疊交錯箭頭、回彎／轉向與旋轉箭頭；宿主可覆寫尺寸、顏色、粗細、箭頭比例與內距。",
+            "links": [
+              {
+                "label": "arrows.js",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/arrows.js"
+              },
+              {
+                "label": "Playground",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playground.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Canvas Icons Core",
+            "desc": "Canvas icon registry 與統一呼叫入口，提供家族註冊、圖示查詢、預設參數取得與 draw()；不內建特定 icon，也不負責 PNG 匯出。",
+            "links": [
+              {
+                "label": "core.js",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/core.js"
+              },
+              {
+                "label": "Playground",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playground.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Playback Icons",
+            "desc": "Canvas 播放控制家族，提供隨機、重播、單曲循環、播放、快轉、下一首、播放／暫停、向左播放、倒帶、上一首、上下切換、暫停、停止、錄製、退出與影片圖示；宿主可覆寫尺寸、顏色、粗細與內距。",
+            "links": [
+              {
+                "label": "playback.js",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playback.js"
+              },
+              {
+                "label": "Playground",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playground.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "comment",
+    "title": "Comment",
+    "items": [
+      {
+        "title": "Comment Board",
+        "desc": "輕型留言板模組，提供留言新增、時間排序與管理者編輯、刪除及回覆功能。目前使用 FictionData 儲存於 localStorage，並預留後端資料與權限控制介面。",
+        "links": [
+          {
+            "label": "comment_board.js",
+            "href": "https://lib.stillnessbyslowly.com/comment/comment_board.js"
+          },
+          {
+            "label": "comment_board.css",
+            "href": "https://lib.stillnessbyslowly.com/comment/comment_board.css"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/comment/comment_board_test.html"
           }
         ]
       }
@@ -526,398 +1036,6 @@ window.SlowlyLibraryIndex = [
     "page": "data",
     "title": "Data",
     "groups": [
-      {
-        "id": "fiction",
-        "title": "Fiction / 資料操作",
-        "subpage": true,
-        "desc": "搜尋、篩選、排序、隨機、分頁、儲存、變更通知與選取建立等通用資料操作。",
-        "items": [
-          {
-            "title": "Fiction Data",
-            "desc": "從作品探索拆出的完整共用資料處理與本機儲存模組，包含 localStorage、CRUD、搜尋、篩選、排序、隨機與分頁。",
-            "links": [
-              {
-                "label": "Fiction_data.js",
-                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_data.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/fiction/test_data.html"
-              }
-            ]
-          },
-          {
-            "title": "Fiction Search",
-            "desc": "從 Fiction Data 拆出的獨立搜尋功能，支援關鍵字搜尋、指定欄位與巢狀欄位。",
-            "links": [
-              {
-                "label": "Fiction_search.js",
-                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_search.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/fiction/test_search.html"
-              }
-            ]
-          },
-          {
-            "title": "Fiction Filter",
-            "desc": "從 Fiction Data 拆出的獨立篩選功能，支援 equals、boolean、containsAll、containsAny 與自訂 predicate。",
-            "links": [
-              {
-                "label": "Fiction_filter.js",
-                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_filter.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/fiction/test_filter.html"
-              }
-            ]
-          },
-          {
-            "title": "Fiction Sort",
-            "desc": "從 Fiction Data 拆出的獨立排序功能，支援數字、日期、字串、自動判定與自訂比較函式。",
-            "links": [
-              {
-                "label": "Fiction_sort.js",
-                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_sort.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/fiction/test_sort.html"
-              }
-            ]
-          },
-          {
-            "title": "Fiction Shuffle",
-            "desc": "從 Fiction Data 拆出的獨立隨機排序功能，以新陣列回傳隨機排列結果，不修改原始資料。",
-            "links": [
-              {
-                "label": "Fiction_shuffle.js",
-                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_shuffle.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/fiction/test_shuffle.html"
-              }
-            ]
-          },
-          {
-            "title": "Fiction Paginate",
-            "desc": "從 Fiction Data 拆出的獨立分頁功能，提供頁碼、每頁筆數、總頁數、前後頁狀態與資料切片。",
-            "links": [
-              {
-                "label": "Fiction_paginate.js",
-                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_paginate.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/fiction/test_paginate.html"
-              }
-            ]
-          },
-          {
-            "title": "Fiction Storage",
-            "desc": "從 Fiction Data 拆出的獨立 localStorage 與 CRUD 資料層，提供 Store、Collection、新增、讀取、修改、刪除、替換與清空功能。",
-            "links": [
-              {
-                "label": "Fiction_storage.js",
-                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/fiction/test_storage.html"
-              }
-            ]
-          },
-          {
-            "title": "Fiction Change",
-            "desc": "從 Fiction Data 延伸拆出的獨立資料變更通知功能，提供訂閱、取消訂閱與事件發送，讓資料新增、修改、刪除、替換或清空後可通知其他模組與使用端。",
-            "links": [
-              {
-                "label": "Fiction_change.js",
-                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_change.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/fiction/test_change.html"
-              }
-            ]
-          },
-          {
-            "title": "Fiction Select Or Create",
-            "desc": "從作品探索作者管理拆出的通用「搜尋既有或新增」資料選取模組。支援依名稱或 ID 搜尋、選取既有資料、未選定時解除舊 ID、同名資料優先回用既有 ID，並可由宿主自行接上 localStorage、Supabase 或其他資料來源。",
-            "links": [
-              {
-                "label": "Fiction_SelectOrCreate.js",
-                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_SelectOrCreate.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/fiction/test_select_or_create.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "storage",
-        "title": "Storage / 儲存",
-        "items": [
-          {
-            "title": "Local Storage Scan",
-            "desc": "唯讀 localStorage／Storage-like 掃描核心，列舉 key、讀取原始值、嘗試 JSON 解析、辨識資料型態與陣列筆數，並可選擇依分隔符拆分 namespace；不修改資料、不綁定 Viewer 或特定 Storage schema。",
-            "links": [
-              {
-                "label": "local_storage_scan.js",
-                "href": "https://lib.stillnessbyslowly.com/data/storage/local_storage_scan.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/storage/test_local_storage_scan.html"
-              }
-            ]
-          },
-          {
-            "title": "Snapshot Mirror",
-            "desc": "通用多儲存來源 snapshot 協調核心，可從多個提供 read／write 的 store 讀取資料、依時間選出最新 snapshot、處理同時間 tie-break，並將最新版本回寫到所有 store 修補不一致；不綁 localStorage、IndexedDB 或特定資料格式。",
-            "links": [
-              {
-                "label": "snapshot_mirror.js",
-                "href": "https://lib.stillnessbyslowly.com/data/storage/snapshot_mirror.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/storage/test_snapshot_mirror.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "realtime",
-        "title": "Realtime / 即時同步",
-        "items": [
-          {
-            "title": "Realtime Sync",
-            "desc": "通用 Supabase Realtime 資料同步工具，提供 postgres_changes 訂閱與解除訂閱、依 updated_at 判斷遠端版本、忽略相同或較舊事件，並在重新連線後通知使用端重新載入最新資料。登入、資料儲存與 UI 由宿主自行處理。",
-            "links": [
-              {
-                "label": "Realtime_sync.js",
-                "href": "https://lib.stillnessbyslowly.com/data/Realtime_sync.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/test_realtime_sync.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "money",
-        "title": "Money / 金額",
-        "subpage": true,
-        "desc": "金額、幣別、匯率與稅額相關的通用資料處理。",
-        "items": [
-          {
-            "title": "Money",
-            "desc": "通用數值與金額處理工具，提供加總、四捨五入、數字正規化與金額格式化功能。",
-            "links": [
-              {
-                "label": "Money.js",
-                "href": "https://lib.stillnessbyslowly.com/data/Money.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/test_money.html"
-              }
-            ]
-          },
-          {
-            "title": "Currency",
-            "desc": "通用幣別與匯率換算工具，以 TWD 為基準，提供外幣與台幣雙向換算、匯率方向轉換與即時匯率取得。",
-            "links": [
-              {
-                "label": "Currency.js",
-                "href": "https://lib.stillnessbyslowly.com/data/Currency.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/test_currency.html"
-              }
-            ]
-          },
-          {
-            "title": "Tax",
-            "desc": "通用含稅金額拆分核心，依指定稅率以含稅金額 ÷（1＋稅率）反推未稅營業額，再以含稅金額減去營業額取得稅額；不假定所有國家或地區皆採相同稅制與取整規則。",
-            "links": [
-              {
-                "label": "Tax.js",
-                "href": "https://lib.stillnessbyslowly.com/data/Tax.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/test_tax.html"
-              }
-            ]
-          },
-          {
-            "title": "Unit Price",
-            "desc": "通用包裝單價換算核心，依價格、折扣、運費、規格、數量、輸入單位倍率與比較基準換算可比較單價；不綁定商品種類、幣別、排序或 UI。",
-            "links": [
-              {
-                "label": "unit_price.js",
-                "href": "https://lib.stillnessbyslowly.com/data/unit_price.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/test_unit_price.html"
-              }
-            ]
-          },
-          {
-            "title": "Metered Charge",
-            "desc": "通用按用量計費核心，將實際用量依計費單位向上取整，可套最低計費量與最低可受理門檻，再依費率計算費用；不綁定運輸、商品、幣別、UI，也不依賴 Money 或 Unit Price。",
-            "links": [
-              {
-                "label": "metered_charge.js",
-                "href": "https://lib.stillnessbyslowly.com/data/metered_charge.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/test_metered_charge.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "json",
-        "title": "JSON",
-        "subpage": true,
-        "desc": "JSON 解析、輸出、備份、匯入與結構檢視相關工具。",
-        "items": [
-          {
-            "title": "JSON Parse / Stringify",
-            "desc": "通用 JSON 解析與輸出核心，提供 BOM 處理、輸入正規化、safe 成功／失敗結果，以及 reviver、replacer 與輸出縮排；不負責檔案讀取、Viewer、Storage 或 Schema 驗證。",
-            "links": [
-              {
-                "label": "json_parse_stringify.js",
-                "href": "https://lib.stillnessbyslowly.com/data/json/json_parse_stringify.js"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/data/json/json_parse_stringify_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/json/test_json_parse_stringify.html"
-              }
-            ]
-          },
-          {
-            "title": "Data Backup",
-            "desc": "通用 JSON 備份與匯入工具，提供 JSON 下載、檔案讀取、備份 payload 建立與資料擷取功能。",
-            "links": [
-              {
-                "label": "Data_backup.js",
-                "href": "https://lib.stillnessbyslowly.com/data/Data_backup.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/test_backup.html"
-              }
-            ]
-          },
-          {
-            "title": "JSON Safe Import",
-            "desc": "通用安全匯入流程核心，先執行資料準備與驗證，成功後才進入正式提交；提交失敗時可由宿主提供 rollback 復原流程。不綁定 JSON schema、儲存方式或 UI。",
-            "links": [
-              {
-                "label": "json_safe_import.js",
-                "href": "https://lib.stillnessbyslowly.com/data/json/json_safe_import.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/json/test_json_safe_import.html"
-              }
-            ]
-          },
-          {
-            "title": "JSON Viewer",
-            "desc": "通用 JSON 結構化展示工具，不限定 schema、不推測欄位語意；可讀取 JavaScript 資料、JSON 字串、.json 與 JSON 格式 .txt，支援巢狀 Object、Array、各類 primitive 與 null。核心只負責解析與結構顯示，外觀由宿主 CSS 決定。",
-            "links": [
-              {
-                "label": "json_viewer.js",
-                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer.js"
-              },
-              {
-                "label": "json_viewer.css",
-                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer.css"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/json/test_json_viewer.html"
-              },
-              {
-                "label": "API JSON",
-                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer_api.json"
-              },
-              {
-                "label": "API TXT",
-                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer_api.txt"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "import",
-        "title": "Import / 匯入",
-        "items": [
-          {
-            "title": "Import Rollback",
-            "desc": "通用匯入回復快照核心，在正式匯入前由宿主保存 snapshot，commit 失敗時呼叫宿主提供的 restore 還原，成功後可釋放快照；不綁定 JSON、localStorage、IndexedDB、Blob、資料 schema 或 UI。",
-            "links": [
-              {
-                "label": "import_rollback.js",
-                "href": "https://lib.stillnessbyslowly.com/data/import/import_rollback.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/import/test_import_rollback.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/data/import/import_rollback_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Import Merge",
-            "desc": "通用匯入合併核心，將匯入資料加入既有資料；識別鍵衝突或缺少識別鍵時，可交由宿主提供 createKey 重新配號，並回報新增與 rekey 結果；不讀檔、不解析 JSON、不寫 Storage，也不決定資料 schema。",
-            "links": [
-              {
-                "label": "import_merge.js",
-                "href": "https://lib.stillnessbyslowly.com/data/import/import_merge.js"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/data/import/import_merge_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/import/test_import_merge.html"
-              }
-            ]
-          }
-        ]
-      },
       {
         "id": "blob",
         "title": "Blob",
@@ -977,6 +1095,30 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "csv",
+        "title": "CSV",
+        "items": [
+          {
+            "title": "CSV Parse / Stringify",
+            "desc": "通用 CSV 解析與輸出核心，支援 BOM、引號、欄位內逗號與換行、雙引號跳脫、自訂 delimiter，以及 header 與物件陣列轉換；不負責檔案讀取、下載、Schema 驗證或資料儲存。",
+            "links": [
+              {
+                "label": "csv_parse_stringify.js",
+                "href": "https://lib.stillnessbyslowly.com/data/csv/csv_parse_stringify.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/csv/csv_parse_stringify_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/csv/test_csv_parse_stringify.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "diff",
         "title": "Diff / 差異比較",
         "items": [
@@ -1001,100 +1143,134 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
-        "id": "validation",
-        "title": "Validation / 驗證",
+        "id": "fiction",
+        "title": "Fiction / 資料操作",
+        "subpage": true,
+        "desc": "搜尋、篩選、排序、隨機、分頁、儲存、變更通知與選取建立等通用資料操作。",
         "items": [
           {
-            "title": "Data Validation",
-            "desc": "通用資料驗證核心，依規則驗證 required、type、min／max、pattern 與自訂 validate，並回傳明確錯誤清單；不綁定 DOM、表單 UI、資料儲存或提交流程。",
+            "title": "Fiction Change",
+            "desc": "從 Fiction Data 延伸拆出的獨立資料變更通知功能，提供訂閱、取消訂閱與事件發送，讓資料新增、修改、刪除、替換或清空後可通知其他模組與使用端。",
             "links": [
               {
-                "label": "data_validation.js",
-                "href": "https://lib.stillnessbyslowly.com/data/validation/data_validation.js"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/data/validation/data_validation_usage.html"
+                "label": "Fiction_change.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_change.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/validation/test_data_validation.html"
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_change.html"
               }
             ]
           },
           {
-            "title": "Safe URL",
-            "desc": "通用 URL protocol 白名單驗證與正規化工具，可指定允許的 URI scheme 與不合法時的 fallback；不自動補 https、不碰 DOM，也不依賴 Data Validation。",
+            "title": "Fiction Data",
+            "desc": "從作品探索拆出的完整共用資料處理與本機儲存模組，包含 localStorage、CRUD、搜尋、篩選、排序、隨機與分頁。",
             "links": [
               {
-                "label": "safe_url.js",
-                "href": "https://lib.stillnessbyslowly.com/data/validation/safe_url.js"
+                "label": "Fiction_data.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_data.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/validation/test_safe_url.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "random",
-        "title": "Random / 隨機",
-        "items": [
-          {
-            "title": "Random",
-            "desc": "通用隨機數工具，提供指定範圍浮點數、含上下界整數與依指定機率回傳 true／false；不綁定 UI、業務規則、狀態保存，也不替宿主決定應使用的範圍或機率。",
-            "links": [
-              {
-                "label": "random.js",
-                "href": "https://lib.stillnessbyslowly.com/data/random/random.js"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/data/random/random_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/random/test_random.html"
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_data.html"
               }
             ]
           },
           {
-            "title": "Random ID",
-            "desc": "通用唯一識別字串產生器，優先使用 crypto.randomUUID()，不支援時退回時間戳＋隨機片段；可加入前綴，不保存狀態、不綁定 Fiction，也不依賴其他隨機模組。",
+            "title": "Fiction Filter",
+            "desc": "從 Fiction Data 拆出的獨立篩選功能，支援 equals、boolean、containsAll、containsAny 與自訂 predicate。",
             "links": [
               {
-                "label": "random_id.js",
-                "href": "https://lib.stillnessbyslowly.com/data/random/random_id.js"
+                "label": "Fiction_filter.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_filter.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/random/test_random_id.html"
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_filter.html"
               }
             ]
-          }
-        ]
-      },
-      {
-        "id": "id",
-        "title": "ID / 序號",
-        "items": [
+          },
           {
-            "title": "Next Sequence",
-            "desc": "通用下一序號計算核心，從既有數值或帶前綴的序號字串找出下一個整數序號，支援自訂起始值、前綴與取值函式；不保存 counter、不產生完整 ID、不修改資料。",
+            "title": "Fiction Paginate",
+            "desc": "從 Fiction Data 拆出的獨立分頁功能，提供頁碼、每頁筆數、總頁數、前後頁狀態與資料切片。",
             "links": [
               {
-                "label": "next_sequence.js",
-                "href": "https://lib.stillnessbyslowly.com/data/id/next_sequence.js"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/data/id/next_sequence_usage.html"
+                "label": "Fiction_paginate.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_paginate.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/id/test_next_sequence.html"
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_paginate.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Search",
+            "desc": "從 Fiction Data 拆出的獨立搜尋功能，支援關鍵字搜尋、指定欄位與巢狀欄位。",
+            "links": [
+              {
+                "label": "Fiction_search.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_search.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_search.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Select Or Create",
+            "desc": "從作品探索作者管理拆出的通用「搜尋既有或新增」資料選取模組。支援依名稱或 ID 搜尋、選取既有資料、未選定時解除舊 ID、同名資料優先回用既有 ID，並可由宿主自行接上 localStorage、Supabase 或其他資料來源。",
+            "links": [
+              {
+                "label": "Fiction_SelectOrCreate.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_SelectOrCreate.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_select_or_create.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Shuffle",
+            "desc": "從 Fiction Data 拆出的獨立隨機排序功能，以新陣列回傳隨機排列結果，不修改原始資料。",
+            "links": [
+              {
+                "label": "Fiction_shuffle.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_shuffle.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_shuffle.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Sort",
+            "desc": "從 Fiction Data 拆出的獨立排序功能，支援數字、日期、字串、自動判定與自訂比較函式。",
+            "links": [
+              {
+                "label": "Fiction_sort.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_sort.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_sort.html"
+              }
+            ]
+          },
+          {
+            "title": "Fiction Storage",
+            "desc": "從 Fiction Data 拆出的獨立 localStorage 與 CRUD 資料層，提供 Store、Collection、新增、讀取、修改、刪除、替換與清空功能。",
+            "links": [
+              {
+                "label": "Fiction_storage.js",
+                "href": "https://lib.stillnessbyslowly.com/fiction/Fiction_storage.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/fiction/test_storage.html"
               }
             ]
           }
@@ -1139,24 +1315,320 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
-        "id": "csv",
-        "title": "CSV",
+        "id": "id",
+        "title": "ID / 序號",
         "items": [
           {
-            "title": "CSV Parse / Stringify",
-            "desc": "通用 CSV 解析與輸出核心，支援 BOM、引號、欄位內逗號與換行、雙引號跳脫、自訂 delimiter，以及 header 與物件陣列轉換；不負責檔案讀取、下載、Schema 驗證或資料儲存。",
+            "title": "Next Sequence",
+            "desc": "通用下一序號計算核心，從既有數值或帶前綴的序號字串找出下一個整數序號，支援自訂起始值、前綴與取值函式；不保存 counter、不產生完整 ID、不修改資料。",
             "links": [
               {
-                "label": "csv_parse_stringify.js",
-                "href": "https://lib.stillnessbyslowly.com/data/csv/csv_parse_stringify.js"
+                "label": "next_sequence.js",
+                "href": "https://lib.stillnessbyslowly.com/data/id/next_sequence.js"
               },
               {
                 "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/data/csv/csv_parse_stringify_usage.html"
+                "href": "https://lib.stillnessbyslowly.com/data/id/next_sequence_usage.html"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/csv/test_csv_parse_stringify.html"
+                "href": "https://lib.stillnessbyslowly.com/data/id/test_next_sequence.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "import",
+        "title": "Import / 匯入",
+        "items": [
+          {
+            "title": "Import Merge",
+            "desc": "通用匯入合併核心，將匯入資料加入既有資料；識別鍵衝突或缺少識別鍵時，可交由宿主提供 createKey 重新配號，並回報新增與 rekey 結果；不讀檔、不解析 JSON、不寫 Storage，也不決定資料 schema。",
+            "links": [
+              {
+                "label": "import_merge.js",
+                "href": "https://lib.stillnessbyslowly.com/data/import/import_merge.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/import/import_merge_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/import/test_import_merge.html"
+              }
+            ]
+          },
+          {
+            "title": "Import Rollback",
+            "desc": "通用匯入回復快照核心，在正式匯入前由宿主保存 snapshot，commit 失敗時呼叫宿主提供的 restore 還原，成功後可釋放快照；不綁定 JSON、localStorage、IndexedDB、Blob、資料 schema 或 UI。",
+            "links": [
+              {
+                "label": "import_rollback.js",
+                "href": "https://lib.stillnessbyslowly.com/data/import/import_rollback.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/import/test_import_rollback.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/import/import_rollback_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "json",
+        "title": "JSON",
+        "subpage": true,
+        "desc": "JSON 解析、輸出、備份、匯入與結構檢視相關工具。",
+        "items": [
+          {
+            "title": "Data Backup",
+            "desc": "通用 JSON 備份與匯入工具，提供 JSON 下載、檔案讀取、備份 payload 建立與資料擷取功能。",
+            "links": [
+              {
+                "label": "Data_backup.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Data_backup.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_backup.html"
+              }
+            ]
+          },
+          {
+            "title": "JSON Parse / Stringify",
+            "desc": "通用 JSON 解析與輸出核心，提供 BOM 處理、輸入正規化、safe 成功／失敗結果，以及 reviver、replacer 與輸出縮排；不負責檔案讀取、Viewer、Storage 或 Schema 驗證。",
+            "links": [
+              {
+                "label": "json_parse_stringify.js",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_parse_stringify.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_parse_stringify_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/json/test_json_parse_stringify.html"
+              }
+            ]
+          },
+          {
+            "title": "JSON Safe Import",
+            "desc": "通用安全匯入流程核心，先執行資料準備與驗證，成功後才進入正式提交；提交失敗時可由宿主提供 rollback 復原流程。不綁定 JSON schema、儲存方式或 UI。",
+            "links": [
+              {
+                "label": "json_safe_import.js",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_safe_import.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/json/test_json_safe_import.html"
+              }
+            ]
+          },
+          {
+            "title": "JSON Viewer",
+            "desc": "通用 JSON 結構化展示工具，不限定 schema、不推測欄位語意；可讀取 JavaScript 資料、JSON 字串、.json 與 JSON 格式 .txt，支援巢狀 Object、Array、各類 primitive 與 null。核心只負責解析與結構顯示，外觀由宿主 CSS 決定。",
+            "links": [
+              {
+                "label": "json_viewer.js",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer.js"
+              },
+              {
+                "label": "json_viewer.css",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer.css"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/json/test_json_viewer.html"
+              },
+              {
+                "label": "API JSON",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer_api.json"
+              },
+              {
+                "label": "API TXT",
+                "href": "https://lib.stillnessbyslowly.com/data/json/json_viewer_api.txt"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "money",
+        "title": "Money / 金額",
+        "subpage": true,
+        "desc": "金額、幣別、匯率與稅額相關的通用資料處理。",
+        "items": [
+          {
+            "title": "Currency",
+            "desc": "通用幣別與匯率換算工具，以 TWD 為基準，提供外幣與台幣雙向換算、匯率方向轉換與即時匯率取得。",
+            "links": [
+              {
+                "label": "Currency.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Currency.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_currency.html"
+              }
+            ]
+          },
+          {
+            "title": "Metered Charge",
+            "desc": "通用按用量計費核心，將實際用量依計費單位向上取整，可套最低計費量與最低可受理門檻，再依費率計算費用；不綁定運輸、商品、幣別、UI，也不依賴 Money 或 Unit Price。",
+            "links": [
+              {
+                "label": "metered_charge.js",
+                "href": "https://lib.stillnessbyslowly.com/data/metered_charge.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_metered_charge.html"
+              }
+            ]
+          },
+          {
+            "title": "Money",
+            "desc": "通用數值與金額處理工具，提供加總、四捨五入、數字正規化與金額格式化功能。",
+            "links": [
+              {
+                "label": "Money.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Money.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_money.html"
+              }
+            ]
+          },
+          {
+            "title": "Tax",
+            "desc": "通用含稅金額拆分核心，依指定稅率以含稅金額 ÷（1＋稅率）反推未稅營業額，再以含稅金額減去營業額取得稅額；不假定所有國家或地區皆採相同稅制與取整規則。",
+            "links": [
+              {
+                "label": "Tax.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Tax.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_tax.html"
+              }
+            ]
+          },
+          {
+            "title": "Unit Price",
+            "desc": "通用包裝單價換算核心，依價格、折扣、運費、規格、數量、輸入單位倍率與比較基準換算可比較單價；不綁定商品種類、幣別、排序或 UI。",
+            "links": [
+              {
+                "label": "unit_price.js",
+                "href": "https://lib.stillnessbyslowly.com/data/unit_price.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_unit_price.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "random",
+        "title": "Random / 隨機",
+        "items": [
+          {
+            "title": "Random",
+            "desc": "通用隨機數工具，提供指定範圍浮點數、含上下界整數與依指定機率回傳 true／false；不綁定 UI、業務規則、狀態保存，也不替宿主決定應使用的範圍或機率。",
+            "links": [
+              {
+                "label": "random.js",
+                "href": "https://lib.stillnessbyslowly.com/data/random/random.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/random/random_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/random/test_random.html"
+              }
+            ]
+          },
+          {
+            "title": "Random ID",
+            "desc": "通用唯一識別字串產生器，優先使用 crypto.randomUUID()，不支援時退回時間戳＋隨機片段；可加入前綴，不保存狀態、不綁定 Fiction，也不依賴其他隨機模組。",
+            "links": [
+              {
+                "label": "random_id.js",
+                "href": "https://lib.stillnessbyslowly.com/data/random/random_id.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/random/test_random_id.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "realtime",
+        "title": "Realtime / 即時同步",
+        "items": [
+          {
+            "title": "Realtime Sync",
+            "desc": "通用 Supabase Realtime 資料同步工具，提供 postgres_changes 訂閱與解除訂閱、依 updated_at 判斷遠端版本、忽略相同或較舊事件，並在重新連線後通知使用端重新載入最新資料。登入、資料儲存與 UI 由宿主自行處理。",
+            "links": [
+              {
+                "label": "Realtime_sync.js",
+                "href": "https://lib.stillnessbyslowly.com/data/Realtime_sync.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_realtime_sync.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "storage",
+        "title": "Storage / 儲存",
+        "items": [
+          {
+            "title": "Local Storage Scan",
+            "desc": "唯讀 localStorage／Storage-like 掃描核心，列舉 key、讀取原始值、嘗試 JSON 解析、辨識資料型態與陣列筆數，並可選擇依分隔符拆分 namespace；不修改資料、不綁定 Viewer 或特定 Storage schema。",
+            "links": [
+              {
+                "label": "local_storage_scan.js",
+                "href": "https://lib.stillnessbyslowly.com/data/storage/local_storage_scan.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/storage/test_local_storage_scan.html"
+              }
+            ]
+          },
+          {
+            "title": "Snapshot Mirror",
+            "desc": "通用多儲存來源 snapshot 協調核心，可從多個提供 read／write 的 store 讀取資料、依時間選出最新 snapshot、處理同時間 tie-break，並將最新版本回寫到所有 store 修補不一致；不綁 localStorage、IndexedDB 或特定資料格式。",
+            "links": [
+              {
+                "label": "snapshot_mirror.js",
+                "href": "https://lib.stillnessbyslowly.com/data/storage/snapshot_mirror.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/storage/test_snapshot_mirror.html"
               }
             ]
           }
@@ -1166,34 +1638,6 @@ window.SlowlyLibraryIndex = [
         "id": "text",
         "title": "Text / 文字資料",
         "items": [
-          {
-            "title": "Tag Parser",
-            "desc": "通用標籤字串解析與標準化工具，支援 #tag、半形／全形逗號與空白分隔，可去除空值、去重複並保留第一次出現順序；不綁定 UI、資料儲存或特定內容類型。",
-            "links": [
-              {
-                "label": "tag_parser.js",
-                "href": "https://lib.stillnessbyslowly.com/data/tag_parser.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/test_tag_parser.html"
-              }
-            ]
-          },
-          {
-            "title": "WiFi Payload",
-            "desc": "通用 Wi-Fi QR payload 序列化核心，將 SSID、密碼、加密類型與 hidden 設定轉成 WIFI: 格式，並處理保留字元跳脫；不產生 QRCode、不碰 DOM、不保存帳密。",
-            "links": [
-              {
-                "label": "wifi_payload.js",
-                "href": "https://lib.stillnessbyslowly.com/data/wifi_payload.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/data/test_wifi_payload.html"
-              }
-            ]
-          },
           {
             "title": "Numeric Text",
             "desc": "通用文字數字擷取核心，可從任意文字抓出正負整數、小數與千分位數字，並提供加總與摘要；不綁貨幣、DOM 或分組規則。",
@@ -1221,6 +1665,3520 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/data/test_reading_stats.html"
               }
             ]
+          },
+          {
+            "title": "Tag Parser",
+            "desc": "通用標籤字串解析與標準化工具，支援 #tag、半形／全形逗號與空白分隔，可去除空值、去重複並保留第一次出現順序；不綁定 UI、資料儲存或特定內容類型。",
+            "links": [
+              {
+                "label": "tag_parser.js",
+                "href": "https://lib.stillnessbyslowly.com/data/tag_parser.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_tag_parser.html"
+              }
+            ]
+          },
+          {
+            "title": "WiFi Payload",
+            "desc": "通用 Wi-Fi QR payload 序列化核心，將 SSID、密碼、加密類型與 hidden 設定轉成 WIFI: 格式，並處理保留字元跳脫；不產生 QRCode、不碰 DOM、不保存帳密。",
+            "links": [
+              {
+                "label": "wifi_payload.js",
+                "href": "https://lib.stillnessbyslowly.com/data/wifi_payload.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/test_wifi_payload.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "validation",
+        "title": "Validation / 驗證",
+        "items": [
+          {
+            "title": "Data Validation",
+            "desc": "通用資料驗證核心，依規則驗證 required、type、min／max、pattern 與自訂 validate，並回傳明確錯誤清單；不綁定 DOM、表單 UI、資料儲存或提交流程。",
+            "links": [
+              {
+                "label": "data_validation.js",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/data_validation.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/data_validation_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/test_data_validation.html"
+              }
+            ]
+          },
+          {
+            "title": "Safe URL",
+            "desc": "通用 URL protocol 白名單驗證與正規化工具，可指定允許的 URI scheme 與不合法時的 fallback；不自動補 https、不碰 DOM，也不依賴 Data Validation。",
+            "links": [
+              {
+                "label": "safe_url.js",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/safe_url.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/data/validation/test_safe_url.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "date",
+    "title": "Date",
+    "groups": [
+      {
+        "id": "general",
+        "title": "General / 通用",
+        "items": [
+          {
+            "title": "Date Overlap",
+            "desc": "通用日期集合重疊比對核心，將多組「對象 ID＋日期集合」反向整理為「日期 → 對象」，可查詢指定日期、取得重疊日期、設定最低重疊數、找出最大重疊日期並提供基本統計。核心只處理日期 key 與 ID，不綁定 UI、儲存方式或 Calendar Component。",
+            "links": [
+              {
+                "label": "Date_overlap.js",
+                "href": "https://lib.stillnessbyslowly.com/date/Date_overlap.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/test_date_overlap.html"
+              }
+            ]
+          },
+          {
+            "title": "Date Time",
+            "desc": "一般網站常用的日期與時間處理模組，提供本地日期鍵、日期解析、日期加減、日期差、日期格式化與時間差拆分。",
+            "links": [
+              {
+                "label": "datetime.js",
+                "href": "https://lib.stillnessbyslowly.com/date/datetime.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/date_test_datetime.html"
+              }
+            ]
+          },
+          {
+            "title": "Month Count",
+            "desc": "通用月份筆數統計核心，將資料依日期歸入 YYYY-MM 並計算每月筆數，可取得指定月份或目前月份的數量；宿主自行提供日期來源，無效日期會略過，不綁 DOM、儲存或圖表。",
+            "links": [
+              {
+                "label": "month_count.js",
+                "href": "https://lib.stillnessbyslowly.com/date/month_count.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/test_month_count.html"
+              }
+            ]
+          },
+          {
+            "title": "Next Occurrence",
+            "desc": "通用下一次發生日查找核心，支援固定月日與宿主提供 resolver(year) 的年度規則，可自動跳過不存在的日期；不綁定農曆、Calendar、顯示文案或 UI。",
+            "links": [
+              {
+                "label": "next_occurrence.js",
+                "href": "https://lib.stillnessbyslowly.com/date/next_occurrence.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/test_next_occurrence.html"
+              }
+            ]
+          },
+          {
+            "title": "Timestamp",
+            "desc": "通用本地時間戳產生模組，輸出 YYYYMMDDHHmmssSSS 格式，可用於資料識別、建立時間標記與需要可排序時間字串的情境。",
+            "links": [
+              {
+                "label": "timestamp.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timestamp.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/date_test_timestamp.html"
+              }
+            ]
+          },
+          {
+            "title": "Upcoming Window",
+            "desc": "通用未來提前區間判斷核心，可判斷目標時間是否已進入指定 window、取得剩餘毫秒數，或從資料陣列篩出即將到來的項目；不綁通知、DOM、排程、儲存或業務狀態。",
+            "links": [
+              {
+                "label": "upcoming_window.js",
+                "href": "https://lib.stillnessbyslowly.com/date/upcoming_window.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/test_upcoming_window.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "timer",
+        "title": "Timer / 計時",
+        "items": [
+          {
+            "title": "Countdown",
+            "desc": "通用倒數狀態核心，以毫秒管理 duration、remaining、elapsed 與 progress，支援開始、暫停、繼續、停止與重設；不綁定 UI、遊戲或更新迴圈。",
+            "links": [
+              {
+                "label": "countdown.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/countdown.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_countdown.html"
+              }
+            ]
+          },
+          {
+            "title": "Elapsed Format",
+            "desc": "通用經過時間格式化工具，將毫秒轉為 HH:MM:SS，負值與無效值安全歸零，小時可超過 24；只負責格式化，不建立 Timer、不管理狀態或 UI。",
+            "links": [
+              {
+                "label": "elapsed_format.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/elapsed_format.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_elapsed_format.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/elapsed_format_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Frame Loop",
+            "desc": "通用 requestAnimationFrame 逐幀觸發核心，由宿主提供 callback，負責逐幀排程、開始、暫停、繼續、停止、歸零與單步執行，並提供 timestamp、delta、elapsed 與 frame；不綁定 DOM、動畫公式、遊戲規則、Canvas、儲存或 UI。",
+            "links": [
+              {
+                "label": "frame_loop.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/frame_loop.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_frame_loop.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/frame_loop_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Phase Cycle",
+            "desc": "通用不同時長階段循環核心，管理階段順序、開始、暫停、繼續、停止、下一階段、重設與完成通知；不綁定呼吸法、UI、音效，也不依賴其他 Timer 模組。",
+            "links": [
+              {
+                "label": "phase_cycle.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/phase_cycle.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_phase_cycle.html"
+              }
+            ]
+          },
+          {
+            "title": "Stopwatch",
+            "desc": "通用碼表狀態核心，提供開始、暫停、繼續、停止、歸零與 lap 分段紀錄；所有時間值皆以毫秒回傳，不綁定 UI 或特定用途。",
+            "links": [
+              {
+                "label": "stopwatch.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/stopwatch.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_stopwatch.html"
+              }
+            ]
+          },
+          {
+            "title": "Ticker",
+            "desc": "通用固定週期觸發核心，由宿主提供 callback 與 interval，支援開始、暫停、繼續、停止、歸零與手動 tick；不綁定 UI、倒數或特定用途。",
+            "links": [
+              {
+                "label": "ticker.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/ticker.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_ticker.html"
+              }
+            ]
+          },
+          {
+            "title": "Timer",
+            "desc": "通用經過時間計時核心，提供開始、暫停、繼續、停止、歸零與 elapsed 狀態；不綁定 UI、遊戲或儲存方式。",
+            "links": [
+              {
+                "label": "timer.js",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/timer.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/date/timer/test_timer.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "經過時間、倒數、碼表、固定週期、逐幀觸發與經過時間格式化等計時工具。"
+      }
+    ]
+  },
+  {
+    "page": "effects",
+    "title": "Effects",
+    "groups": [
+      {
+        "id": "background",
+        "title": "Background / 背景",
+        "items": [
+          {
+            "title": "Aurora Background",
+            "desc": "純 CSS 全畫面極光背景，以三組模糊徑向光團持續漂移，可由宿主控制三組色彩、模糊與透明度；使用 fixed 疊層且不攔截指標事件，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "aurora.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/aurora.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_aurora.html"
+              }
+            ]
+          },
+          {
+            "title": "Basic Gradient Shift",
+            "desc": "基礎流動漸層背景，宿主可自訂漸層角度、三組顏色、背景尺寸與動畫速度；支援 reduced-motion。",
+            "links": [
+              {
+                "label": "gradient_shift.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/gradient_shift.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_gradient_shift.html"
+              }
+            ]
+          },
+          {
+            "title": "Canvas Fog",
+            "desc": "獨立 Canvas 流動霧團，可設定數量、顏色、透明度、漂移速度與大小；提供啟動、停止及銷毀，畫布排版和圖層由宿主決定。",
+            "links": [
+              {
+                "label": "fog.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/fog.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_fog.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/fog_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Canvas Rain",
+            "desc": "獨立 Canvas 持續雨幕，可設定雨滴數量、顏色、透明度、風向、落下速度與雨線長度；不包含水面漣漪、閃電或聲音，畫布外觀由宿主決定。",
+            "links": [
+              {
+                "label": "rain.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/rain.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_rain.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/rain_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Floating Symbols",
+            "desc": "獨立 Canvas 漂浮字元，可設定符號與色票，預設繼承宿主文字色；宿主提供容器尺寸。",
+            "links": [
+              {
+                "label": "floating_symbols.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/floating_symbols.css"
+              },
+              {
+                "label": "floating_symbols.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/floating_symbols.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_floating_symbols.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Overlay",
+            "desc": "純 CSS 全畫面網格覆蓋層，以兩組線性漸層建立水平與垂直網格，並以徑向遮罩讓邊緣淡出；網格尺寸可由宿主 CSS 變數調整。",
+            "links": [
+              {
+                "label": "grid_overlay.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/grid_overlay.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_grid_overlay.html"
+              }
+            ]
+          },
+          {
+            "title": "Noise Overlay",
+            "desc": "純 CSS 全畫面顆粒覆蓋層，以內嵌 SVG fractalNoise 產生細微雜訊質感，使用 fixed 疊層且不攔截指標事件，可由 CSS 變數控制透明度。",
+            "links": [
+              {
+                "label": "noise_overlay.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/noise_overlay.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_noise_overlay.html"
+              }
+            ]
+          },
+          {
+            "title": "Pine Forest",
+            "desc": "獨立 Canvas 松樹森林剪影，可調整隨機種子、圖層、樹木密度、顏色及背景；僅負責繪製，Canvas 尺寸、定位與外觀由宿主決定，不依賴其他零件。",
+            "links": [
+              {
+                "label": "pine_forest.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/pine_forest.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_pine_forest.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/pine_forest_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Starfield",
+            "desc": "獨立 Canvas 星點閃爍，星色繼承宿主 currentColor 或 data-color；宿主提供容器尺寸。",
+            "links": [
+              {
+                "label": "starfield.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/starfield.css"
+              },
+              {
+                "label": "starfield.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/starfield.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_starfield.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Background / 背景 特效積木。"
+      },
+      {
+        "id": "camera",
+        "title": "Camera / 運鏡",
+        "items": [
+          {
+            "title": "Camera Depth of Field",
+            "desc": "通用景深近似處理，依物件深度與焦平面距離計算模糊量，並可選擇套用 Canvas；對焦對象、模糊強度及畫面外觀均由宿主決定。",
+            "links": [
+              {
+                "label": "camera_depth_of_field.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_depth_of_field.html"
+              }
+            ]
+          },
+          {
+            "title": "Camera Motion Blur",
+            "desc": "對宿主已繪製的 Canvas 畫面套用可控制方向與強度的動態模糊，適用於甩鏡與快速移動，管理獨立暫存及清理；不負責攝影機旋轉或場景內容。",
+            "links": [
+              {
+                "label": "camera_motion_blur.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_motion_blur.html"
+              }
+            ]
+          },
+          {
+            "title": "Camera Movement Player",
+            "desc": "獨立運鏡時間軸控制，提供播放、暫停、跳轉進度、重新開始、循環與銷毀，透過宿主回呼通知進度；不綁定特定場景與運鏡樣式。",
+            "links": [
+              {
+                "label": "camera_movement_player.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_movement_player.html"
+              }
+            ]
+          },
+          {
+            "title": "Camera Movement Presets",
+            "desc": "九種通用運鏡參數計算：Pan、Tilt、Zoom In、Dolly In、Tracking、Orbit、Whip Pan、Rack Focus、Crane Up；由宿主提供目標及參數，不負責播放或畫面繪製。",
+            "links": [
+              {
+                "label": "camera_movement_presets.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_movement_presets.html"
+              }
+            ]
+          },
+          {
+            "title": "Camera Projection",
+            "desc": "以宿主提供的攝影機位置、方向、焦距與視口尺寸，將三維世界座標轉換成二維透視投影資訊；不繪製場景或提供 3D 引擎。",
+            "links": [
+              {
+                "label": "camera_projection.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_projection.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_projection_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_projection_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_projection.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "虛擬攝影機的投影、運鏡、時間軸、景深與動態模糊零件；宿主提供場景、渲染與外觀。"
+      },
+      {
+        "id": "celebration",
+        "title": "Celebration / 慶祝",
+        "items": [
+          {
+            "title": "Card Rain",
+            "desc": "一次性卡片／字元掉落特效，預設使用撲克牌字樣，宿主可自訂 items、數量、外觀、旋轉、漂移、散布與落下時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "card_rain.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/card_rain.css"
+              },
+              {
+                "label": "card_rain.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/card_rain.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_card_rain.html"
+              }
+            ]
+          },
+          {
+            "title": "Classic Fireworks",
+            "desc": "一次性經典煙火特效，包含升空火箭與爆炸粒子，可由宿主調整煙火數量、每發粒子數、色盤、位置、爆炸距離、重力、尺寸與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "classic_fireworks.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/classic_fireworks.css"
+              },
+              {
+                "label": "classic_fireworks.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/classic_fireworks.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_classic_fireworks.html"
+              }
+            ]
+          },
+          {
+            "title": "Click Burst",
+            "desc": "點擊粒子爆散 API：由宿主自行決定觸發時機、位置、顏色和目標容器；不包含按鈕樣式。",
+            "links": [
+              {
+                "label": "click_burst.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/click_burst.css"
+              },
+              {
+                "label": "click_burst.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/click_burst.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_click_burst.html"
+              }
+            ]
+          },
+          {
+            "title": "Confetti Burst",
+            "desc": "一次性彩帶爆發特效，預設重現連環新接龍的勝利彩帶，可由宿主調整數量、色彩、爆發位置、散布距離、尺寸、延遲與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "confetti_burst.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/confetti_burst.css"
+              },
+              {
+                "label": "confetti_burst.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/confetti_burst.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_confetti_burst.html"
+              }
+            ]
+          },
+          {
+            "title": "Flash Shake",
+            "desc": "一次性閃光加震動特效，由宿主指定特效範圍與震動目標，可調整閃光色彩、透明度、震動強度與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "flash_shake.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/flash_shake.css"
+              },
+              {
+                "label": "flash_shake.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/flash_shake.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_flash_shake.html"
+              }
+            ]
+          },
+          {
+            "title": "Gold Rain",
+            "desc": "一次性金色粒子雨特效，可由宿主調整粒子數量、顏色、水平散布、漂移、尺寸、延遲與落下時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "gold_rain.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/gold_rain.css"
+              },
+              {
+                "label": "gold_rain.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/gold_rain.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_gold_rain.html"
+              }
+            ]
+          },
+          {
+            "title": "Jackpot Pop",
+            "desc": "一次性目標元素彈跳放大特效，可由宿主調整延遲、縮放倍率、位移、動畫時間與 transform origin；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "jackpot_pop.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/jackpot_pop.css"
+              },
+              {
+                "label": "jackpot_pop.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/jackpot_pop.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_jackpot_pop.html"
+              }
+            ]
+          },
+          {
+            "title": "Shockwave",
+            "desc": "一次性多圈衝擊波特效，可由宿主調整圈數、間隔、尺寸、線寬、色彩、光暈、縮放範圍與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "shockwave.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/shockwave.css"
+              },
+              {
+                "label": "shockwave.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/shockwave.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_shockwave.html"
+              }
+            ]
+          },
+          {
+            "title": "Star Explosion",
+            "desc": "一次性星芒爆發特效，可由宿主調整數量、符號、顏色、爆發中心、散布距離、尺寸與動畫時間；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "star_explosion.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/star_explosion.css"
+              },
+              {
+                "label": "star_explosion.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/star_explosion.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_star_explosion.html"
+              }
+            ]
+          },
+          {
+            "title": "Victory Beam",
+            "desc": "一次性勝利放射光束特效，包含可選的雙層爆光，可由宿主調整光束數量、角度、寬度、色彩、延遲、時間與爆光尺寸；提供 play 與 clear。",
+            "links": [
+              {
+                "label": "victory_beam.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/victory_beam.css"
+              },
+              {
+                "label": "victory_beam.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/victory_beam.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_victory_beam.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Celebration / 慶祝 特效積木。"
+      },
+      {
+        "id": "feedback",
+        "title": "Feedback / 回饋",
+        "items": [
+          {
+            "title": "Basic Press",
+            "desc": "基礎按壓回饋特效，按住元素時產生輕微縮放與下沉，可控制縮放比例、位移距離、速度與 easing，並支援固定測試狀態。",
+            "links": [
+              {
+                "label": "press.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/press.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_press.html"
+              }
+            ]
+          },
+          {
+            "title": "Candy Pop",
+            "desc": "純 CSS 爆閃縮放循環；宿主指定要套用的元素與延遲，糖果外觀、格子布局由宿主決定。",
+            "links": [
+              {
+                "label": "candy_pop.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/candy_pop.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_candy_pop.html"
+              }
+            ]
+          },
+          {
+            "title": "Canvas Floating Text",
+            "desc": "在宿主 Canvas 世界座標中建立、更新與繪製即時飄字，支援位置、速度、存活時間與透明度變化，並復原 Canvas 繪圖狀態；文字、字型、色彩與傷害／獎勵規則由宿主決定。",
+            "links": [
+              {
+                "label": "canvas_floating_text.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_canvas_floating_text.html"
+              }
+            ]
+          },
+          {
+            "title": "Custom Cursor",
+            "desc": "自訂游標核心，由宿主提供 ring 與 dot 元素；圓點即時跟隨游標、外圈以可調 lag 追蹤，並可依指定 hover selector 切換互動狀態。僅在 fine pointer 且未啟用 reduced-motion 時作用，提供 destroy 清除事件與狀態。",
+            "links": [
+              {
+                "label": "custom_cursor.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/custom_cursor.css"
+              },
+              {
+                "label": "custom_cursor.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/custom_cursor.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_custom_cursor.html"
+              }
+            ]
+          },
+          {
+            "title": "Device Vibration",
+            "desc": "通用裝置實體震動回饋，包裝瀏覽器 Vibration API，可由宿主指定單次震動或震動／停頓節奏，支援啟用、停用、停止與背景頁面安全略過；不綁定遊戲事件、介面或偏好儲存，不支援時安全回傳。",
+            "links": [
+              {
+                "label": "device_vibration.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/device_vibration.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/device_vibration_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/device_vibration_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_device_vibration.html"
+              }
+            ]
+          },
+          {
+            "title": "Gamepad Vibration",
+            "desc": "通用遊戲手把震動回饋，支援偵測相容手把、設定馬達強度與持續時間、停止及不支援時安全處理；僅使用 Gamepad 震動介面，手機震動沿用既有 Device Vibration。",
+            "links": [
+              {
+                "label": "gamepad_vibration.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_gamepad_vibration.html"
+              }
+            ]
+          },
+          {
+            "title": "Pulse Dot",
+            "desc": "純 CSS 脈衝圓點效果，以透明度與縮放往返建立呼吸感，可由 CSS 變數控制動畫時間，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "pulse_dot.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/pulse_dot.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_pulse_dot.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Feedback / 回饋 特效積木。"
+      },
+      {
+        "id": "hover",
+        "title": "Hover / Pointer",
+        "items": [
+          {
+            "title": "Basic Lift",
+            "desc": "基礎上浮特效，可控制位移距離、速度與 easing；支援 hover、focus-visible 與固定顯示狀態。",
+            "links": [
+              {
+                "label": "lift.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/lift.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_lift.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Fan",
+            "desc": "僅提供三張牌扇形展開與 hover 動作；牌面、尺寸、顏色、陰影和容器排版由宿主決定。",
+            "links": [
+              {
+                "label": "card_fan.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/card_fan.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_card_fan.html"
+              }
+            ]
+          },
+          {
+            "title": "Magnetic Hover",
+            "desc": "指標磁吸位移互動，依游標相對元素中心的位置套用 translate，可分別控制 X／Y 強度；僅在 fine pointer 且未啟用 reduced-motion 時作用，並提供 destroy 還原。",
+            "links": [
+              {
+                "label": "magnetic_hover.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/magnetic_hover.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_magnetic_hover.html"
+              }
+            ]
+          },
+          {
+            "title": "Pointer Parallax",
+            "desc": "依指標位置帶動指定圖層位移，容器排版、圖層外觀由宿主決定。",
+            "links": [
+              {
+                "label": "pointer_parallax.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_parallax.css"
+              },
+              {
+                "label": "pointer_parallax.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_parallax.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_pointer_parallax.html"
+              }
+            ]
+          },
+          {
+            "title": "Pointer Spotlight",
+            "desc": "隨滑鼠位置移動的區域光暈；宿主自行設定卡片外觀、光色和半徑。",
+            "links": [
+              {
+                "label": "pointer_spotlight.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_spotlight.css"
+              },
+              {
+                "label": "pointer_spotlight.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_spotlight.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_pointer_spotlight.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Hover / Pointer 特效積木。"
+      },
+      {
+        "id": "light",
+        "title": "Light / 光影",
+        "items": [
+          {
+            "title": "Area Burst",
+            "desc": "一次性區域爆亮特效，依指定 DOM 範圍建立 block 或 radial 爆光動畫，可控制時間、填色、邊框、光暈、混合模式與層級；只負責區域爆亮，不依賴掃線、不處理業務語意或流程順序。",
+            "links": [
+              {
+                "label": "area_burst.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst.js"
+              },
+              {
+                "label": "area_burst.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_area_burst.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Basic Glow",
+            "desc": "基礎光暈特效，預設繼承宿主 currentColor，可控制光暈大小、透明度、速度與 easing；支援 hover、focus-visible 與固定顯示狀態。",
+            "links": [
+              {
+                "label": "glow.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/glow.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_glow.html"
+              }
+            ]
+          },
+          {
+            "title": "Breathing Glow",
+            "desc": "文字呼吸光暈，不指定字型、字級、顏色或排版；宿主可設定光暈參數。",
+            "links": [
+              {
+                "label": "breathing_glow.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/breathing_glow.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_breathing_glow.html"
+              }
+            ]
+          },
+          {
+            "title": "Button Shine",
+            "desc": "純 CSS hover/focus 掃光，按鈕的造型、尺寸、字型、顏色由宿主決定。",
+            "links": [
+              {
+                "label": "button_shine.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/button_shine.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_button_shine.html"
+              }
+            ]
+          },
+          {
+            "title": "Decorative Dual Glow",
+            "desc": "純 CSS 雙重徑向光暈裝飾，透過兩組偽元素在容器內建立獨立光源，可由宿主控制兩側光暈的尺寸、位置與色彩；不處理互動或內容。",
+            "links": [
+              {
+                "label": "decorative_glow.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/decorative_glow.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_decorative_glow.html"
+              }
+            ]
+          },
+          {
+            "title": "Electric Border",
+            "desc": "純 CSS 動態彩色邊框光效，以多組 RGB 色彩沿宿主外圍持續流動；宿主可控制顏色、速度、線寬、模糊、透明度與圓角，透過 is-active 啟用固定效果，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "electric_border.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/electric_border.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_electric_border.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/electric_border_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Flowing Border",
+            "desc": "純 CSS 旋轉流光邊框，宿主控制顏色、圓角、尺寸與內層背景。",
+            "links": [
+              {
+                "label": "flowing_border.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/flowing_border.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/light/test_flowing_border.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Light / 光影 特效積木。"
+      },
+      {
+        "id": "line",
+        "title": "Line / 線條",
+        "items": [
+          {
+            "title": "Bond Pulse",
+            "desc": "純 CSS 透明度脈動，不限定連結線的尺寸、背景或其他外觀。",
+            "links": [
+              {
+                "label": "bond_pulse.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/bond_pulse.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_bond_pulse.html"
+              }
+            ]
+          },
+          {
+            "title": "Enso Ring",
+            "desc": "SVG 圓環描邊與慢速旋轉；宿主提供 SVG 線條、尺寸與色彩。",
+            "links": [
+              {
+                "label": "enso_ring.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/enso_ring.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_enso_ring.html"
+              }
+            ]
+          },
+          {
+            "title": "Gradient Divider",
+            "desc": "純 CSS 漸層分隔線，中央顯色、兩端透明，可由 CSS 變數控制線條高度與顏色；不綁定版面或容器尺寸。",
+            "links": [
+              {
+                "label": "gradient_divider.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/gradient_divider.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_gradient_divider.html"
+              }
+            ]
+          },
+          {
+            "title": "Impact Slash",
+            "desc": "通用指定位置斜向斬擊光線，支援指定 DOM 目標或容器百分比座標，可調整角度、長度、粗細、色彩、光暈與持續時間，動畫完成自動清理；不綁定命中、傷害、音效或遊戲流程。",
+            "links": [
+              {
+                "label": "impact_slash.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash.js"
+              },
+              {
+                "label": "impact_slash.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_impact_slash.html"
+              }
+            ]
+          },
+          {
+            "title": "Minimal Underline",
+            "desc": "純 CSS 極簡底線特效，預設以 currentColor 繼承宿主顏色，可由 CSS 變數控制速度、粗細、間距、長度、透明度、展開起點與 easing；支援 hover、focus-visible 與固定顯示狀態。",
+            "links": [
+              {
+                "label": "underline.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/underline.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_underline.html"
+              }
+            ]
+          },
+          {
+            "title": "Sweep Line",
+            "desc": "一次性方向掃線特效，依指定 DOM 範圍建立橫向或直向光線掃過動畫，可控制速度、粗細、長度、色彩、光暈與層級；只負責掃線，不處理後續爆亮、業務語意或流程順序。",
+            "links": [
+              {
+                "label": "sweep_line.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line.js"
+              },
+              {
+                "label": "sweep_line.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/test_sweep_line.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line_usage.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Line / 線條 特效積木。"
+      },
+      {
+        "id": "motion",
+        "title": "Motion / 移動動畫",
+        "subpage": true,
+        "desc": "元素位置移動與飛行等通用視覺動畫，事件與業務結果由宿主決定。",
+        "items": [
+          {
+            "title": "Element Flight",
+            "desc": "將來源元素的視覺副本沿弧線飛往指定目標，支援時間、弧高、縮放、旋轉和中途取消；原始元素不移動，完成後清理副本，不內建命中、傷害或其他遊戲效果。",
+            "links": [
+              {
+                "label": "element_flight.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight.js"
+              },
+              {
+                "label": "element_flight.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/motion/test_element_flight.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "particle",
+        "title": "Particle / 粒子",
+        "items": [
+          {
+            "title": "Atom Bob",
+            "desc": "純 CSS 上下浮動效果；不限定元素方塊，不提供方塊皮膚或排列。",
+            "links": [
+              {
+                "label": "atom_bob.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/atom_bob.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_atom_bob.html"
+              }
+            ]
+          },
+          {
+            "title": "Basic Particle Float",
+            "desc": "基礎裝飾粒子漂浮特效，預設繼承宿主 currentColor，可控制粒子大小、漂浮距離、動畫時間、延遲與透明度；支援 reduced-motion。",
+            "links": [
+              {
+                "label": "float.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/float.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_float.html"
+              }
+            ]
+          },
+          {
+            "title": "Floating Crown",
+            "desc": "僅提供上下漂浮及可調光暈；任何文字或圖示都可使用，外觀由宿主決定。",
+            "links": [
+              {
+                "label": "floating_crown.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/floating_crown.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_floating_crown.html"
+              }
+            ]
+          },
+          {
+            "title": "Orbit",
+            "desc": "旋轉圓形軌道與光點；容器尺寸和顏色由宿主決定。",
+            "links": [
+              {
+                "label": "orbit.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/orbit.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_orbit.html"
+              }
+            ]
+          },
+          {
+            "title": "Particle Network",
+            "desc": "Canvas 粒子連線背景核心，依畫面大小建立粒子、距離近時自動連線，並可選擇啟用游標排斥；支援密度、數量、連線距離、摩擦、線條色彩與 DPR 等設定，提供 start、stop、resize、destroy，reduced-motion 時改為靜態粒子。",
+            "links": [
+              {
+                "label": "particle_network.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/particle_network.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_particle_network.html"
+              }
+            ]
+          },
+          {
+            "title": "Pointer Trail",
+            "desc": "Canvas 滑鼠粒子尾跡，可由宿主設定粒子色票；不處理容器皮膚或布局。",
+            "links": [
+              {
+                "label": "pointer_trail.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/pointer_trail.css"
+              },
+              {
+                "label": "pointer_trail.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/pointer_trail.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_pointer_trail.html"
+              }
+            ]
+          },
+          {
+            "title": "Turtle Crawl",
+            "desc": "指定元素沿容器水平移動；文字、圖示、尺寸、顏色皆由宿主決定。",
+            "links": [
+              {
+                "label": "turtle_crawl.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/turtle_crawl.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_turtle_crawl.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Particle / 粒子 特效積木。"
+      },
+      {
+        "id": "reveal",
+        "title": "Reveal / 進退場",
+        "items": [
+          {
+            "title": "Auto Reveal",
+            "desc": "通用自動進場觀察器，以 IntersectionObserver 監看 data-slowly-reveal 元素並切換 is-visible，可設定 threshold、rootMargin 與是否只觸發一次；reduced-motion 或不支援 Observer 時直接顯示。",
+            "links": [
+              {
+                "label": "auto_reveal.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/auto_reveal.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_auto_reveal.html"
+              }
+            ]
+          },
+          {
+            "title": "Basic Fade Up",
+            "desc": "基礎淡入上移特效，由宿主切換 is-visible 決定進退場，可控制位移距離、速度與 easing。",
+            "links": [
+              {
+                "label": "fade_up.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/fade_up.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_fade_up.html"
+              }
+            ]
+          },
+          {
+            "title": "Stagger Reveal",
+            "desc": "純 CSS 延遲淡入上移，不指定卡片外觀、排列或尺寸。",
+            "links": [
+              {
+                "label": "stagger_reveal.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/stagger_reveal.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_stagger_reveal.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Reveal / 進退場 特效積木。"
+      },
+      {
+        "id": "scroll",
+        "title": "Scroll / 捲動",
+        "items": [
+          {
+            "title": "Basic Scroll Progress",
+            "desc": "基礎頁面捲動進度條，JavaScript 依目前捲動比例更新進度，CSS 負責顯示；可由宿主控制高度、顏色與層級。",
+            "links": [
+              {
+                "label": "progress.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/progress.css"
+              },
+              {
+                "label": "progress.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/progress.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_progress.html"
+              }
+            ]
+          },
+          {
+            "title": "Element Progress / 元素捲動進度",
+            "desc": "計算元素進出視窗時的進度（0～1），寫入 CSS 自訂變數並可透過 onUpdate 取得數值；可搭配 Linked 效果。",
+            "links": [
+              {
+                "label": "element_progress.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/element_progress.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_element_progress.html"
+              }
+            ]
+          },
+          {
+            "title": "Horizontal Rail / 可橫滑內容列",
+            "desc": "純 CSS 橫向內容列，可手指左右滑動；排版尺寸及外觀交給宿主。",
+            "links": [
+              {
+                "label": "horizontal_rail.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/horizontal_rail.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_horizontal_rail.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Blur / 模糊連動",
+            "desc": "隨捲動進度將元素由模糊逐漸變清晰；純 CSS 效果，初始模糊程度可調。",
+            "links": [
+              {
+                "label": "blur.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/blur.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_blur.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Clip Reveal / 遮罩揭露",
+            "desc": "隨捲動進度由左至右揭露元素內容；純 CSS 遮罩效果。",
+            "links": [
+              {
+                "label": "clip_reveal.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/clip_reveal.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_clip_reveal.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Opacity / 透明度連動",
+            "desc": "讓透明度依元素捲動進度變化；純 CSS 效果，可搭配 Element Progress 的進度變數。",
+            "links": [
+              {
+                "label": "opacity.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/opacity.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_opacity.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Rotate / 旋轉連動",
+            "desc": "根據捲動進度改變元素旋轉角度；純 CSS 效果，起始與結束角度可調。",
+            "links": [
+              {
+                "label": "rotate.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/rotate.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_rotate.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Scale / 縮放連動",
+            "desc": "根據捲動進度由起始比例縮放至目標比例；純 CSS 效果，縮放範圍可調。",
+            "links": [
+              {
+                "label": "scale.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/scale.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_scale.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Translate X / 水平位移連動",
+            "desc": "讓元素的水平位移隨捲動進度變化；純 CSS 效果，位移距離可由宿主設定。",
+            "links": [
+              {
+                "label": "translate_x.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/translate_x.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_translate_x.html"
+              }
+            ]
+          },
+          {
+            "title": "Linked Translate Y / 垂直位移連動",
+            "desc": "讓元素的垂直位移隨捲動進度變化；純 CSS 效果，位移距離可由宿主設定。",
+            "links": [
+              {
+                "label": "translate_y.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/translate_y.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_translate_y.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Blur Clear / 模糊變清晰",
+            "desc": "元素切換 is-visible 後由模糊轉清晰；純 CSS 進場效果。",
+            "links": [
+              {
+                "label": "blur_clear.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/blur_clear.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_blur_clear.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Bounce / 彈跳",
+            "desc": "元素切換 is-visible 後彈跳進場；純 CSS 動畫，外觀由宿主決定。",
+            "links": [
+              {
+                "label": "bounce.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/bounce.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_bounce.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Fade / 淡入",
+            "desc": "元素切換 is-visible 後淡入；可搭配既有 Auto Reveal 觸發，時間與延遲由宿主設定。",
+            "links": [
+              {
+                "label": "fade.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/fade.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_fade.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Flip X / X 軸翻轉",
+            "desc": "元素切換 is-visible 後沿 X 軸翻轉進場；純 CSS 效果。",
+            "links": [
+              {
+                "label": "flip_x.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/flip_x.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_flip_x.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Flip Y / Y 軸翻轉",
+            "desc": "元素切換 is-visible 後沿 Y 軸翻轉進場；純 CSS 效果。",
+            "links": [
+              {
+                "label": "flip_y.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/flip_y.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_flip_y.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Shake / 搖晃",
+            "desc": "元素切換 is-visible 時播放搖晃效果；純 CSS 動畫，不額外設定外觀。",
+            "links": [
+              {
+                "label": "shake.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/shake.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_shake.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Slide Down / 下沉",
+            "desc": "元素切換 is-visible 後由上向下進場；純 CSS 位移效果，可自訂距離與時間。",
+            "links": [
+              {
+                "label": "slide_down.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_down.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_down.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Slide Left / 左滑",
+            "desc": "元素切換 is-visible 後向左滑入；純 CSS 位移效果，可自訂距離與時間。",
+            "links": [
+              {
+                "label": "slide_left.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_left.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_left.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Slide Right / 右滑",
+            "desc": "元素切換 is-visible 後向右滑入；純 CSS 位移效果，可自訂距離與時間。",
+            "links": [
+              {
+                "label": "slide_right.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_right.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_right.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Slide Up / 上浮",
+            "desc": "元素切換 is-visible 後由下向上進場；純 CSS 位移效果，可自訂距離與時間。",
+            "links": [
+              {
+                "label": "slide_up.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_up.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_up.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Spin / 旋轉進場",
+            "desc": "元素切換 is-visible 後旋轉回目標角度；純 CSS 進場效果，參數可調。",
+            "links": [
+              {
+                "label": "spin.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/spin.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_spin.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Stagger / 逐項延遲",
+            "desc": "替多個元素依序設定 CSS 動畫延遲變數，可搭配任一 Motion 進場動畫；不決定動畫外觀。",
+            "links": [
+              {
+                "label": "stagger.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/control/stagger.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/control/test_stagger.html"
+              }
+            ]
+          },
+          {
+            "title": "Motion Zoom / 縮放進場",
+            "desc": "元素切換 is-visible 後由指定比例縮放到正常大小；可搭配其他進場效果。",
+            "links": [
+              {
+                "label": "zoom.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/zoom.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_zoom.html"
+              }
+            ]
+          },
+          {
+            "title": "Parallax Fade",
+            "desc": "捲動視差淡出效果，依頁面 scrollY 對指定元素套用垂直位移與透明度，可控制位移速度、淡出範圍與作用視窗高度；以 requestAnimationFrame 節流並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "parallax_fade.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax_fade.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_parallax_fade.html"
+              }
+            ]
+          },
+          {
+            "title": "Parallax X / 水平視差",
+            "desc": "依頁面捲動量讓指定元素水平視差移動，速度與最大距離可調；可與 Parallax Y 搭配。",
+            "links": [
+              {
+                "label": "x.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/x.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/test_x.html"
+              }
+            ]
+          },
+          {
+            "title": "Parallax Y / 垂直視差",
+            "desc": "依頁面捲動量讓指定元素垂直視差移動，速度與最大距離可調；可與 Parallax X 搭配。",
+            "links": [
+              {
+                "label": "y.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/y.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/test_y.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Class",
+            "desc": "通用捲動門檻 class 切換工具，當頁面 scrollY 超過指定 threshold 時替目標元素加入 class，回到門檻內則移除；class 名稱與門檻皆由宿主設定。",
+            "links": [
+              {
+                "label": "scroll_class.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/scroll_class.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_scroll_class.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Direction / 捲動方向",
+            "desc": "偵測頁面向上或向下捲動，切換方向 class，也可用 onChange 接收方向；不附帶動畫樣式。",
+            "links": [
+              {
+                "label": "direction.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/direction.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_direction.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Leave / 離開視窗",
+            "desc": "元素進入視窗後再離開時切換 class，重新進入則移除；只負責狀態，不決定外觀。",
+            "links": [
+              {
+                "label": "leave.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/leave.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_leave.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Snap X / 水平吸附",
+            "desc": "以原生 CSS scroll-snap 讓橫向捲動停在指定元素位置；需由宿主提供捲動容器尺寸。",
+            "links": [
+              {
+                "label": "snap_x.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/snap_x.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_snap_x.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Snap Y / 垂直吸附",
+            "desc": "以原生 CSS scroll-snap 讓垂直捲動停在指定元素位置；需由宿主提供捲動容器尺寸。",
+            "links": [
+              {
+                "label": "snap_y.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/snap_y.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_snap_y.html"
+              }
+            ]
+          },
+          {
+            "title": "Scroll Velocity / 捲動速度",
+            "desc": "測量捲動速度（px/s，含方向正負值），寫入 CSS 自訂變數並提供 onUpdate callback。",
+            "links": [
+              {
+                "label": "velocity.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/velocity.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_velocity.html"
+              }
+            ]
+          },
+          {
+            "title": "Section Active / 目前閱讀區塊",
+            "desc": "依視窗閱讀焦點標示目前區塊，切換 is-active-section class，並可透過 onChange 通知宿主。",
+            "links": [
+              {
+                "label": "section_active.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/section_active.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_section_active.html"
+              }
+            ]
+          },
+          {
+            "title": "Sticky Bottom / 黏住底端",
+            "desc": "CSS sticky 底端定位微零件，可由宿主設定底端間距與層級，不附帶視覺裝飾。",
+            "links": [
+              {
+                "label": "sticky_bottom.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/sticky_bottom.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_sticky_bottom.html"
+              }
+            ]
+          },
+          {
+            "title": "Sticky Top / 黏住頂端",
+            "desc": "CSS sticky 頂端定位微零件，可由宿主設定頂端間距與層級，不附帶視覺裝飾。",
+            "links": [
+              {
+                "label": "sticky_top.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/sticky_top.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_sticky_top.html"
+              }
+            ]
+          },
+          {
+            "title": "Vertical To Horizontal / 垂直轉橫向",
+            "desc": "頁面向下捲動時推進橫向內容軌道；需搭配同名 CSS 與指定 HTML 結構，不攔截滑動手勢。",
+            "links": [
+              {
+                "label": "vertical_to_horizontal.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/horizontal/vertical_to_horizontal.css"
+              },
+              {
+                "label": "vertical_to_horizontal.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/horizontal/vertical_to_horizontal.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/scroll/horizontal/test_vertical_to_horizontal.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Scroll / 捲動 特效積木。"
+      },
+      {
+        "id": "stage",
+        "title": "Stage / 舞台",
+        "items": [
+          {
+            "title": "Curtain Transition",
+            "desc": "通用舞台布幕切換特效，提供左右布幕合攏／拉開、聚光燈、暗場、舊內容退場與新內容由暗轉亮；宿主仍自行控制頁面切換流程，並可透過 CSS 變數覆寫布幕色、飾邊、舞台背景、聚光燈色與強度、暗場色與強度及動畫時間。",
+            "links": [
+              {
+                "label": "curtain_transition.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition.css"
+              },
+              {
+                "label": "curtain_transition.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/test_curtain_transition.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Portal Wipe",
+            "desc": "獨立圓形頁面轉場，提供 play/reset API 與可選導覽連結；顏色、觸發元素及跳頁流程可由宿主控制。",
+            "links": [
+              {
+                "label": "portal_wipe.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.css"
+              },
+              {
+                "label": "portal_wipe.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/stage/test_portal_wipe.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Stage / 舞台 切換與場景轉場特效積木。"
+      },
+      {
+        "id": "typography",
+        "title": "Typography / 文字",
+        "items": [
+          {
+            "title": "Basic Tracking",
+            "desc": "基礎字距展開特效，可控制起始字距、目標字距、速度與 easing；支援 hover、focus-visible 與固定顯示狀態。",
+            "links": [
+              {
+                "label": "tracking.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/tracking.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_tracking.html"
+              }
+            ]
+          },
+          {
+            "title": "Marquee",
+            "desc": "純 CSS 橫向循環跑馬燈，以 track 持續位移並在容器兩側加入漸隱遮罩；可由 CSS 變數控制動畫時間，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "marquee.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/marquee.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_marquee.html"
+              }
+            ]
+          },
+          {
+            "title": "Metallic Text",
+            "desc": "純 CSS 金屬材質文字效果，以多段漸層建立銀白、香檳等明暗反射層次；只處理文字材質，不負責動畫或反光掃動，宿主可覆寫金屬漸層、背景尺寸與陰影。",
+            "links": [
+              {
+                "label": "metallic_text.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/metallic_text.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_metal_flow.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/metal_flow_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Shine Text",
+            "desc": "純 CSS 流動漸層文字光澤效果，以 background-clip 將動畫漸層限制在文字內，可由宿主自訂漸層與動畫時間，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "shine_text.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/shine_text.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_shine_text.html"
+              }
+            ]
+          },
+          {
+            "title": "Text Gradient Flow",
+            "desc": "純 CSS 文字漸層流動效果，讓 background-clip 文字內既有漸層緩慢位移；不限定金屬材質，可自訂漸層、背景尺寸、速度、easing 與流動位置，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "text_gradient_flow.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/text_gradient_flow.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_metal_flow.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/metal_flow_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Text Reflection",
+            "desc": "純 CSS 文字反光帶效果，使用偽元素與 data-text 在文字表面疊加柔和高光，可控制反光漸層、尺寸、透明度、速度與移動位置；不綁定金屬材質或其他文字特效，並支援 reduced-motion。",
+            "links": [
+              {
+                "label": "text_reflection.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/text_reflection.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_metal_flow.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/metal_flow_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Typewriter",
+            "desc": "通用打字機文字循環工具，由宿主提供目標元素與 phrases，支援逐字輸入、停留、刪除、句間延遲與是否循環，並提供 start、stop 與 destroy。",
+            "links": [
+              {
+                "label": "typewriter.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/typewriter.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_typewriter.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "Typography / 文字 特效積木。"
+      },
+      {
+        "id": "spatial",
+        "title": "3D / Spatial",
+        "items": [
+          {
+            "title": "Basic Tilt",
+            "desc": "基礎 3D 指標傾斜特效，JavaScript 依指標位置更新旋轉角度，CSS 負責透視與轉場；可控制最大角度、perspective、速度與 easing。",
+            "links": [
+              {
+                "label": "tilt.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt.css"
+              },
+              {
+                "label": "tilt.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/test_tilt.html"
+              }
+            ]
+          },
+          {
+            "title": "Tilt Spotlight",
+            "desc": "3D 指標傾斜加聚光效果，JavaScript 依游標位置更新旋轉、上浮與聚光座標，CSS 以 radial-gradient 顯示游標附近光源；可控制角度、lift、perspective 與光色，並尊重 fine pointer／reduced-motion。",
+            "links": [
+              {
+                "label": "tilt_spotlight.css",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt_spotlight.css"
+              },
+              {
+                "label": "tilt_spotlight.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt_spotlight.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/3d/test_tilt_spotlight.html"
+              }
+            ]
+          }
+        ],
+        "subpage": true,
+        "desc": "3D / Spatial 特效積木。"
+      }
+    ]
+  },
+  {
+    "page": "external",
+    "title": "External / 外部",
+    "groups": [
+      {
+        "id": "animals",
+        "title": "Animals / 動物",
+        "subpage": true,
+        "desc": "已實際使用的外部動物圖片 API 紀錄；不同服務各自獨立。",
+        "items": [
+          {
+            "title": "Dog CEO API",
+            "desc": "狗狗翻牌使用的隨機狗狗圖片 API；一次可取多張圖片 URL。只提供外部圖片資料，不綁定遊戲邏輯。",
+            "links": [
+              {
+                "label": "dog_ceo.json",
+                "href": "https://lib.stillnessbyslowly.com/external/animals/dog_ceo.json"
+              },
+              {
+                "label": "dog_ceo.txt",
+                "href": "https://lib.stillnessbyslowly.com/external/animals/dog_ceo.txt"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "image",
+        "title": "Image",
+        "subpage": true,
+        "desc": "曾實際使用過的圖片處理外部工具與保留紀錄。",
+        "items": [
+          {
+            "title": "html2canvas 1.4.1",
+            "desc": "曾用於 DOM / HTML 轉 Canvas；2026-08-31 的作品探索之後已不再使用。Canvas → PNG → Download 後半段已有自有零件，DOM → Canvas 本身目前沒有自有替代。",
+            "links": [
+              {
+                "label": "html2canvas.json",
+                "href": "https://lib.stillnessbyslowly.com/external/image/html2canvas.json"
+              },
+              {
+                "label": "html2canvas.txt",
+                "href": "https://lib.stillnessbyslowly.com/external/image/html2canvas.txt"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "loader",
+        "title": "Loader / 載入",
+        "subpage": true,
+        "desc": "瀏覽器外部 CSS／JS 資源載入相關工具。",
+        "items": [
+          {
+            "title": "Resource Loader",
+            "desc": "通用瀏覽器 CSS／JS 動態載入核心，提供 URL 正規化、避免重複載入、批次載入與依序載入 JS，載入失敗會正常往外拋錯誤；不讀模組索引、不自動呼叫 init／render、不綁定 UI。",
+            "links": [
+              {
+                "label": "resource_loader.js",
+                "href": "https://lib.stillnessbyslowly.com/external/loader/resource_loader.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/external/loader/test_resource_loader.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "qrcode",
+        "title": "QRCode",
+        "subpage": true,
+        "desc": "實際使用與確認過的 QRCode 外部工具紀錄。",
+        "items": [
+          {
+            "title": "QRious 4.0.2",
+            "desc": "目前 QRCode 工具主力。用於一般 QRCode、Wi-Fi QRCode、Canvas 輸出、PNG 圖片與 A4 排版列印。",
+            "links": [
+              {
+                "label": "qrcode.json",
+                "href": "https://lib.stillnessbyslowly.com/external/qrcode/qrcode.json"
+              },
+              {
+                "label": "qrcode.txt",
+                "href": "https://lib.stillnessbyslowly.com/external/qrcode/qrcode.txt"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "weather",
+        "title": "Weather / 天氣",
+        "subpage": true,
+        "desc": "已實際使用的外部天氣 API，記錄查詢入口、呼叫範例及使用條件。",
+        "items": [
+          {
+            "title": "Open-Meteo Forecast API",
+            "desc": "御膳房使用的天氣 API，可依經緯度查詢氣溫、體感、濕度、降水、風速與天氣代碼。免費公開 API 有非商業使用、用量和署名條件。",
+            "links": [
+              {
+                "label": "open_meteo.json",
+                "href": "https://lib.stillnessbyslowly.com/external/weather/open_meteo.json"
+              },
+              {
+                "label": "open_meteo.txt",
+                "href": "https://lib.stillnessbyslowly.com/external/weather/open_meteo.txt"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "game",
+    "title": "Game",
+    "groups": [
+      {
+        "id": "ai",
+        "title": "AI / 行動模式",
+        "subpage": true,
+        "desc": "循環行動模式與由宿主自行解讀的遊戲行為決策積木。",
+        "items": [
+          {
+            "title": "Action Pattern",
+            "desc": "通用循環行動模式核心，管理 pattern 與目前索引，提供 next、peek、reset、替換 pattern 與 fallback；只回傳 action，不執行攻擊、防禦、蓄力或任何遊戲效果。",
+            "links": [
+              {
+                "label": "action_pattern.js",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/action_pattern.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/test_action_pattern.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/action_pattern_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Movement Patterns 2D",
+            "desc": "獨立的二維移動計算，提供邊界反彈、追蹤目標與兩端巡邏；依宿主座標、速度、邊界及時間步長回傳位置，不綁定怪物造型、碰撞傷害或完整敵人 AI。",
+            "links": [
+              {
+                "label": "movement_patterns_2d.js",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/ai/test_movement_patterns_2d.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "card",
+        "title": "Card / 卡牌",
+        "subpage": true,
+        "desc": "牌庫循環、卡牌身分、區域移轉、資源、選擇目標、效果、回合與組牌等通用卡牌機制；具體玩法由宿主決定。",
+        "items": [
+          {
+            "title": "Card Effect Registry",
+            "desc": "登記宿主自訂的卡牌效果名稱、執行條件與同步處理函式，依名稱檢查並執行；不內建特定卡牌效果、數值或戰鬥規則。",
+            "links": [
+              {
+                "label": "card_effect_registry.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_effect_registry.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Instance Identity",
+            "desc": "通用卡牌實體身分積木，區分卡種 ID 與每張卡牌的實體 ID，提供建立、查找、依卡種分組與重複身分檢查；不綁定卡牌規則、畫面或儲存方式。",
+            "links": [
+              {
+                "label": "card_instance_identity.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_instance_identity.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Level Progression",
+            "desc": "管理卡牌等級與升級操作，計算暫時增減後的有效等級；升級條件、等級上限和成長規則都由宿主設定。",
+            "links": [
+              {
+                "label": "card_level_progression.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_level_progression.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Loadout Validation",
+            "desc": "依收藏中的實體卡 ID 還原出戰清單，檢查遺失、重複、資格與宿主指定的數量限制；不預設收藏上限或固定牌組大小。",
+            "links": [
+              {
+                "label": "card_loadout_validation.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_loadout_validation.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Resource Pool",
+            "desc": "通用多資源池，管理宿主自訂名稱的資源，提供查詢、增加、扣除與多種資源足額檢查；不預設行動點、魔法點或出牌費用。",
+            "links": [
+              {
+                "label": "card_resource_pool.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_resource_pool.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Target Selection",
+            "desc": "從宿主提供的卡牌區域收集候選目標，依自訂條件篩選、查找與選取；不內建敵我關係、卡牌類型或合法目標規則。",
+            "links": [
+              {
+                "label": "card_target_selection.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_target_selection.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Turn Order",
+            "desc": "管理任意參與者的行動順序、目前輪到誰、輪次與宿主自訂的階段標記；不寫死玩家／Boss、出牌次數或行動策略。",
+            "links": [
+              {
+                "label": "card_turn_order.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_turn_order.html"
+              }
+            ]
+          },
+          {
+            "title": "Card Zone Transfer",
+            "desc": "透過既有 Deck 的快照與還原介面，移動或交換單張、整批卡牌與指定區域；支援牌庫、手牌與棄牌堆操作，移動時機與合法條件由宿主決定。",
+            "links": [
+              {
+                "label": "card_zone_transfer.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_zone_transfer.html"
+              }
+            ]
+          },
+          {
+            "title": "Deck",
+            "desc": "通用牌庫循環核心，管理抽牌堆、手牌與棄牌堆，提供洗牌、抽牌、補滿手牌、棄牌與棄牌堆回收；不綁定卡牌資料格式、戰鬥規則、能量、UI 或特定遊戲。",
+            "links": [
+              {
+                "label": "deck.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/deck.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/test_deck.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/deck_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Pair Matching",
+            "desc": "通用配對回合引擎，管理兩次選取、回合鎖定、配對／不配對、完成與重設狀態，並由宿主提供 matcher 與 callback；不綁定 DOM、卡面資料、分數、歷史或提示。",
+            "links": [
+              {
+                "label": "pair_matching.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/pair_matching.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/test_pair_matching.html"
+              }
+            ]
+          },
+          {
+            "title": "Trick Taking Rules",
+            "desc": "通用吃墩撲克牌規則，判斷是否必須跟首花色、哪些牌可出，以及每墩贏家與分數；紅心首墩等特殊限制由宿主設定，不重做牌庫與洗牌。",
+            "links": [
+              {
+                "label": "trick_taking_rules.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/trick_taking_rules.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/trick_taking_rules_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/trick_taking_rules_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/test_trick_taking_rules.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "collision",
+        "title": "Collision / 碰撞",
+        "subpage": true,
+        "desc": "通用二維幾何接觸判斷；不執行傷害、拾取或其他遊戲規則。",
+        "items": [
+          {
+            "title": "Circle Collision",
+            "desc": "通用 2D 圓形幾何碰撞，提供圓心距離、是否接觸、相切與重疊深度判定；相切是否算碰撞可由宿主控制，不處理扣血、拾取或物理推擠。",
+            "links": [
+              {
+                "label": "circle_collision.js",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/circle_collision.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/circle_collision_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/circle_collision_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/test_circle_collision.html"
+              }
+            ]
+          },
+          {
+            "title": "Rectangle Overlap 2D",
+            "desc": "通用軸對齊矩形（AABB）重疊幾何判斷，提供是否接觸及重疊量，可控制相切語意；不處理旋轉矩形、傷害或速度反彈。",
+            "links": [
+              {
+                "label": "rectangle_overlap_2d.js",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/collision/test_rectangle_overlap_2d.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "combat",
+        "title": "Combat / 戰鬥",
+        "subpage": true,
+        "desc": "HP、護盾、傷害擲值、蓄力與戰鬥單位設定等通用戰鬥核心。",
+        "items": [
+          {
+            "title": "Charge State",
+            "desc": "通用 Charge／Bonus 累積狀態核心，提供設定、累積、全部或部分消耗、清空與狀態判斷；不負責傷害計算、角色、回合或 UI。",
+            "links": [
+              {
+                "label": "charge_state.js",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/charge_state.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/test_charge_state.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/charge_state_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Combat Stats",
+            "desc": "通用戰鬥數值核心，提供傷害與護盾吸收、回復、HP 設定、護盾增減，以及倒下與滿血判斷；不綁定玩家／敵人身份、回合、卡牌、AI 或 UI。",
+            "links": [
+              {
+                "label": "combat_stats.js",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/combat_stats.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/test_combat_stats.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/combat_stats_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Combatant Config",
+            "desc": "通用戰鬥單位基礎數值正規化工具，將 hp／maxHP／currentHP、shield 與 atk／attack 範圍整理為固定格式，並可由宿主提供 defaults；不負責資料查表、AI、回合、傷害或 UI。",
+            "links": [
+              {
+                "label": "combatant_config.js",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/combatant_config.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/test_combatant_config.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/combatant_config_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Damage Roll",
+            "desc": "通用整數傷害擲值核心，依指定範圍產生包含上下限的隨機整數，可加入額外 bonus，並可注入 rng 以固定測試結果；不管理角色、HP、護盾、Charge、回合或 UI。",
+            "links": [
+              {
+                "label": "damage_roll.js",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/damage_roll.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/test_damage_roll.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/combat/damage_roll_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "grid",
+        "title": "Grid / 格子",
+        "subpage": true,
+        "desc": "二維格子的連線判定、重力、相鄰交換搜尋、條件洗牌與連鎖擴散等通用遊戲核心。",
+        "items": [
+          {
+            "title": "Free Edge Tile",
+            "desc": "平面配對牌陣的左右開邊可選性判斷，檢查某牌是否已移除及同列左右是否有空位；不處理立體疊牌、配對回合或可解布局生成。",
+            "links": [
+              {
+                "label": "free_edge_tile.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/free_edge_tile.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/free_edge_tile_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/free_edge_tile_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_free_edge_tile.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Chain Expand",
+            "desc": "通用格子連鎖擴散核心，從起始座標依宿主提供的 expand 規則逐波加入更多格子，負責去重、越界忽略與最大波數保護；不綁定炸彈、特殊糖、技能、清除或 UI。",
+            "links": [
+              {
+                "label": "chain_expand.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/chain_expand.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_chain_expand.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/chain_expand_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Gravity",
+            "desc": "通用二維格子向下重力與補空核心，將非空內容依欄向下壓實，並由宿主定義空格判斷與新格建立方式；不綁定隨機來源、糖果、特殊格、動畫或 UI。",
+            "links": [
+              {
+                "label": "gravity.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/gravity.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_gravity.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/gravity_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Line Match",
+            "desc": "通用二維格子橫向／縱向連線掃描核心，可設定最短連線長度，並由宿主提供取值與阻擋判定；不綁定糖果、分數、特殊格、DOM 或特定三消規則。",
+            "links": [
+              {
+                "label": "line_match.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/line_match.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_line_match.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/line_match_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Occupancy",
+            "desc": "通用矩形格子範圍、固定阻擋與動態佔位判斷；依宿主提供的查詢方式回傳能否進入，不負責推動物件、移動角色或繪圖。",
+            "links": [
+              {
+                "label": "grid_occupancy.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/grid_occupancy.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/grid_occupancy_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/grid_occupancy_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_grid_occupancy.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Shuffle Until",
+            "desc": "通用二維格子條件洗牌核心，將 grid 內容攤平、交給宿主提供的 shuffle 重新排列並寫回，再依 accept 條件重試至成功或達嘗試上限；不綁定隨機實作、三消或 UI。",
+            "links": [
+              {
+                "label": "shuffle_until.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/shuffle_until.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_shuffle_until.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/shuffle_until_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Grid Swap Search",
+            "desc": "通用相鄰交換搜尋核心，掃描二維 grid 的相鄰格並暫時交換，由宿主判定交換是否立即成立或交換後是否合法；測試後一定還原，不綁定三連、提示、分數或特殊格規則。",
+            "links": [
+              {
+                "label": "swap_search.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/swap_search.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_swap_search.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/swap_search_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Hex Cell Attachment",
+            "desc": "根據撞擊位置、六角格佔用與有效錨點挑選最近的合法吸附空格；六角座標計算引用 Hex Grid Geometry，不負責顏色、消除或勝敗規則。",
+            "links": [
+              {
+                "label": "hex_cell_attachment.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/hex_cell_attachment.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/hex_cell_attachment_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/hex_cell_attachment_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_hex_cell_attachment.html"
+              }
+            ]
+          },
+          {
+            "title": "Hex Grid Geometry",
+            "desc": "通用錯列六角格的格心位置、有效範圍與六鄰接計算；支援奇偶列偏移，不綁泡泡顏色、碰撞、消除、Canvas 或其他六角座標系。",
+            "links": [
+              {
+                "label": "hex_grid_geometry.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/hex_grid_geometry.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/hex_grid_geometry_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/hex_grid_geometry_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_hex_grid_geometry.html"
+              }
+            ]
+          },
+          {
+            "title": "Minefield Rules",
+            "desc": "通用掃雷棋盤布雷與八方向鄰雷數計算，保證首次點選的格子不含地雷；零格連鎖展開使用既有 Chain Expand，不綁插旗 UI 或勝敗判定。",
+            "links": [
+              {
+                "label": "minefield_rules.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/minefield_rules.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/minefield_rules_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/minefield_rules_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_minefield_rules.html"
+              }
+            ]
+          },
+          {
+            "title": "Pushable Object",
+            "desc": "通用單步推動方案，結合 Grid Occupancy 判斷推動方向與後方格子是否可進入，回傳允許或拒絕原因；不直接修改宿主地圖與箱子資料。",
+            "links": [
+              {
+                "label": "pushable_object.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/pushable_object.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/pushable_object_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/pushable_object_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_pushable_object.html"
+              }
+            ]
+          },
+          {
+            "title": "Solvable Pair Layout",
+            "desc": "通用平面左右鏡射配對牌陣生成，產生可從各列外側逐對消除的布局與移除計畫；使用既有 Free Edge Tile 驗證，不宣稱可解任意立體上海麻將。",
+            "links": [
+              {
+                "label": "solvable_pair_layout.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_solvable_pair_layout.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "merge",
+        "title": "Merge / 合併升級",
+        "subpage": true,
+        "desc": "依宿主指定的等級規則判斷合併與升級；不包含碰撞或 UI。",
+        "items": [
+          {
+            "title": "Merge Level Rules",
+            "desc": "通用同級物件合併升級判定，檢查有效等級、可合併資格與最大級別，回傳新等級或拒絕原因；不綁 Emoji、水果碰撞、分數或動畫。",
+            "links": [
+              {
+                "label": "merge_level_rules.js",
+                "href": "https://lib.stillnessbyslowly.com/game/merge/merge_level_rules.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/merge/merge_level_rules_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/merge/merge_level_rules_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/merge/test_merge_level_rules.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "movement",
+        "title": "Movement / 移動",
+        "subpage": true,
+        "desc": "可組合的即時角色運動狀態積木；角色、速度與規則由宿主自行控制。",
+        "items": [
+          {
+            "title": "Dash State",
+            "desc": "通用角色衝刺狀態，提供方向、速度倍率、持續時間、取消與查詢，冷卻判斷直接引用既有 CooldownGate；宿主決定移動方式、是否無敵、受傷和衝刺外觀。",
+            "links": [
+              {
+                "label": "dash_state.js",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/dash_state.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/dash_state_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/dash_state_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/test_dash_state.html"
+              }
+            ]
+          },
+          {
+            "title": "Moving Platform Carrier",
+            "desc": "通用移動平台承載位移計算，依平台前後位置與已確認的支撐關係回傳搭乘物建議位置；不自行模擬平台、重力或落水規則。",
+            "links": [
+              {
+                "label": "moving_platform_carrier.js",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/moving_platform_carrier.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/moving_platform_carrier_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/moving_platform_carrier_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/test_moving_platform_carrier.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "physics",
+        "title": "Physics / 物理運動",
+        "subpage": true,
+        "desc": "通用二維物理運動與碰撞反應積木，分離幾何接觸、反彈、轉軸運動及時間步進，場景與玩法由宿主決定。",
+        "items": [
+          {
+            "title": "Body Motion 2D",
+            "desc": "通用二維物體時間步進，依加速度、重力、速度上限與時間差更新速度及位置；不包含碰撞偵測、反彈、繪圖或完整剛體物理引擎。",
+            "links": [
+              {
+                "label": "body_motion_2d.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/body_motion_2d.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/body_motion_2d_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/body_motion_2d_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_body_motion_2d.html"
+              }
+            ]
+          },
+          {
+            "title": "Circle Pair Response 2D",
+            "desc": "通用兩個動態圓形的重疊分離與碰撞衝量計算，可配置質量及反彈係數；幾何接觸引用既有 Circle Collision，不涉及水果合成、重力積分或分數。",
+            "links": [
+              {
+                "label": "circle_pair_response_2d.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_pair_response_2d.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_pair_response_2d_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_pair_response_2d_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_circle_pair_response_2d.html"
+              }
+            ]
+          },
+          {
+            "title": "Circle Segment Collision",
+            "desc": "通用圓形與有限線段接觸幾何，計算線段最近點、接觸法線、相切與重疊深度，支援線段端點及退化情況；不修改物體座標、速度或負責碰撞反彈。",
+            "links": [
+              {
+                "label": "circle_segment_collision.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_circle_segment_collision.html"
+              }
+            ]
+          },
+          {
+            "title": "Collision Response 2D",
+            "desc": "通用二維碰撞速度反應，依接觸法線、物體與表面相對速度、反彈係數計算碰後速度與撞擊強度；不搜尋碰撞、不重做幾何偵測或繪製。",
+            "links": [
+              {
+                "label": "collision_response_2d.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/collision_response_2d.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/collision_response_2d_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/collision_response_2d_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_collision_response_2d.html"
+              }
+            ]
+          },
+          {
+            "title": "Hinged Segment Motion",
+            "desc": "通用轉軸線段運動，計算旋轉線段端點、目標角度步進、角速度與接觸點表面速度，可配合碰撞反應使用；不綁定彈珠台、固定左右彈板或按鍵。",
+            "links": [
+              {
+                "label": "hinged_segment_motion.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_hinged_segment_motion.html"
+              }
+            ]
+          },
+          {
+            "title": "One Way Platform Contact",
+            "desc": "通用單向平台落地判斷，依前後幀包圍盒與下落方向檢查腳底是否跨越平台頂面；不重寫重力、角色位移或平台場景。",
+            "links": [
+              {
+                "label": "one_way_platform_contact.js",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/one_way_platform_contact.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/one_way_platform_contact_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/one_way_platform_contact_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/physics/test_one_way_platform_contact.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "rhythm",
+        "title": "Rhythm / 節奏",
+        "subpage": true,
+        "desc": "節奏譜面生成與命中時間窗判定；音效、譜面呈現與得分由宿主決定。",
+        "items": [
+          {
+            "title": "Rhythm Chart Generator",
+            "desc": "通用節奏譜面生成，依 BPM、細分拍、密度與軌道數產生音符時間表，支援固定與 Ramp 模式；BPM 換算引用 BeatTime，命中判定交給 Timing Judgement。",
+            "links": [
+              {
+                "label": "rhythm_chart_generator.js",
+                "href": "https://lib.stillnessbyslowly.com/game/rhythm/rhythm_chart_generator.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/rhythm/rhythm_chart_generator_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/rhythm/rhythm_chart_generator_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/rhythm/test_rhythm_chart_generator.html"
+              }
+            ]
+          },
+          {
+            "title": "Timing Judgement",
+            "desc": "通用節奏音符命中時間窗判定，依毫秒誤差與宿主設定回傳 Perfect、Great、Good 或 Miss，並區分提前與延後；不產生譜面、計分或管理 Combo。",
+            "links": [
+              {
+                "label": "timing_judgement.js",
+                "href": "https://lib.stillnessbyslowly.com/game/rhythm/timing_judgement.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/rhythm/timing_judgement_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/rhythm/timing_judgement_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/rhythm/test_timing_judgement.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "spawn",
+        "title": "Spawn / 生成與回收",
+        "subpage": true,
+        "desc": "管理物件名額和存活期限，或依世界視窗規劃生成與清理位置；不綁關卡與美術。",
+        "items": [
+          {
+            "title": "Spawn Lifecycle",
+            "desc": "通用物件 ID 與生成位置的名額、存活期限及主動釋放管理，支援容量限制與外部時間驅動的到期回收；不建立計時器、DOM 或隨機來源。",
+            "links": [
+              {
+                "label": "spawn_lifecycle.js",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/spawn_lifecycle.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/spawn_lifecycle_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/spawn_lifecycle_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/test_spawn_lifecycle.html"
+              }
+            ]
+          },
+          {
+            "title": "Visible Range Spawner",
+            "desc": "依世界座標視窗、生成前沿及保留範圍，規劃要補出的新位置與需要淘汰的舊物件；不處理物件存活時間、攝影機運鏡或實際資料修改。",
+            "links": [
+              {
+                "label": "visible_range_spawner.js",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/visible_range_spawner.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/visible_range_spawner_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/visible_range_spawner_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/test_visible_range_spawner.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "targeting",
+        "title": "Targeting / 目標搜尋",
+        "subpage": true,
+        "desc": "依路線、方向、距離與宿主條件搜尋空間目標；不負責攻擊和碰撞。",
+        "items": [
+          {
+            "title": "Forward Target Selector",
+            "desc": "通用空間前方目標搜尋，依起點、方向、路線、距離與宿主提供的資格條件，選出最近符合條件的目標；不負責射擊、傷害或碰撞。",
+            "links": [
+              {
+                "label": "forward_target_selector.js",
+                "href": "https://lib.stillnessbyslowly.com/game/targeting/forward_target_selector.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/targeting/forward_target_selector_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/targeting/forward_target_selector_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/targeting/test_forward_target_selector.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "image",
+    "title": "Image",
+    "groups": [
+      {
+        "id": "canvas",
+        "title": "Canvas",
+        "subpage": true,
+        "desc": "Canvas 繪圖與文字排版相關的小型積木。",
+        "items": [
+          {
+            "title": "Canvas Content Normalize",
+            "desc": "通用 Canvas 內容邊界偵測與正規化核心，可依像素判定函式找出內容範圍，裁切後等比例置中到指定尺寸並保留 quiet zone；預設適合深色 QR 圖樣，但不依賴 QRCode 套件。",
+            "links": [
+              {
+                "label": "canvas_content_normalize.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas_content_normalize.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/test_canvas_content_normalize.html"
+              }
+            ]
+          },
+          {
+            "title": "Rounded Rect",
+            "desc": "Canvas 圓角矩形繪製工具，提供圓角路徑建立，方便宿主自行決定填色、描邊與其他樣式。",
+            "links": [
+              {
+                "label": "rounded_rect.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/rounded_rect.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/rounded_rect_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/test_rounded_rect.html"
+              }
+            ]
+          },
+          {
+            "title": "Wrapped Text",
+            "desc": "Canvas 多行文字換行工具，依最大寬度切分並繪製文字，供卡片與圖片輸出等情境組合使用。",
+            "links": [
+              {
+                "label": "wrapped_text.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/wrapped_text.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/wrapped_text_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/canvas/test_wrapped_text.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "capture",
+        "title": "Capture / 擷取",
+        "items": [
+          {
+            "title": "DOM Capture",
+            "desc": "通用 DOM 影像擷取流程核心，將來源元素複製到畫面外並固定實際寬度，交由宿主注入 renderer 轉成 Canvas，再輸出 Blob，完成後一定清除暫存 clone；不綁 html2canvas、下載、分享或特定元件。",
+            "links": [
+              {
+                "label": "dom_capture.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/dom_capture.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/test_dom_capture.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "compress",
+        "title": "Compress / 壓縮",
+        "items": [
+          {
+            "title": "Image Compress To Size",
+            "desc": "通用圖片目標檔案大小壓縮核心，先限制最大尺寸，再逐步降低輸出品質；若仍過大則繼續縮小尺寸，並回報是否達到 maxBytes、最後尺寸、品質、輸出 bytes 與嘗試次數；不依賴 Image Resize 或 UI。",
+            "links": [
+              {
+                "label": "image_compress_to_size.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/image_compress_to_size.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/test_image_compress_to_size.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "gif",
+        "title": "GIF",
+        "subpage": true,
+        "desc": "通用 GIF 影格編碼積木，圖片來源及輸出流程由宿主決定。",
+        "items": [
+          {
+            "title": "GIF Encoder",
+            "desc": "接收宿主提供的 RGBA 影格與時間設定，編碼成 GIF Blob；不限制影格來源為 SVG，不負責產生影格、預覽介面或下載。",
+            "links": [
+              {
+                "label": "gif_encoder.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/gif/gif_encoder.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/gif/gif_encoder_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/gif/gif_encoder_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/gif/test_gif_encoder.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "png",
+        "title": "PNG",
+        "subpage": true,
+        "desc": "Canvas 轉 PNG 與 PNG 下載相關工具。",
+        "items": [
+          {
+            "title": "Canvas PNG",
+            "desc": "將 Canvas 轉為 PNG Blob / 圖片資料的通用工具，供預覽、下載或其他後續流程使用。",
+            "links": [
+              {
+                "label": "canvas_png.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/canvas_png_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/test_canvas_png.html"
+              }
+            ]
+          },
+          {
+            "title": "PNG Download",
+            "desc": "將 PNG Blob 或可下載來源交給瀏覽器下載的通用工具，處理下載連結與 Object URL 回收。",
+            "links": [
+              {
+                "label": "png_download.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/png_download.js"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/png_download_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/png/test_png_download.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "svg",
+        "title": "SVG",
+        "subpage": true,
+        "desc": "SVG 檢視、動畫時間取樣與影格擷取零件；不包含完整轉檔介面。",
+        "items": [
+          {
+            "title": "SVG Animation Frame Extractor",
+            "desc": "將 SVG 靜態畫面或可支援的 CSS／SMIL 動畫定格於指定時間點，擷取 Canvas／RGBA 影格，供其他圖片或影片處理流程使用；不負責 GIF、影片編碼或下載。",
+            "links": [
+              {
+                "label": "svg_animation_frame_extractor.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/test_svg_animation_frame_extractor.html"
+              }
+            ]
+          },
+          {
+            "title": "SVG Viewer",
+            "desc": "通用 SVG 檢視積木，接收宿主提供的 SVG 與預覽元素，讀取尺寸、viewBox 與動畫資訊，支援預覽、縮放和資源清理；不包含固定檢視器介面或視覺皮膚。",
+            "links": [
+              {
+                "label": "svg_viewer.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_viewer.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_viewer_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_viewer_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/svg/test_svg_viewer.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "page": "mail",
+    "title": "Mail",
+    "items": [
+      {
+        "title": "Mail",
+        "desc": "共用 Email 呼叫介面，提供即時寄送、排程、取消與狀態查詢。實際寄送、排程、驗證與敏感設定由後端負責。",
+        "links": [
+          {
+            "label": "mail.js",
+            "href": "https://lib.stillnessbyslowly.com/mail/mail.js"
+          },
+          {
+            "label": "功能測試",
+            "href": "https://lib.stillnessbyslowly.com/mail/mail_test.html"
           }
         ]
       }
@@ -1235,38 +5193,24 @@ window.SlowlyLibraryIndex = [
         "title": "General / 通用",
         "items": [
           {
-            "title": "Tree Selection",
-            "desc": "通用樹狀選取與展開狀態核心，管理 selected 與 expanded 狀態，支援單選式或多重展開、切換、整批取代與清除；不綁定 DOM、樹狀資料 schema、畫面層級或儲存方式。",
+            "title": "Combo Streak State",
+            "desc": "通用連續成功與失誤中斷狀態，管理目前與最高連擊，支援可選的超時清零和多實例；不處理得分、音符判定、排名或計時器。",
             "links": [
               {
-                "label": "tree_selection.js",
-                "href": "https://lib.stillnessbyslowly.com/state/tree_selection.js"
+                "label": "combo_streak_state.js",
+                "href": "https://lib.stillnessbyslowly.com/state/combo_streak_state.js"
               },
               {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/state/test_tree_selection.html"
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/combo_streak_state_demo.html"
               },
               {
                 "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/state/tree_selection_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Form Draft",
-            "desc": "通用表單草稿狀態核心，保存初始基準與目前草稿，提供欄位設定、批次更新、重設、提交基準、dirty 與單欄位 changed 判斷；不綁定 DOM、欄位 schema、驗證、檔案上傳或儲存方式。",
-            "links": [
-              {
-                "label": "form_draft.js",
-                "href": "https://lib.stillnessbyslowly.com/state/form_draft.js"
+                "href": "https://lib.stillnessbyslowly.com/state/combo_streak_state_usage.html"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/state/test_form_draft.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/state/form_draft_usage.html"
+                "href": "https://lib.stillnessbyslowly.com/state/test_combo_streak_state.html"
               }
             ]
           },
@@ -1281,34 +5225,6 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/state/test_cooldown_gate.html"
-              }
-            ]
-          },
-          {
-            "title": "Once Per Key",
-            "desc": "通用「同一個 key 只能成功一次」狀態核心，提供 claim、has、get、release、keys 與 clear，並可注入 Storage-like 物件做跨頁持久化；不綁日期、抽籤、UI 或特定業務。",
-            "links": [
-              {
-                "label": "once_per_key.js",
-                "href": "https://lib.stillnessbyslowly.com/state/once_per_key.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/state/test_once_per_key.html"
-              }
-            ]
-          },
-          {
-            "title": "Value Cycle",
-            "desc": "通用有限值循環核心，依目前值計算下一個、上一個或位移 N 格後的值，並自動循環首尾；不保存宿主資料、不綁定狀態名稱、UI 或商業副作用。",
-            "links": [
-              {
-                "label": "value_cycle.js",
-                "href": "https://lib.stillnessbyslowly.com/state/value_cycle.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/state/test_value_cycle.html"
               }
             ]
           },
@@ -1349,6 +5265,24 @@ window.SlowlyLibraryIndex = [
             ]
           },
           {
+            "title": "Form Draft",
+            "desc": "通用表單草稿狀態核心，保存初始基準與目前草稿，提供欄位設定、批次更新、重設、提交基準、dirty 與單欄位 changed 判斷；不綁定 DOM、欄位 schema、驗證、檔案上傳或儲存方式。",
+            "links": [
+              {
+                "label": "form_draft.js",
+                "href": "https://lib.stillnessbyslowly.com/state/form_draft.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_form_draft.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/form_draft_usage.html"
+              }
+            ]
+          },
+          {
             "title": "Hold Charge Control",
             "desc": "通用按住蓄力生命週期，管理按下、隨時間更新蓄力進度、放開、取消及重設；蓄力數值引用軍火庫既有 ChargeState，實際發射力道與操作介面由宿主決定。",
             "links": [
@@ -1369,52 +5303,72 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/state/test_hold_charge_control.html"
               }
             ]
-          }
-        ]
-      },
-      {
-        "id": "queue",
-        "title": "Queue / 佇列",
-        "items": [
+          },
           {
-            "title": "Serial Queue",
-            "desc": "通用非同步序列佇列核心，將工作依加入順序逐一執行，前一件完成後才開始下一件；單一工作失敗只會 reject 該工作，不會中斷後續佇列，並提供 idle() 等待清空與目前 running／pending／size 狀態。不綁定儲存、Render、Network、Retry、Timeout、錯誤提示或業務規則。",
+            "title": "Once Per Key",
+            "desc": "通用「同一個 key 只能成功一次」狀態核心，提供 claim、has、get、release、keys 與 clear，並可注入 Storage-like 物件做跨頁持久化；不綁日期、抽籤、UI 或特定業務。",
             "links": [
               {
-                "label": "serial_queue.js",
-                "href": "https://lib.stillnessbyslowly.com/state/queue/serial_queue.js"
+                "label": "once_per_key.js",
+                "href": "https://lib.stillnessbyslowly.com/state/once_per_key.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/state/queue/test_serial_queue.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/state/queue/serial_queue_usage.html"
+                "href": "https://lib.stillnessbyslowly.com/state/test_once_per_key.html"
               }
             ]
-          }
-        ]
-      },
-      {
-        "id": "preference",
-        "title": "Preference / 偏好",
-        "items": [
+          },
           {
-            "title": "Preference",
-            "desc": "通用 boolean 使用者偏好狀態核心，以 localStorage 保存開／關選擇，提供讀取、設定與切換；不綁定 DOM、Switch、Checkbox、Effects 或特定功能。",
+            "title": "Tree Selection",
+            "desc": "通用樹狀選取與展開狀態核心，管理 selected 與 expanded 狀態，支援單選式或多重展開、切換、整批取代與清除；不綁定 DOM、樹狀資料 schema、畫面層級或儲存方式。",
             "links": [
               {
-                "label": "preference.js",
-                "href": "https://lib.stillnessbyslowly.com/state/preference/preference.js"
+                "label": "tree_selection.js",
+                "href": "https://lib.stillnessbyslowly.com/state/tree_selection.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/state/preference/test_preference.html"
+                "href": "https://lib.stillnessbyslowly.com/state/test_tree_selection.html"
               },
               {
                 "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/state/preference/preference_usage.html"
+                "href": "https://lib.stillnessbyslowly.com/state/tree_selection_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Undo Snapshot Stack",
+            "desc": "通用局面快照復原堆疊，支援保存、撤銷、清除與容量限制；可保留 Set 等複合資料的複製結果，不是瀏覽器導覽歷史。",
+            "links": [
+              {
+                "label": "undo_snapshot_stack.js",
+                "href": "https://lib.stillnessbyslowly.com/state/undo_snapshot_stack.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/undo_snapshot_stack_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/undo_snapshot_stack_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_undo_snapshot_stack.html"
+              }
+            ]
+          },
+          {
+            "title": "Value Cycle",
+            "desc": "通用有限值循環核心，依目前值計算下一個、上一個或位移 N 格後的值，並自動循環首尾；不保存宿主資料、不綁定狀態名稱、UI 或商業副作用。",
+            "links": [
+              {
+                "label": "value_cycle.js",
+                "href": "https://lib.stillnessbyslowly.com/state/value_cycle.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_value_cycle.html"
               }
             ]
           }
@@ -1441,42 +5395,6 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/state/navigation/navigation_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Navigation URL",
-            "desc": "通用 URL 解析與判斷工具，以原生 URL 為基礎，提供解析、相對網址解析、絕對網址判斷、外部網址判斷、同源判斷與 URL 資訊取得；不執行頁面跳轉。",
-            "links": [
-              {
-                "label": "url.js",
-                "href": "https://lib.stillnessbyslowly.com/state/navigation/url.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/state/navigation/test_url.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/state/navigation/url_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Navigation Query",
-            "desc": "通用 query string 處理工具，以 URLSearchParams 為基礎，提供讀取、複數讀取、存在判斷、設定、追加、刪除、物件轉換與 query 建立；不執行頁面跳轉。",
-            "links": [
-              {
-                "label": "query.js",
-                "href": "https://lib.stillnessbyslowly.com/state/navigation/query.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/state/navigation/test_query.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/state/navigation/query_usage.html"
               }
             ]
           },
@@ -1515,388 +5433,90 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/state/navigation/history_usage.html"
               }
             ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "page": "date",
-    "title": "Date",
-    "groups": [
-      {
-        "id": "general",
-        "title": "General / 通用",
-        "items": [
-          {
-            "title": "Date Time",
-            "desc": "一般網站常用的日期與時間處理模組，提供本地日期鍵、日期解析、日期加減、日期差、日期格式化與時間差拆分。",
-            "links": [
-              {
-                "label": "datetime.js",
-                "href": "https://lib.stillnessbyslowly.com/date/datetime.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/date_test_datetime.html"
-              }
-            ]
           },
           {
-            "title": "Timestamp",
-            "desc": "通用本地時間戳產生模組，輸出 YYYYMMDDHHmmssSSS 格式，可用於資料識別、建立時間標記與需要可排序時間字串的情境。",
+            "title": "Navigation Query",
+            "desc": "通用 query string 處理工具，以 URLSearchParams 為基礎，提供讀取、複數讀取、存在判斷、設定、追加、刪除、物件轉換與 query 建立；不執行頁面跳轉。",
             "links": [
               {
-                "label": "timestamp.js",
-                "href": "https://lib.stillnessbyslowly.com/date/timestamp.js"
+                "label": "query.js",
+                "href": "https://lib.stillnessbyslowly.com/state/navigation/query.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/date_test_timestamp.html"
-              }
-            ]
-          },
-          {
-            "title": "Date Overlap",
-            "desc": "通用日期集合重疊比對核心，將多組「對象 ID＋日期集合」反向整理為「日期 → 對象」，可查詢指定日期、取得重疊日期、設定最低重疊數、找出最大重疊日期並提供基本統計。核心只處理日期 key 與 ID，不綁定 UI、儲存方式或 Calendar Component。",
-            "links": [
-              {
-                "label": "Date_overlap.js",
-                "href": "https://lib.stillnessbyslowly.com/date/Date_overlap.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/test_date_overlap.html"
-              }
-            ]
-          },
-          {
-            "title": "Next Occurrence",
-            "desc": "通用下一次發生日查找核心，支援固定月日與宿主提供 resolver(year) 的年度規則，可自動跳過不存在的日期；不綁定農曆、Calendar、顯示文案或 UI。",
-            "links": [
-              {
-                "label": "next_occurrence.js",
-                "href": "https://lib.stillnessbyslowly.com/date/next_occurrence.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/test_next_occurrence.html"
-              }
-            ]
-          },
-          {
-            "title": "Month Count",
-            "desc": "通用月份筆數統計核心，將資料依日期歸入 YYYY-MM 並計算每月筆數，可取得指定月份或目前月份的數量；宿主自行提供日期來源，無效日期會略過，不綁 DOM、儲存或圖表。",
-            "links": [
-              {
-                "label": "month_count.js",
-                "href": "https://lib.stillnessbyslowly.com/date/month_count.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/test_month_count.html"
-              }
-            ]
-          },
-          {
-            "title": "Upcoming Window",
-            "desc": "通用未來提前區間判斷核心，可判斷目標時間是否已進入指定 window、取得剩餘毫秒數，或從資料陣列篩出即將到來的項目；不綁通知、DOM、排程、儲存或業務狀態。",
-            "links": [
-              {
-                "label": "upcoming_window.js",
-                "href": "https://lib.stillnessbyslowly.com/date/upcoming_window.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/test_upcoming_window.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "timer",
-        "title": "Timer / 計時",
-        "items": [
-          {
-            "title": "Timer",
-            "desc": "通用經過時間計時核心，提供開始、暫停、繼續、停止、歸零與 elapsed 狀態；不綁定 UI、遊戲或儲存方式。",
-            "links": [
-              {
-                "label": "timer.js",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/timer.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/test_timer.html"
-              }
-            ]
-          },
-          {
-            "title": "Countdown",
-            "desc": "通用倒數狀態核心，以毫秒管理 duration、remaining、elapsed 與 progress，支援開始、暫停、繼續、停止與重設；不綁定 UI、遊戲或更新迴圈。",
-            "links": [
-              {
-                "label": "countdown.js",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/countdown.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/test_countdown.html"
-              }
-            ]
-          },
-          {
-            "title": "Stopwatch",
-            "desc": "通用碼表狀態核心，提供開始、暫停、繼續、停止、歸零與 lap 分段紀錄；所有時間值皆以毫秒回傳，不綁定 UI 或特定用途。",
-            "links": [
-              {
-                "label": "stopwatch.js",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/stopwatch.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/test_stopwatch.html"
-              }
-            ]
-          },
-          {
-            "title": "Ticker",
-            "desc": "通用固定週期觸發核心，由宿主提供 callback 與 interval，支援開始、暫停、繼續、停止、歸零與手動 tick；不綁定 UI、倒數或特定用途。",
-            "links": [
-              {
-                "label": "ticker.js",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/ticker.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/test_ticker.html"
-              }
-            ]
-          },
-          {
-            "title": "Frame Loop",
-            "desc": "通用 requestAnimationFrame 逐幀觸發核心，由宿主提供 callback，負責逐幀排程、開始、暫停、繼續、停止、歸零與單步執行，並提供 timestamp、delta、elapsed 與 frame；不綁定 DOM、動畫公式、遊戲規則、Canvas、儲存或 UI。",
-            "links": [
-              {
-                "label": "frame_loop.js",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/frame_loop.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/test_frame_loop.html"
+                "href": "https://lib.stillnessbyslowly.com/state/navigation/test_query.html"
               },
               {
                 "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/frame_loop_usage.html"
+                "href": "https://lib.stillnessbyslowly.com/state/navigation/query_usage.html"
               }
             ]
           },
           {
-            "title": "Elapsed Format",
-            "desc": "通用經過時間格式化工具，將毫秒轉為 HH:MM:SS，負值與無效值安全歸零，小時可超過 24；只負責格式化，不建立 Timer、不管理狀態或 UI。",
+            "title": "Navigation URL",
+            "desc": "通用 URL 解析與判斷工具，以原生 URL 為基礎，提供解析、相對網址解析、絕對網址判斷、外部網址判斷、同源判斷與 URL 資訊取得；不執行頁面跳轉。",
             "links": [
               {
-                "label": "elapsed_format.js",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/elapsed_format.js"
+                "label": "url.js",
+                "href": "https://lib.stillnessbyslowly.com/state/navigation/url.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/test_elapsed_format.html"
+                "href": "https://lib.stillnessbyslowly.com/state/navigation/test_url.html"
               },
               {
                 "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/elapsed_format_usage.html"
+                "href": "https://lib.stillnessbyslowly.com/state/navigation/url_usage.html"
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "id": "preference",
+        "title": "Preference / 偏好",
+        "items": [
           {
-            "title": "Phase Cycle",
-            "desc": "通用不同時長階段循環核心，管理階段順序、開始、暫停、繼續、停止、下一階段、重設與完成通知；不綁定呼吸法、UI、音效，也不依賴其他 Timer 模組。",
+            "title": "Preference",
+            "desc": "通用 boolean 使用者偏好狀態核心，以 localStorage 保存開／關選擇，提供讀取、設定與切換；不綁定 DOM、Switch、Checkbox、Effects 或特定功能。",
             "links": [
               {
-                "label": "phase_cycle.js",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/phase_cycle.js"
+                "label": "preference.js",
+                "href": "https://lib.stillnessbyslowly.com/state/preference/preference.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/date/timer/test_phase_cycle.html"
+                "href": "https://lib.stillnessbyslowly.com/state/preference/test_preference.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/preference/preference_usage.html"
               }
             ]
           }
-        ],
-        "subpage": true,
-        "desc": "經過時間、倒數、碼表、固定週期、逐幀觸發與經過時間格式化等計時工具。"
-      }
-    ]
-  },
-  {
-    "page": "calendar",
-    "title": "Calendar",
-    "items": [
-      {
-        "title": "Lunar Calendar",
-        "desc": "1901–2100 國曆與農曆雙向轉換模組，包含閏月、月份天數與農曆日期資料。",
-        "links": [
-          {
-            "label": "lunar.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/lunar.js"
-          },
-          {
-            "label": "lunar_data.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_data.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_test.html"
-          },
-          {
-            "label": "資料基準",
-            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_reference.txt"
-          }
         ]
       },
       {
-        "title": "Lunar Festivals",
-        "desc": "農曆節日查詢模組，依 Lunar 提供的農曆日期判定常用農曆年節，包含春節期間、元宵、端午、七夕、中元、中秋、重陽與除夕。",
-        "links": [
+        "id": "queue",
+        "title": "Queue / 佇列",
+        "items": [
           {
-            "label": "lunar_festivals.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals.js"
-          },
-          {
-            "label": "lunar_festivals_data.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals_data.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals_test.html"
-          },
-          {
-            "label": "資料基準",
-            "href": "https://lib.stillnessbyslowly.com/calendar/lunar_festivals_reference.txt"
-          }
-        ]
-      },
-      {
-        "title": "Solar Festivals",
-        "desc": "台灣常見固定西曆節日查詢模組，不包含農曆節日、節氣、星期規則與政府補假／補班資料。",
-        "links": [
-          {
-            "label": "solar_festivals.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/solar_festivals.js"
-          },
-          {
-            "label": "solar_festivals_data.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/solar_festivals_data.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/solar_festivals_test.html"
-          }
-        ]
-      },
-      {
-        "title": "Solar Terms",
-        "desc": "1901–2100 二十四節氣查詢模組，提供年度節氣、日期查詢、指定節氣與下一節氣。",
-        "links": [
-          {
-            "label": "solar_terms.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms.js"
-          },
-          {
-            "label": "solar_terms_data.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms_data.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms_test.html"
-          },
-          {
-            "label": "資料基準",
-            "href": "https://lib.stillnessbyslowly.com/calendar/solar_terms_reference.txt"
-          }
-        ]
-      },
-      {
-        "title": "Calendar Custom",
-        "desc": "使用者自訂事件管理模組，支援西曆與農曆事件、新增、查詢、修改、刪除、單次事件與每年重複，資料儲存於 localStorage。",
-        "links": [
-          {
-            "label": "calendar_custom.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_custom.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_custom_test.html"
-          },
-          {
-            "label": "操作測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_custom_view_test.html"
-          }
-        ]
-      },
-      {
-        "title": "Calendar",
-        "desc": "1901–2100 西曆日曆資料生成與整合模組，提供年、月、日與星期結構，並可整合農曆與二十四節氣資料。顯示方式與視覺由使用端自行決定。",
-        "links": [
-          {
-            "label": "calendar.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/calendar.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_test.html"
-          },
-          {
-            "label": "顯示測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_view_test.html"
-          }
-        ]
-      },
-      {
-        "title": "Month Sequence",
-        "desc": "通用年月位移與連續月份序列核心，提供月份正規化、前後位移與連續 N 個月份產生，並自動處理跨年；不產生日期內容、不處理曆法資料、不碰 DOM。",
-        "links": [
-          {
-            "label": "month_sequence.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/month_sequence.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/test_month_sequence.html"
-          }
-        ]
-      },
-      {
-        "title": "Month Grid View",
-        "desc": "通用單月七欄格狀 DOM renderer，使用宿主提供的 month data 建立月份格子，支援自訂星期、標題、日期內容與 class；不計算農曆、節氣、節日，也不要求 Calendar 模組存在。",
-        "links": [
-          {
-            "label": "month_grid_view.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/month_grid_view.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/test_month_grid_view.html"
-          }
-        ]
-      },
-      {
-        "title": "Calendar Interaction",
-        "desc": "Slowly Calendar 的獨立互動橋接模組，在不修改 Calendar Component 的情況下取得目前選取日期、監聽日期變更，並支援替指定日期加入資料標記。",
-        "links": [
-          {
-            "label": "calendar_interaction.js",
-            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_interaction.js"
-          },
-          {
-            "label": "calendar_interaction.css",
-            "href": "https://lib.stillnessbyslowly.com/calendar/calendar_interaction.css"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/calendar/test_calendar_interaction.html"
+            "title": "Serial Queue",
+            "desc": "通用非同步序列佇列核心，將工作依加入順序逐一執行，前一件完成後才開始下一件；單一工作失敗只會 reject 該工作，不會中斷後續佇列，並提供 idle() 等待清空與目前 running／pending／size 狀態。不綁定儲存、Render、Network、Retry、Timeout、錯誤提示或業務規則。",
+            "links": [
+              {
+                "label": "serial_queue.js",
+                "href": "https://lib.stillnessbyslowly.com/state/queue/serial_queue.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/queue/test_serial_queue.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/queue/serial_queue_usage.html"
+              }
+            ]
           }
         ]
       }
@@ -1907,188 +5527,20 @@ window.SlowlyLibraryIndex = [
     "title": "UI",
     "groups": [
       {
-        "id": "general",
-        "title": "General / 通用",
+        "id": "canvas",
+        "title": "Canvas / 畫布互動",
         "items": [
           {
-            "title": "Responsive Base",
-            "desc": "共用基礎自適應樣式，只處理跨裝置的基本安全規則，不定義專案視覺。",
+            "title": "Canvas Rect Drag",
+            "desc": "通用 Canvas 矩形拖曳互動核心，提供畫布座標換算、矩形命中判斷、拖曳偏移與邊界限制；不負責繪圖、不綁 QRCode、圖片或特定業務資料。",
             "links": [
               {
-                "label": "responsive.css",
-                "href": "https://lib.stillnessbyslowly.com/ui/responsive.css"
-              }
-            ]
-          },
-          {
-            "title": "Auth Permission UI",
-            "desc": "共用登入、登出、身份與權限 UI 狀態模組。登入驗證、Session、角色與資料存取權限由後端／資料庫負責；前端模組只依已確認的 Auth／Permission 狀態切換介面，不把隱藏按鈕當成安全機制。",
-            "links": [
-              {
-                "label": "Auth_permission_ui.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.js"
-              },
-              {
-                "label": "Auth_permission_ui.css",
-                "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.css"
+                "label": "canvas_rect_drag.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/canvas/canvas_rect_drag.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/test_Auth_permission_ui.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui_guide.html"
-              }
-            ]
-          },
-          {
-            "title": "Favorite",
-            "desc": "通用最愛／收藏 UI 狀態元件，可套用於商品、圖片、文字、卡片或其他具有識別 ID 的項目。負責切換與同步最愛狀態並發送變更事件，不綁定資料內容與儲存方式；是否保存至 localStorage、資料庫或其他資料層由宿主自行處理。",
-            "links": [
-              {
-                "label": "favorite.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/favorite.js"
-              },
-              {
-                "label": "favorite.css",
-                "href": "https://lib.stillnessbyslowly.com/ui/favorite.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/test_favorite.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/ui/favorite_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "HTML Escape",
-            "desc": "通用 HTML 文字轉義工具，將 &, <, >, 雙引號與單引號轉成安全的 HTML 實體字串，適合將一般文字內容放入 innerHTML 或 HTML 樣板字串時使用；不負責 HTML 清洗、允許部分標籤或 DOM 建立。",
-            "links": [
-              {
-                "label": "html_escape.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/html_escape.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/test_html_escape.html"
-              }
-            ]
-          },
-          {
-            "title": "Toast",
-            "desc": "通用 Toast UI 元件，提供訊息顯示、手動隱藏、自動隱藏、重複顯示時重設計時器與同元素實例重用；核心負責顯示狀態與行為，必要基礎 CSS 僅處理顯示／隱藏，位置、背景、顏色、圓角、陰影等視覺由宿主自行決定。",
-            "links": [
-              {
-                "label": "toast.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/toast.js"
-              },
-              {
-                "label": "toast.css",
-                "href": "https://lib.stillnessbyslowly.com/ui/toast.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/test_toast.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/ui/toast_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Confirm",
-            "desc": "通用確認視窗，提供 Promise<boolean> 式確認流程，支援自訂標題、訊息、確認／取消文字、Escape、點擊遮罩、焦點移入與還原，以及連續呼叫排隊；只負責詢問與回傳確認結果，不綁定刪除、覆蓋、送出、導航或其他宿主業務規則。",
-            "links": [
-              {
-                "label": "confirm.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm.js"
-              },
-              {
-                "label": "confirm.css",
-                "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/confirm/test_confirm.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Tabs",
-            "desc": "同頁通用分頁切換零件，沿用 data-view-target／data-view-panel，負責點擊與鍵盤切換、選中狀態、內容顯示、同頁多實例與變更通知；不處理網址、儲存或宿主外觀。",
-            "links": [
-              {
-                "label": "tabs.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs.js"
-              },
-              {
-                "label": "tabs.css",
-                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs.css"
-              },
-              {
-                "label": "外觀展示",
-                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs_demo.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/tabs/test_tabs.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs_usage.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "iframe",
-        "title": "Iframe / 嵌入頁面",
-        "subpage": true,
-        "desc": "Iframe 建立與來源切換相關的小型 UI 積木；建立與 src 操作分開，各自只負責一件事。",
-        "items": [
-          {
-            "title": "Iframe Create",
-            "desc": "通用 iframe 建立工具，只負責建立 iframe 元素並回傳，可設定 id、className 與 title；不設定 src、不插入 DOM、不處理顯示／隱藏或頁面導航。",
-            "links": [
-              {
-                "label": "iframe_create.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_create.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/iframe/test_iframe_create.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_create_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Iframe Source",
-            "desc": "通用 iframe 來源操作工具，只負責讀取、設定與清除既有 iframe 的 src；不建立 iframe、不處理顯示／隱藏、History 或 postMessage。",
-            "links": [
-              {
-                "label": "iframe_source.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_source.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/iframe/test_iframe_source.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_source_usage.html"
+                "href": "https://lib.stillnessbyslowly.com/ui/canvas/test_canvas_rect_drag.html"
               }
             ]
           }
@@ -2175,26 +5627,6 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
-        "id": "share",
-        "title": "Share / 分享",
-        "items": [
-          {
-            "title": "Web Share",
-            "desc": "通用 Web Share API 封裝，提供支援檢查、分享資料可用性判斷與系統分享，並區分成功、取消、不支援與失敗結果；不組業務資料、不做 Clipboard fallback，也不綁 DOM 或提示 UI。",
-            "links": [
-              {
-                "label": "web_share.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/share/web_share.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/share/test_web_share.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "id": "contenteditable",
         "title": "Contenteditable / 可編輯內容",
         "items": [
@@ -2224,28 +5656,6 @@ window.SlowlyLibraryIndex = [
         "subpage": true,
         "desc": "以自訂介面包裝原生輸入控制，同時保留原生 value／files 作為資料來源。",
         "items": [
-          {
-            "title": "Custom Select",
-            "desc": "自訂下拉選單 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 select 展開樣式，同時保留原生 select 作為真正的 value 與 change 資料來源。支援同頁多實例、程式同步、點外部與 Escape 關閉，視覺可由宿主頁面透過 CSS 變數覆寫。",
-            "links": [
-              {
-                "label": "custom_select.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/custom_select.js"
-              },
-              {
-                "label": "custom_select.css",
-                "href": "https://lib.stillnessbyslowly.com/ui/custom_select.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/test_custom_select.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/ui/custom_select_usage.html"
-              }
-            ]
-          },
           {
             "title": "Custom Date",
             "desc": "自訂日期選擇 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 date 選擇器，同時保留原生 input[type=date] 作為真正的 value 與 change 資料來源。支援年月切換、日期選取、今天提示、清除、min／max／disabled、同頁多實例與程式同步，視覺可由宿主頁面透過 CSS 變數覆寫。",
@@ -2289,52 +5699,214 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/ui/custom_file_usage.html"
               }
             ]
-          }
-        ]
-      },
-      {
-        "id": "loader",
-        "title": "Loader / 載入",
-        "subpage": true,
-        "desc": "載入遮罩與進度顯示相關的通用 UI 積木。",
-        "items": [
+          },
           {
-            "title": "Loader Progress",
-            "desc": "通用全頁載入遮罩與進度條控制元件，由宿主提供 root，支援直接設定 0～100 進度、百分比文字、模擬進度、完成收起與 onDone 回呼；CSS 負責基礎遮罩與進度條結構，色彩可由變數覆寫。",
+            "title": "Custom Select",
+            "desc": "自訂下拉選單 UI 元件，以自訂介面取代瀏覽器與手機系統的原生 select 展開樣式，同時保留原生 select 作為真正的 value 與 change 資料來源。支援同頁多實例、程式同步、點外部與 Escape 關閉，視覺可由宿主頁面透過 CSS 變數覆寫。",
             "links": [
               {
-                "label": "loader_progress.css",
-                "href": "https://lib.stillnessbyslowly.com/ui/loader/loader_progress.css"
+                "label": "custom_select.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_select.js"
               },
               {
-                "label": "loader_progress.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/loader/loader_progress.js"
+                "label": "custom_select.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_select.css"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/loader/test_loader_progress.html"
+                "href": "https://lib.stillnessbyslowly.com/ui/test_custom_select.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/custom_select_usage.html"
               }
             ]
           }
         ]
       },
       {
-        "id": "progress",
-        "title": "Progress / 進度",
-        "subpage": true,
-        "desc": "一般數值、狀態與能力進度顯示相關的通用 UI 積木。",
+        "id": "general",
+        "title": "General / 通用",
         "items": [
           {
-            "title": "Stat Bar",
-            "desc": "純 CSS 通用狀態／進度條結構，包含 label、track、bar 與 value，可由宿主以 --sl-stat-value 控制寬度，並自訂標籤寬度、條高、底色、填色與動畫時間；支援 reduced-motion。",
+            "title": "Auth Permission UI",
+            "desc": "共用登入、登出、身份與權限 UI 狀態模組。登入驗證、Session、角色與資料存取權限由後端／資料庫負責；前端模組只依已確認的 Auth／Permission 狀態切換介面，不把隱藏按鈕當成安全機制。",
             "links": [
               {
-                "label": "stat_bar.css",
-                "href": "https://lib.stillnessbyslowly.com/ui/progress/stat_bar.css"
+                "label": "Auth_permission_ui.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.js"
+              },
+              {
+                "label": "Auth_permission_ui.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui.css"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/progress/test_stat_bar.html"
+                "href": "https://lib.stillnessbyslowly.com/ui/test_Auth_permission_ui.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/Auth_permission_ui_guide.html"
+              }
+            ]
+          },
+          {
+            "title": "Confirm",
+            "desc": "通用確認視窗，提供 Promise<boolean> 式確認流程，支援自訂標題、訊息、確認／取消文字、Escape、點擊遮罩、焦點移入與還原，以及連續呼叫排隊；只負責詢問與回傳確認結果，不綁定刪除、覆蓋、送出、導航或其他宿主業務規則。",
+            "links": [
+              {
+                "label": "confirm.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm.js"
+              },
+              {
+                "label": "confirm.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/confirm/test_confirm.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/confirm/confirm_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Favorite",
+            "desc": "通用最愛／收藏 UI 狀態元件，可套用於商品、圖片、文字、卡片或其他具有識別 ID 的項目。負責切換與同步最愛狀態並發送變更事件，不綁定資料內容與儲存方式；是否保存至 localStorage、資料庫或其他資料層由宿主自行處理。",
+            "links": [
+              {
+                "label": "favorite.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/favorite.js"
+              },
+              {
+                "label": "favorite.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/favorite.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_favorite.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/favorite_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "HTML Escape",
+            "desc": "通用 HTML 文字轉義工具，將 &, <, >, 雙引號與單引號轉成安全的 HTML 實體字串，適合將一般文字內容放入 innerHTML 或 HTML 樣板字串時使用；不負責 HTML 清洗、允許部分標籤或 DOM 建立。",
+            "links": [
+              {
+                "label": "html_escape.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/html_escape.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_html_escape.html"
+              }
+            ]
+          },
+          {
+            "title": "Responsive Base",
+            "desc": "共用基礎自適應樣式，只處理跨裝置的基本安全規則，不定義專案視覺。",
+            "links": [
+              {
+                "label": "responsive.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/responsive.css"
+              }
+            ]
+          },
+          {
+            "title": "Tabs",
+            "desc": "同頁通用分頁切換零件，沿用 data-view-target／data-view-panel，負責點擊與鍵盤切換、選中狀態、內容顯示、同頁多實例與變更通知；不處理網址、儲存或宿主外觀。",
+            "links": [
+              {
+                "label": "tabs.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs.js"
+              },
+              {
+                "label": "tabs.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs.css"
+              },
+              {
+                "label": "外觀展示",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs_demo.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/test_tabs.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/tabs/tabs_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Toast",
+            "desc": "通用 Toast UI 元件，提供訊息顯示、手動隱藏、自動隱藏、重複顯示時重設計時器與同元素實例重用；核心負責顯示狀態與行為，必要基礎 CSS 僅處理顯示／隱藏，位置、背景、顏色、圓角、陰影等視覺由宿主自行決定。",
+            "links": [
+              {
+                "label": "toast.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/toast.js"
+              },
+              {
+                "label": "toast.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/toast.css"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/test_toast.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/toast_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "iframe",
+        "title": "Iframe / 嵌入頁面",
+        "subpage": true,
+        "desc": "Iframe 建立與來源切換相關的小型 UI 積木；建立與 src 操作分開，各自只負責一件事。",
+        "items": [
+          {
+            "title": "Iframe Create",
+            "desc": "通用 iframe 建立工具，只負責建立 iframe 元素並回傳，可設定 id、className 與 title；不設定 src、不插入 DOM、不處理顯示／隱藏或頁面導航。",
+            "links": [
+              {
+                "label": "iframe_create.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_create.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/test_iframe_create.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_create_usage.html"
+              }
+            ]
+          },
+          {
+            "title": "Iframe Source",
+            "desc": "通用 iframe 來源操作工具，只負責讀取、設定與清除既有 iframe 的 src；不建立 iframe、不處理顯示／隱藏、History 或 postMessage。",
+            "links": [
+              {
+                "label": "iframe_source.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_source.js"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/test_iframe_source.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/iframe/iframe_source_usage.html"
               }
             ]
           }
@@ -2346,28 +5918,6 @@ window.SlowlyLibraryIndex = [
         "subpage": true,
         "desc": "通用的指標與觸控方向控制積木；由宿主決定操作區域、畫面與遊戲行為。",
         "items": [
-          {
-            "title": "Virtual Joystick",
-            "desc": "通用 Pointer 虛擬搖桿，支援滑鼠／觸控拖曳、方向正規化、死區、力度、取消與銷毀。Canvas 座標換算引用既有 CanvasRectDrag；不繪製搖桿皮膚，也不替宿主移動角色。",
-            "links": [
-              {
-                "label": "virtual_joystick.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/input/virtual_joystick.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/ui/input/virtual_joystick_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/ui/input/virtual_joystick_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/input/test_virtual_joystick.html"
-              }
-            ]
-          },
           {
             "title": "Digital Action Input",
             "desc": "通用鍵盤與 Pointer 數位動作輸入，將宿主指定的按鍵及觸控區轉為按下／放開狀態，支援多指與多來源同時按住、取消、失焦復位及銷毀；Canvas 座標換算引用既有 CanvasRectDrag。",
@@ -2389,64 +5939,26 @@ window.SlowlyLibraryIndex = [
                 "href": "https://lib.stillnessbyslowly.com/ui/input/test_digital_action_input.html"
               }
             ]
-          }
-        ]
-      },
-      {
-        "id": "canvas",
-        "title": "Canvas / 畫布互動",
-        "items": [
+          },
           {
-            "title": "Canvas Rect Drag",
-            "desc": "通用 Canvas 矩形拖曳互動核心，提供畫布座標換算、矩形命中判斷、拖曳偏移與邊界限制；不負責繪圖、不綁 QRCode、圖片或特定業務資料。",
+            "title": "Virtual Joystick",
+            "desc": "通用 Pointer 虛擬搖桿，支援滑鼠／觸控拖曳、方向正規化、死區、力度、取消與銷毀。Canvas 座標換算引用既有 CanvasRectDrag；不繪製搖桿皮膚，也不替宿主移動角色。",
             "links": [
               {
-                "label": "canvas_rect_drag.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/canvas/canvas_rect_drag.js"
+                "label": "virtual_joystick.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/virtual_joystick.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/virtual_joystick_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/input/virtual_joystick_usage.html"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/canvas/test_canvas_rect_drag.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "ruler",
-        "title": "Ruler / 尺規",
-        "items": [
-          {
-            "title": "Millimeter Ruler",
-            "desc": "通用實體毫米刻度尺 DOM renderer，使用 CSS mm 單位建立水平／垂直刻度與標籤，另提供 px↔mm 換算；不綁 QRCode 或特定列印版型。",
-            "links": [
-              {
-                "label": "mm_ruler.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/ruler/mm_ruler.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/ruler/test_mm_ruler.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "table",
-        "title": "Table / 表格",
-        "items": [
-          {
-            "title": "Editable Table Grid",
-            "desc": "通用可編輯表格群組 DOM builder，可建立多張表格、指定列欄數、版面欄數與選配欄寬，並透過 callback 回報目前啟用的標題或儲存格；不處理儲存、字體、PNG/PDF 或商業資料。",
-            "links": [
-              {
-                "label": "editable_table_grid.js",
-                "href": "https://lib.stillnessbyslowly.com/ui/table/editable_table_grid.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/ui/table/test_editable_table_grid.html"
+                "href": "https://lib.stillnessbyslowly.com/ui/input/test_virtual_joystick.html"
               }
             ]
           }
@@ -2511,2386 +6023,110 @@ window.SlowlyLibraryIndex = [
             ]
           }
         ]
-      }
-    ]
-  },
-  {
-    "page": "effects",
-    "title": "Effects",
-    "groups": [
-      {
-        "id": "celebration",
-        "title": "Celebration / 慶祝",
-        "items": [
-          {
-            "title": "Confetti Burst",
-            "desc": "一次性彩帶爆發特效，預設重現連環新接龍的勝利彩帶，可由宿主調整數量、色彩、爆發位置、散布距離、尺寸、延遲與動畫時間；提供 play 與 clear。",
-            "links": [
-              {
-                "label": "confetti_burst.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/confetti_burst.css"
-              },
-              {
-                "label": "confetti_burst.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/confetti_burst.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_confetti_burst.html"
-              }
-            ]
-          },
-          {
-            "title": "Gold Rain",
-            "desc": "一次性金色粒子雨特效，可由宿主調整粒子數量、顏色、水平散布、漂移、尺寸、延遲與落下時間；提供 play 與 clear。",
-            "links": [
-              {
-                "label": "gold_rain.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/gold_rain.css"
-              },
-              {
-                "label": "gold_rain.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/gold_rain.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_gold_rain.html"
-              }
-            ]
-          },
-          {
-            "title": "Star Explosion",
-            "desc": "一次性星芒爆發特效，可由宿主調整數量、符號、顏色、爆發中心、散布距離、尺寸與動畫時間；提供 play 與 clear。",
-            "links": [
-              {
-                "label": "star_explosion.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/star_explosion.css"
-              },
-              {
-                "label": "star_explosion.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/star_explosion.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_star_explosion.html"
-              }
-            ]
-          },
-          {
-            "title": "Shockwave",
-            "desc": "一次性多圈衝擊波特效，可由宿主調整圈數、間隔、尺寸、線寬、色彩、光暈、縮放範圍與動畫時間；提供 play 與 clear。",
-            "links": [
-              {
-                "label": "shockwave.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/shockwave.css"
-              },
-              {
-                "label": "shockwave.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/shockwave.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_shockwave.html"
-              }
-            ]
-          },
-          {
-            "title": "Flash Shake",
-            "desc": "一次性閃光加震動特效，由宿主指定特效範圍與震動目標，可調整閃光色彩、透明度、震動強度與動畫時間；提供 play 與 clear。",
-            "links": [
-              {
-                "label": "flash_shake.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/flash_shake.css"
-              },
-              {
-                "label": "flash_shake.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/flash_shake.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_flash_shake.html"
-              }
-            ]
-          },
-          {
-            "title": "Jackpot Pop",
-            "desc": "一次性目標元素彈跳放大特效，可由宿主調整延遲、縮放倍率、位移、動畫時間與 transform origin；提供 play 與 clear。",
-            "links": [
-              {
-                "label": "jackpot_pop.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/jackpot_pop.css"
-              },
-              {
-                "label": "jackpot_pop.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/jackpot_pop.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_jackpot_pop.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Rain",
-            "desc": "一次性卡片／字元掉落特效，預設使用撲克牌字樣，宿主可自訂 items、數量、外觀、旋轉、漂移、散布與落下時間；提供 play 與 clear。",
-            "links": [
-              {
-                "label": "card_rain.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/card_rain.css"
-              },
-              {
-                "label": "card_rain.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/card_rain.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_card_rain.html"
-              }
-            ]
-          },
-          {
-            "title": "Victory Beam",
-            "desc": "一次性勝利放射光束特效，包含可選的雙層爆光，可由宿主調整光束數量、角度、寬度、色彩、延遲、時間與爆光尺寸；提供 play 與 clear。",
-            "links": [
-              {
-                "label": "victory_beam.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/victory_beam.css"
-              },
-              {
-                "label": "victory_beam.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/victory_beam.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_victory_beam.html"
-              }
-            ]
-          },
-          {
-            "title": "Classic Fireworks",
-            "desc": "一次性經典煙火特效，包含升空火箭與爆炸粒子，可由宿主調整煙火數量、每發粒子數、色盤、位置、爆炸距離、重力、尺寸與動畫時間；提供 play 與 clear。",
-            "links": [
-              {
-                "label": "classic_fireworks.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/classic_fireworks.css"
-              },
-              {
-                "label": "classic_fireworks.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/classic_fireworks.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_classic_fireworks.html"
-              }
-            ]
-          },
-          {
-            "title": "Click Burst",
-            "desc": "點擊粒子爆散 API：由宿主自行決定觸發時機、位置、顏色和目標容器；不包含按鈕樣式。",
-            "links": [
-              {
-                "label": "click_burst.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/click_burst.css"
-              },
-              {
-                "label": "click_burst.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/click_burst.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/celebration/test_click_burst.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Celebration / 慶祝 特效積木。"
       },
       {
-        "id": "stage",
-        "title": "Stage / 舞台",
+        "id": "loader",
+        "title": "Loader / 載入",
+        "subpage": true,
+        "desc": "載入遮罩與進度顯示相關的通用 UI 積木。",
         "items": [
           {
-            "title": "Curtain Transition",
-            "desc": "通用舞台布幕切換特效，提供左右布幕合攏／拉開、聚光燈、暗場、舊內容退場與新內容由暗轉亮；宿主仍自行控制頁面切換流程，並可透過 CSS 變數覆寫布幕色、飾邊、舞台背景、聚光燈色與強度、暗場色與強度及動畫時間。",
+            "title": "Loader Progress",
+            "desc": "通用全頁載入遮罩與進度條控制元件，由宿主提供 root，支援直接設定 0～100 進度、百分比文字、模擬進度、完成收起與 onDone 回呼；CSS 負責基礎遮罩與進度條結構，色彩可由變數覆寫。",
             "links": [
               {
-                "label": "curtain_transition.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition.css"
+                "label": "loader_progress.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/loader/loader_progress.css"
               },
               {
-                "label": "curtain_transition.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition.js"
+                "label": "loader_progress.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/loader/loader_progress.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/stage/test_curtain_transition.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/stage/curtain_transition_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Portal Wipe",
-            "desc": "獨立圓形頁面轉場，提供 play/reset API 與可選導覽連結；顏色、觸發元素及跳頁流程可由宿主控制。",
-            "links": [
-              {
-                "label": "portal_wipe.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.css"
-              },
-              {
-                "label": "portal_wipe.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/stage/portal_wipe.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/stage/test_portal_wipe.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Stage / 舞台 切換與場景轉場特效積木。"
-      },
-      {
-        "id": "line",
-        "title": "Line / 線條",
-        "items": [
-          {
-            "title": "Minimal Underline",
-            "desc": "純 CSS 極簡底線特效，預設以 currentColor 繼承宿主顏色，可由 CSS 變數控制速度、粗細、間距、長度、透明度、展開起點與 easing；支援 hover、focus-visible 與固定顯示狀態。",
-            "links": [
-              {
-                "label": "underline.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/underline.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/test_underline.html"
-              }
-            ]
-          },
-          {
-            "title": "Gradient Divider",
-            "desc": "純 CSS 漸層分隔線，中央顯色、兩端透明，可由 CSS 變數控制線條高度與顏色；不綁定版面或容器尺寸。",
-            "links": [
-              {
-                "label": "gradient_divider.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/gradient_divider.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/test_gradient_divider.html"
-              }
-            ]
-          },
-          {
-            "title": "Sweep Line",
-            "desc": "一次性方向掃線特效，依指定 DOM 範圍建立橫向或直向光線掃過動畫，可控制速度、粗細、長度、色彩、光暈與層級；只負責掃線，不處理後續爆亮、業務語意或流程順序。",
-            "links": [
-              {
-                "label": "sweep_line.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line.js"
-              },
-              {
-                "label": "sweep_line.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/test_sweep_line.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/sweep_line_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Enso Ring",
-            "desc": "SVG 圓環描邊與慢速旋轉；宿主提供 SVG 線條、尺寸與色彩。",
-            "links": [
-              {
-                "label": "enso_ring.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/enso_ring.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/test_enso_ring.html"
-              }
-            ]
-          },
-          {
-            "title": "Bond Pulse",
-            "desc": "純 CSS 透明度脈動，不限定連結線的尺寸、背景或其他外觀。",
-            "links": [
-              {
-                "label": "bond_pulse.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/bond_pulse.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/test_bond_pulse.html"
-              }
-            ]
-          },
-          {
-            "title": "Impact Slash",
-            "desc": "通用指定位置斜向斬擊光線，支援指定 DOM 目標或容器百分比座標，可調整角度、長度、粗細、色彩、光暈與持續時間，動畫完成自動清理；不綁定命中、傷害、音效或遊戲流程。",
-            "links": [
-              {
-                "label": "impact_slash.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash.js"
-              },
-              {
-                "label": "impact_slash.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash.css"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/impact_slash_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/line/test_impact_slash.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Line / 線條 特效積木。"
-      },
-      {
-        "id": "light",
-        "title": "Light / 光影",
-        "items": [
-          {
-            "title": "Basic Glow",
-            "desc": "基礎光暈特效，預設繼承宿主 currentColor，可控制光暈大小、透明度、速度與 easing；支援 hover、focus-visible 與固定顯示狀態。",
-            "links": [
-              {
-                "label": "glow.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/glow.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/test_glow.html"
-              }
-            ]
-          },
-          {
-            "title": "Electric Border",
-            "desc": "純 CSS 動態彩色邊框光效，以多組 RGB 色彩沿宿主外圍持續流動；宿主可控制顏色、速度、線寬、模糊、透明度與圓角，透過 is-active 啟用固定效果，並支援 reduced-motion。",
-            "links": [
-              {
-                "label": "electric_border.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/electric_border.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/test_electric_border.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/electric_border_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Decorative Dual Glow",
-            "desc": "純 CSS 雙重徑向光暈裝飾，透過兩組偽元素在容器內建立獨立光源，可由宿主控制兩側光暈的尺寸、位置與色彩；不處理互動或內容。",
-            "links": [
-              {
-                "label": "decorative_glow.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/decorative_glow.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/test_decorative_glow.html"
-              }
-            ]
-          },
-          {
-            "title": "Area Burst",
-            "desc": "一次性區域爆亮特效，依指定 DOM 範圍建立 block 或 radial 爆光動畫，可控制時間、填色、邊框、光暈、混合模式與層級；只負責區域爆亮，不依賴掃線、不處理業務語意或流程順序。",
-            "links": [
-              {
-                "label": "area_burst.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst.js"
-              },
-              {
-                "label": "area_burst.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/test_area_burst.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/area_burst_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Flowing Border",
-            "desc": "純 CSS 旋轉流光邊框，宿主控制顏色、圓角、尺寸與內層背景。",
-            "links": [
-              {
-                "label": "flowing_border.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/flowing_border.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/test_flowing_border.html"
-              }
-            ]
-          },
-          {
-            "title": "Breathing Glow",
-            "desc": "文字呼吸光暈，不指定字型、字級、顏色或排版；宿主可設定光暈參數。",
-            "links": [
-              {
-                "label": "breathing_glow.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/breathing_glow.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/test_breathing_glow.html"
-              }
-            ]
-          },
-          {
-            "title": "Button Shine",
-            "desc": "純 CSS hover/focus 掃光，按鈕的造型、尺寸、字型、顏色由宿主決定。",
-            "links": [
-              {
-                "label": "button_shine.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/button_shine.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/light/test_button_shine.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Light / 光影 特效積木。"
-      },
-      {
-        "id": "hover",
-        "title": "Hover / Pointer",
-        "items": [
-          {
-            "title": "Basic Lift",
-            "desc": "基礎上浮特效，可控制位移距離、速度與 easing；支援 hover、focus-visible 與固定顯示狀態。",
-            "links": [
-              {
-                "label": "lift.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/lift.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_lift.html"
-              }
-            ]
-          },
-          {
-            "title": "Magnetic Hover",
-            "desc": "指標磁吸位移互動，依游標相對元素中心的位置套用 translate，可分別控制 X／Y 強度；僅在 fine pointer 且未啟用 reduced-motion 時作用，並提供 destroy 還原。",
-            "links": [
-              {
-                "label": "magnetic_hover.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/magnetic_hover.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_magnetic_hover.html"
-              }
-            ]
-          },
-          {
-            "title": "Pointer Parallax",
-            "desc": "依指標位置帶動指定圖層位移，容器排版、圖層外觀由宿主決定。",
-            "links": [
-              {
-                "label": "pointer_parallax.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_parallax.css"
-              },
-              {
-                "label": "pointer_parallax.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_parallax.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_pointer_parallax.html"
-              }
-            ]
-          },
-          {
-            "title": "Pointer Spotlight",
-            "desc": "隨滑鼠位置移動的區域光暈；宿主自行設定卡片外觀、光色和半徑。",
-            "links": [
-              {
-                "label": "pointer_spotlight.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_spotlight.css"
-              },
-              {
-                "label": "pointer_spotlight.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/pointer_spotlight.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_pointer_spotlight.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Fan",
-            "desc": "僅提供三張牌扇形展開與 hover 動作；牌面、尺寸、顏色、陰影和容器排版由宿主決定。",
-            "links": [
-              {
-                "label": "card_fan.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/card_fan.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/hover/test_card_fan.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Hover / Pointer 特效積木。"
-      },
-      {
-        "id": "reveal",
-        "title": "Reveal / 進退場",
-        "items": [
-          {
-            "title": "Basic Fade Up",
-            "desc": "基礎淡入上移特效，由宿主切換 is-visible 決定進退場，可控制位移距離、速度與 easing。",
-            "links": [
-              {
-                "label": "fade_up.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/reveal/fade_up.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_fade_up.html"
-              }
-            ]
-          },
-          {
-            "title": "Auto Reveal",
-            "desc": "通用自動進場觀察器，以 IntersectionObserver 監看 data-slowly-reveal 元素並切換 is-visible，可設定 threshold、rootMargin 與是否只觸發一次；reduced-motion 或不支援 Observer 時直接顯示。",
-            "links": [
-              {
-                "label": "auto_reveal.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/reveal/auto_reveal.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_auto_reveal.html"
-              }
-            ]
-          },
-          {
-            "title": "Stagger Reveal",
-            "desc": "純 CSS 延遲淡入上移，不指定卡片外觀、排列或尺寸。",
-            "links": [
-              {
-                "label": "stagger_reveal.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/reveal/stagger_reveal.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/reveal/test_stagger_reveal.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Reveal / 進退場 特效積木。"
-      },
-      {
-        "id": "scroll",
-        "title": "Scroll / 捲動",
-        "items": [
-          {
-            "title": "Basic Scroll Progress",
-            "desc": "基礎頁面捲動進度條，JavaScript 依目前捲動比例更新進度，CSS 負責顯示；可由宿主控制高度、顏色與層級。",
-            "links": [
-              {
-                "label": "progress.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/progress.css"
-              },
-              {
-                "label": "progress.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/progress.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_progress.html"
-              }
-            ]
-          },
-          {
-            "title": "Parallax Fade",
-            "desc": "捲動視差淡出效果，依頁面 scrollY 對指定元素套用垂直位移與透明度，可控制位移速度、淡出範圍與作用視窗高度；以 requestAnimationFrame 節流並支援 reduced-motion。",
-            "links": [
-              {
-                "label": "parallax_fade.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax_fade.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_parallax_fade.html"
-              }
-            ]
-          },
-          {
-            "title": "Scroll Class",
-            "desc": "通用捲動門檻 class 切換工具，當頁面 scrollY 超過指定 threshold 時替目標元素加入 class，回到門檻內則移除；class 名稱與門檻皆由宿主設定。",
-            "links": [
-              {
-                "label": "scroll_class.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/scroll_class.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/test_scroll_class.html"
-              }
-            ]
-          },
-          {
-            "title": "Scroll Direction / 捲動方向",
-            "desc": "偵測頁面向上或向下捲動，切換方向 class，也可用 onChange 接收方向；不附帶動畫樣式。",
-            "links": [
-              {
-                "label": "direction.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/direction.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_direction.html"
-              }
-            ]
-          },
-          {
-            "title": "Element Progress / 元素捲動進度",
-            "desc": "計算元素進出視窗時的進度（0～1），寫入 CSS 自訂變數並可透過 onUpdate 取得數值；可搭配 Linked 效果。",
-            "links": [
-              {
-                "label": "element_progress.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/element_progress.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_element_progress.html"
-              }
-            ]
-          },
-          {
-            "title": "Scroll Leave / 離開視窗",
-            "desc": "元素進入視窗後再離開時切換 class，重新進入則移除；只負責狀態，不決定外觀。",
-            "links": [
-              {
-                "label": "leave.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/leave.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_leave.html"
-              }
-            ]
-          },
-          {
-            "title": "Section Active / 目前閱讀區塊",
-            "desc": "依視窗閱讀焦點標示目前區塊，切換 is-active-section class，並可透過 onChange 通知宿主。",
-            "links": [
-              {
-                "label": "section_active.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/section_active.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_section_active.html"
-              }
-            ]
-          },
-          {
-            "title": "Scroll Velocity / 捲動速度",
-            "desc": "測量捲動速度（px/s，含方向正負值），寫入 CSS 自訂變數並提供 onUpdate callback。",
-            "links": [
-              {
-                "label": "velocity.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/velocity.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/trigger/test_velocity.html"
-              }
-            ]
-          },
-          {
-            "title": "Linked Opacity / 透明度連動",
-            "desc": "讓透明度依元素捲動進度變化；純 CSS 效果，可搭配 Element Progress 的進度變數。",
-            "links": [
-              {
-                "label": "opacity.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/opacity.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_opacity.html"
-              }
-            ]
-          },
-          {
-            "title": "Linked Translate X / 水平位移連動",
-            "desc": "讓元素的水平位移隨捲動進度變化；純 CSS 效果，位移距離可由宿主設定。",
-            "links": [
-              {
-                "label": "translate_x.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/translate_x.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_translate_x.html"
-              }
-            ]
-          },
-          {
-            "title": "Linked Translate Y / 垂直位移連動",
-            "desc": "讓元素的垂直位移隨捲動進度變化；純 CSS 效果，位移距離可由宿主設定。",
-            "links": [
-              {
-                "label": "translate_y.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/translate_y.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_translate_y.html"
-              }
-            ]
-          },
-          {
-            "title": "Linked Scale / 縮放連動",
-            "desc": "根據捲動進度由起始比例縮放至目標比例；純 CSS 效果，縮放範圍可調。",
-            "links": [
-              {
-                "label": "scale.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/scale.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_scale.html"
-              }
-            ]
-          },
-          {
-            "title": "Linked Rotate / 旋轉連動",
-            "desc": "根據捲動進度改變元素旋轉角度；純 CSS 效果，起始與結束角度可調。",
-            "links": [
-              {
-                "label": "rotate.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/rotate.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_rotate.html"
-              }
-            ]
-          },
-          {
-            "title": "Linked Blur / 模糊連動",
-            "desc": "隨捲動進度將元素由模糊逐漸變清晰；純 CSS 效果，初始模糊程度可調。",
-            "links": [
-              {
-                "label": "blur.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/blur.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_blur.html"
-              }
-            ]
-          },
-          {
-            "title": "Linked Clip Reveal / 遮罩揭露",
-            "desc": "隨捲動進度由左至右揭露元素內容；純 CSS 遮罩效果。",
-            "links": [
-              {
-                "label": "clip_reveal.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/clip_reveal.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/linked/test_clip_reveal.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Fade / 淡入",
-            "desc": "元素切換 is-visible 後淡入；可搭配既有 Auto Reveal 觸發，時間與延遲由宿主設定。",
-            "links": [
-              {
-                "label": "fade.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/fade.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_fade.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Slide Up / 上浮",
-            "desc": "元素切換 is-visible 後由下向上進場；純 CSS 位移效果，可自訂距離與時間。",
-            "links": [
-              {
-                "label": "slide_up.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_up.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_up.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Slide Down / 下沉",
-            "desc": "元素切換 is-visible 後由上向下進場；純 CSS 位移效果，可自訂距離與時間。",
-            "links": [
-              {
-                "label": "slide_down.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_down.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_down.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Slide Left / 左滑",
-            "desc": "元素切換 is-visible 後向左滑入；純 CSS 位移效果，可自訂距離與時間。",
-            "links": [
-              {
-                "label": "slide_left.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_left.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_left.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Slide Right / 右滑",
-            "desc": "元素切換 is-visible 後向右滑入；純 CSS 位移效果，可自訂距離與時間。",
-            "links": [
-              {
-                "label": "slide_right.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/slide_right.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_slide_right.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Zoom / 縮放進場",
-            "desc": "元素切換 is-visible 後由指定比例縮放到正常大小；可搭配其他進場效果。",
-            "links": [
-              {
-                "label": "zoom.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/zoom.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_zoom.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Spin / 旋轉進場",
-            "desc": "元素切換 is-visible 後旋轉回目標角度；純 CSS 進場效果，參數可調。",
-            "links": [
-              {
-                "label": "spin.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/spin.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_spin.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Flip X / X 軸翻轉",
-            "desc": "元素切換 is-visible 後沿 X 軸翻轉進場；純 CSS 效果。",
-            "links": [
-              {
-                "label": "flip_x.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/flip_x.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_flip_x.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Flip Y / Y 軸翻轉",
-            "desc": "元素切換 is-visible 後沿 Y 軸翻轉進場；純 CSS 效果。",
-            "links": [
-              {
-                "label": "flip_y.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/flip_y.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_flip_y.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Blur Clear / 模糊變清晰",
-            "desc": "元素切換 is-visible 後由模糊轉清晰；純 CSS 進場效果。",
-            "links": [
-              {
-                "label": "blur_clear.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/blur_clear.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_blur_clear.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Bounce / 彈跳",
-            "desc": "元素切換 is-visible 後彈跳進場；純 CSS 動畫，外觀由宿主決定。",
-            "links": [
-              {
-                "label": "bounce.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/bounce.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_bounce.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Shake / 搖晃",
-            "desc": "元素切換 is-visible 時播放搖晃效果；純 CSS 動畫，不額外設定外觀。",
-            "links": [
-              {
-                "label": "shake.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/shake.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/motion/test_shake.html"
-              }
-            ]
-          },
-          {
-            "title": "Parallax X / 水平視差",
-            "desc": "依頁面捲動量讓指定元素水平視差移動，速度與最大距離可調；可與 Parallax Y 搭配。",
-            "links": [
-              {
-                "label": "x.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/x.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/test_x.html"
-              }
-            ]
-          },
-          {
-            "title": "Parallax Y / 垂直視差",
-            "desc": "依頁面捲動量讓指定元素垂直視差移動，速度與最大距離可調；可與 Parallax X 搭配。",
-            "links": [
-              {
-                "label": "y.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/y.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/parallax/test_y.html"
-              }
-            ]
-          },
-          {
-            "title": "Sticky Top / 黏住頂端",
-            "desc": "CSS sticky 頂端定位微零件，可由宿主設定頂端間距與層級，不附帶視覺裝飾。",
-            "links": [
-              {
-                "label": "sticky_top.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/sticky_top.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_sticky_top.html"
-              }
-            ]
-          },
-          {
-            "title": "Sticky Bottom / 黏住底端",
-            "desc": "CSS sticky 底端定位微零件，可由宿主設定底端間距與層級，不附帶視覺裝飾。",
-            "links": [
-              {
-                "label": "sticky_bottom.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/sticky_bottom.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_sticky_bottom.html"
-              }
-            ]
-          },
-          {
-            "title": "Scroll Snap X / 水平吸附",
-            "desc": "以原生 CSS scroll-snap 讓橫向捲動停在指定元素位置；需由宿主提供捲動容器尺寸。",
-            "links": [
-              {
-                "label": "snap_x.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/snap_x.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_snap_x.html"
-              }
-            ]
-          },
-          {
-            "title": "Scroll Snap Y / 垂直吸附",
-            "desc": "以原生 CSS scroll-snap 讓垂直捲動停在指定元素位置；需由宿主提供捲動容器尺寸。",
-            "links": [
-              {
-                "label": "snap_y.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/snap_y.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_snap_y.html"
-              }
-            ]
-          },
-          {
-            "title": "Horizontal Rail / 可橫滑內容列",
-            "desc": "純 CSS 橫向內容列，可手指左右滑動；排版尺寸及外觀交給宿主。",
-            "links": [
-              {
-                "label": "horizontal_rail.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/horizontal_rail.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/layout/test_horizontal_rail.html"
-              }
-            ]
-          },
-          {
-            "title": "Vertical To Horizontal / 垂直轉橫向",
-            "desc": "頁面向下捲動時推進橫向內容軌道；需搭配同名 CSS 與指定 HTML 結構，不攔截滑動手勢。",
-            "links": [
-              {
-                "label": "vertical_to_horizontal.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/horizontal/vertical_to_horizontal.css"
-              },
-              {
-                "label": "vertical_to_horizontal.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/horizontal/vertical_to_horizontal.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/horizontal/test_vertical_to_horizontal.html"
-              }
-            ]
-          },
-          {
-            "title": "Motion Stagger / 逐項延遲",
-            "desc": "替多個元素依序設定 CSS 動畫延遲變數，可搭配任一 Motion 進場動畫；不決定動畫外觀。",
-            "links": [
-              {
-                "label": "stagger.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/control/stagger.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/scroll/control/test_stagger.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Scroll / 捲動 特效積木。"
-      },
-      {
-        "id": "typography",
-        "title": "Typography / 文字",
-        "items": [
-          {
-            "title": "Basic Tracking",
-            "desc": "基礎字距展開特效，可控制起始字距、目標字距、速度與 easing；支援 hover、focus-visible 與固定顯示狀態。",
-            "links": [
-              {
-                "label": "tracking.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/tracking.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_tracking.html"
-              }
-            ]
-          },
-          {
-            "title": "Marquee",
-            "desc": "純 CSS 橫向循環跑馬燈，以 track 持續位移並在容器兩側加入漸隱遮罩；可由 CSS 變數控制動畫時間，並支援 reduced-motion。",
-            "links": [
-              {
-                "label": "marquee.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/marquee.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_marquee.html"
-              }
-            ]
-          },
-          {
-            "title": "Shine Text",
-            "desc": "純 CSS 流動漸層文字光澤效果，以 background-clip 將動畫漸層限制在文字內，可由宿主自訂漸層與動畫時間，並支援 reduced-motion。",
-            "links": [
-              {
-                "label": "shine_text.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/shine_text.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_shine_text.html"
-              }
-            ]
-          },
-          {
-            "title": "Metallic Text",
-            "desc": "純 CSS 金屬材質文字效果，以多段漸層建立銀白、香檳等明暗反射層次；只處理文字材質，不負責動畫或反光掃動，宿主可覆寫金屬漸層、背景尺寸與陰影。",
-            "links": [
-              {
-                "label": "metallic_text.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/metallic_text.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_metal_flow.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/metal_flow_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Text Gradient Flow",
-            "desc": "純 CSS 文字漸層流動效果，讓 background-clip 文字內既有漸層緩慢位移；不限定金屬材質，可自訂漸層、背景尺寸、速度、easing 與流動位置，並支援 reduced-motion。",
-            "links": [
-              {
-                "label": "text_gradient_flow.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/text_gradient_flow.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_metal_flow.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/metal_flow_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Text Reflection",
-            "desc": "純 CSS 文字反光帶效果，使用偽元素與 data-text 在文字表面疊加柔和高光，可控制反光漸層、尺寸、透明度、速度與移動位置；不綁定金屬材質或其他文字特效，並支援 reduced-motion。",
-            "links": [
-              {
-                "label": "text_reflection.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/text_reflection.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_metal_flow.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/metal_flow_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Typewriter",
-            "desc": "通用打字機文字循環工具，由宿主提供目標元素與 phrases，支援逐字輸入、停留、刪除、句間延遲與是否循環，並提供 start、stop 與 destroy。",
-            "links": [
-              {
-                "label": "typewriter.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/typewriter.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/typography/test_typewriter.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Typography / 文字 特效積木。"
-      },
-      {
-        "id": "background",
-        "title": "Background / 背景",
-        "items": [
-          {
-            "title": "Basic Gradient Shift",
-            "desc": "基礎流動漸層背景，宿主可自訂漸層角度、三組顏色、背景尺寸與動畫速度；支援 reduced-motion。",
-            "links": [
-              {
-                "label": "gradient_shift.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/gradient_shift.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/test_gradient_shift.html"
-              }
-            ]
-          },
-          {
-            "title": "Aurora Background",
-            "desc": "純 CSS 全畫面極光背景，以三組模糊徑向光團持續漂移，可由宿主控制三組色彩、模糊與透明度；使用 fixed 疊層且不攔截指標事件，並支援 reduced-motion。",
-            "links": [
-              {
-                "label": "aurora.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/aurora.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/test_aurora.html"
-              }
-            ]
-          },
-          {
-            "title": "Grid Overlay",
-            "desc": "純 CSS 全畫面網格覆蓋層，以兩組線性漸層建立水平與垂直網格，並以徑向遮罩讓邊緣淡出；網格尺寸可由宿主 CSS 變數調整。",
-            "links": [
-              {
-                "label": "grid_overlay.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/grid_overlay.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/test_grid_overlay.html"
-              }
-            ]
-          },
-          {
-            "title": "Noise Overlay",
-            "desc": "純 CSS 全畫面顆粒覆蓋層，以內嵌 SVG fractalNoise 產生細微雜訊質感，使用 fixed 疊層且不攔截指標事件，可由 CSS 變數控制透明度。",
-            "links": [
-              {
-                "label": "noise_overlay.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/noise_overlay.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/test_noise_overlay.html"
-              }
-            ]
-          },
-          {
-            "title": "Starfield",
-            "desc": "獨立 Canvas 星點閃爍，星色繼承宿主 currentColor 或 data-color；宿主提供容器尺寸。",
-            "links": [
-              {
-                "label": "starfield.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/starfield.css"
-              },
-              {
-                "label": "starfield.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/starfield.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/test_starfield.html"
-              }
-            ]
-          },
-          {
-            "title": "Floating Symbols",
-            "desc": "獨立 Canvas 漂浮字元，可設定符號與色票，預設繼承宿主文字色；宿主提供容器尺寸。",
-            "links": [
-              {
-                "label": "floating_symbols.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/floating_symbols.css"
-              },
-              {
-                "label": "floating_symbols.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/floating_symbols.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/test_floating_symbols.html"
-              }
-            ]
-          },
-          {
-            "title": "Pine Forest",
-            "desc": "獨立 Canvas 松樹森林剪影，可調整隨機種子、圖層、樹木密度、顏色及背景；僅負責繪製，Canvas 尺寸、定位與外觀由宿主決定，不依賴其他零件。",
-            "links": [
-              {
-                "label": "pine_forest.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/pine_forest.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/test_pine_forest.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/pine_forest_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Canvas Fog",
-            "desc": "獨立 Canvas 流動霧團，可設定數量、顏色、透明度、漂移速度與大小；提供啟動、停止及銷毀，畫布排版和圖層由宿主決定。",
-            "links": [
-              {
-                "label": "fog.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/fog.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/test_fog.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/fog_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Canvas Rain",
-            "desc": "獨立 Canvas 持續雨幕，可設定雨滴數量、顏色、透明度、風向、落下速度與雨線長度；不包含水面漣漪、閃電或聲音，畫布外觀由宿主決定。",
-            "links": [
-              {
-                "label": "rain.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/rain.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/test_rain.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/background/rain_usage.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Background / 背景 特效積木。"
-      },
-      {
-        "id": "spatial",
-        "title": "3D / Spatial",
-        "items": [
-          {
-            "title": "Basic Tilt",
-            "desc": "基礎 3D 指標傾斜特效，JavaScript 依指標位置更新旋轉角度，CSS 負責透視與轉場；可控制最大角度、perspective、速度與 easing。",
-            "links": [
-              {
-                "label": "tilt.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt.css"
-              },
-              {
-                "label": "tilt.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/3d/test_tilt.html"
-              }
-            ]
-          },
-          {
-            "title": "Tilt Spotlight",
-            "desc": "3D 指標傾斜加聚光效果，JavaScript 依游標位置更新旋轉、上浮與聚光座標，CSS 以 radial-gradient 顯示游標附近光源；可控制角度、lift、perspective 與光色，並尊重 fine pointer／reduced-motion。",
-            "links": [
-              {
-                "label": "tilt_spotlight.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt_spotlight.css"
-              },
-              {
-                "label": "tilt_spotlight.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/3d/tilt_spotlight.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/3d/test_tilt_spotlight.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "3D / Spatial 特效積木。"
-      },
-      {
-        "id": "camera",
-        "title": "Camera / 運鏡",
-        "items": [
-          {
-            "title": "Camera Projection",
-            "desc": "以宿主提供的攝影機位置、方向、焦距與視口尺寸，將三維世界座標轉換成二維透視投影資訊；不繪製場景或提供 3D 引擎。",
-            "links": [
-              {
-                "label": "camera_projection.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_projection.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_projection_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_projection_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_projection.html"
-              }
-            ]
-          },
-          {
-            "title": "Camera Movement Presets",
-            "desc": "九種通用運鏡參數計算：Pan、Tilt、Zoom In、Dolly In、Tracking、Orbit、Whip Pan、Rack Focus、Crane Up；由宿主提供目標及參數，不負責播放或畫面繪製。",
-            "links": [
-              {
-                "label": "camera_movement_presets.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_presets_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_movement_presets.html"
-              }
-            ]
-          },
-          {
-            "title": "Camera Movement Player",
-            "desc": "獨立運鏡時間軸控制，提供播放、暫停、跳轉進度、重新開始、循環與銷毀，透過宿主回呼通知進度；不綁定特定場景與運鏡樣式。",
-            "links": [
-              {
-                "label": "camera_movement_player.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_movement_player_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_movement_player.html"
-              }
-            ]
-          },
-          {
-            "title": "Camera Depth of Field",
-            "desc": "通用景深近似處理，依物件深度與焦平面距離計算模糊量，並可選擇套用 Canvas；對焦對象、模糊強度及畫面外觀均由宿主決定。",
-            "links": [
-              {
-                "label": "camera_depth_of_field.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_depth_of_field_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_depth_of_field.html"
-              }
-            ]
-          },
-          {
-            "title": "Camera Motion Blur",
-            "desc": "對宿主已繪製的 Canvas 畫面套用可控制方向與強度的動態模糊，適用於甩鏡與快速移動，管理獨立暫存及清理；不負責攝影機旋轉或場景內容。",
-            "links": [
-              {
-                "label": "camera_motion_blur.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/camera_motion_blur_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/camera/test_camera_motion_blur.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "虛擬攝影機的投影、運鏡、時間軸、景深與動態模糊零件；宿主提供場景、渲染與外觀。"
-      },
-      {
-        "id": "particle",
-        "title": "Particle / 粒子",
-        "items": [
-          {
-            "title": "Basic Particle Float",
-            "desc": "基礎裝飾粒子漂浮特效，預設繼承宿主 currentColor，可控制粒子大小、漂浮距離、動畫時間、延遲與透明度；支援 reduced-motion。",
-            "links": [
-              {
-                "label": "float.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/float.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_float.html"
-              }
-            ]
-          },
-          {
-            "title": "Particle Network",
-            "desc": "Canvas 粒子連線背景核心，依畫面大小建立粒子、距離近時自動連線，並可選擇啟用游標排斥；支援密度、數量、連線距離、摩擦、線條色彩與 DPR 等設定，提供 start、stop、resize、destroy，reduced-motion 時改為靜態粒子。",
-            "links": [
-              {
-                "label": "particle_network.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/particle_network.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_particle_network.html"
-              }
-            ]
-          },
-          {
-            "title": "Pointer Trail",
-            "desc": "Canvas 滑鼠粒子尾跡，可由宿主設定粒子色票；不處理容器皮膚或布局。",
-            "links": [
-              {
-                "label": "pointer_trail.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/pointer_trail.css"
-              },
-              {
-                "label": "pointer_trail.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/pointer_trail.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_pointer_trail.html"
-              }
-            ]
-          },
-          {
-            "title": "Floating Crown",
-            "desc": "僅提供上下漂浮及可調光暈；任何文字或圖示都可使用，外觀由宿主決定。",
-            "links": [
-              {
-                "label": "floating_crown.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/floating_crown.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_floating_crown.html"
-              }
-            ]
-          },
-          {
-            "title": "Orbit",
-            "desc": "旋轉圓形軌道與光點；容器尺寸和顏色由宿主決定。",
-            "links": [
-              {
-                "label": "orbit.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/orbit.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_orbit.html"
-              }
-            ]
-          },
-          {
-            "title": "Atom Bob",
-            "desc": "純 CSS 上下浮動效果；不限定元素方塊，不提供方塊皮膚或排列。",
-            "links": [
-              {
-                "label": "atom_bob.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/atom_bob.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_atom_bob.html"
-              }
-            ]
-          },
-          {
-            "title": "Turtle Crawl",
-            "desc": "指定元素沿容器水平移動；文字、圖示、尺寸、顏色皆由宿主決定。",
-            "links": [
-              {
-                "label": "turtle_crawl.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/turtle_crawl.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/particle/test_turtle_crawl.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Particle / 粒子 特效積木。"
-      },
-      {
-        "id": "feedback",
-        "title": "Feedback / 回饋",
-        "items": [
-          {
-            "title": "Basic Press",
-            "desc": "基礎按壓回饋特效，按住元素時產生輕微縮放與下沉，可控制縮放比例、位移距離、速度與 easing，並支援固定測試狀態。",
-            "links": [
-              {
-                "label": "press.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/press.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_press.html"
-              }
-            ]
-          },
-          {
-            "title": "Pulse Dot",
-            "desc": "純 CSS 脈衝圓點效果，以透明度與縮放往返建立呼吸感，可由 CSS 變數控制動畫時間，並支援 reduced-motion。",
-            "links": [
-              {
-                "label": "pulse_dot.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/pulse_dot.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_pulse_dot.html"
-              }
-            ]
-          },
-          {
-            "title": "Custom Cursor",
-            "desc": "自訂游標核心，由宿主提供 ring 與 dot 元素；圓點即時跟隨游標、外圈以可調 lag 追蹤，並可依指定 hover selector 切換互動狀態。僅在 fine pointer 且未啟用 reduced-motion 時作用，提供 destroy 清除事件與狀態。",
-            "links": [
-              {
-                "label": "custom_cursor.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/custom_cursor.css"
-              },
-              {
-                "label": "custom_cursor.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/custom_cursor.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_custom_cursor.html"
-              }
-            ]
-          },
-          {
-            "title": "Candy Pop",
-            "desc": "純 CSS 爆閃縮放循環；宿主指定要套用的元素與延遲，糖果外觀、格子布局由宿主決定。",
-            "links": [
-              {
-                "label": "candy_pop.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/candy_pop.css"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_candy_pop.html"
-              }
-            ]
-          },
-          {
-            "title": "Device Vibration",
-            "desc": "通用裝置實體震動回饋，包裝瀏覽器 Vibration API，可由宿主指定單次震動或震動／停頓節奏，支援啟用、停用、停止與背景頁面安全略過；不綁定遊戲事件、介面或偏好儲存，不支援時安全回傳。",
-            "links": [
-              {
-                "label": "device_vibration.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/device_vibration.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/device_vibration_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/device_vibration_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_device_vibration.html"
-              }
-            ]
-          },
-          {
-            "title": "Canvas Floating Text",
-            "desc": "在宿主 Canvas 世界座標中建立、更新與繪製即時飄字，支援位置、速度、存活時間與透明度變化，並復原 Canvas 繪圖狀態；文字、字型、色彩與傷害／獎勵規則由宿主決定。",
-            "links": [
-              {
-                "label": "canvas_floating_text.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/canvas_floating_text_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_canvas_floating_text.html"
-              }
-            ]
-          },
-          {
-            "title": "Gamepad Vibration",
-            "desc": "通用遊戲手把震動回饋，支援偵測相容手把、設定馬達強度與持續時間、停止及不支援時安全處理；僅使用 Gamepad 震動介面，手機震動沿用既有 Device Vibration。",
-            "links": [
-              {
-                "label": "gamepad_vibration.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/gamepad_vibration_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/feedback/test_gamepad_vibration.html"
-              }
-            ]
-          }
-        ],
-        "subpage": true,
-        "desc": "Feedback / 回饋 特效積木。"
-      },
-      {
-        "id": "motion",
-        "title": "Motion / 移動動畫",
-        "subpage": true,
-        "desc": "元素位置移動與飛行等通用視覺動畫，事件與業務結果由宿主決定。",
-        "items": [
-          {
-            "title": "Element Flight",
-            "desc": "將來源元素的視覺副本沿弧線飛往指定目標，支援時間、弧高、縮放、旋轉和中途取消；原始元素不移動，完成後清理副本，不內建命中、傷害或其他遊戲效果。",
-            "links": [
-              {
-                "label": "element_flight.js",
-                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight.js"
-              },
-              {
-                "label": "element_flight.css",
-                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight.css"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/effects/motion/element_flight_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/effects/motion/test_element_flight.html"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "page": "canvas",
-    "title": "Canvas",
-    "groups": [
-      {
-        "id": "icons",
-        "title": "Icons / 圖示",
-        "subpage": true,
-        "desc": "可由宿主呼叫的 Canvas 向量圖示家族。圖示只負責怎麼畫，尺寸、顏色、粗細與比例由宿主決定；Playground 可即時試參數。",
-        "items": [
-          {
-            "title": "Canvas Icons Core",
-            "desc": "Canvas icon registry 與統一呼叫入口，提供家族註冊、圖示查詢、預設參數取得與 draw()；不內建特定 icon，也不負責 PNG 匯出。",
-            "links": [
-              {
-                "label": "core.js",
-                "href": "https://lib.stillnessbyslowly.com/canvas/icons/core.js"
-              },
-              {
-                "label": "Playground",
-                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playground.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Arrow Icons",
-            "desc": "Canvas 方向箭頭家族，包含八方向單箭頭、水平／垂直雙向箭頭、上下堆疊雙箭頭、斜向重疊交錯箭頭、回彎／轉向與旋轉箭頭；宿主可覆寫尺寸、顏色、粗細、箭頭比例與內距。",
-            "links": [
-              {
-                "label": "arrows.js",
-                "href": "https://lib.stillnessbyslowly.com/canvas/icons/arrows.js"
-              },
-              {
-                "label": "Playground",
-                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playground.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Playback Icons",
-            "desc": "Canvas 播放控制家族，提供隨機、重播、單曲循環、播放、快轉、下一首、播放／暫停、向左播放、倒帶、上一首、上下切換、暫停、停止、錄製、退出與影片圖示；宿主可覆寫尺寸、顏色、粗細與內距。",
-            "links": [
-              {
-                "label": "playback.js",
-                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playback.js"
-              },
-              {
-                "label": "Playground",
-                "href": "https://lib.stillnessbyslowly.com/canvas/icons/playground.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/canvas/icons/icons_usage.html"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "page": "image",
-    "title": "Image",
-    "groups": [
-      {
-        "id": "canvas",
-        "title": "Canvas",
-        "subpage": true,
-        "desc": "Canvas 繪圖與文字排版相關的小型積木。",
-        "items": [
-          {
-            "title": "Rounded Rect",
-            "desc": "Canvas 圓角矩形繪製工具，提供圓角路徑建立，方便宿主自行決定填色、描邊與其他樣式。",
-            "links": [
-              {
-                "label": "rounded_rect.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/canvas/rounded_rect.js"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/Image/canvas/rounded_rect_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/canvas/test_rounded_rect.html"
-              }
-            ]
-          },
-          {
-            "title": "Wrapped Text",
-            "desc": "Canvas 多行文字換行工具，依最大寬度切分並繪製文字，供卡片與圖片輸出等情境組合使用。",
-            "links": [
-              {
-                "label": "wrapped_text.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/canvas/wrapped_text.js"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/Image/canvas/wrapped_text_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/canvas/test_wrapped_text.html"
-              }
-            ]
-          },
-          {
-            "title": "Canvas Content Normalize",
-            "desc": "通用 Canvas 內容邊界偵測與正規化核心，可依像素判定函式找出內容範圍，裁切後等比例置中到指定尺寸並保留 quiet zone；預設適合深色 QR 圖樣，但不依賴 QRCode 套件。",
-            "links": [
-              {
-                "label": "canvas_content_normalize.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/canvas_content_normalize.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/test_canvas_content_normalize.html"
+                "href": "https://lib.stillnessbyslowly.com/ui/loader/test_loader_progress.html"
               }
             ]
           }
         ]
       },
       {
-        "id": "png",
-        "title": "PNG",
+        "id": "progress",
+        "title": "Progress / 進度",
         "subpage": true,
-        "desc": "Canvas 轉 PNG 與 PNG 下載相關工具。",
+        "desc": "一般數值、狀態與能力進度顯示相關的通用 UI 積木。",
         "items": [
           {
-            "title": "Canvas PNG",
-            "desc": "將 Canvas 轉為 PNG Blob / 圖片資料的通用工具，供預覽、下載或其他後續流程使用。",
+            "title": "Stat Bar",
+            "desc": "純 CSS 通用狀態／進度條結構，包含 label、track、bar 與 value，可由宿主以 --sl-stat-value 控制寬度，並自訂標籤寬度、條高、底色、填色與動畫時間；支援 reduced-motion。",
             "links": [
               {
-                "label": "canvas_png.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/Image/png/canvas_png_usage.html"
+                "label": "stat_bar.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/progress/stat_bar.css"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/png/test_canvas_png.html"
-              }
-            ]
-          },
-          {
-            "title": "PNG Download",
-            "desc": "將 PNG Blob 或可下載來源交給瀏覽器下載的通用工具，處理下載連結與 Object URL 回收。",
-            "links": [
-              {
-                "label": "png_download.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/png/png_download.js"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/Image/png/png_download_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/png/test_png_download.html"
+                "href": "https://lib.stillnessbyslowly.com/ui/progress/test_stat_bar.html"
               }
             ]
           }
         ]
       },
       {
-        "id": "svg",
-        "title": "SVG",
-        "subpage": true,
-        "desc": "SVG 檢視、動畫時間取樣與影格擷取零件；不包含完整轉檔介面。",
+        "id": "ruler",
+        "title": "Ruler / 尺規",
         "items": [
           {
-            "title": "SVG Viewer",
-            "desc": "通用 SVG 檢視積木，接收宿主提供的 SVG 與預覽元素，讀取尺寸、viewBox 與動畫資訊，支援預覽、縮放和資源清理；不包含固定檢視器介面或視覺皮膚。",
+            "title": "Millimeter Ruler",
+            "desc": "通用實體毫米刻度尺 DOM renderer，使用 CSS mm 單位建立水平／垂直刻度與標籤，另提供 px↔mm 換算；不綁 QRCode 或特定列印版型。",
             "links": [
               {
-                "label": "svg_viewer.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_viewer.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_viewer_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_viewer_usage.html"
+                "label": "mm_ruler.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/ruler/mm_ruler.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/svg/test_svg_viewer.html"
-              }
-            ]
-          },
-          {
-            "title": "SVG Animation Frame Extractor",
-            "desc": "將 SVG 靜態畫面或可支援的 CSS／SMIL 動畫定格於指定時間點，擷取 Canvas／RGBA 影格，供其他圖片或影片處理流程使用；不負責 GIF、影片編碼或下載。",
-            "links": [
-              {
-                "label": "svg_animation_frame_extractor.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/Image/svg/svg_animation_frame_extractor_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/svg/test_svg_animation_frame_extractor.html"
+                "href": "https://lib.stillnessbyslowly.com/ui/ruler/test_mm_ruler.html"
               }
             ]
           }
         ]
       },
       {
-        "id": "gif",
-        "title": "GIF",
-        "subpage": true,
-        "desc": "通用 GIF 影格編碼積木，圖片來源及輸出流程由宿主決定。",
+        "id": "share",
+        "title": "Share / 分享",
         "items": [
           {
-            "title": "GIF Encoder",
-            "desc": "接收宿主提供的 RGBA 影格與時間設定，編碼成 GIF Blob；不限制影格來源為 SVG，不負責產生影格、預覽介面或下載。",
+            "title": "Web Share",
+            "desc": "通用 Web Share API 封裝，提供支援檢查、分享資料可用性判斷與系統分享，並區分成功、取消、不支援與失敗結果；不組業務資料、不做 Clipboard fallback，也不綁 DOM 或提示 UI。",
             "links": [
               {
-                "label": "gif_encoder.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/gif/gif_encoder.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/Image/gif/gif_encoder_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/Image/gif/gif_encoder_usage.html"
+                "label": "web_share.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/share/web_share.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/gif/test_gif_encoder.html"
+                "href": "https://lib.stillnessbyslowly.com/ui/share/test_web_share.html"
               }
             ]
           }
         ]
       },
       {
-        "id": "capture",
-        "title": "Capture / 擷取",
+        "id": "table",
+        "title": "Table / 表格",
         "items": [
           {
-            "title": "DOM Capture",
-            "desc": "通用 DOM 影像擷取流程核心，將來源元素複製到畫面外並固定實際寬度，交由宿主注入 renderer 轉成 Canvas，再輸出 Blob，完成後一定清除暫存 clone；不綁 html2canvas、下載、分享或特定元件。",
+            "title": "Editable Table Grid",
+            "desc": "通用可編輯表格群組 DOM builder，可建立多張表格、指定列欄數、版面欄數與選配欄寬，並透過 callback 回報目前啟用的標題或儲存格；不處理儲存、字體、PNG/PDF 或商業資料。",
             "links": [
               {
-                "label": "dom_capture.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/dom_capture.js"
+                "label": "editable_table_grid.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/table/editable_table_grid.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/test_dom_capture.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "compress",
-        "title": "Compress / 壓縮",
-        "items": [
-          {
-            "title": "Image Compress To Size",
-            "desc": "通用圖片目標檔案大小壓縮核心，先限制最大尺寸，再逐步降低輸出品質；若仍過大則繼續縮小尺寸，並回報是否達到 maxBytes、最後尺寸、品質、輸出 bytes 與嘗試次數；不依賴 Image Resize 或 UI。",
-            "links": [
-              {
-                "label": "image_compress_to_size.js",
-                "href": "https://lib.stillnessbyslowly.com/Image/image_compress_to_size.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/Image/test_image_compress_to_size.html"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "page": "audio",
-    "title": "Audio",
-    "groups": [
-      {
-        "id": "context",
-        "title": "Context",
-        "subpage": true,
-        "desc": "AudioContext 建立、啟用、暫停、關閉與狀態管理等音訊環境核心。",
-        "items": [
-          {
-            "title": "Audio Context",
-            "desc": "通用 Web Audio 音訊環境核心，集中處理 AudioContext 的建立、啟用、暫停、關閉與狀態取得；不綁定音源、音高、UI 或播放流程。",
-            "links": [
-              {
-                "label": "audio_context.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/context/audio_context.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/context/test_audio_context.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/audio/context/audio_context_usage.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "pitch",
-        "title": "Pitch",
-        "subpage": true,
-        "desc": "音名、MIDI 與頻率之間的純資料與數值轉換工具。",
-        "items": [
-          {
-            "title": "Note Frequency",
-            "desc": "通用音名轉頻率工具，將含升降記號與八度的音名轉為 Hz；不建立 AudioContext，也不播放聲音。",
-            "links": [
-              {
-                "label": "note_frequency.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/pitch/note_frequency.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/pitch/test_note_frequency.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/audio/pitch/note_frequency_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "MIDI Frequency",
-            "desc": "通用 MIDI 音高編號與頻率轉換工具，可在 MIDI note number 與 Hz 之間換算；不綁定樂譜或播放流程。",
-            "links": [
-              {
-                "label": "midi_frequency.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/pitch/midi_frequency.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/pitch/test_midi_frequency.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/audio/pitch/midi_frequency_usage.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "tempo",
-        "title": "Tempo / 節拍",
-        "items": [
-          {
-            "title": "Beat Time",
-            "desc": "通用 BPM、拍數與秒數換算核心，提供每拍秒數、拍數轉秒數與秒數轉拍數；不綁 AudioContext、不負責排程，也不建立 Timer。",
-            "links": [
-              {
-                "label": "beat_time.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/tempo/beat_time.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/tempo/test_beat_time.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "source",
-        "title": "Source",
-        "subpage": true,
-        "desc": "Oscillator 等聲音來源的建立與基礎控制。",
-        "items": [
-          {
-            "title": "Oscillator",
-            "desc": "通用 OscillatorNode 音源核心，負責建立振盪器、設定波形與頻率，以及開始、停止等基礎控制；不綁定音量、包絡或音樂流程。",
-            "links": [
-              {
-                "label": "oscillator.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/source/oscillator.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/source/test_oscillator.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/audio/source/oscillator_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Noise",
-            "desc": "通用 Web Audio 噪音音源核心，支援 white、pink、brown noise，提供 AudioBuffer 與 BufferSource 建立；不管理 AudioContext、不管理音量、不自動 connect 或 start。",
-            "links": [
-              {
-                "label": "noise.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/source/noise.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/source/test_noise.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "gain",
-        "title": "Gain",
-        "subpage": true,
-        "desc": "音量增益與 attack、release 等包絡控制工具。",
-        "items": [
-          {
-            "title": "Gain",
-            "desc": "通用 GainNode 增益核心，負責建立增益節點、設定音量與連接節點；不處理時間包絡或播放流程。",
-            "links": [
-              {
-                "label": "gain.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/gain/gain.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/gain/test_gain.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/audio/gain/gain_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Envelope",
-            "desc": "通用 AudioParam 包絡排程工具，集中處理 attack、release 與線性／指數漸變；不建立音源，也不綁定特定音效。",
-            "links": [
-              {
-                "label": "envelope.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/gain/envelope.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/gain/test_envelope.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/audio/gain/envelope_usage.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "filter",
-        "title": "Filter",
-        "subpage": true,
-        "desc": "BiquadFilter 等通用音訊濾波處理工具。",
-        "items": [
-          {
-            "title": "Biquad Filter",
-            "desc": "通用 BiquadFilterNode 濾波核心，負責建立濾波節點並設定類型、頻率與 Q 等基礎參數；不綁定特定音效預設。",
-            "links": [
-              {
-                "label": "biquad_filter.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/filter/biquad_filter.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/filter/test_biquad_filter.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/audio/filter/biquad_filter_usage.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "tone",
-        "title": "Tone",
-        "subpage": true,
-        "desc": "以頻率、波形、時長、增益與滑音等參數播放單一合成音的組合工具。",
-        "items": [
-          {
-            "title": "Tone",
-            "desc": "通用單音播放組合工具，以頻率、波形、時長、增益與滑音等參數建立一次性的合成音；不綁定音樂、遊戲或 UI。",
-            "links": [
-              {
-                "label": "tone.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/tone/tone.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/tone/test_tone.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/audio/tone/tone_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Harmonic Chime",
-            "desc": "通用一次性多頻率和聲提示音核心，可設定頻率、各聲部增益、波形、錯開時間、attack 與 decay；不管理 AudioContext、不綁定特定頻率、情境或 UI。",
-            "links": [
-              {
-                "label": "harmonic_chime.js",
-                "href": "https://lib.stillnessbyslowly.com/audio/tone/harmonic_chime.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/audio/tone/test_harmonic_chime.html"
+                "href": "https://lib.stillnessbyslowly.com/ui/table/test_editable_table_grid.html"
               }
             ]
           }
@@ -4902,70 +6138,6 @@ window.SlowlyLibraryIndex = [
     "page": "video",
     "title": "Video",
     "groups": [
-      {
-        "id": "playback",
-        "title": "Playback / 播放",
-        "subpage": true,
-        "desc": "播放速率、播放與暫停、跳轉位置，以及等待可播放狀態。各自獨立，不決定播放器 UI。",
-        "items": [
-          {
-            "title": "Playback Rate / 播放倍率",
-            "desc": "讀取與設定影片的播放倍率；不綁定速度按鈕、滑桿或錄製流程。",
-            "links": [
-              {
-                "label": "playback_rate.js",
-                "href": "https://lib.stillnessbyslowly.com/video/playback/playback_rate.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/video/playback/test_playback_rate.html"
-              }
-            ]
-          },
-          {
-            "title": "Play Pause / 播放暫停",
-            "desc": "開始播放、暫停或切換狀態；不綁定播放介面或其他影片工具。",
-            "links": [
-              {
-                "label": "play_pause.js",
-                "href": "https://lib.stillnessbyslowly.com/video/playback/play_pause.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/video/playback/test_play_pause.html"
-              }
-            ]
-          },
-          {
-            "title": "Seek / 播放位置",
-            "desc": "跳至指定播放秒數或重新從頭播放；不管理播放速度與錄製。",
-            "links": [
-              {
-                "label": "seek.js",
-                "href": "https://lib.stillnessbyslowly.com/video/playback/seek.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/video/playback/test_seek.html"
-              }
-            ]
-          },
-          {
-            "title": "Ready / 可播放狀態",
-            "desc": "等待媒體準備到指定可播放狀態；不要求 seeked 事件一定會觸發。",
-            "links": [
-              {
-                "label": "ready.js",
-                "href": "https://lib.stillnessbyslowly.com/video/playback/ready.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/video/playback/test_ready.html"
-              }
-            ]
-          }
-        ]
-      },
       {
         "id": "capture",
         "title": "Capture / 串流擷取",
@@ -4989,72 +6161,64 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
-        "id": "recording",
-        "title": "Recording / 錄製",
+        "id": "playback",
+        "title": "Playback / 播放",
         "subpage": true,
-        "desc": "錄製格式支援判斷、MediaRecorder 控制與錄製片段收集；不耦合成一套完整播放器。",
+        "desc": "播放速率、播放與暫停、跳轉位置，以及等待可播放狀態。各自獨立，不決定播放器 UI。",
         "items": [
           {
-            "title": "Recorder MIME Type / 錄製格式",
-            "desc": "查詢 MediaRecorder 可使用的 MIME 類型並挑選格式；不建立錄製器。",
+            "title": "Play Pause / 播放暫停",
+            "desc": "開始播放、暫停或切換狀態；不綁定播放介面或其他影片工具。",
             "links": [
               {
-                "label": "mime_type.js",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/mime_type.js"
+                "label": "play_pause.js",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/play_pause.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/test_mime_type.html"
+                "href": "https://lib.stillnessbyslowly.com/video/playback/test_play_pause.html"
               }
             ]
           },
           {
-            "title": "Media Recorder / 錄製器",
-            "desc": "建立、啟動與停止 MediaRecorder；不處理畫面、按鈕、Blob 匯出或錄製片段。",
+            "title": "Playback Rate / 播放倍率",
+            "desc": "讀取與設定影片的播放倍率；不綁定速度按鈕、滑桿或錄製流程。",
             "links": [
               {
-                "label": "media_recorder.js",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"
+                "label": "playback_rate.js",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/playback_rate.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/test_media_recorder.html"
+                "href": "https://lib.stillnessbyslowly.com/video/playback/test_playback_rate.html"
               }
             ]
           },
           {
-            "title": "Recorded Chunks / 錄製片段",
-            "desc": "收集 MediaRecorder 回傳的 Blob 片段並合併；不建立串流、控制錄製或下載。",
+            "title": "Ready / 可播放狀態",
+            "desc": "等待媒體準備到指定可播放狀態；不要求 seeked 事件一定會觸發。",
             "links": [
               {
-                "label": "recorded_chunks.js",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"
+                "label": "ready.js",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/ready.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/test_recorded_chunks.html"
+                "href": "https://lib.stillnessbyslowly.com/video/playback/test_ready.html"
               }
             ]
           },
           {
-            "title": "Canvas Video Export",
-            "desc": "接收 Canvas 與宿主提供的畫面更新流程，結合既有 MIME、MediaRecorder、Recorded Chunks 積木產生影片 Blob；宿主決定錄製內容與儲存方式，輸出格式依瀏覽器實際支援。",
+            "title": "Seek / 播放位置",
+            "desc": "跳至指定播放秒數或重新從頭播放；不管理播放速度與錄製。",
             "links": [
               {
-                "label": "canvas_video_export.js",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/canvas_video_export.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/canvas_video_export_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/canvas_video_export_usage.html"
+                "label": "seek.js",
+                "href": "https://lib.stillnessbyslowly.com/video/playback/seek.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/video/recording/test_canvas_video_export.html"
+                "href": "https://lib.stillnessbyslowly.com/video/playback/test_seek.html"
               }
             ]
           }
@@ -5095,768 +6259,76 @@ window.SlowlyLibraryIndex = [
             ]
           }
         ]
-      }
-    ]
-  },
-  {
-    "page": "game",
-    "title": "Game",
-    "groups": [
-      {
-        "id": "card",
-        "title": "Card / 卡牌",
-        "subpage": true,
-        "desc": "牌庫循環、卡牌身分、區域移轉、資源、選擇目標、效果、回合與組牌等通用卡牌機制；具體玩法由宿主決定。",
-        "items": [
-          {
-            "title": "Deck",
-            "desc": "通用牌庫循環核心，管理抽牌堆、手牌與棄牌堆，提供洗牌、抽牌、補滿手牌、棄牌與棄牌堆回收；不綁定卡牌資料格式、戰鬥規則、能量、UI 或特定遊戲。",
-            "links": [
-              {
-                "label": "deck.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/deck.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/test_deck.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/card/deck_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Pair Matching",
-            "desc": "通用配對回合引擎，管理兩次選取、回合鎖定、配對／不配對、完成與重設狀態，並由宿主提供 matcher 與 callback；不綁定 DOM、卡面資料、分數、歷史或提示。",
-            "links": [
-              {
-                "label": "pair_matching.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/pair_matching.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/test_pair_matching.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Instance Identity",
-            "desc": "通用卡牌實體身分積木，區分卡種 ID 與每張卡牌的實體 ID，提供建立、查找、依卡種分組與重複身分檢查；不綁定卡牌規則、畫面或儲存方式。",
-            "links": [
-              {
-                "label": "card_instance_identity.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_instance_identity_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_instance_identity.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Zone Transfer",
-            "desc": "透過既有 Deck 的快照與還原介面，移動或交換單張、整批卡牌與指定區域；支援牌庫、手牌與棄牌堆操作，移動時機與合法條件由宿主決定。",
-            "links": [
-              {
-                "label": "card_zone_transfer.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_zone_transfer_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_zone_transfer.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Resource Pool",
-            "desc": "通用多資源池，管理宿主自訂名稱的資源，提供查詢、增加、扣除與多種資源足額檢查；不預設行動點、魔法點或出牌費用。",
-            "links": [
-              {
-                "label": "card_resource_pool.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_resource_pool_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_resource_pool.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Target Selection",
-            "desc": "從宿主提供的卡牌區域收集候選目標，依自訂條件篩選、查找與選取；不內建敵我關係、卡牌類型或合法目標規則。",
-            "links": [
-              {
-                "label": "card_target_selection.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_target_selection_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_target_selection.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Effect Registry",
-            "desc": "登記宿主自訂的卡牌效果名稱、執行條件與同步處理函式，依名稱檢查並執行；不內建特定卡牌效果、數值或戰鬥規則。",
-            "links": [
-              {
-                "label": "card_effect_registry.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_effect_registry_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_effect_registry.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Turn Order",
-            "desc": "管理任意參與者的行動順序、目前輪到誰、輪次與宿主自訂的階段標記；不寫死玩家／Boss、出牌次數或行動策略。",
-            "links": [
-              {
-                "label": "card_turn_order.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_turn_order_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_turn_order.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Level Progression",
-            "desc": "管理卡牌等級與升級操作，計算暫時增減後的有效等級；升級條件、等級上限和成長規則都由宿主設定。",
-            "links": [
-              {
-                "label": "card_level_progression.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_level_progression_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_level_progression.html"
-              }
-            ]
-          },
-          {
-            "title": "Card Loadout Validation",
-            "desc": "依收藏中的實體卡 ID 還原出戰清單，檢查遺失、重複、資格與宿主指定的數量限制；不預設收藏上限或固定牌組大小。",
-            "links": [
-              {
-                "label": "card_loadout_validation.js",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_loadout_validation_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_loadout_validation.html"
-              }
-            ]
-          }
-        ]
       },
       {
-        "id": "grid",
-        "title": "Grid / 格子",
+        "id": "recording",
+        "title": "Recording / 錄製",
         "subpage": true,
-        "desc": "二維格子的連線判定、重力、相鄰交換搜尋、條件洗牌與連鎖擴散等通用遊戲核心。",
+        "desc": "錄製格式支援判斷、MediaRecorder 控制與錄製片段收集；不耦合成一套完整播放器。",
         "items": [
           {
-            "title": "Grid Line Match",
-            "desc": "通用二維格子橫向／縱向連線掃描核心，可設定最短連線長度，並由宿主提供取值與阻擋判定；不綁定糖果、分數、特殊格、DOM 或特定三消規則。",
+            "title": "Canvas Video Export",
+            "desc": "接收 Canvas 與宿主提供的畫面更新流程，結合既有 MIME、MediaRecorder、Recorded Chunks 積木產生影片 Blob；宿主決定錄製內容與儲存方式，輸出格式依瀏覽器實際支援。",
             "links": [
               {
-                "label": "line_match.js",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/line_match.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/test_line_match.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/line_match_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Grid Gravity",
-            "desc": "通用二維格子向下重力與補空核心，將非空內容依欄向下壓實，並由宿主定義空格判斷與新格建立方式；不綁定隨機來源、糖果、特殊格、動畫或 UI。",
-            "links": [
-              {
-                "label": "gravity.js",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/gravity.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/test_gravity.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/gravity_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Grid Swap Search",
-            "desc": "通用相鄰交換搜尋核心，掃描二維 grid 的相鄰格並暫時交換，由宿主判定交換是否立即成立或交換後是否合法；測試後一定還原，不綁定三連、提示、分數或特殊格規則。",
-            "links": [
-              {
-                "label": "swap_search.js",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/swap_search.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/test_swap_search.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/swap_search_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Grid Shuffle Until",
-            "desc": "通用二維格子條件洗牌核心，將 grid 內容攤平、交給宿主提供的 shuffle 重新排列並寫回，再依 accept 條件重試至成功或達嘗試上限；不綁定隨機實作、三消或 UI。",
-            "links": [
-              {
-                "label": "shuffle_until.js",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/shuffle_until.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/test_shuffle_until.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/shuffle_until_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Grid Chain Expand",
-            "desc": "通用格子連鎖擴散核心，從起始座標依宿主提供的 expand 規則逐波加入更多格子，負責去重、越界忽略與最大波數保護；不綁定炸彈、特殊糖、技能、清除或 UI。",
-            "links": [
-              {
-                "label": "chain_expand.js",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/chain_expand.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/test_chain_expand.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/grid/chain_expand_usage.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "movement",
-        "title": "Movement / 移動",
-        "subpage": true,
-        "desc": "可組合的即時角色運動狀態積木；角色、速度與規則由宿主自行控制。",
-        "items": [
-          {
-            "title": "Dash State",
-            "desc": "通用角色衝刺狀態，提供方向、速度倍率、持續時間、取消與查詢，冷卻判斷直接引用既有 CooldownGate；宿主決定移動方式、是否無敵、受傷和衝刺外觀。",
-            "links": [
-              {
-                "label": "dash_state.js",
-                "href": "https://lib.stillnessbyslowly.com/game/movement/dash_state.js"
+                "label": "canvas_video_export.js",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/canvas_video_export.js"
               },
               {
                 "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/movement/dash_state_demo.html"
+                "href": "https://lib.stillnessbyslowly.com/video/recording/canvas_video_export_demo.html"
               },
               {
                 "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/movement/dash_state_usage.html"
+                "href": "https://lib.stillnessbyslowly.com/video/recording/canvas_video_export_usage.html"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/movement/test_dash_state.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "collision",
-        "title": "Collision / 碰撞",
-        "subpage": true,
-        "desc": "通用二維幾何接觸判斷；不執行傷害、拾取或其他遊戲規則。",
-        "items": [
-          {
-            "title": "Circle Collision",
-            "desc": "通用 2D 圓形幾何碰撞，提供圓心距離、是否接觸、相切與重疊深度判定；相切是否算碰撞可由宿主控制，不處理扣血、拾取或物理推擠。",
-            "links": [
-              {
-                "label": "circle_collision.js",
-                "href": "https://lib.stillnessbyslowly.com/game/collision/circle_collision.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/collision/circle_collision_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/collision/circle_collision_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/collision/test_circle_collision.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "physics",
-        "title": "Physics / 物理運動",
-        "subpage": true,
-        "desc": "通用二維物理運動與碰撞反應積木，分離幾何接觸、反彈、轉軸運動及時間步進，場景與玩法由宿主決定。",
-        "items": [
-          {
-            "title": "Circle Segment Collision",
-            "desc": "通用圓形與有限線段接觸幾何，計算線段最近點、接觸法線、相切與重疊深度，支援線段端點及退化情況；不修改物體座標、速度或負責碰撞反彈。",
-            "links": [
-              {
-                "label": "circle_segment_collision.js",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/circle_segment_collision_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/test_circle_segment_collision.html"
+                "href": "https://lib.stillnessbyslowly.com/video/recording/test_canvas_video_export.html"
               }
             ]
           },
           {
-            "title": "Collision Response 2D",
-            "desc": "通用二維碰撞速度反應，依接觸法線、物體與表面相對速度、反彈係數計算碰後速度與撞擊強度；不搜尋碰撞、不重做幾何偵測或繪製。",
+            "title": "Media Recorder / 錄製器",
+            "desc": "建立、啟動與停止 MediaRecorder；不處理畫面、按鈕、Blob 匯出或錄製片段。",
             "links": [
               {
-                "label": "collision_response_2d.js",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/collision_response_2d.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/collision_response_2d_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/collision_response_2d_usage.html"
+                "label": "media_recorder.js",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/media_recorder.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/test_collision_response_2d.html"
+                "href": "https://lib.stillnessbyslowly.com/video/recording/test_media_recorder.html"
               }
             ]
           },
           {
-            "title": "Hinged Segment Motion",
-            "desc": "通用轉軸線段運動，計算旋轉線段端點、目標角度步進、角速度與接觸點表面速度，可配合碰撞反應使用；不綁定彈珠台、固定左右彈板或按鍵。",
+            "title": "Recorded Chunks / 錄製片段",
+            "desc": "收集 MediaRecorder 回傳的 Blob 片段並合併；不建立串流、控制錄製或下載。",
             "links": [
               {
-                "label": "hinged_segment_motion.js",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/hinged_segment_motion_usage.html"
+                "label": "recorded_chunks.js",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/recorded_chunks.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/test_hinged_segment_motion.html"
+                "href": "https://lib.stillnessbyslowly.com/video/recording/test_recorded_chunks.html"
               }
             ]
           },
           {
-            "title": "Body Motion 2D",
-            "desc": "通用二維物體時間步進，依加速度、重力、速度上限與時間差更新速度及位置；不包含碰撞偵測、反彈、繪圖或完整剛體物理引擎。",
+            "title": "Recorder MIME Type / 錄製格式",
+            "desc": "查詢 MediaRecorder 可使用的 MIME 類型並挑選格式；不建立錄製器。",
             "links": [
               {
-                "label": "body_motion_2d.js",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/body_motion_2d.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/body_motion_2d_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/body_motion_2d_usage.html"
+                "label": "mime_type.js",
+                "href": "https://lib.stillnessbyslowly.com/video/recording/mime_type.js"
               },
               {
                 "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/physics/test_body_motion_2d.html"
+                "href": "https://lib.stillnessbyslowly.com/video/recording/test_mime_type.html"
               }
             ]
-          }
-        ]
-      },
-      {
-        "id": "combat",
-        "title": "Combat / 戰鬥",
-        "subpage": true,
-        "desc": "HP、護盾、傷害擲值、蓄力與戰鬥單位設定等通用戰鬥核心。",
-        "items": [
-          {
-            "title": "Combat Stats",
-            "desc": "通用戰鬥數值核心，提供傷害與護盾吸收、回復、HP 設定、護盾增減，以及倒下與滿血判斷；不綁定玩家／敵人身份、回合、卡牌、AI 或 UI。",
-            "links": [
-              {
-                "label": "combat_stats.js",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/combat_stats.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/test_combat_stats.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/combat_stats_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Damage Roll",
-            "desc": "通用整數傷害擲值核心，依指定範圍產生包含上下限的隨機整數，可加入額外 bonus，並可注入 rng 以固定測試結果；不管理角色、HP、護盾、Charge、回合或 UI。",
-            "links": [
-              {
-                "label": "damage_roll.js",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/damage_roll.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/test_damage_roll.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/damage_roll_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Charge State",
-            "desc": "通用 Charge／Bonus 累積狀態核心，提供設定、累積、全部或部分消耗、清空與狀態判斷；不負責傷害計算、角色、回合或 UI。",
-            "links": [
-              {
-                "label": "charge_state.js",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/charge_state.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/test_charge_state.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/charge_state_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Combatant Config",
-            "desc": "通用戰鬥單位基礎數值正規化工具，將 hp／maxHP／currentHP、shield 與 atk／attack 範圍整理為固定格式，並可由宿主提供 defaults；不負責資料查表、AI、回合、傷害或 UI。",
-            "links": [
-              {
-                "label": "combatant_config.js",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/combatant_config.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/test_combatant_config.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/combat/combatant_config_usage.html"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "ai",
-        "title": "AI / 行動模式",
-        "subpage": true,
-        "desc": "循環行動模式與由宿主自行解讀的遊戲行為決策積木。",
-        "items": [
-          {
-            "title": "Action Pattern",
-            "desc": "通用循環行動模式核心，管理 pattern 與目前索引，提供 next、peek、reset、替換 pattern 與 fallback；只回傳 action，不執行攻擊、防禦、蓄力或任何遊戲效果。",
-            "links": [
-              {
-                "label": "action_pattern.js",
-                "href": "https://lib.stillnessbyslowly.com/game/ai/action_pattern.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/ai/test_action_pattern.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/ai/action_pattern_usage.html"
-              }
-            ]
-          },
-          {
-            "title": "Movement Patterns 2D",
-            "desc": "獨立的二維移動計算，提供邊界反彈、追蹤目標與兩端巡邏；依宿主座標、速度、邊界及時間步長回傳位置，不綁定怪物造型、碰撞傷害或完整敵人 AI。",
-            "links": [
-              {
-                "label": "movement_patterns_2d.js",
-                "href": "https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d.js"
-              },
-              {
-                "label": "展示頁",
-                "href": "https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d_demo.html"
-              },
-              {
-                "label": "使用說明",
-                "href": "https://lib.stillnessbyslowly.com/game/ai/movement_patterns_2d_usage.html"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/game/ai/test_movement_patterns_2d.html"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "page": "mail",
-    "title": "Mail",
-    "items": [
-      {
-        "title": "Mail",
-        "desc": "共用 Email 呼叫介面，提供即時寄送、排程、取消與狀態查詢。實際寄送、排程、驗證與敏感設定由後端負責。",
-        "links": [
-          {
-            "label": "mail.js",
-            "href": "https://lib.stillnessbyslowly.com/mail/mail.js"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/mail/mail_test.html"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "page": "external",
-    "title": "External / 外部",
-    "groups": [
-      {
-        "id": "qrcode",
-        "title": "QRCode",
-        "subpage": true,
-        "desc": "實際使用與確認過的 QRCode 外部工具紀錄。",
-        "items": [
-          {
-            "title": "QRious 4.0.2",
-            "desc": "目前 QRCode 工具主力。用於一般 QRCode、Wi-Fi QRCode、Canvas 輸出、PNG 圖片與 A4 排版列印。",
-            "links": [
-              {
-                "label": "qrcode.json",
-                "href": "https://lib.stillnessbyslowly.com/external/qrcode/qrcode.json"
-              },
-              {
-                "label": "qrcode.txt",
-                "href": "https://lib.stillnessbyslowly.com/external/qrcode/qrcode.txt"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "image",
-        "title": "Image",
-        "subpage": true,
-        "desc": "曾實際使用過的圖片處理外部工具與保留紀錄。",
-        "items": [
-          {
-            "title": "html2canvas 1.4.1",
-            "desc": "曾用於 DOM / HTML 轉 Canvas；2026-08-31 的作品探索之後已不再使用。Canvas → PNG → Download 後半段已有自有零件，DOM → Canvas 本身目前沒有自有替代。",
-            "links": [
-              {
-                "label": "html2canvas.json",
-                "href": "https://lib.stillnessbyslowly.com/external/image/html2canvas.json"
-              },
-              {
-                "label": "html2canvas.txt",
-                "href": "https://lib.stillnessbyslowly.com/external/image/html2canvas.txt"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "weather",
-        "title": "Weather / 天氣",
-        "subpage": true,
-        "desc": "已實際使用的外部天氣 API，記錄查詢入口、呼叫範例及使用條件。",
-        "items": [
-          {
-            "title": "Open-Meteo Forecast API",
-            "desc": "御膳房使用的天氣 API，可依經緯度查詢氣溫、體感、濕度、降水、風速與天氣代碼。免費公開 API 有非商業使用、用量和署名條件。",
-            "links": [
-              {
-                "label": "open_meteo.json",
-                "href": "https://lib.stillnessbyslowly.com/external/weather/open_meteo.json"
-              },
-              {
-                "label": "open_meteo.txt",
-                "href": "https://lib.stillnessbyslowly.com/external/weather/open_meteo.txt"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "animals",
-        "title": "Animals / 動物",
-        "subpage": true,
-        "desc": "已實際使用的外部動物圖片 API 紀錄；不同服務各自獨立。",
-        "items": [
-          {
-            "title": "Dog CEO API",
-            "desc": "狗狗翻牌使用的隨機狗狗圖片 API；一次可取多張圖片 URL。只提供外部圖片資料，不綁定遊戲邏輯。",
-            "links": [
-              {
-                "label": "dog_ceo.json",
-                "href": "https://lib.stillnessbyslowly.com/external/animals/dog_ceo.json"
-              },
-              {
-                "label": "dog_ceo.txt",
-                "href": "https://lib.stillnessbyslowly.com/external/animals/dog_ceo.txt"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "loader",
-        "title": "Loader / 載入",
-        "subpage": true,
-        "desc": "瀏覽器外部 CSS／JS 資源載入相關工具。",
-        "items": [
-          {
-            "title": "Resource Loader",
-            "desc": "通用瀏覽器 CSS／JS 動態載入核心，提供 URL 正規化、避免重複載入、批次載入與依序載入 JS，載入失敗會正常往外拋錯誤；不讀模組索引、不自動呼叫 init／render、不綁定 UI。",
-            "links": [
-              {
-                "label": "resource_loader.js",
-                "href": "https://lib.stillnessbyslowly.com/external/loader/resource_loader.js"
-              },
-              {
-                "label": "功能測試",
-                "href": "https://lib.stillnessbyslowly.com/external/loader/test_resource_loader.html"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "page": "comment",
-    "title": "Comment",
-    "items": [
-      {
-        "title": "Comment Board",
-        "desc": "輕型留言板模組，提供留言新增、時間排序與管理者編輯、刪除及回覆功能。目前使用 FictionData 儲存於 localStorage，並預留後端資料與權限控制介面。",
-        "links": [
-          {
-            "label": "comment_board.js",
-            "href": "https://lib.stillnessbyslowly.com/comment/comment_board.js"
-          },
-          {
-            "label": "comment_board.css",
-            "href": "https://lib.stillnessbyslowly.com/comment/comment_board.css"
-          },
-          {
-            "label": "功能測試",
-            "href": "https://lib.stillnessbyslowly.com/comment/comment_board_test.html"
           }
         ]
       }
