@@ -5579,6 +5579,36 @@ window.SlowlyLibraryIndex = [
     "title": "UI",
     "groups": [
       {
+        "id": "accordion",
+        "title": "Accordion / 摺疊面板",
+        "subpage": true,
+        "desc": "使用原生 details／summary 管理可獨立操作的摺疊內容，支援單開或多開、程式開合、狀態查詢及鍵盤操作；不綁定 FAQ 外觀，也不重做 Tabs。",
+        "items": [
+          {
+            "title": "Accordion",
+            "desc": "使用原生 details／summary 管理可獨立操作的摺疊內容，支援單開或多開、程式開合、狀態查詢及鍵盤操作；不綁定 FAQ 外觀，也不重做 Tabs。",
+            "links": [
+              {
+                "label": "accordion.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/accordion/accordion.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/accordion/accordion_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/accordion/accordion_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/accordion/test_accordion.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "canvas",
         "title": "Canvas / 畫布互動",
         "items": [
@@ -5593,6 +5623,40 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/ui/canvas/test_canvas_rect_drag.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "carousel",
+        "title": "Carousel / 輪播",
+        "subpage": true,
+        "desc": "通用內容輪播控制，支援上一項、下一項、跳轉、循環、可選自動播放與手機橫向滑動；以宿主內容與樣式為主，處理鍵盤、暫停及資源清理。",
+        "items": [
+          {
+            "title": "Carousel",
+            "desc": "通用內容輪播控制，支援上一項、下一項、跳轉、循環、可選自動播放與手機橫向滑動；以宿主內容與樣式為主，處理鍵盤、暫停及資源清理。",
+            "links": [
+              {
+                "label": "carousel.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/carousel/carousel.js"
+              },
+              {
+                "label": "carousel.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/carousel/carousel.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/carousel/carousel_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/carousel/carousel_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/carousel/test_carousel.html"
               }
             ]
           }
@@ -5771,6 +5835,40 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "使用說明",
                 "href": "https://lib.stillnessbyslowly.com/ui/custom_select_usage.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "drawer",
+        "title": "Drawer / 抽屜",
+        "subpage": true,
+        "desc": "共用抽屜互動核心：placement 設為 left／right 可用於漢堡側邊選單，設為 bottom 可用於手機底部抽屜。使用原生 dialog 管理模態開關、焦點與遮罩，底部模式可選把手滑動關閉；外觀由宿主決定。",
+        "items": [
+          {
+            "title": "Drawer",
+            "desc": "共用抽屜互動核心：placement 設為 left／right 可用於漢堡側邊選單，設為 bottom 可用於手機底部抽屜。使用原生 dialog 管理模態開關、焦點與遮罩，底部模式可選把手滑動關閉；外觀由宿主決定。",
+            "links": [
+              {
+                "label": "drawer.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/drawer/drawer.js"
+              },
+              {
+                "label": "drawer.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/drawer/drawer.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/drawer/drawer_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/drawer/drawer_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/drawer/test_drawer.html"
               }
             ]
           }
@@ -6103,6 +6201,70 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "menu",
+        "title": "Menu / 操作選單",
+        "subpage": true,
+        "desc": "提供三點 Kebab 等操作選單的定位、展開／關閉、鍵盤導覽、焦點與操作事件；實際編輯、分享、刪除由宿主處理，不是表單選值的 Custom Select。",
+        "items": [
+          {
+            "title": "Action Menu",
+            "desc": "提供三點 Kebab 等操作選單的定位、展開／關閉、鍵盤導覽、焦點與操作事件；實際編輯、分享、刪除由宿主處理，不是表單選值的 Custom Select。",
+            "links": [
+              {
+                "label": "action_menu.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/menu/action_menu.js"
+              },
+              {
+                "label": "action_menu.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/menu/action_menu.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/menu/action_menu_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/menu/action_menu_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/menu/test_action_menu.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "modal",
+        "title": "Modal / 內容彈窗",
+        "subpage": true,
+        "desc": "以瀏覽器原生 dialog 開啟與關閉宿主提供的任意內容（表單、設定或圖片等），處理關閉原因、遮罩及焦點回復；不重複既有 Confirm 的確認／取消流程。",
+        "items": [
+          {
+            "title": "Modal",
+            "desc": "以瀏覽器原生 dialog 開啟與關閉宿主提供的任意內容（表單、設定或圖片等），處理關閉原因、遮罩及焦點回復；不重複既有 Confirm 的確認／取消流程。",
+            "links": [
+              {
+                "label": "modal.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/modal/modal.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/modal/modal_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/modal/modal_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/modal/test_modal.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "progress",
         "title": "Progress / 進度",
         "subpage": true,
@@ -6165,6 +6327,36 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "skeleton",
+        "title": "Skeleton / 載入骨架",
+        "subpage": true,
+        "desc": "CSS-only 載入占位樣式，提供線條、區塊與圓形骨架，支援 reduced-motion；真正資料載入完成與 aria-busy 狀態由宿主切換，不另建立 JavaScript 或進度條引擎。",
+        "items": [
+          {
+            "title": "Skeleton",
+            "desc": "CSS-only 載入占位樣式，提供線條、區塊與圓形骨架，支援 reduced-motion；真正資料載入完成與 aria-busy 狀態由宿主切換，不另建立 JavaScript 或進度條引擎。",
+            "links": [
+              {
+                "label": "skeleton.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/skeleton/skeleton.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/skeleton/skeleton_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/skeleton/skeleton_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/skeleton/test_skeleton.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "table",
         "title": "Table / 表格",
         "items": [
@@ -6179,6 +6371,40 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/ui/table/test_editable_table_grid.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "tooltip",
+        "title": "Tooltip / 提示框",
+        "subpage": true,
+        "desc": "非互動的簡短補充提示，支援滑鼠、鍵盤焦點及可選手機點擊開關，處理 aria-describedby、邊界定位、關閉與資源清理；不重做 Toast 或 Modal。",
+        "items": [
+          {
+            "title": "Tooltip",
+            "desc": "非互動的簡短補充提示，支援滑鼠、鍵盤焦點及可選手機點擊開關，處理 aria-describedby、邊界定位、關閉與資源清理；不重做 Toast 或 Modal。",
+            "links": [
+              {
+                "label": "tooltip.js",
+                "href": "https://lib.stillnessbyslowly.com/ui/tooltip/tooltip.js"
+              },
+              {
+                "label": "tooltip.css",
+                "href": "https://lib.stillnessbyslowly.com/ui/tooltip/tooltip.css"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/ui/tooltip/tooltip_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/ui/tooltip/tooltip_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/ui/tooltip/test_tooltip.html"
               }
             ]
           }
