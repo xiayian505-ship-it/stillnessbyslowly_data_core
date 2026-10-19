@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Carousel 操作示範</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/carousel/carousel.css">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Carousel 操作示範</h1>
+<p>三張中性內容；上一張／下一張／指示點／手機橫滑均可操作。自動播放預設關閉。</p>
+<div data-slowly-carousel id="carousel" class="slowly-carousel"><div data-carousel-viewport>
+<section data-carousel-slide><h2>第一張</h2><p>內容一</p></section>
+<section data-carousel-slide><h2>第二張</h2><p>內容二</p></section>
+<section data-carousel-slide><h2>第三張</h2><p>內容三</p></section>
+</div><div class="row"><button data-carousel-previous>上一張</button><button data-carousel-next>下一張</button><button data-carousel-go-to="0">1</button><button data-carousel-go-to="1">2</button><button data-carousel-go-to="2">3</button></div></div>
+<div class="row"><button id="play">開始自動播放</button><button id="pause">停止自動播放</button><label><input type="checkbox" id="loop" checked> 循環</label></div>
+<output id="status"></output>
+<script src="https://lib.stillnessbyslowly.com/ui/carousel/carousel.js"></script>
+<script>
+let current = SlowlyCarousel.create('#carousel',{loop:true,interval_ms:1500});
+const output=document.querySelector('#status');
+function update(){output.textContent=JSON.stringify(current.snapshot());}
+document.querySelector('#carousel').addEventListener('slowlycarouselchange',update);
+document.querySelector('#play').onclick=()=>{current.start();update();};
+document.querySelector('#pause').onclick=()=>{current.pause();update();};
+document.querySelector('#loop').onchange=event=>{const index=current.snapshot().index;current.destroy();current=SlowlyCarousel.create('#carousel',{loop:event.target.checked,initial_index:index,interval_ms:1500});update();};
+update();
+</script>
+</body></html>

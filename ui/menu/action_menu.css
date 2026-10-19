@@ -1,0 +1,5 @@
+/* Anchored command menu positioning and visibility; host skins menu. */
+[role="menu"].slowly-action-menu { position: fixed; z-index: 200; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow: auto; }
+[role="menu"].slowly-action-menu[hidden] { display: none; }
+.slowly-action-menu [role="menuitem"] { display: block; }
+.slowly-action-menu [role="menuitem"][aria-disabled="true"] { pointer-events: none; }

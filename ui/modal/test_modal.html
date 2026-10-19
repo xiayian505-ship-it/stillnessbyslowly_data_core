@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Modal 真實功能測試</title>
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Modal 真實功能測試</h1>
+<p>以下項目皆實際呼叫零件／操作 DOM 後驗證結果，不預填 PASS。測試失敗會以紅字列出。</p><strong id="summary">測試執行中…</strong><ol id="results"></ol><div id="fixture"><button id="start">開啟</button><dialog id="dialog"><label>名稱<input value="保留內容"></label><button id="inner">內部</button></dialog><dialog id="second">第二個對話框</dialog></div>
+<script src="https://lib.stillnessbyslowly.com/ui/modal/modal.js"></script>
+<script>
+const results=document.querySelector('#results');
+const summary=document.querySelector('#summary');
+let passes=0,failures=0;
+function assert(condition, message='assertion failed'){if(!condition)throw new Error(message);}
+function expect_error(callback){let threw=false;try{callback();}catch(error){threw=true;}assert(threw,'expected an error');}
+function sleep(milliseconds){return new Promise(resolve=>setTimeout(resolve,milliseconds));}
+async function test(name, callback){
+  const line=document.createElement('li');
+  try{await callback();passes++;line.className='ok';line.textContent='PASS — '+name;}
+  catch(error){failures++;line.className='fail';line.textContent='FAIL — '+name+': '+error.message;console.error('FAIL',name,error);}
+  results.appendChild(line);
+  summary.textContent=passes+' PASS / '+failures+' FAIL';
+}
+window.addEventListener('error', event=>{failures++; const line=document.createElement('li');line.className='fail';line.textContent='FAIL — 瀏覽器執行錯誤: '+event.message;results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+window.addEventListener('unhandledrejection',event=>{failures++;const line=document.createElement('li');line.className='fail';line.textContent='FAIL — Promise rejected: '+String(event.reason);results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+(async()=>{
+
+const dialog=document.querySelector('#dialog'),trigger=document.querySelector('#start');
+let count=0;let reason=null;
+const instance=SlowlyModal.create(dialog,{on_close:detail=>{count++;reason=detail.reason;}});
+await test('不是 Confirm API',()=>assert(typeof instance.open==='function' && typeof instance.show==='undefined'));
+await test('打開內容彈窗',()=>{trigger.focus();instance.open();assert(dialog.open&&instance.is_open());});
+await test('原內容不遭修改',()=>assert(dialog.querySelector('input').value==='保留內容'));
+await test('重複 open 冪等',()=>assert(instance.open()===false));
+await test('close 自訂原因',async()=>{instance.close('submit');await sleep(35);assert(!dialog.open&&count===1&&reason==='submit');});
+await test('焦點回復',()=>assert(document.activeElement===trigger));
+await test('多次開關 callback 一次',async()=>{instance.open();instance.close('cancel');await sleep(35);assert(count===2);});
+await test('外部 close 事件通知',async()=>{instance.open();dialog.close();await sleep(35);assert(reason==='external');});
+await test('拒絕普通元素',()=>expect_error(()=>SlowlyModal.create(trigger)));
+await test('第二個獨立實例',()=>{const other=SlowlyModal.create('#second');other.open();assert(other.is_open());other.close();other.destroy();});
+await test('destroy 不移除宿主內容',()=>{instance.destroy();assert(dialog.querySelector('input')!==null);});
+
+  summary.dataset.done='true';
+})().catch(error=>{failures++;summary.textContent=passes+' PASS / '+failures+' FAIL';summary.dataset.done='true';console.error(error);});
+</script>
+</body></html>

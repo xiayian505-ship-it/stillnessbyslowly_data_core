@@ -1,0 +1,4 @@
+/* Visibility contract only; layout/decoration supplied by host. */
+.slowly-carousel [data-carousel-slide][hidden] { display: none !important; }
+.slowly-carousel [data-carousel-slide] { max-width: 100%; }
+.slowly-carousel [data-carousel-viewport] { overflow: hidden; touch-action: pan-y; }

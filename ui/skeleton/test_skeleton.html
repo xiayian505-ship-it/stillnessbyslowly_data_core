@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Skeleton 真實功能測試</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/skeleton/skeleton.css">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Skeleton 真實功能測試</h1>
+<p>以下項目皆實際呼叫零件／操作 DOM 後驗證結果，不預填 PASS。測試失敗會以紅字列出。</p><strong id="summary">測試執行中…</strong><ol id="results"></ol><div id="fixture"><div id="host" aria-busy="true"><div id="loading"><span id="line" class="slowly-skeleton slowly-skeleton--line" aria-hidden="true"></span><span id="circle" class="slowly-skeleton slowly-skeleton--circle" aria-hidden="true"></span><span id="block" class="slowly-skeleton slowly-skeleton--block slowly-skeleton--pulse" aria-hidden="true"></span></div><p id="actual" hidden>正式內容</p></div><button id="outside">其他元素</button></div>
+
+<script>
+const results=document.querySelector('#results');
+const summary=document.querySelector('#summary');
+let passes=0,failures=0;
+function assert(condition, message='assertion failed'){if(!condition)throw new Error(message);}
+function expect_error(callback){let threw=false;try{callback();}catch(error){threw=true;}assert(threw,'expected an error');}
+function sleep(milliseconds){return new Promise(resolve=>setTimeout(resolve,milliseconds));}
+async function test(name, callback){
+  const line=document.createElement('li');
+  try{await callback();passes++;line.className='ok';line.textContent='PASS — '+name;}
+  catch(error){failures++;line.className='fail';line.textContent='FAIL — '+name+': '+error.message;console.error('FAIL',name,error);}
+  results.appendChild(line);
+  summary.textContent=passes+' PASS / '+failures+' FAIL';
+}
+window.addEventListener('error', event=>{failures++; const line=document.createElement('li');line.className='fail';line.textContent='FAIL — 瀏覽器執行錯誤: '+event.message;results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+window.addEventListener('unhandledrejection',event=>{failures++;const line=document.createElement('li');line.className='fail';line.textContent='FAIL — Promise rejected: '+String(event.reason);results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+(async()=>{
+
+const host=document.querySelector('#host');
+const line=document.querySelector('#line'),circle=document.querySelector('#circle'),block=document.querySelector('#block');
+await test('CSS 真正載入',()=>{assert(Array.from(document.styleSheets).some(s=>(s.href?.endsWith('skeleton.css') || s.ownerNode?.dataset?.originalHref?.endsWith('skeleton.css'))));});
+await test('line 具有正高度',()=>assert(line.getBoundingClientRect().height>0));
+await test('circle 具有相同寬高',()=>{const r=circle.getBoundingClientRect();assert(r.width===r.height&&r.width>0);});
+await test('block 正常佔位',()=>assert(block.getBoundingClientRect().height>20));
+await test('骨架對輔助技術隱藏',()=>assert([line,circle,block].every(n=>n.getAttribute('aria-hidden')==='true')));
+await test('容器 loading 狀態',()=>assert(host.getAttribute('aria-busy')==='true'));
+await test('切換到完成狀態',()=>{document.querySelector('#loading').hidden=true;document.querySelector('#actual').hidden=false;host.setAttribute('aria-busy','false');assert(host.getAttribute('aria-busy')==='false'&&!document.querySelector('#actual').hidden);});
+await test('不汙染其他元素',()=>assert(getComputedStyle(document.querySelector('#outside')).animationName==='none'));
+await test('reduced motion 有對應規則',()=>{const css=Array.from(document.styleSheets).filter(s=>(s.href?.endsWith('skeleton.css') || s.ownerNode?.dataset?.originalHref?.endsWith('skeleton.css')))[0];const rules=Array.from(css.cssRules);assert(rules.some(r=>r.conditionText?.includes('prefers-reduced-motion')));});
+
+  summary.dataset.done='true';
+})().catch(error=>{failures++;summary.textContent=passes+' PASS / '+failures+' FAIL';summary.dataset.done='true';console.error(error);});
+</script>
+</body></html>

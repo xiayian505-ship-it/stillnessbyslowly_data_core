@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tooltip 真實功能測試</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/tooltip/tooltip.css">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Tooltip 真實功能測試</h1>
+<p>以下項目皆實際呼叫零件／操作 DOM 後驗證結果，不預填 PASS。測試失敗會以紅字列出。</p><strong id="summary">測試執行中…</strong><ol id="results"></ol><div id="fixture"><button id="start" aria-describedby="existing_help">提示</button><span id="hint" class="slowly-tooltip" hidden>文字</span><span id="existing_help">原本描述</span><button id="start_two">其他</button><span id="hint_two" class="slowly-tooltip" hidden>第二個</span></div>
+<script src="https://lib.stillnessbyslowly.com/ui/tooltip/tooltip.js"></script>
+<script>
+const results=document.querySelector('#results');
+const summary=document.querySelector('#summary');
+let passes=0,failures=0;
+function assert(condition, message='assertion failed'){if(!condition)throw new Error(message);}
+function expect_error(callback){let threw=false;try{callback();}catch(error){threw=true;}assert(threw,'expected an error');}
+function sleep(milliseconds){return new Promise(resolve=>setTimeout(resolve,milliseconds));}
+async function test(name, callback){
+  const line=document.createElement('li');
+  try{await callback();passes++;line.className='ok';line.textContent='PASS — '+name;}
+  catch(error){failures++;line.className='fail';line.textContent='FAIL — '+name+': '+error.message;console.error('FAIL',name,error);}
+  results.appendChild(line);
+  summary.textContent=passes+' PASS / '+failures+' FAIL';
+}
+window.addEventListener('error', event=>{failures++; const line=document.createElement('li');line.className='fail';line.textContent='FAIL — 瀏覽器執行錯誤: '+event.message;results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+window.addEventListener('unhandledrejection',event=>{failures++;const line=document.createElement('li');line.className='fail';line.textContent='FAIL — Promise rejected: '+String(event.reason);results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+(async()=>{
+
+const trigger=document.querySelector('#start'),tooltip=document.querySelector('#hint');
+const instance=SlowlyTooltip.create({trigger,tooltip,delay_ms:0});
+await test('初始隱藏',()=>assert(tooltip.hidden));
+await test('保留原 aria-describedby',()=>assert(trigger.getAttribute('aria-describedby').includes('existing_help')));
+await test('新增 tooltip 描述',()=>assert(trigger.getAttribute('aria-describedby').includes(tooltip.id)));
+await test('show 顯示提示',()=>{instance.show();assert(!tooltip.hidden && tooltip.getAttribute('role')==='tooltip');});
+await test('定位在 viewport 內',()=>{const rect=tooltip.getBoundingClientRect();assert(rect.left>=0&&rect.right<=innerWidth+1);});
+await test('hide 關閉',()=>{instance.hide();assert(tooltip.hidden);});
+await test('鍵盤 focus 會顯示',()=>{trigger.focus();assert(!tooltip.hidden);});
+await test('Escape 隱藏',()=>{trigger.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert(tooltip.hidden);});
+await test('多實例可獨立',()=>{const second=SlowlyTooltip.create({trigger:'#start_two',tooltip:'#hint_two',delay_ms:0});second.show();assert(!document.querySelector('#hint_two').hidden);second.destroy();});
+await test('可用安全的 textContent',()=>{const second=SlowlyTooltip.create({trigger:'#start_two',tooltip:'#hint_two',text:'<b>x</b>'});assert(document.querySelector('#hint_two').textContent==='<b>x</b>');second.destroy();});
+await test('destroy 保留原描述',()=>{instance.destroy();assert(trigger.getAttribute('aria-describedby')==='existing_help');});
+
+  summary.dataset.done='true';
+})().catch(error=>{failures++;summary.textContent=passes+' PASS / '+failures+' FAIL';summary.dataset.done='true';console.error(error);});
+</script>
+</body></html>

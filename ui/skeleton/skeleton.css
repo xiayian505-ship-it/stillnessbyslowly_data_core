@@ -1,0 +1,24 @@
+/* Static loading placeholders; host owns theme and loading lifecycle. */
+.slowly-skeleton {
+  display: block;
+  max-width: 100%;
+  background-color: var(--slowly-skeleton-color, #dedede);
+  border-radius: var(--slowly-skeleton-radius, 0.25rem);
+  pointer-events: none;
+}
+.slowly-skeleton--line {
+  width: var(--slowly-skeleton-width, 100%);
+  height: var(--slowly-skeleton-height, 1em);
+}
+.slowly-skeleton--block {
+  width: var(--slowly-skeleton-width, 100%);
+  height: var(--slowly-skeleton-height, 6rem);
+}
+.slowly-skeleton--circle {
+  width: var(--slowly-skeleton-size, 3rem);
+  height: var(--slowly-skeleton-size, 3rem);
+  border-radius: 50%;
+}
+.slowly-skeleton--pulse { animation: slowly_skeleton_pulse 1.5s ease-in-out infinite alternate; }
+@keyframes slowly_skeleton_pulse { from { opacity: 0.65; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .slowly-skeleton--pulse { animation: none; } }

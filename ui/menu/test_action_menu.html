@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Action Menu 真實功能測試</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/menu/action_menu.css">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Action Menu 真實功能測試</h1>
+<p>以下項目皆實際呼叫零件／操作 DOM 後驗證結果，不預填 PASS。測試失敗會以紅字列出。</p><strong id="summary">測試執行中…</strong><ol id="results"></ol><div id="fixture"><button id="start">開啟選單</button><div id="menu" class="slowly-action-menu"><button data-action="edit">編輯</button><button data-action="delete" disabled>刪除</button><button data-action="share">分享</button></div><button id="other_start">第二個選單</button><div id="other_menu" class="slowly-action-menu"><button data-action="edit">編輯</button></div></div>
+<script src="https://lib.stillnessbyslowly.com/ui/menu/action_menu.js"></script>
+<script>
+const results=document.querySelector('#results');
+const summary=document.querySelector('#summary');
+let passes=0,failures=0;
+function assert(condition, message='assertion failed'){if(!condition)throw new Error(message);}
+function expect_error(callback){let threw=false;try{callback();}catch(error){threw=true;}assert(threw,'expected an error');}
+function sleep(milliseconds){return new Promise(resolve=>setTimeout(resolve,milliseconds));}
+async function test(name, callback){
+  const line=document.createElement('li');
+  try{await callback();passes++;line.className='ok';line.textContent='PASS — '+name;}
+  catch(error){failures++;line.className='fail';line.textContent='FAIL — '+name+': '+error.message;console.error('FAIL',name,error);}
+  results.appendChild(line);
+  summary.textContent=passes+' PASS / '+failures+' FAIL';
+}
+window.addEventListener('error', event=>{failures++; const line=document.createElement('li');line.className='fail';line.textContent='FAIL — 瀏覽器執行錯誤: '+event.message;results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+window.addEventListener('unhandledrejection',event=>{failures++;const line=document.createElement('li');line.className='fail';line.textContent='FAIL — Promise rejected: '+String(event.reason);results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+(async()=>{
+
+const trigger=document.querySelector('#start'); const menu=document.querySelector('#menu');
+const actions=[];const instance=SlowlyActionMenu.create({trigger,menu,on_action:detail=>actions.push(detail.action)});
+await test('預設隱藏',()=>assert(menu.hidden));
+await test('按鈕開啟',()=>{trigger.click();assert(instance.is_open() && document.activeElement.dataset.action==='edit');});
+await test('ARIA 正確',()=>assert(menu.getAttribute('role')==='menu' && trigger.getAttribute('aria-haspopup')==='menu'));
+await test('上下鍵跳過禁用項',()=>{menu.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));assert(document.activeElement.dataset.action==='share');});
+await test('執行 action callback',()=>{document.activeElement.click();assert(actions[0]==='share'&&!instance.is_open());});
+await test('ESC 關閉',()=>{instance.open();menu.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert(!instance.is_open());});
+await test('不可使用 disabled 操作',()=>{instance.open();menu.querySelector('[data-action="delete"]').click();assert(actions.length===1);instance.close();});
+await test('另一個選單會關閉本選單',()=>{const other=SlowlyActionMenu.create({trigger:'#other_start',menu:'#other_menu'});instance.open();other.open();assert(!instance.is_open()&&other.is_open());other.destroy();});
+await test('最右端浮層不超出視窗',()=>{instance.open();const pos=menu.getBoundingClientRect();assert(pos.left>=0&&pos.right<=innerWidth+1);instance.close();});
+await test('重複 create 不會複製實例',()=>assert(SlowlyActionMenu.create({trigger,menu})===instance));
+await test('destroy 釋放 aria',()=>{instance.destroy();assert(!trigger.hasAttribute('aria-haspopup'));});
+
+  summary.dataset.done='true';
+})().catch(error=>{failures++;summary.textContent=passes+' PASS / '+failures+' FAIL';summary.dataset.done='true';console.error(error);});
+</script>
+</body></html>

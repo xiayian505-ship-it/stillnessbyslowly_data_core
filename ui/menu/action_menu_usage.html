@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Action Menu 使用說明</title>
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Action Menu 使用說明</h1>
+
+<p><strong>用途：</strong>用來執行編輯／分享等操作，而不是替代 SlowlySelect 或自動刪除資料。ArrowUp/Down/Home/End、Escape、Tab 可操作。</p>
+<h2>載入（部署後 HTTPS 絕對路徑）</h2><pre>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/ui/menu/action_menu.css&quot;&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/ui/menu/action_menu.js&quot;&gt;&lt;/script&gt;</pre>
+<h2>公開 API</h2><pre>SlowlyActionMenu.create({ trigger, menu, on_action })</pre>
+<p><strong>輸入／設定：</strong>trigger、menu 為 DOM/selector；menu 內每項使用 data-action，支援 disabled 或 aria-disabled=true；選中發 slowlyaction 事件。</p>
+<p><strong>實例操作：</strong>open(last?)、close(return_focus?)、toggle()、is_open()、destroy()</p>
+<h2>宿主接法示例</h2><pre>&lt;button id=&quot;more&quot; aria-label=&quot;其他操作&quot;&gt;⋮&lt;/button&gt;&lt;div id=&quot;commands&quot; class=&quot;slowly-action-menu&quot; hidden&gt;&lt;button data-action=&quot;edit&quot;&gt;編輯&lt;/button&gt;&lt;button data-action=&quot;share&quot;&gt;分享&lt;/button&gt;&lt;/div&gt;
+&lt;script&gt;const menu = SlowlyActionMenu.create({trigger:&#x27;#more&#x27;,menu:&#x27;#commands&#x27;,on_action:({action})=&gt;console.log(action)}); /* menu.destroy(); */&lt;/script&gt;</pre>
+<h2>生命週期與限制</h2><p>用來執行編輯／分享等操作，而不是替代 SlowlySelect 或自動刪除資料。ArrowUp/Down/Home/End、Escape、Tab 可操作。</p>
+<p>新 JS 使用 IIFE 並提供 <code>window.SlowlyActionMenu</code>；錯誤 DOM／參數會明確報錯。不同宿主負責提供 UI 樣式、文字、實際業務操作，銷毀實例時清除監聽器和計時器。</p>
+<p>部署前新網址只是預定位置；若還沒把檔案上架，請先以 ZIP 的相同路徑部署。若在本機測試，可使用測試伺服器映射同路徑。</p>
+<p>提醒：這批不會複製已有的 Toast、Confirm、Tabs、Custom Select 或 Loader Progress；現有零件保留原樣。</p>
+<ul><li><a href="https://lib.stillnessbyslowly.com/ui/menu/action_menu.css">action_menu.css</a></li><li><a href="https://lib.stillnessbyslowly.com/ui/menu/action_menu.js">action_menu.js</a></li></ul>
+<p><a href="https://lib.stillnessbyslowly.com/ui/menu/action_menu_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/ui/menu/test_action_menu.html">獨立功能測試</a></p>
+
+<script src="https://lib.stillnessbyslowly.com/ui/menu/action_menu.js"></script>
+
+</body></html>

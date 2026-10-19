@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Modal 操作示範</title>
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Modal 操作示範</h1>
+<p>任意內容的原生 Modal；不是 Confirm 的二選一確認流程。</p>
+<button id="open">開啟設定面板</button>
+<dialog id="dialog"><h2>宿主設定</h2><label>輸入內容 <input id="value" value="可保留的文字"></label><div class="row"><button id="save">完成</button><button id="cancel">取消</button></div></dialog>
+<output id="status">尚未開啟</output>
+<script src="https://lib.stillnessbyslowly.com/ui/modal/modal.js"></script>
+<script>
+const output=document.querySelector('#status');
+const modal=SlowlyModal.create('#dialog',{on_open:()=>output.textContent='開啟中',on_close:({reason})=>output.textContent='已關閉：'+reason+'，內容：'+document.querySelector('#value').value});
+document.querySelector('#open').onclick=()=>modal.open();
+document.querySelector('#save').onclick=()=>modal.close('submit');
+document.querySelector('#cancel').onclick=()=>modal.close('cancel');
+</script>
+</body></html>

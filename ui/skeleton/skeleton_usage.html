@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Skeleton 使用說明</title>
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Skeleton 使用說明</h1>
+
+<p><strong>用途：</strong>靜態占位 CSS，不是 Loader Progress；prefers-reduced-motion 下禁用 pulse 動畫。</p>
+<h2>載入（部署後 HTTPS 絕對路徑）</h2><pre>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/ui/skeleton/skeleton.css&quot;&gt;</pre>
+<h2>公開 API</h2><pre>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/ui/skeleton/skeleton.css&quot;&gt;</pre>
+<p><strong>輸入／設定：</strong>類別 slowly-skeleton＋ slowly-skeleton--line／--block／--circle，選配 --pulse；CSS 變數 width、height、size、color 可由宿主改。</p>
+<p><strong>實例操作：</strong>沒有 JS API；宿主切換 aria-busy、骨架與正式內容的 hidden 狀態</p>
+<h2>宿主接法示例</h2><pre>&lt;section aria-busy=&quot;true&quot;&gt;&lt;span class=&quot;slowly-skeleton slowly-skeleton--circle&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;span class=&quot;slowly-skeleton slowly-skeleton--line slowly-skeleton--pulse&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/section&gt;
+&lt;!-- 等宿主資料真正載入完成後，移除骨架並將 aria-busy 改為 false；不需 skeleton.js。 --&gt;</pre>
+<h2>生命週期與限制</h2><p>靜態占位 CSS，不是 Loader Progress；prefers-reduced-motion 下禁用 pulse 動畫。</p>
+<p>新 JS 使用 IIFE 並提供 <code>window.（無）</code>；錯誤 DOM／參數會明確報錯。不同宿主負責提供 UI 樣式、文字、實際業務操作，銷毀實例時清除監聽器和計時器。</p>
+<p>部署前新網址只是預定位置；若還沒把檔案上架，請先以 ZIP 的相同路徑部署。若在本機測試，可使用測試伺服器映射同路徑。</p>
+<p>提醒：這批不會複製已有的 Toast、Confirm、Tabs、Custom Select 或 Loader Progress；現有零件保留原樣。</p>
+<ul><li><a href="https://lib.stillnessbyslowly.com/ui/skeleton/skeleton.css">skeleton.css</a></li></ul>
+<p><a href="https://lib.stillnessbyslowly.com/ui/skeleton/skeleton_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/ui/skeleton/test_skeleton.html">獨立功能測試</a></p>
+
+
+
+</body></html>

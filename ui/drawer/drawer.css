@@ -1,0 +1,28 @@
+/* Positioning and viewport containment only. Host owns visual skin. */
+.slowly-drawer {
+  position: fixed;
+  box-sizing: border-box;
+  overflow: auto;
+  max-width: 100vw;
+  max-height: 100dvh;
+  border: 0;
+  margin: 0;
+}
+.slowly-drawer:not([open]) { display: none; }
+.slowly-drawer[data-drawer-placement="left"] {
+  inset: 0 auto 0 0;
+  width: min(var(--slowly-drawer-width, 20rem), 100vw);
+  height: 100dvh;
+}
+.slowly-drawer[data-drawer-placement="right"] {
+  inset: 0 0 0 auto;
+  width: min(var(--slowly-drawer-width, 20rem), 100vw);
+  height: 100dvh;
+}
+.slowly-drawer[data-drawer-placement="bottom"] {
+  inset: auto 0 0 0;
+  width: 100vw;
+  max-height: var(--slowly-drawer-max-height, 85dvh);
+}
+.slowly-drawer [data-drawer-handle] { touch-action: none; min-height: 32px; cursor: grab; }
+.slowly-drawer::backdrop { background: var(--slowly-drawer-backdrop, rgb(0 0 0 / 0.45)); }

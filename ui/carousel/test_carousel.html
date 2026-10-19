@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Carousel 真實功能測試</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/carousel/carousel.css">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Carousel 真實功能測試</h1>
+<p>以下項目皆實際呼叫零件／操作 DOM 後驗證結果，不預填 PASS。測試失敗會以紅字列出。</p><strong id="summary">測試執行中…</strong><ol id="results"></ol><div id="fixture"><div data-slowly-carousel class="slowly-carousel" id="subject"><div data-carousel-viewport><div data-carousel-slide>一</div><div data-carousel-slide>二</div><div data-carousel-slide>三</div></div><button data-carousel-previous>前</button><button data-carousel-next>後</button><button data-carousel-go-to="0">1</button><button data-carousel-go-to="1">2</button><button data-carousel-go-to="2">3</button></div><div data-slowly-carousel id="empty"></div></div>
+<script src="https://lib.stillnessbyslowly.com/ui/carousel/carousel.js"></script>
+<script>
+const results=document.querySelector('#results');
+const summary=document.querySelector('#summary');
+let passes=0,failures=0;
+function assert(condition, message='assertion failed'){if(!condition)throw new Error(message);}
+function expect_error(callback){let threw=false;try{callback();}catch(error){threw=true;}assert(threw,'expected an error');}
+function sleep(milliseconds){return new Promise(resolve=>setTimeout(resolve,milliseconds));}
+async function test(name, callback){
+  const line=document.createElement('li');
+  try{await callback();passes++;line.className='ok';line.textContent='PASS — '+name;}
+  catch(error){failures++;line.className='fail';line.textContent='FAIL — '+name+': '+error.message;console.error('FAIL',name,error);}
+  results.appendChild(line);
+  summary.textContent=passes+' PASS / '+failures+' FAIL';
+}
+window.addEventListener('error', event=>{failures++; const line=document.createElement('li');line.className='fail';line.textContent='FAIL — 瀏覽器執行錯誤: '+event.message;results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+window.addEventListener('unhandledrejection',event=>{failures++;const line=document.createElement('li');line.className='fail';line.textContent='FAIL — Promise rejected: '+String(event.reason);results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+(async()=>{
+
+const root=document.querySelector('#subject');const instance=SlowlyCarousel.create(root,{loop:true});
+await test('初始索引 0',()=>assert(instance.snapshot().index===0));
+await test('next 隱藏舊頁',()=>{instance.next();assert(instance.snapshot().index===1 && root.querySelectorAll('[data-carousel-slide]')[0].hidden);});
+await test('previous 回上一頁',()=>{instance.previous();assert(instance.snapshot().index===0);});
+await test('循環負索引回末頁',()=>{instance.previous();assert(instance.snapshot().index===2);});
+await test('go_to 指定頁',()=>{instance.go_to(1);assert(instance.snapshot().index===1);});
+await test('非法小數索引報錯',()=>expect_error(()=>instance.go_to(1.5)));
+await test('指示鈕真能切換',()=>{root.querySelector('[data-carousel-go-to="0"]').click();assert(instance.snapshot().index===0);});
+await test('點下一頁按鈕真能切換',()=>{root.querySelector('[data-carousel-next]').click();assert(instance.snapshot().index===1);});
+await test('自動播放可停止',()=>{instance.start();assert(instance.snapshot().playing);instance.pause();assert(!instance.snapshot().playing);});
+await test('非循環不超出範圍',()=>{instance.destroy();const limited=SlowlyCarousel.create(root,{loop:false});limited.previous();assert(limited.snapshot().index===0);limited.destroy();});
+await test('空清單安全',()=>{const empty=SlowlyCarousel.create('#empty');assert(empty.snapshot().index===-1);empty.next();empty.destroy();});
+await test('非法 interval 報錯',()=>expect_error(()=>SlowlyCarousel.create(root,{interval_ms:20})));
+await test('dispose 清理後可新建',()=>{const next=SlowlyCarousel.create(root);next.destroy();assert(root.querySelectorAll('[data-carousel-slide]:not([hidden])').length===3);});
+
+  summary.dataset.done='true';
+})().catch(error=>{failures++;summary.textContent=passes+' PASS / '+failures+' FAIL';summary.dataset.done='true';console.error(error);});
+</script>
+</body></html>

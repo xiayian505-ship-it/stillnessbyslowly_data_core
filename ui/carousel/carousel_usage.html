@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Carousel 使用說明</title>
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Carousel 使用說明</h1>
+
+<p><strong>用途：</strong>不是 Tabs 或滾動動畫庫；預設不自動播放，hover/focus/背景頁和 reduced-motion 暫停；無陀螺儀。</p>
+<h2>載入（部署後 HTTPS 絕對路徑）</h2><pre>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://lib.stillnessbyslowly.com/ui/carousel/carousel.css&quot;&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/ui/carousel/carousel.js&quot;&gt;&lt;/script&gt;</pre>
+<h2>公開 API</h2><pre>SlowlyCarousel.create(root, { loop, autoplay, interval_ms, initial_index, on_change })</pre>
+<p><strong>輸入／設定：</strong>root: data-slowly-carousel 容器；[data-carousel-slide] 子項、可選 previous/next/go-to 按鈕。interval_ms 至少 250；自動播放預設關。</p>
+<p><strong>實例操作：</strong>next()、previous()、go_to(index)、start()、pause()、snapshot()、destroy()</p>
+<h2>宿主接法示例</h2><pre>&lt;div data-slowly-carousel class=&quot;slowly-carousel&quot; id=&quot;photos&quot;&gt;&lt;div data-carousel-viewport&gt;&lt;article data-carousel-slide&gt;頁一&lt;/article&gt;&lt;article data-carousel-slide&gt;頁二&lt;/article&gt;&lt;/div&gt;&lt;button data-carousel-previous&gt;上一張&lt;/button&gt;&lt;button data-carousel-next&gt;下一張&lt;/button&gt;&lt;/div&gt;
+&lt;script&gt;const carousel = SlowlyCarousel.create(&#x27;#photos&#x27;, { loop: true }); carousel.next(); /* 使用完 carousel.destroy() */&lt;/script&gt;</pre>
+<h2>生命週期與限制</h2><p>不是 Tabs 或滾動動畫庫；預設不自動播放，hover/focus/背景頁和 reduced-motion 暫停；無陀螺儀。</p>
+<p>新 JS 使用 IIFE 並提供 <code>window.SlowlyCarousel</code>；錯誤 DOM／參數會明確報錯。不同宿主負責提供 UI 樣式、文字、實際業務操作，銷毀實例時清除監聽器和計時器。</p>
+<p>部署前新網址只是預定位置；若還沒把檔案上架，請先以 ZIP 的相同路徑部署。若在本機測試，可使用測試伺服器映射同路徑。</p>
+<p>提醒：這批不會複製已有的 Toast、Confirm、Tabs、Custom Select 或 Loader Progress；現有零件保留原樣。</p>
+<ul><li><a href="https://lib.stillnessbyslowly.com/ui/carousel/carousel.css">carousel.css</a></li><li><a href="https://lib.stillnessbyslowly.com/ui/carousel/carousel.js">carousel.js</a></li></ul>
+<p><a href="https://lib.stillnessbyslowly.com/ui/carousel/carousel_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/ui/carousel/test_carousel.html">獨立功能測試</a></p>
+
+<script src="https://lib.stillnessbyslowly.com/ui/carousel/carousel.js"></script>
+
+</body></html>

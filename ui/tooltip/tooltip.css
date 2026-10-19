@@ -1,0 +1,3 @@
+/* Tooltip can be positioned near the trigger; visual style remains with host. */
+.slowly-tooltip { position: fixed; z-index: 210; max-width: min(32rem, calc(100vw - 12px)); pointer-events: none; }
+.slowly-tooltip[hidden] { display: none; }

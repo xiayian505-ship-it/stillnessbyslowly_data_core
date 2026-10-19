@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Drawer 操作示範</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/drawer/drawer.css">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Drawer 操作示範</h1>
+<p>一支 Drawer JS 支援側邊選單與 Bottom Sheet。按 Escape、遮罩或關閉鈕可收回；底部把手可往下拉。</p>
+<div class="row"><button id="left_btn">打開左側</button><button id="right_btn">打開右側</button><button id="bottom_btn">打開底部</button></div>
+<dialog id="left_drawer"><h2>左側選單</h2><nav><a href="#status">頁面位置</a></nav><button data-close="left">關閉</button></dialog>
+<dialog id="right_drawer"><h2>右側選單</h2><p>右側內容</p><button data-close="right">關閉</button></dialog>
+<dialog id="bottom_drawer"><div id="handle" data-drawer-handle tabindex="0" aria-label="下拉把手">向下拖動把手關閉 ↧</div><h2>底部面板</h2><p>面板內的內容可以捲動。</p><button data-close="bottom">關閉</button></dialog>
+<p><output id="status">尚未打開</output></p>
+<script src="https://lib.stillnessbyslowly.com/ui/drawer/drawer.js"></script>
+<script>
+const list=[['left','#left_btn','#left_drawer'],['right','#right_btn','#right_drawer'],['bottom','#bottom_btn','#bottom_drawer']];
+const drawers={}; const output=document.querySelector('#status');
+list.forEach(([placement,trigger,dialog])=>{
+ drawers[placement]=SlowlyDrawer.create({trigger,dialog,placement,handle:placement==='bottom'?'#handle':null,on_open:()=>output.textContent='已開啟 '+placement,on_close:detail=>output.textContent=placement+' 已關閉（'+detail.reason+'）'});
+ document.querySelector('[data-close="'+placement+'"]').onclick=()=>drawers[placement].close('button');
+});
+</script>
+</body></html>

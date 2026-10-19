@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Drawer 真實功能測試</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/drawer/drawer.css">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Drawer 真實功能測試</h1>
+<p>以下項目皆實際呼叫零件／操作 DOM 後驗證結果，不預填 PASS。測試失敗會以紅字列出。</p><strong id="summary">測試執行中…</strong><ol id="results"></ol><div id="fixture"><button id="start">開啟</button><dialog id="drawer"><div id="handle" data-drawer-handle>拖拉</div><button>內容</button></dialog><button id="other_start">第二組</button><dialog id="other_drawer">第二組</dialog></div>
+<script src="https://lib.stillnessbyslowly.com/ui/drawer/drawer.js"></script>
+<script>
+const results=document.querySelector('#results');
+const summary=document.querySelector('#summary');
+let passes=0,failures=0;
+function assert(condition, message='assertion failed'){if(!condition)throw new Error(message);}
+function expect_error(callback){let threw=false;try{callback();}catch(error){threw=true;}assert(threw,'expected an error');}
+function sleep(milliseconds){return new Promise(resolve=>setTimeout(resolve,milliseconds));}
+async function test(name, callback){
+  const line=document.createElement('li');
+  try{await callback();passes++;line.className='ok';line.textContent='PASS — '+name;}
+  catch(error){failures++;line.className='fail';line.textContent='FAIL — '+name+': '+error.message;console.error('FAIL',name,error);}
+  results.appendChild(line);
+  summary.textContent=passes+' PASS / '+failures+' FAIL';
+}
+window.addEventListener('error', event=>{failures++; const line=document.createElement('li');line.className='fail';line.textContent='FAIL — 瀏覽器執行錯誤: '+event.message;results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+window.addEventListener('unhandledrejection',event=>{failures++;const line=document.createElement('li');line.className='fail';line.textContent='FAIL — Promise rejected: '+String(event.reason);results.appendChild(line);summary.textContent=passes+' PASS / '+failures+' FAIL';});
+(async()=>{
+
+const dialog=document.querySelector('#drawer');const trigger=document.querySelector('#start');
+const instance=SlowlyDrawer.create({dialog,trigger,handle:'#handle',placement:'bottom'});
+await test('宣告底部分類',()=>assert(dialog.dataset.drawerPlacement==='bottom'));
+await test('觸發鈕展開',()=>{trigger.click();assert(instance.is_open()&&trigger.getAttribute('aria-expanded')==='true');});
+await test('重複開啟冪等',()=>assert(instance.open()===false));
+await test('程式關閉並還原 aria',()=>{instance.close();assert(!instance.is_open()&&trigger.getAttribute('aria-expanded')==='false');});
+await test('toggle 展開關閉',()=>{instance.toggle();assert(instance.is_open());instance.toggle();assert(!instance.is_open());});
+await test('錯誤 placement 拒絕',()=>expect_error(()=>SlowlyDrawer.create({dialog:'#other_drawer',placement:'diagonal'})));
+await test('不能用普通 div',()=>expect_error(()=>SlowlyDrawer.create({dialog:trigger})));
+await test('右側另一實例',()=>{const other=SlowlyDrawer.create({dialog:'#other_drawer',trigger:'#other_start',placement:'right'});other.open();assert(other.is_open());other.close();other.destroy();});
+await test('下拉手勢到閾值關閉',()=>{instance.open();const h=document.querySelector('#handle');h.dispatchEvent(new PointerEvent('pointerdown',{pointerId:33,pointerType:'touch',clientY:10,isPrimary:true,bubbles:true}));h.dispatchEvent(new PointerEvent('pointerup',{pointerId:33,pointerType:'touch',clientY:110,bubbles:true}));assert(!instance.is_open());});
+await test('觸控取消不關閉',()=>{instance.open();const h=document.querySelector('#handle');h.dispatchEvent(new PointerEvent('pointerdown',{pointerId:34,pointerType:'touch',clientY:10,isPrimary:true,bubbles:true}));h.dispatchEvent(new PointerEvent('pointercancel',{pointerId:34,pointerType:'touch',clientY:110,bubbles:true}));assert(instance.is_open());instance.close();});
+await test('destroy 清理可重建',()=>{instance.destroy();const other=SlowlyDrawer.create({dialog,trigger,placement:'left'});assert(other!==instance);other.destroy();});
+
+  summary.dataset.done='true';
+})().catch(error=>{failures++;summary.textContent=passes+' PASS / '+failures+' FAIL';summary.dataset.done='true';console.error(error);});
+</script>
+</body></html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Accordion 操作示範</title>
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Accordion 操作示範</h1>
+<p>兩組獨立 Accordion：原生 summary 可用 Enter／Space，第一組單開、第二組多開。</p>
+<div data-slowly-accordion id="single"><details data-accordion-id="first"><summary>第一段</summary><p>文字一</p></details><details data-accordion-id="second"><summary>第二段</summary><p>文字二</p></details></div>
+<p class="row"><button id="open_first">打開第一段</button><button id="close_single">全部關閉</button></p>
+<div data-slowly-accordion id="multiple"><details data-accordion-id="a"><summary>A 區</summary><p>A 內容</p></details><details data-accordion-id="b"><summary>B 區</summary><p>B 內容</p></details></div>
+<button id="open_all">多開群組全部打開</button><output id="status">尚未操作</output>
+<script src="https://lib.stillnessbyslowly.com/ui/accordion/accordion.js"></script>
+<script>
+const single = SlowlyAccordion.create('#single');
+const multiple = SlowlyAccordion.create('#multiple', {multiple:true});
+const output = document.querySelector('#status');
+document.querySelector('#open_first').onclick=()=>{single.open('first'); output.textContent=JSON.stringify(single.snapshot());};
+document.querySelector('#close_single').onclick=()=>{single.close_all(); output.textContent=JSON.stringify(single.snapshot());};
+document.querySelector('#open_all').onclick=()=>{multiple.open_all(); output.textContent=JSON.stringify(multiple.snapshot());};
+document.querySelectorAll('[data-slowly-accordion]').forEach(root=>root.addEventListener('slowlyaccordionchange',e=>output.textContent=JSON.stringify(e.detail.state)));
+</script>
+</body></html>

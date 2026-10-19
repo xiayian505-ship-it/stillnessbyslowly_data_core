@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Skeleton 操作示範</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/skeleton/skeleton.css">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Skeleton 操作示範</h1>
+<p>Skeleton 只有 CSS，沒有 JS 函式；這頁按鈕的切換是宿主示範。</p>
+<section id="demo_status" aria-busy="true"><div id="loading"><div class="row"><span class="slowly-skeleton slowly-skeleton--circle slowly-skeleton--pulse" aria-hidden="true"></span><span class="slowly-skeleton slowly-skeleton--line slowly-skeleton--pulse" aria-hidden="true" style="--slowly-skeleton-width:15rem"></span></div>
+<span class="slowly-skeleton slowly-skeleton--block slowly-skeleton--pulse" aria-hidden="true"></span></div>
+<div id="actual" hidden><h2>正式內容</h2><p>資料已載入。</p></div></section>
+<div class="row"><button id="finish">載入完成</button><button id="reset">重新載入</button></div><output id="status">載入中</output>
+
+<script>
+const section=document.querySelector('#demo_status'),loading=document.querySelector('#loading'),actual=document.querySelector('#actual'),out=document.querySelector('#status');
+function ready(is_ready){section.setAttribute('aria-busy',String(!is_ready));loading.hidden=is_ready;actual.hidden=!is_ready;out.textContent=is_ready?'載入完成':'載入中';}
+document.querySelector('#finish').onclick=()=>ready(true);
+document.querySelector('#reset').onclick=()=>ready(false);
+</script>
+</body></html>

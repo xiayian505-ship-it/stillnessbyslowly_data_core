@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Action Menu 操作示範</title>
+<link rel="stylesheet" href="https://lib.stillnessbyslowly.com/ui/menu/action_menu.css">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.65; }
+button,input,select { font: inherit; padding: .35rem .6rem; margin: .15rem; min-height: 42px; }
+pre,code { overflow-wrap: anywhere; white-space: pre-wrap; }
+pre,fieldset { border: 1px solid #aaa; padding: .7rem; }
+.row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+#results > li { margin: .15rem 0; }
+.ok { color: #17622f; } .fail { color: #a01418; }
+</style>
+</head><body>
+<h1>Action Menu 操作示範</h1>
+<p>三點按鈕旁的操作選單，支援鍵盤 ArrowUp／Down、Home／End、Enter、Escape，不會真正刪資料。</p>
+<div class="row" id="rows"><div><span>項目一</span><button id="one" aria-label="項目一操作">⋮</button><div id="one_menu" class="slowly-action-menu" hidden><button data-action="edit">編輯</button><button data-action="share">分享</button><button data-action="delete" disabled>刪除（停用）</button></div></div>
+<div><span>項目二</span><button id="two" aria-label="項目二操作">⋮</button><div id="two_menu" class="slowly-action-menu" hidden><button data-action="edit">編輯</button><button data-action="share">分享</button><button data-action="delete">刪除</button></div></div>
+<div><span>項目三</span><button id="three" aria-label="項目三操作">⋮</button><div id="three_menu" class="slowly-action-menu" hidden><button data-action="edit">編輯</button><button data-action="share">分享</button><button data-action="delete">刪除</button></div></div></div>
+<output id="status">尚未選擇</output>
+<style>.slowly-action-menu{background:Canvas;border:1px solid currentColor;padding:.25rem;min-width:9rem}.slowly-action-menu button{display:block;width:100%;text-align:left}</style>
+<script src="https://lib.stillnessbyslowly.com/ui/menu/action_menu.js"></script>
+<script>
+const output=document.querySelector('#status');
+['one','two','three'].forEach(name=>SlowlyActionMenu.create({trigger:'#'+name,menu:'#'+name+'_menu',on_action:({action})=>output.textContent=name+'：'+action}));
+</script>
+</body></html>
