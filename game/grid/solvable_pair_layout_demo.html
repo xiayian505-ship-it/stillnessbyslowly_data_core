@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solvable Pair Layout｜互動 Demo</title>
+  <style>
+    input { max-width: 6em; }
+    label { display: inline-block; margin: 0.3em; }
+    button { min-height: 2em; margin: 0.2em; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Solvable Pair Layout｜互動示範</h1>
+  <p>依每列左右鏡射的方式生成平面配對牌陣，並可透過既有 Free Edge Tile 公開 API 驗證消除計畫。</p>
+
+  <label>列數 <input id="rows" type="number" min="1" value="2"></label>
+  <label>欄數（偶數） <input id="columns" type="number" min="2" step="2" value="8"></label>
+  <p><button id="generate">生成平面鏡射牌陣</button><button id="next">執行下一對移除</button><button id="all">移除剩餘全部</button></p>
+  <div id="board"></div>
+  <pre id="result"></pre>
+
+  <script src="https://lib.stillnessbyslowly.com/data/random/random.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/grid/free_edge_tile.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout.js"></script>
+
+  <script>
+    "use strict";
+    let layout=null,working_board=[],step_index=0,last_note='';
+function generate(){layout=SlowlySolvablePairLayout.generate({rows:Number(document.getElementById('rows').value),columns:Number(document.getElementById('columns').value),types:['A','B','C','D','E','F','G','H']});
+ working_board=layout.board.map(row=>row.map(cell=>({...cell})));step_index=0;last_note=SlowlySolvablePairLayout.verify_removal_plan(layout);draw();}
+function remove_next(){if(step_index>=layout.removal_plan.length){last_note='已全部移除';draw();return;}
+const step=layout.removal_plan[step_index];const first=SlowlyFreeEdgeTile.inspect(working_board,step.first);const second=SlowlyFreeEdgeTile.inspect(working_board,step.second);
+if(!first.selectable||!second.selectable){last_note='FAIL：計畫中包含不可移除的牌';draw();return;}
+working_board[step.first.r][step.first.c].removed=true;working_board[step.second.r][step.second.c].removed=true;
+step_index++;last_note={step_index,removed_type:step.type_id,first_open:first.selectable,second_open:second.selectable};draw();}
+function draw(){const container=document.getElementById('board');container.replaceChildren();for(let row=0;row<working_board.length;row++){
+  const paragraph=document.createElement('p');for(let col=0;col<working_board[row].length;col++){
+   const cell=working_board[row][col];const button=document.createElement('button');button.textContent=cell.removed?'·':String(cell.type_id);
+   button.disabled=cell.removed;button.title=SlowlyFreeEdgeTile.inspect(working_board,{r:row,c:col}).selectable?'目前可選':'目前不能選';paragraph.appendChild(button);}
+  container.appendChild(paragraph);}
+document.getElementById('result').textContent=JSON.stringify({step_index,total_pairs:layout.removal_plan.length,note:last_note},null,2);}
+document.getElementById('generate').addEventListener('click',generate);
+document.getElementById('next').addEventListener('click',remove_next);
+document.getElementById('all').addEventListener('click',()=>{while(step_index<layout.removal_plan.length){const before=step_index;remove_next();if(step_index===before)break;}});
+generate();
+  </script>
+</body>
+</html>

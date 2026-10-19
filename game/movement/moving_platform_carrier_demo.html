@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moving Platform Carrier｜互動 Demo</title>
+  <style>
+    input { max-width: 6em; }
+    label { display: inline-block; margin: 0.3em; }
+    button { min-height: 2em; margin: 0.2em; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Moving Platform Carrier｜互動示範</h1>
+  <p>在宿主已確認支撐的情況下，將平台的前後位置差轉移到乘載物。可選擇用既有矩形檢查搜尋候選平台。</p>
+
+  <label><input id="supported" type="checkbox" checked>宿主確認角色正在搭乘</label>
+  <p><button id="left">平台 ←</button> <button id="right">平台 →</button>
+  <button id="up">平台 ↑</button> <button id="down">平台 ↓</button>
+  <button id="search">用 Rectangle Overlap 找候選支撐</button><button id="reset">復位</button></p>
+  <svg id="scene" viewBox="0 0 260 140" width="390" height="210" aria-label="角色與移動平台示意">
+    <rect id="actor" x="60" y="54" width="20" height="20" fill="gray"></rect>
+    <rect id="platform" x="40" y="74" width="90" height="12" fill="black"></rect>
+  </svg>
+  <pre id="result"></pre>
+
+  <script src="https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/movement/moving_platform_carrier.js"></script>
+
+  <script>
+    "use strict";
+    let actor_position={x:60,y:54},platform_position={x:40,y:74},info='';
+function draw(){document.getElementById('actor').setAttribute('x',actor_position.x);document.getElementById('actor').setAttribute('y',actor_position.y);document.getElementById('platform').setAttribute('x',platform_position.x);document.getElementById('platform').setAttribute('y',platform_position.y);document.getElementById('result').textContent=JSON.stringify({actor_position,platform_position,info},null,2);}
+function move(x,y){const previous={...platform_position};platform_position={x:previous.x+x,y:previous.y+y};const result=SlowlyMovingPlatformCarrier.carry({position:actor_position,platform_previous:previous,platform_current:platform_position,supported:document.getElementById('supported').checked});actor_position=result.carried_position;info=result;draw();}
+for(const [id,x,y] of [['left',-10,0],['right',10,0],['up',0,-10],['down',0,10]]){document.getElementById(id).addEventListener('click',()=>move(x,y));}
+document.getElementById('search').addEventListener('click',()=>{const found=SlowlyMovingPlatformCarrier.find_support({actor_rectangle:{...actor_position,width:20,height:20},candidates:[{rectangle:{...platform_position,width:90,height:12}}]});document.getElementById('supported').checked=found.supported;info={supported:found.supported,index:found.index};draw();});
+document.getElementById('reset').addEventListener('click',()=>{actor_position={x:60,y:54};platform_position={x:40,y:74};document.getElementById('supported').checked=true;info='重設';draw();});
+draw();
+  </script>
+</body>
+</html>

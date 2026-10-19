@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rhythm Chart Generator｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+  <h1>Rhythm Chart Generator｜使用說明</h1>
+  <p>利用既有 BeatTime 換算每拍長度、SlowlyRandom 選擇候選音符與軌道，輸出中性的節奏譜面資料。</p>
+  <h2>正式 HTTPS 引用順序</h2>
+  <pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/audio/tempo/beat_time.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/data/random/random.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/rhythm/rhythm_chart_generator.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>以上為 GitHub Pages 完成部署後的預期路徑。若尚未上傳，網址不會自動存在。</p>
+  <h2>公開 API</h2>
+  <p><code>window.SlowlyRhythmChartGenerator</code>，版本 <code>1.0.0</code>。</p>
+  <p>generate({duration_ms, bpm?, bpm_at?, start_offset_ms?, lanes?, subdivide?, density?, avoid_repeat_within_ms?, max_slots?, max_notes?, random_int?})。</p>
+  <h2>參數與單位</h2>
+  <p>duration_ms：整段譜面長度（毫秒）；bpm：固定節奏；bpm_at(beat_start_ms)：Ramp 模式每拍提供新 BPM；lanes：軌道數；subdivide：每拍候選槽；density：0～1；random_int(min,max)：可測試注入，否則呼叫 SlowlyRandom.int。</p>
+  <h2>回傳結果</h2>
+  <p>回傳 {notes: [{lane, hit_time_ms}], slot_count, truncated}；lane 從 0 開始，hit_time_ms 使用毫秒且包含 start_offset_ms；max_slots/max_notes 到上限時會設 truncated=true。</p>
+  <h2>實際宿主接法</h2>
+  <pre><code>const chart = SlowlyRhythmChartGenerator.generate({
+  duration_ms: 5000, bpm: 120, lanes: 4, subdivide: 2, density: 0.55
+});
+console.log(chart.notes);
+// 命中後如需判定，可另外呼叫 SlowlyTimingJudgement.judge。</code></pre>
+  <h2>錯誤／退化情境</h2>
+  <p>BeatTime 缺失會擲錯；非法 BPM、負時長、無效細分、密度越界、亂數回傳越界會擲錯；極端 BPM 無法使時間前進時拒絕。</p>
+  <h2>職責邊界、清理與限制</h2>
+  <p>生成器不做 Perfect／Great／Good／Miss 判定，也不管理遊戲分數、播放聲音或生成音符 DOM；遇到過量資料以 max_slots/max_notes 限制。</p>
+  <p>除了有狀態零件需在宿主結束局面時呼叫 <code>reset()</code>，其餘純運算 API 不保留 DOM 監聽器，也不需 destroy。所有輸入時間單位、可選依賴及限制以上述公開函式契約為準。</p>
+  <p><a href="https://lib.stillnessbyslowly.com/game/rhythm/rhythm_chart_generator_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/rhythm/test_rhythm_chart_generator.html">PASS／FAIL 功能測試</a></p>
+</body>
+</html>

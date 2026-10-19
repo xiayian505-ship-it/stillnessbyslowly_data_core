@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moving Platform Carrier｜獨立 PASS／FAIL 測試</title>
+</head>
+<body>
+  <h1>Moving Platform Carrier｜實際功能測試</h1>
+  <p>下方結果由瀏覽器逐項執行 JavaScript 斷言產生；失敗顯示 FAIL 與錯誤。</p>
+  <p id="summary">測試執行中</p>
+  <ol id="results"></ol>
+  <script src="https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/movement/moving_platform_carrier.js"></script>
+  <script>
+    "use strict";
+
+    const result_list = document.getElementById("results");
+    let passed = 0;
+    let failed = 0;
+
+    function equal(actual, expected) {
+      if (actual !== expected) {
+        throw new Error("Expected " + JSON.stringify(expected) + ", got " + JSON.stringify(actual));
+      }
+    }
+
+    function deep(actual, expected) {
+      const actual_text = JSON.stringify(actual);
+      const expected_text = JSON.stringify(expected);
+      if (actual_text !== expected_text) {
+        throw new Error("Expected " + expected_text + ", got " + actual_text);
+      }
+    }
+
+    function check(condition, message = "condition is false") {
+      if (!condition) throw new Error(message);
+    }
+
+    function throws(callback) {
+      let threw = false;
+      try { callback(); } catch (error) { threw = true; }
+      check(threw, "Expected an exception.");
+    }
+
+    function test(title, assertion) {
+      const row = document.createElement("li");
+      try {
+        assertion();
+        passed += 1;
+        row.textContent = "PASS — " + title;
+      } catch (error) {
+        failed += 1;
+        row.textContent = "FAIL — " + title + ": " + error.message;
+      }
+      result_list.appendChild(row);
+    }
+
+    const carry=SlowlyMovingPlatformCarrier.carry, support=SlowlyMovingPlatformCarrier.find_support;
+const sample=(supported,now)=>carry({position:{x:3,y:4},platform_previous:{x:0,y:0},platform_current:now,supported});
+test('往右移動傳遞 x',()=>{equal(sample(true,{x:2,y:0}).carried_position.x,5);});
+test('往左移動傳遞 x',()=>{equal(sample(true,{x:-2,y:0}).carried_position.x,1);});
+test('向上與向下傳遞 y',()=>{equal(sample(true,{x:0,y:-2}).carried_position.y,2);equal(sample(true,{x:0,y:3}).carried_position.y,7);});
+test('未受到支撐不位移',()=>{deep(sample(false,{x:10,y:20}).carried_position,{x:3,y:4});});
+test('平台零位移',()=>{deep(sample(true,{x:0,y:0}).displacement,{x:0,y:0});});
+test('不修改宿主輸入',()=>{const p={x:1,y:2};const data={position:p,platform_previous:{x:0,y:0},platform_current:{x:1,y:1},supported:true};carry(data);deep(p,{x:1,y:2});});
+test('矩形重疊找到支撐候選',()=>{const r=support({actor_rectangle:{x:2,y:0,width:2,height:2},candidates:[{rectangle:{x:1,y:2,width:4,height:1},id:'ok'}]});check(r.supported);equal(r.platform.id,'ok');});
+test('無候選安全回傳',()=>{check(!support({actor_rectangle:{x:0,y:0,width:1,height:1},candidates:[]}).supported);});
+test('平面不接觸回不支撐',()=>{check(!support({actor_rectangle:{x:0,y:0,width:1,height:1},candidates:[{rectangle:{x:5,y:5,width:1,height:1}}]}).supported);});
+test('過濾不合格支撐候選',()=>{check(!support({actor_rectangle:{x:0,y:0,width:1,height:1},candidates:[{rectangle:{x:0,y:1,width:2,height:2}}],is_eligible:()=>false}).supported);});
+test('最近水平中心優先',()=>{const r=support({actor_rectangle:{x:4,y:0,width:2,height:2},candidates:[{id:'far',rectangle:{x:0,y:2,width:8,height:2}},{id:'near',rectangle:{x:4,y:2,width:2,height:2}}]});equal(r.platform.id,'near');});
+test('非法坐標及 supported 拒絕',()=>{throws(()=>sample('yes',{x:1,y:1}));throws(()=>sample(true,{x:NaN,y:0}));});
+test('缺少矩形依賴明確拋錯',()=>{const saved=window.SlowlyRectangleOverlap2D;try{delete window.SlowlyRectangleOverlap2D;throws(()=>support({actor_rectangle:{x:0,y:0,width:1,height:1},candidates:[]}));}finally{window.SlowlyRectangleOverlap2D=saved;}});
+
+    document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+    window.__test_results = { passed, failed };
+  </script>
+</body>
+</html>

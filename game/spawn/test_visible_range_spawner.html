@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visible Range Spawner｜獨立 PASS／FAIL 測試</title>
+</head>
+<body>
+  <h1>Visible Range Spawner｜實際功能測試</h1>
+  <p>下方結果由瀏覽器逐項執行 JavaScript 斷言產生；失敗顯示 FAIL 與錯誤。</p>
+  <p id="summary">測試執行中</p>
+  <ol id="results"></ol>
+  <script src="https://lib.stillnessbyslowly.com/data/random/random.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/spawn/visible_range_spawner.js"></script>
+  <script>
+    "use strict";
+
+    const result_list = document.getElementById("results");
+    let passed = 0;
+    let failed = 0;
+
+    function equal(actual, expected) {
+      if (actual !== expected) {
+        throw new Error("Expected " + JSON.stringify(expected) + ", got " + JSON.stringify(actual));
+      }
+    }
+
+    function deep(actual, expected) {
+      const actual_text = JSON.stringify(actual);
+      const expected_text = JSON.stringify(expected);
+      if (actual_text !== expected_text) {
+        throw new Error("Expected " + expected_text + ", got " + actual_text);
+      }
+    }
+
+    function check(condition, message = "condition is false") {
+      if (!condition) throw new Error(message);
+    }
+
+    function throws(callback) {
+      let threw = false;
+      try { callback(); } catch (error) { threw = true; }
+      check(threw, "Expected an exception.");
+    }
+
+    function test(title, assertion) {
+      const row = document.createElement("li");
+      try {
+        assertion();
+        passed += 1;
+        row.textContent = "PASS — " + title;
+      } catch (error) {
+        failed += 1;
+        row.textContent = "FAIL — " + title + ": " + error.message;
+      }
+      result_list.appendChild(row);
+    }
+
+    const plan=SlowlyVisibleRangeSpawner.plan_range;
+const defaults={frontier:0,view_min:0,view_max:100,preload_distance:0,spacing_min:20,spacing_max:20,random_int:(a,b)=>a};
+test('正常生成 5 個位置',()=>{deep(plan(defaults).spawn_positions,[20,40,60,80,100]);});
+test('回傳 next_frontier',()=>{equal(plan(defaults).next_frontier,100);});
+test('原視窗重複規劃具穩定性',()=>{deep(plan(defaults).spawn_positions,plan(defaults).spawn_positions);});
+test('向前移動視窗可以繼續補位',()=>{deep(plan({...defaults,frontier:100,view_min:50,view_max:160}).spawn_positions,[120,140,160]);});
+test('預載邊界計入',()=>{equal(plan({...defaults,preload_distance:20}).spawn_positions.length,6);});
+test('舊物件低於保留門檻會移除',()=>{deep(plan({...defaults,view_min:30,retain_distance:5,existing:[{id:'a',position:24},{id:'b',position:25}]}).remove_ids,['a']);});
+test('剛好等於門檻不刪除',()=>{deep(plan({...defaults,view_min:30,retain_distance:5,existing:[{id:1,position:25}]}).remove_ids,[]);});
+test('沒有生成物件、空 existing 正常',()=>{deep(plan({...defaults,frontier:110}).spawn_positions,[]);});
+test('最大數量停止並標示 truncated',()=>{const p=plan({...defaults,max_spawn_count:2});equal(p.spawn_positions.length,2);check(p.truncated);});
+test('上限剛好滿視窗不誤報中斷',()=>{check(!plan({...defaults,max_spawn_count:5}).truncated);});
+test('視窗倒置與負邊界拒絕',()=>{throws(()=>plan({...defaults,view_min:20,view_max:0}));throws(()=>plan({...defaults,preload_distance:-1}));});
+test('間距不是正整數時拒絕',()=>{throws(()=>plan({...defaults,spacing_min:0}));throws(()=>plan({...defaults,spacing_max:1.5}));});
+test('錯誤抽樣值拒絕',()=>{throws(()=>plan({...defaults,random_int:()=>-1}));});
+test('原 existing 陣列不會突變',()=>{const a=[{id:'a',position:-1}];const before=JSON.stringify(a);plan({...defaults,existing:a});equal(JSON.stringify(a),before);});
+test('極近前沿不會生成超過界線',()=>{deep(plan({...defaults,frontier:95}).spawn_positions,[]);});
+
+    document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+    window.__test_results = { passed, failed };
+  </script>
+</body>
+</html>

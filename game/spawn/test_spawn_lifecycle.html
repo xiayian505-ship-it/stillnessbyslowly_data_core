@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spawn Lifecycle｜獨立 PASS／FAIL 測試</title>
+</head>
+<body>
+  <h1>Spawn Lifecycle｜實際功能測試</h1>
+  <p>下方結果由瀏覽器逐項執行 JavaScript 斷言產生；失敗顯示 FAIL 與錯誤。</p>
+  <p id="summary">測試執行中</p>
+  <ol id="results"></ol>
+  <script src="https://lib.stillnessbyslowly.com/game/spawn/spawn_lifecycle.js"></script>
+  <script>
+    "use strict";
+
+    const result_list = document.getElementById("results");
+    let passed = 0;
+    let failed = 0;
+
+    function equal(actual, expected) {
+      if (actual !== expected) {
+        throw new Error("Expected " + JSON.stringify(expected) + ", got " + JSON.stringify(actual));
+      }
+    }
+
+    function deep(actual, expected) {
+      const actual_text = JSON.stringify(actual);
+      const expected_text = JSON.stringify(expected);
+      if (actual_text !== expected_text) {
+        throw new Error("Expected " + expected_text + ", got " + actual_text);
+      }
+    }
+
+    function check(condition, message = "condition is false") {
+      if (!condition) throw new Error(message);
+    }
+
+    function throws(callback) {
+      let threw = false;
+      try { callback(); } catch (error) { threw = true; }
+      check(threw, "Expected an exception.");
+    }
+
+    function test(title, assertion) {
+      const row = document.createElement("li");
+      try {
+        assertion();
+        passed += 1;
+        row.textContent = "PASS — " + title;
+      } catch (error) {
+        failed += 1;
+        row.textContent = "FAIL — " + title + ": " + error.message;
+      }
+      result_list.appendChild(row);
+    }
+
+    const create = SlowlySpawnLifecycle.create;
+test('登記成功與到期時刻', () => {
+  const m = create({capacity:2,lifetime_ms:50});
+  check(m.spawn({id:'a',now_ms:0}).allowed);
+  equal(m.snapshot().active_count,1);
+  equal(m.expire(49).expired_ids.length,0);
+  equal(m.expire(50).expired_ids[0],'a');
+});
+test('重複識別碼拒絕', () => {
+  const m=create({capacity:2});m.spawn({id:'a',now_ms:0});
+  equal(m.spawn({id:'a',now_ms:1}).reason,'occupied');
+});
+test('容量滿與釋放後重登記', () => {
+  const m=create({capacity:1});m.spawn({id:'a',now_ms:0});
+  equal(m.spawn({id:'b',now_ms:1}).reason,'capacity_full');
+  check(m.release('a'));check(m.spawn({id:'b',now_ms:1}).allowed);
+});
+test('自訂存活期覆寫預設', () => {
+  const m=create({capacity:1,lifetime_ms:500});
+  equal(m.spawn({id:'a',now_ms:100,lifetime_ms:5}).expires_at_ms,105);
+});
+test('零存活時間會在同時刻到期', () => {
+  const m=create({capacity:1,lifetime_ms:0});m.spawn({id:'a',now_ms:1});
+  equal(m.expire(1).expired_ids.length,1);
+});
+test('多個過期及未過期混合', () => {
+  const m=create({capacity:3,lifetime_ms:20});
+  m.spawn({id:'a',now_ms:0});m.spawn({id:'b',now_ms:10});
+  m.spawn({id:'c',now_ms:12,lifetime_ms:99});
+  deep(m.expire(30).expired_ids,['a','b']);equal(m.snapshot().active_count,1);
+});
+test('時間倒退拒絕', () => {
+  const m=create({capacity:1});m.expire(200);throws(()=>m.expire(199));
+});
+test('reset 清除計時並可重用', () => {
+  const m=create({capacity:1});m.spawn({id:1,now_ms:120});m.reset();
+  equal(m.snapshot().active_count,0);check(m.spawn({id:1,now_ms:0}).allowed);
+});
+test('多實例彼此隔離', () => {
+  const a=create({capacity:1}),b=create({capacity:1});
+  a.spawn({id:'x',now_ms:0});equal(b.snapshot().active_count,0);
+});
+test('無效容量與負存活期拒絕', () => {
+  throws(()=>create({capacity:0}));throws(()=>create({lifetime_ms:-1}));
+});
+test('錯誤 now_ms 與非法 ID 拒絕', () => {
+  const m=create();throws(()=>m.spawn({id:'x',now_ms:NaN}));
+  throws(()=>m.spawn({id:'',now_ms:0}));
+});
+test('快照新陣列與不可寫', () => {
+  const m=create();const s=m.snapshot();check(Object.isFrozen(s.entries));
+  equal(s.entries.length,0);m.spawn({id:'x',now_ms:0});equal(s.entries.length,0);
+});
+
+    document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+    window.__test_results = { passed, failed };
+  </script>
+</body>
+</html>

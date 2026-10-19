@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spawn Lifecycle｜互動 Demo</title>
+  <style>
+    input { max-width: 6em; }
+    label { display: inline-block; margin: 0.3em; }
+    button { min-height: 2em; margin: 0.2em; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Spawn Lifecycle｜互動示範</h1>
+  <p>登記生成識別碼，限制同時存在數量，依宿主提供的毫秒時鐘回收過期識別碼。</p>
+
+  <label>容量 <input id="capacity" type="number" min="1" value="3"></label>
+  <label>存活時間（ms） <input id="lifetime" type="number" min="0" value="1500"></label>
+  <label>前進時間（ms） <input id="advance" type="number" min="0" value="500"></label>
+  <p><button id="reset">建立／重設</button> <button id="spawn">生成可用位置</button>
+  <button id="time">前進並處理到期</button> <button id="release">釋放最後使用位置</button></p>
+  <p>六個獨立格位（點格位可試著生成／釋放）：</p>
+  <div id="slots"></div>
+  <pre id="result"></pre>
+
+  <script src="https://lib.stillnessbyslowly.com/game/spawn/spawn_lifecycle.js"></script>
+
+  <script>
+    "use strict";
+    let manager = null;
+let now_ms = 0;
+let note = '';
+const slots = document.getElementById('slots');
+for (let index = 1; index <= 6; index += 1) {
+  const button = document.createElement('button');
+  button.textContent = '位置 ' + index;
+  button.dataset.identifier = 'slot_' + index;
+  button.addEventListener('click', () => {
+    const occupied = manager.snapshot().entries.some(item => item.id === button.dataset.identifier);
+    note = occupied ? '釋放 ' + button.dataset.identifier : JSON.stringify(manager.spawn({id:button.dataset.identifier,now_ms}));
+    if (occupied) manager.release(button.dataset.identifier);
+    draw();
+  });
+  slots.appendChild(button);
+}
+function draw() {
+  document.getElementById('result').textContent = JSON.stringify({ now_ms, note, state:manager.snapshot() },null,2);
+}
+function reset() {
+  manager = SlowlySpawnLifecycle.create({capacity:Number(document.getElementById('capacity').value),lifetime_ms:Number(document.getElementById('lifetime').value)});
+  now_ms = 0;
+  note = '已重設';
+  draw();
+}
+document.getElementById('reset').addEventListener('click',reset);
+document.getElementById('spawn').addEventListener('click',() => {
+  const occupied = new Set(manager.snapshot().entries.map(item=>item.id));
+  const id = Array.from({length:6},(_,index)=>'slot_'+(index+1)).find(value=>!occupied.has(value));
+  note = id ? JSON.stringify(manager.spawn({id,now_ms})) : '六個位置已占滿';
+  draw();
+});
+document.getElementById('time').addEventListener('click',() => {
+  now_ms += Number(document.getElementById('advance').value);
+  note = JSON.stringify(manager.expire(now_ms));
+  draw();
+});
+document.getElementById('release').addEventListener('click',() => {
+  const entries = manager.snapshot().entries;
+  note = entries.length && manager.release(entries[entries.length-1].id) ? '已釋放最後占用' : '沒有可釋放位置';
+  draw();
+});
+reset();
+  </script>
+</body>
+</html>

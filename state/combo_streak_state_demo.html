@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Combo Streak State｜互動 Demo</title>
+  <style>
+    input { max-width: 6em; }
+    label { display: inline-block; margin: 0.3em; }
+    button { min-height: 2em; margin: 0.2em; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Combo Streak State｜互動示範</h1>
+  <p>管理連續成功次數、歷史最佳連擊和可選的遊戲時間超時清零。</p>
+
+  <label>超時毫秒（空白＝無超時） <input id="timeout" type="number" min="0" value="1500"></label>
+  <label>時間前進（ms） <input id="step" type="number" min="0" value="500"></label>
+  <p><button id="configure">建立／切換設定</button> <button id="success">成功</button>
+  <button id="failure">失誤</button> <button id="time">前進時間並檢查</button>
+  <button id="reset">重設本局</button></p>
+  <pre id="result"></pre>
+
+  <script src="https://lib.stillnessbyslowly.com/state/combo_streak_state.js"></script>
+
+  <script>
+    "use strict";
+    let manager,now_ms=0,last_message='';
+function display(){document.getElementById('result').textContent=JSON.stringify({now_ms,last_message,state:manager.snapshot()},null,2);}
+function init(){const raw=document.getElementById('timeout').value;manager=SlowlyComboStreakState.create({timeout_ms:raw===''?null:Number(raw)});now_ms=0;last_message='已建立';display();}
+document.getElementById('configure').addEventListener('click',init);
+document.getElementById('success').addEventListener('click',()=>{manager.success(now_ms);last_message='success';display();});
+document.getElementById('failure').addEventListener('click',()=>{manager.failure(now_ms);last_message='failure';display();});
+document.getElementById('time').addEventListener('click',()=>{now_ms+=Number(document.getElementById('step').value);last_message=JSON.stringify(manager.check_timeout(now_ms));display();});
+document.getElementById('reset').addEventListener('click',()=>{manager.reset();now_ms=0;last_message='reset（保留最高）';display();});
+init();
+  </script>
+</body>
+</html>

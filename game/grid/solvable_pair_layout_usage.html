@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solvable Pair Layout｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+  <h1>Solvable Pair Layout｜使用說明</h1>
+  <p>依每列左右鏡射的方式生成平面配對牌陣，並可透過既有 Free Edge Tile 公開 API 驗證消除計畫。</p>
+  <h2>正式 HTTPS 引用順序</h2>
+  <pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/data/random/random.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/grid/free_edge_tile.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>以上為 GitHub Pages 完成部署後的預期路徑。若尚未上傳，網址不會自動存在。</p>
+  <h2>公開 API</h2>
+  <p><code>window.SlowlySolvablePairLayout</code>，版本 <code>1.0.0</code>。</p>
+  <p>generate({rows, columns, types, unique_per_row?, random_int?})；verify_removal_plan(layout)。</p>
+  <h2>參數與單位</h2>
+  <p>rows 為正整數、columns 為正偶數、types 為中性牌型 ID 陣列；unique_per_row 預設 true，牌型池需至少有 columns/2 種不同 ID。random_int 可注入可控亂數。</p>
+  <h2>回傳結果</h2>
+  <p>generate 回傳 {board, removal_plan}；board 的格子為 {type_id,removed:false}；removal_plan 每項有 type_id、first:{r,c}、second:{r,c}；verify 回傳 {solvable,failed_step}。</p>
+  <h2>實際宿主接法</h2>
+  <pre><code>const layout = SlowlySolvablePairLayout.generate({
+  rows:2, columns:4, types:[&#x27;A&#x27;,&#x27;B&#x27;,&#x27;C&#x27;,&#x27;D&#x27;]
+});
+const verification = SlowlySolvablePairLayout.verify_removal_plan(layout);
+// true：可依 removal_plan 在平面左右開邊規則下逐對移除</code></pre>
+  <h2>錯誤／退化情境</h2>
+  <p>奇數欄／零行／零欄／牌型不足時拒絕；缺少 SlowlyRandom 或（驗證時）SlowlyFreeEdgeTile 會擲明確錯誤。</p>
+  <h2>職責邊界、清理與限制</h2>
+  <p>只保證此平面鏡射構造的外往內解法；不是立體上海麻將求解器，不管理玩家點牌或 PairMatching 的狀態。</p>
+  <p>除了有狀態零件需在宿主結束局面時呼叫 <code>reset()</code>，其餘純運算 API 不保留 DOM 監聽器，也不需 destroy。所有輸入時間單位、可選依賴及限制以上述公開函式契約為準。</p>
+  <p><a href="https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/grid/test_solvable_pair_layout.html">PASS／FAIL 功能測試</a></p>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forward Target Selector｜獨立 PASS／FAIL 測試</title>
+</head>
+<body>
+  <h1>Forward Target Selector｜實際功能測試</h1>
+  <p>下方結果由瀏覽器逐項執行 JavaScript 斷言產生；失敗顯示 FAIL 與錯誤。</p>
+  <p id="summary">測試執行中</p>
+  <ol id="results"></ol>
+  <script src="https://lib.stillnessbyslowly.com/game/targeting/forward_target_selector.js"></script>
+  <script>
+    "use strict";
+
+    const result_list = document.getElementById("results");
+    let passed = 0;
+    let failed = 0;
+
+    function equal(actual, expected) {
+      if (actual !== expected) {
+        throw new Error("Expected " + JSON.stringify(expected) + ", got " + JSON.stringify(actual));
+      }
+    }
+
+    function deep(actual, expected) {
+      const actual_text = JSON.stringify(actual);
+      const expected_text = JSON.stringify(expected);
+      if (actual_text !== expected_text) {
+        throw new Error("Expected " + expected_text + ", got " + actual_text);
+      }
+    }
+
+    function check(condition, message = "condition is false") {
+      if (!condition) throw new Error(message);
+    }
+
+    function throws(callback) {
+      let threw = false;
+      try { callback(); } catch (error) { threw = true; }
+      check(threw, "Expected an exception.");
+    }
+
+    function test(title, assertion) {
+      const row = document.createElement("li");
+      try {
+        assertion();
+        passed += 1;
+        row.textContent = "PASS — " + title;
+      } catch (error) {
+        failed += 1;
+        row.textContent = "FAIL — " + title + ": " + error.message;
+      }
+      result_list.appendChild(row);
+    }
+
+    const select=SlowlyForwardTargetSelector.select;
+const targets=[{x:4,lane:1},{x:9,lane:1},{x:5,lane:2},{x:-3,lane:1}];
+test('向右挑最近',()=>{equal(select({origin_x:0,lane:1,direction:'right',candidates:targets}).target.x,4);});
+test('向左挑最近',()=>{equal(select({origin_x:0,lane:1,direction:'left',candidates:targets}).target.x,-3);});
+test('跳過跨路線',()=>{equal(select({origin_x:4,lane:1,direction:'right',candidates:targets}).target.x,4);});
+test('原點包含預設 true',()=>{equal(select({origin_x:4,lane:1,direction:1,candidates:targets}).distance,0);});
+test('原點可以排除',()=>{equal(select({origin_x:4,lane:1,direction:1,candidates:targets,allow_origin:false}).target.x,9);});
+test('資格 callback 過濾',()=>{equal(select({origin_x:0,lane:1,direction:1,candidates:targets,is_eligible:t=>t.x!==4}).target.x,9);});
+test('最大距離排除遠物',()=>{check(!select({origin_x:0,lane:1,direction:1,candidates:targets,max_distance:2}).found);});
+test('同距保留原候選順序',()=>{const t=[{x:2,lane:'a',id:1},{x:2,lane:'a',id:2}];equal(select({origin_x:0,lane:'a',direction:1,candidates:t}).target.id,1);});
+test('空候選回明確無結果',()=>{const x=select({origin_x:0,lane:1,direction:1,candidates:[]});check(!x.found);equal(x.target,null);});
+test('非法坐標候選被略過',()=>{check(!select({origin_x:0,lane:1,direction:1,candidates:[{x:NaN,lane:1}]}).found);});
+test('可自訂欄位 mapping',()=>{const x=select({origin_x:0,lane:7,direction:1,candidates:[{coordinate:3,row:7}],lane_of:t=>t.row,position_of:t=>t.coordinate});equal(x.distance,3);});
+test('拒絕非法方向與最大距離',()=>{throws(()=>select({origin_x:0,lane:1,direction:'up',candidates:[]}));throws(()=>select({origin_x:0,lane:1,direction:1,candidates:[],max_distance:-1}));});
+test('原物件不變',()=>{const old=JSON.stringify(targets);select({origin_x:0,lane:1,direction:1,candidates:targets});equal(JSON.stringify(targets),old);});
+
+    document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+    window.__test_results = { passed, failed };
+  </script>
+</body>
+</html>

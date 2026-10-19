@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Merge Level Rules｜互動 Demo</title>
+  <style>
+    input { max-width: 6em; }
+    label { display: inline-block; margin: 0.3em; }
+    button { min-height: 2em; margin: 0.2em; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Merge Level Rules｜互動示範</h1>
+  <p>單純比較兩個等級是否相同、有效、低於最大等級，回傳是否能合併升一級。</p>
+
+  <label>第一等級 <input id="first" type="number" min="0" value="2"></label>
+  <label>第二等級 <input id="second" type="number" min="0" value="2"></label>
+  <label>最高等級 <input id="maximum" type="number" min="0" value="8"></label>
+  <label>空格值（空白＝null） <input id="empty" type="number" placeholder="null"></label>
+  <label><input id="lock" type="checkbox">第二物件鎖定不可合併</label>
+  <p><button id="inspect">判斷能否合併</button> <button id="apply">判斷並套用升級</button></p>
+  <pre id="result"></pre>
+
+  <script src="https://lib.stillnessbyslowly.com/game/merge/merge_level_rules.js"></script>
+
+  <script>
+    "use strict";
+    function calculate(){
+  const empty=document.getElementById('empty').value;
+  return SlowlyMergeLevelRules.inspect_merge({
+    first_level:document.getElementById('first').value===''?null:Number(document.getElementById('first').value),
+    second_level:document.getElementById('second').value===''?null:Number(document.getElementById('second').value),
+    max_level:Number(document.getElementById('maximum').value),
+    empty_level:empty===''?null:Number(empty),
+    eligible_second:!document.getElementById('lock').checked
+  });
+}
+function run(apply){const result=calculate();document.getElementById('result').textContent=JSON.stringify(result,null,2);
+ if(apply&&result.mergeable){document.getElementById('first').value=result.next_level;document.getElementById('second').value='';}}
+document.getElementById('inspect').addEventListener('click',()=>run(false));
+document.getElementById('apply').addEventListener('click',()=>run(true));
+run(false);
+  </script>
+</body>
+</html>

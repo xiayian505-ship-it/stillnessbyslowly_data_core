@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Merge Level Rules｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+  <h1>Merge Level Rules｜使用說明</h1>
+  <p>單純比較兩個等級是否相同、有效、低於最大等級，回傳是否能合併升一級。</p>
+  <h2>正式 HTTPS 引用順序</h2>
+  <pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/merge/merge_level_rules.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>以上為 GitHub Pages 完成部署後的預期路徑。若尚未上傳，網址不會自動存在。</p>
+  <h2>公開 API</h2>
+  <p><code>window.SlowlyMergeLevelRules</code>，版本 <code>1.0.0</code>。</p>
+  <p>inspect_merge({first_level, second_level, max_level, empty_level?, eligible_first?, eligible_second?})。</p>
+  <h2>參數與單位</h2>
+  <p>first_level／second_level／max_level 是非負安全整數；empty_level 預設 null，可由宿主指定 0 或其他整數；eligible_first／eligible_second 是可選布林值。</p>
+  <h2>回傳結果</h2>
+  <p>回傳 {mergeable, next_level, reason}；失敗時 next_level=null，reason 為 empty／ineligible／different_levels／max_level。成功 reason=mergeable。</p>
+  <h2>實際宿主接法</h2>
+  <pre><code>const result = SlowlyMergeLevelRules.inspect_merge({
+  first_level: 0, second_level: 0, max_level: 6, empty_level: null
+}); // {mergeable:true,next_level:1,reason:&#x27;mergeable&#x27;}</code></pre>
+  <h2>錯誤／退化情境</h2>
+  <p>非法等級、非整數、非有限值會擲錯；預設「0」是合法級別，只有宿主明確設 empty_level=0 才會視作空格。</p>
+  <h2>職責邊界、清理與限制</h2>
+  <p>不看碰撞、無法自動消除格子或水果；升級後物件、級別圖像、合併鎖與計分由宿主處理。</p>
+  <p>除了有狀態零件需在宿主結束局面時呼叫 <code>reset()</code>，其餘純運算 API 不保留 DOM 監聽器，也不需 destroy。所有輸入時間單位、可選依賴及限制以上述公開函式契約為準。</p>
+  <p><a href="https://lib.stillnessbyslowly.com/game/merge/merge_level_rules_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/merge/test_merge_level_rules.html">PASS／FAIL 功能測試</a></p>
+</body>
+</html>

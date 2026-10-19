@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forward Target Selector｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+  <h1>Forward Target Selector｜使用說明</h1>
+  <p>根據方向、路線、資格和距離，搜尋最近的前方目標。不是射擊碰撞或卡牌目標選擇器。</p>
+  <h2>正式 HTTPS 引用順序</h2>
+  <pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/targeting/forward_target_selector.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>以上為 GitHub Pages 完成部署後的預期路徑。若尚未上傳，網址不會自動存在。</p>
+  <h2>公開 API</h2>
+  <p><code>window.SlowlyForwardTargetSelector</code>，版本 <code>1.0.0</code>。</p>
+  <p>select({origin_x, lane, direction, candidates, lane_of?, position_of?, is_eligible?, max_distance?, allow_origin?})。</p>
+  <h2>參數與單位</h2>
+  <p>direction 可用 right／left 或 1／-1；origin_x 有限數字；候選預設欄位是 {lane,x}，可用 lane_of、position_of 自訂資料欄位；is_eligible 過濾死亡／隱藏對象；allow_origin 預設 true。</p>
+  <h2>回傳結果</h2>
+  <p>回傳 {found, target, distance, index}；找不到時 target=null、distance=null、index=-1。同距目標以候選陣列順序優先。</p>
+  <h2>實際宿主接法</h2>
+  <pre><code>const result = SlowlyForwardTargetSelector.select({
+  origin_x: 4, lane: &#x27;upper&#x27;, direction: &#x27;right&#x27;,
+  candidates: [{lane:&#x27;upper&#x27;,x:9},{lane:&#x27;lower&#x27;,x:5}]
+}); // 選中第一個 upper 目標，distance=5</code></pre>
+  <h2>錯誤／退化情境</h2>
+  <p>無效方向、原點、負搜尋距離與非陣列 candidates 擲錯；無效候選 x 或跨路線候選略過；不得修改候選物件。</p>
+  <h2>職責邊界、清理與限制</h2>
+  <p>不包含植物、殭屍、HP 等特殊欄位；不計算 AABB、傷害、射擊冷卻、彈藥或移動。</p>
+  <p>除了有狀態零件需在宿主結束局面時呼叫 <code>reset()</code>，其餘純運算 API 不保留 DOM 監聽器，也不需 destroy。所有輸入時間單位、可選依賴及限制以上述公開函式契約為準。</p>
+  <p><a href="https://lib.stillnessbyslowly.com/game/targeting/forward_target_selector_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/targeting/test_forward_target_selector.html">PASS／FAIL 功能測試</a></p>
+</body>
+</html>

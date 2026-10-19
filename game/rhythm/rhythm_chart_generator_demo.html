@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rhythm Chart Generator｜互動 Demo</title>
+  <style>
+    input { max-width: 6em; }
+    label { display: inline-block; margin: 0.3em; }
+    button { min-height: 2em; margin: 0.2em; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Rhythm Chart Generator｜互動示範</h1>
+  <p>利用既有 BeatTime 換算每拍長度、SlowlyRandom 選擇候選音符與軌道，輸出中性的節奏譜面資料。</p>
+
+  <label>BPM <input id="bpm" type="number" min="1" value="120"></label>
+  <label>時長（ms） <input id="duration" type="number" min="0" value="3000"></label>
+  <label>軌道數 <input id="lanes" type="number" min="1" value="4"></label>
+  <label>每拍細分 <input id="subdivide" type="number" min="1" value="2"></label>
+  <label>密度 0～1 <input id="density" type="number" min="0" max="1" step="0.1" value="0.7"></label>
+  <label><input id="ramp" type="checkbox">每秒增加 BPM（Ramp）</label>
+  <p><button id="generate">重新生成譜面</button><button id="judge">對第一個音符模擬晚按 90ms</button></p>
+  <pre id="summary"></pre>
+  <ol id="notes"></ol>
+
+  <script src="https://lib.stillnessbyslowly.com/audio/tempo/beat_time.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/data/random/random.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/rhythm/rhythm_chart_generator.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/rhythm/timing_judgement.js"></script>
+  <script>
+    "use strict";
+    let chart=null;
+function generate(){const bpm=Number(document.getElementById('bpm').value);chart=SlowlyRhythmChartGenerator.generate({
+  duration_ms:Number(document.getElementById('duration').value),bpm,lanes:Number(document.getElementById('lanes').value),subdivide:Number(document.getElementById('subdivide').value),density:Number(document.getElementById('density').value),
+  bpm_at:document.getElementById('ramp').checked?(time_ms=>bpm+Math.floor(time_ms/1000)*15):undefined
+});
+ document.getElementById('summary').textContent=JSON.stringify({notes_count:chart.notes.length,slot_count:chart.slot_count,truncated:chart.truncated},null,2);
+ const list=document.getElementById('notes');list.replaceChildren();for(const note of chart.notes.slice(0,24)){const item=document.createElement('li');item.textContent='軌道 '+note.lane+'｜'+note.hit_time_ms.toFixed(1)+' ms';list.appendChild(item);}}
+document.getElementById('generate').addEventListener('click',generate);
+document.getElementById('judge').addEventListener('click',()=>{if(!chart.notes.length)return;const expected_ms=chart.notes[0].hit_time_ms;
+const result=SlowlyTimingJudgement.judge({expected_ms,actual_ms:expected_ms+90});document.getElementById('summary').textContent=JSON.stringify({chart_notes:chart.notes.length,hit_result:result},null,2);});
+generate();
+  </script>
+</body>
+</html>

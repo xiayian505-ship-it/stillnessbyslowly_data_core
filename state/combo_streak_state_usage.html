@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Combo Streak State｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+  <h1>Combo Streak State｜使用說明</h1>
+  <p>管理連續成功次數、歷史最佳連擊和可選的遊戲時間超時清零。</p>
+  <h2>正式 HTTPS 引用順序</h2>
+  <pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/state/combo_streak_state.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>以上為 GitHub Pages 完成部署後的預期路徑。若尚未上傳，網址不會自動存在。</p>
+  <h2>公開 API</h2>
+  <p><code>window.SlowlyComboStreakState</code>，版本 <code>1.0.0</code>。</p>
+  <p>create({timeout_ms?}) → instance；instance.success(now_ms)；instance.failure(now_ms)；instance.check_timeout(now_ms)；instance.snapshot()；instance.reset({keep_best?})；instance.clear_best()。</p>
+  <h2>參數與單位</h2>
+  <p>timeout_ms 預設 null（沒有超時），設定時為非負毫秒；每次 success／failure／check_timeout 傳入宿主遊戲時鐘 now_ms，禁止時間倒退。</p>
+  <h2>回傳結果</h2>
+  <p>snapshot 為 {current_streak,best_streak,last_success_ms,latest_time_ms,timeout_ms}；check_timeout 回傳 {timed_out,state}；reset 預設保留 best_streak。</p>
+  <h2>實際宿主接法</h2>
+  <pre><code>const combo = SlowlyComboStreakState.create({timeout_ms:1500});
+combo.success(100);
+combo.success(500);
+combo.check_timeout(2000); // timed_out=true，current_streak=0
+combo.reset(); // 保留本局最高連擊</code></pre>
+  <h2>錯誤／退化情境</h2>
+  <p>非法時間／超時拋錯；到期條件採 elapsed &gt;= timeout_ms；失敗清除當前連擊但保留最佳紀錄；reset 重新開始遊戲時鐘。</p>
+  <h2>職責邊界、清理與限制</h2>
+  <p>不判斷 Perfect／Miss、加分、排行榜、音效或實際啟動時鐘；由宿主傳入時間。</p>
+  <p>除了有狀態零件需在宿主結束局面時呼叫 <code>reset()</code>，其餘純運算 API 不保留 DOM 監聽器，也不需 destroy。所有輸入時間單位、可選依賴及限制以上述公開函式契約為準。</p>
+  <p><a href="https://lib.stillnessbyslowly.com/state/combo_streak_state_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/state/test_combo_streak_state.html">PASS／FAIL 功能測試</a></p>
+</body>
+</html>

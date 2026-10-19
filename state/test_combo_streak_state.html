@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Combo Streak State｜獨立 PASS／FAIL 測試</title>
+</head>
+<body>
+  <h1>Combo Streak State｜實際功能測試</h1>
+  <p>下方結果由瀏覽器逐項執行 JavaScript 斷言產生；失敗顯示 FAIL 與錯誤。</p>
+  <p id="summary">測試執行中</p>
+  <ol id="results"></ol>
+  <script src="https://lib.stillnessbyslowly.com/state/combo_streak_state.js"></script>
+  <script>
+    "use strict";
+
+    const result_list = document.getElementById("results");
+    let passed = 0;
+    let failed = 0;
+
+    function equal(actual, expected) {
+      if (actual !== expected) {
+        throw new Error("Expected " + JSON.stringify(expected) + ", got " + JSON.stringify(actual));
+      }
+    }
+
+    function deep(actual, expected) {
+      const actual_text = JSON.stringify(actual);
+      const expected_text = JSON.stringify(expected);
+      if (actual_text !== expected_text) {
+        throw new Error("Expected " + expected_text + ", got " + actual_text);
+      }
+    }
+
+    function check(condition, message = "condition is false") {
+      if (!condition) throw new Error(message);
+    }
+
+    function throws(callback) {
+      let threw = false;
+      try { callback(); } catch (error) { threw = true; }
+      check(threw, "Expected an exception.");
+    }
+
+    function test(title, assertion) {
+      const row = document.createElement("li");
+      try {
+        assertion();
+        passed += 1;
+        row.textContent = "PASS — " + title;
+      } catch (error) {
+        failed += 1;
+        row.textContent = "FAIL — " + title + ": " + error.message;
+      }
+      result_list.appendChild(row);
+    }
+
+    const create=SlowlyComboStreakState.create;
+test('連續成功增加目前與最高',()=>{
+ const c=create();c.success(0);c.success(1);equal(c.snapshot().current_streak,2);equal(c.snapshot().best_streak,2);
+});
+test('失誤歸零但保留最佳',()=>{
+ const c=create();c.success(1);c.failure(2);equal(c.snapshot().current_streak,0);equal(c.snapshot().best_streak,1);
+});
+test('超時之前沒有清零',()=>{
+ const c=create({timeout_ms:10});c.success(0);check(!c.check_timeout(9).timed_out);
+});
+test('剛好到期會歸零',()=>{
+ const c=create({timeout_ms:10});c.success(0);check(c.check_timeout(10).timed_out);
+});
+test('超時後重試不重複觸發',()=>{
+ const c=create({timeout_ms:10});c.success(0);check(c.check_timeout(20).timed_out);check(!c.check_timeout(21).timed_out);
+});
+test('未設定超時永不自動清零',()=>{
+ const c=create();c.success(0);check(!c.check_timeout(999999).timed_out);equal(c.snapshot().current_streak,1);
+});
+test('成功本身先處理過期',()=>{
+ const c=create({timeout_ms:5});c.success(0);c.success(10);equal(c.snapshot().current_streak,1);
+});
+test('reset 預設保留最高',()=>{
+ const c=create();c.success(100);c.reset();equal(c.snapshot().best_streak,1);equal(c.snapshot().latest_time_ms,null);
+});
+test('reset 可同時清除最高',()=>{
+ const c=create();c.success(5);c.reset({keep_best:false});equal(c.snapshot().best_streak,0);
+});
+test('clear_best 不低於目前連擊',()=>{
+ const c=create();c.success(0);c.success(1);c.clear_best();equal(c.snapshot().best_streak,2);
+});
+test('時間倒退拒絕',()=>{
+ const c=create();c.success(10);throws(()=>c.failure(9));
+});
+test('超時與時間非法拒絕',()=>{
+ throws(()=>create({timeout_ms:-1}));throws(()=>create({timeout_ms:Infinity}));
+ const c=create();throws(()=>c.success(-1));
+});
+test('零超時即刻可過期',()=>{
+ const c=create({timeout_ms:0});c.success(0);check(c.check_timeout(0).timed_out);
+});
+test('不同實例隔離',()=>{
+ const a=create(),b=create();a.success(0);equal(b.snapshot().current_streak,0);
+});
+
+    document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+    window.__test_results = { passed, failed };
+  </script>
+</body>
+</html>

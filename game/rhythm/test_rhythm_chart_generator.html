@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rhythm Chart Generator｜獨立 PASS／FAIL 測試</title>
+</head>
+<body>
+  <h1>Rhythm Chart Generator｜實際功能測試</h1>
+  <p>下方結果由瀏覽器逐項執行 JavaScript 斷言產生；失敗顯示 FAIL 與錯誤。</p>
+  <p id="summary">測試執行中</p>
+  <ol id="results"></ol>
+  <script src="https://lib.stillnessbyslowly.com/audio/tempo/beat_time.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/data/random/random.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/rhythm/rhythm_chart_generator.js"></script>
+  <script>
+    "use strict";
+
+    const result_list = document.getElementById("results");
+    let passed = 0;
+    let failed = 0;
+
+    function equal(actual, expected) {
+      if (actual !== expected) {
+        throw new Error("Expected " + JSON.stringify(expected) + ", got " + JSON.stringify(actual));
+      }
+    }
+
+    function deep(actual, expected) {
+      const actual_text = JSON.stringify(actual);
+      const expected_text = JSON.stringify(expected);
+      if (actual_text !== expected_text) {
+        throw new Error("Expected " + expected_text + ", got " + actual_text);
+      }
+    }
+
+    function check(condition, message = "condition is false") {
+      if (!condition) throw new Error(message);
+    }
+
+    function throws(callback) {
+      let threw = false;
+      try { callback(); } catch (error) { threw = true; }
+      check(threw, "Expected an exception.");
+    }
+
+    function test(title, assertion) {
+      const row = document.createElement("li");
+      try {
+        assertion();
+        passed += 1;
+        row.textContent = "PASS — " + title;
+      } catch (error) {
+        failed += 1;
+        row.textContent = "FAIL — " + title + ": " + error.message;
+      }
+      result_list.appendChild(row);
+    }
+
+    const generate=SlowlyRhythmChartGenerator.generate;
+const fixed={duration_ms:2000,bpm:120,lanes:4,subdivide:1,density:1,random_int:()=>0};
+test('固定 BPM 500ms 槽',()=>{deep(generate(fixed).notes.map(n=>n.hit_time_ms),[0,500,1000,1500]);});
+test('零密度沒有音符',()=>{equal(generate({...fixed,density:0}).notes.length,0);});
+test('滿密度所有槽生成',()=>{equal(generate({...fixed,subdivide:2}).notes.length,8);});
+test('起始偏移正確',()=>{equal(generate({...fixed,start_offset_ms:700}).notes[0].hit_time_ms,700);});
+test('Ramp BPM 每拍重新讀取',()=>{deep(generate({...fixed,duration_ms:1000,bpm_at:t=>t<500?120:240}).notes.map(n=>n.hit_time_ms),[0,500,750]);});
+test('輸出時間有序',()=>{const a=generate({...fixed,subdivide:4}).notes.map(n=>n.hit_time_ms);check(a.every((t,i)=>i===0||t>a[i-1]));});
+test('極短時間只生成首個音符',()=>{equal(generate({...fixed,duration_ms:1}).notes.length,1);});
+test('零時長沒有音符',()=>{equal(generate({...fixed,duration_ms:0}).notes.length,0);});
+test('單一軌道不會無限重試',()=>{check(generate({...fixed,lanes:1,subdivide:4}).notes.every(n=>n.lane===0));});
+test('短時間禁止同軌重複',()=>{const a=generate({...fixed,subdivide:4}).notes.map(n=>n.lane);check(a.slice(1).every((v,i)=>v!==a[i]));});
+test('槽數上限標記截斷',()=>{const r=generate({...fixed,max_slots:2});equal(r.slot_count,2);check(r.truncated);});
+test('音符數上限標記截斷',()=>{const r=generate({...fixed,max_notes:2});equal(r.notes.length,2);check(r.truncated);});
+test('非法 BPM／密度拒絕',()=>{throws(()=>generate({...fixed,bpm:0}));throws(()=>generate({...fixed,density:2}));});
+test('非法軌數／負時長拒絕',()=>{throws(()=>generate({...fixed,lanes:0}));throws(()=>generate({...fixed,duration_ms:-1}));});
+test('Ramp 回傳非法值拒絕',()=>{throws(()=>generate({...fixed,bpm_at:()=>0}));});
+test('提供相同抽樣結果可重現',()=>{deep(generate(fixed).notes,generate(fixed).notes);});
+test('極端 BPM 無法推進時安全拒絕',()=>{throws(()=>generate({...fixed,bpm_at:()=>1e308}));});
+
+    document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+    window.__test_results = { passed, failed };
+  </script>
+</body>
+</html>

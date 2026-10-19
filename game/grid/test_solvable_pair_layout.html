@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solvable Pair Layout｜獨立 PASS／FAIL 測試</title>
+</head>
+<body>
+  <h1>Solvable Pair Layout｜實際功能測試</h1>
+  <p>下方結果由瀏覽器逐項執行 JavaScript 斷言產生；失敗顯示 FAIL 與錯誤。</p>
+  <p id="summary">測試執行中</p>
+  <ol id="results"></ol>
+  <script src="https://lib.stillnessbyslowly.com/data/random/random.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/grid/free_edge_tile.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout.js"></script>
+  <script>
+    "use strict";
+
+    const result_list = document.getElementById("results");
+    let passed = 0;
+    let failed = 0;
+
+    function equal(actual, expected) {
+      if (actual !== expected) {
+        throw new Error("Expected " + JSON.stringify(expected) + ", got " + JSON.stringify(actual));
+      }
+    }
+
+    function deep(actual, expected) {
+      const actual_text = JSON.stringify(actual);
+      const expected_text = JSON.stringify(expected);
+      if (actual_text !== expected_text) {
+        throw new Error("Expected " + expected_text + ", got " + actual_text);
+      }
+    }
+
+    function check(condition, message = "condition is false") {
+      if (!condition) throw new Error(message);
+    }
+
+    function throws(callback) {
+      let threw = false;
+      try { callback(); } catch (error) { threw = true; }
+      check(threw, "Expected an exception.");
+    }
+
+    function test(title, assertion) {
+      const row = document.createElement("li");
+      try {
+        assertion();
+        passed += 1;
+        row.textContent = "PASS — " + title;
+      } catch (error) {
+        failed += 1;
+        row.textContent = "FAIL — " + title + ": " + error.message;
+      }
+      result_list.appendChild(row);
+    }
+
+    const generate=SlowlySolvablePairLayout.generate;
+const verify=SlowlySolvablePairLayout.verify_removal_plan;
+const sample={rows:2,columns:8,types:['A','B','C','D','E'],random_int:()=>0};
+test('產生指定行與欄',()=>{const b=generate(sample).board;equal(b.length,2);equal(b[0].length,8);});
+test('每列左右鏡射',()=>{const b=generate(sample).board;check(b.every(row=>row.every((c,i)=>c.type_id===row[row.length-1-i].type_id)));});
+test('2 欄單列可解',()=>{check(verify(generate({...sample,rows:1,columns:2})).solvable);});
+test('4 欄可解',()=>{check(verify(generate({...sample,columns:4})).solvable);});
+test('8 欄可解',()=>{check(verify(generate(sample)).solvable);});
+test('多列逐對移除',()=>{const b=generate(sample);equal(b.removal_plan.length,8);check(verify(b).solvable);});
+test('每對牌型一致',()=>{const b=generate(sample);check(b.removal_plan.every(step=>b.board[step.first.r][step.first.c].type_id===b.board[step.second.r][step.second.c].type_id));});
+test('每列可以要求牌型不重複',()=>{const b=generate(sample);check(b.board.every(row=>new Set(row.slice(0,4).map(x=>x.type_id)).size===4));});
+test('可允許同列牌型重複',()=>{check(verify(generate({...sample,unique_per_row:false,types:['A']})).solvable);});
+test('注入相同亂數可重現',()=>{deep(generate(sample).board,generate(sample).board);});
+test('奇數欄拒絕',()=>{throws(()=>generate({...sample,columns:3}));});
+test('空牌型池拒絕',()=>{throws(()=>generate({...sample,types:[]}));});
+test('牌型數不足拒絕',()=>{throws(()=>generate({...sample,types:['A']}));});
+test('非法維度拒絕',()=>{throws(()=>generate({...sample,rows:0}));});
+test('不修改原牌型池',()=>{const x=['A','B','C','D'];generate({...sample,types:x});deep(x,['A','B','C','D']);});
+test('verify 使用現有 FreeEdgeTile',()=>{const old=window.SlowlyFreeEdgeTile;try{delete window.SlowlyFreeEdgeTile;throws(()=>verify(generate(sample)));}finally{window.SlowlyFreeEdgeTile=old;}});
+
+    document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+    window.__test_results = { passed, failed };
+  </script>
+</body>
+</html>

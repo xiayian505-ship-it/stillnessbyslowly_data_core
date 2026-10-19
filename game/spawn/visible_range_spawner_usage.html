@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visible Range Spawner｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+  <h1>Visible Range Spawner｜使用說明</h1>
+  <p>按照正向推進的世界座標視窗，規劃下次前沿新增位置與落到保留界線後方的物件 ID。</p>
+  <h2>正式 HTTPS 引用順序</h2>
+  <pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/data/random/random.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/spawn/visible_range_spawner.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>以上為 GitHub Pages 完成部署後的預期路徑。若尚未上傳，網址不會自動存在。</p>
+  <h2>公開 API</h2>
+  <p><code>window.SlowlyVisibleRangeSpawner</code>，版本 <code>1.0.0</code>。</p>
+  <p>plan_range({frontier, view_min, view_max, preload_distance?, retain_distance?, spacing_min?, spacing_max?, existing?, max_spawn_count?, random_int?})。</p>
+  <h2>參數與單位</h2>
+  <p>frontier：宿主最後生成的位置；view_min/view_max：目前視窗上下界；preload_distance：前方預載距離；retain_distance：後方保留距離；spacing_min/max：正安全整數間距；existing：[ {id,position} ]。</p>
+  <h2>回傳結果</h2>
+  <p>回傳 {spawn_positions, remove_ids, next_frontier, truncated, removal_threshold, generation_limit}；原 existing 陣列不會被修改。truncated 表示觸及單次數量上限且未填滿前方。</p>
+  <h2>實際宿主接法</h2>
+  <pre><code>const plan = SlowlyVisibleRangeSpawner.plan_range({
+  frontier:0, view_min:0, view_max:250, preload_distance:50,
+  retain_distance:30, spacing_min:40, spacing_max:40,
+  existing:[{id:&#x27;old&#x27;,position:-40}]
+});
+// 由宿主依 spawn_positions 建立物件、依 remove_ids 刪除。</code></pre>
+  <h2>錯誤／退化情境</h2>
+  <p>視窗倒置、非有限值、非正間距、亂數越界、空集合但缺失 frontier 均明確拒絕。世界軸是正向增加的一維座標。</p>
+  <h2>職責邊界、清理與限制</h2>
+  <p>不做生成物件的生存毫秒、重力、平台物理、攝影機、隨機 x 位置或關卡可解性。若 generation_limit 與 frontier 間距小於 spacing_min，回傳無新位置；不要無限重試。</p>
+  <p>除了有狀態零件需在宿主結束局面時呼叫 <code>reset()</code>，其餘純運算 API 不保留 DOM 監聽器，也不需 destroy。所有輸入時間單位、可選依賴及限制以上述公開函式契約為準。</p>
+  <p><a href="https://lib.stillnessbyslowly.com/game/spawn/visible_range_spawner_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/spawn/test_visible_range_spawner.html">PASS／FAIL 功能測試</a></p>
+</body>
+</html>

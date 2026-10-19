@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spawn Lifecycle｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+  <h1>Spawn Lifecycle｜使用說明</h1>
+  <p>登記生成識別碼，限制同時存在數量，依宿主提供的毫秒時鐘回收過期識別碼。</p>
+  <h2>正式 HTTPS 引用順序</h2>
+  <pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/spawn/spawn_lifecycle.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>以上為 GitHub Pages 完成部署後的預期路徑。若尚未上傳，網址不會自動存在。</p>
+  <h2>公開 API</h2>
+  <p><code>window.SlowlySpawnLifecycle</code>，版本 <code>1.0.0</code>。</p>
+  <p>create({capacity, lifetime_ms}) → instance；instance.spawn({id, now_ms, lifetime_ms?})；instance.expire(now_ms)；instance.release(id)；instance.snapshot()；instance.reset()。</p>
+  <h2>參數與單位</h2>
+  <p>capacity：正整數、至少 1；lifetime_ms：非負毫秒，預設 1000；now_ms：外部時鐘，非負有限數值；id：非空字串或有限數字；spawn 的 lifetime_ms 可覆寫單次到期時間。</p>
+  <h2>回傳結果</h2>
+  <p>spawn 回傳 {allowed, reason, id, expires_at_ms?}；expire 回傳 {expired_ids, active_count}；snapshot 回傳包含 active_count、entries、latest_time_ms 的新資料。</p>
+  <h2>實際宿主接法</h2>
+  <pre><code>const manager = SlowlySpawnLifecycle.create({ capacity: 2, lifetime_ms: 800 });
+manager.spawn({ id: &#x27;slot_a&#x27;, now_ms: 0 });
+manager.spawn({ id: &#x27;slot_b&#x27;, now_ms: 20 });
+const expired = manager.expire(820); // [&#x27;slot_a&#x27;, &#x27;slot_b&#x27;]
+manager.reset();</code></pre>
+  <h2>錯誤／退化情境</h2>
+  <p>時間倒退擲 RangeError；非法容量、存活時間或 now_ms 擲錯；ID 重複回 occupied；容量滿回 capacity_full；零存活時間於 expire(同時刻) 到期。</p>
+  <h2>職責邊界、清理與限制</h2>
+  <p>不建立 DOM、隨機選位置、倒數 Timer、生成冷卻、打擊／扣分；宿主每幀或每次狀態變更時主動呼叫 expire。reset 可把時間線從 0 重新開始。</p>
+  <p>除了有狀態零件需在宿主結束局面時呼叫 <code>reset()</code>，其餘純運算 API 不保留 DOM 監聽器，也不需 destroy。所有輸入時間單位、可選依賴及限制以上述公開函式契約為準。</p>
+  <p><a href="https://lib.stillnessbyslowly.com/game/spawn/spawn_lifecycle_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/spawn/test_spawn_lifecycle.html">PASS／FAIL 功能測試</a></p>
+</body>
+</html>

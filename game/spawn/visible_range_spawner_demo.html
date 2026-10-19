@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visible Range Spawner｜互動 Demo</title>
+  <style>
+    input { max-width: 6em; }
+    label { display: inline-block; margin: 0.3em; }
+    button { min-height: 2em; margin: 0.2em; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Visible Range Spawner｜互動示範</h1>
+  <p>按照正向推進的世界座標視窗，規劃下次前沿新增位置與落到保留界線後方的物件 ID。</p>
+
+  <label>每次視窗前移 <input id="step" type="number" min="0" value="70"></label>
+  <label>前向預載距離 <input id="preload" type="number" min="0" value="50"></label>
+  <label>保留距離 <input id="retain" type="number" min="0" value="30"></label>
+  <p><button id="plan">規劃下一輪</button><button id="advance">視窗前移＋規劃</button><button id="reset">重設世界</button></p>
+  <pre id="result"></pre>
+
+  <script src="https://lib.stillnessbyslowly.com/data/random/random.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/game/spawn/visible_range_spawner.js"></script>
+
+  <script>
+    "use strict";
+    let view_min=0,frontier=0,objects=[],next_id=1;
+function plan(){const result=SlowlyVisibleRangeSpawner.plan_range({frontier,view_min,view_max:view_min+160,preload_distance:Number(document.getElementById('preload').value),retain_distance:Number(document.getElementById('retain').value),spacing_min:40,spacing_max:60,existing:objects});
+ for(const position of result.spawn_positions){objects.push({id:'platform_'+next_id++,position});}
+ objects=objects.filter(item=>!result.remove_ids.includes(item.id));frontier=result.next_frontier;
+ document.getElementById('result').textContent=JSON.stringify({view_min,view_max:view_min+160,objects,plan:result},null,2);}
+document.getElementById('plan').addEventListener('click',plan);
+document.getElementById('advance').addEventListener('click',()=>{view_min+=Number(document.getElementById('step').value);plan();});
+document.getElementById('reset').addEventListener('click',()=>{view_min=0;frontier=0;objects=[];next_id=1;plan();});
+plan();
+  </script>
+</body>
+</html>

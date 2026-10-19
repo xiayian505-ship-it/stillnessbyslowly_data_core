@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moving Platform Carrier｜慢慢軍火庫使用說明</title>
+</head>
+<body>
+  <h1>Moving Platform Carrier｜使用說明</h1>
+  <p>在宿主已確認支撐的情況下，將平台的前後位置差轉移到乘載物。可選擇用既有矩形檢查搜尋候選平台。</p>
+  <h2>正式 HTTPS 引用順序</h2>
+  <pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/collision/rectangle_overlap_2d.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/movement/moving_platform_carrier.js&quot;&gt;&lt;/script&gt;</code></pre>
+  <p>以上為 GitHub Pages 完成部署後的預期路徑。若尚未上傳，網址不會自動存在。</p>
+  <h2>公開 API</h2>
+  <p><code>window.SlowlyMovingPlatformCarrier</code>，版本 <code>1.0.0</code>。</p>
+  <p>carry({position, platform_previous, platform_current, supported})；find_support({actor_rectangle, candidates, rectangle_of?, is_eligible?})。</p>
+  <h2>參數與單位</h2>
+  <p>position、platform_previous、platform_current 都是 {x,y} 有限數字；supported 必須由宿主提供布林值；find_support 的候選預設是 {rectangle:{x,y,width,height}}，支援 rectangle_of／is_eligible callback。</p>
+  <h2>回傳結果</h2>
+  <p>carry 回傳 {supported, displacement:{x,y}, carried_position:{x,y}}；find_support 回傳 {supported, platform, index}。無支撐時位移為 0。</p>
+  <h2>實際宿主接法</h2>
+  <pre><code>const support = SlowlyMovingPlatformCarrier.find_support({
+  actor_rectangle: {x:4,y:8,width:2,height:2},
+  candidates: [{rectangle:{x:0,y:10,width:12,height:2}}]
+});
+const result = SlowlyMovingPlatformCarrier.carry({
+  position:{x:4,y:8}, platform_previous:{x:0,y:10},
+  platform_current:{x:1,y:10}, supported:support.supported
+});</code></pre>
+  <h2>錯誤／退化情境</h2>
+  <p>缺少 required 點、坐標非法、supported 非布林會擲錯；呼叫 find_support 缺少 SlowlyRectangleOverlap2D.inspect 會擲錯。</p>
+  <h2>職責邊界、清理與限制</h2>
+  <p>find_support 僅為幾何候選，是否真正著地／站在平台上仍由宿主或 One Way Platform Contact 判定。候選同水平中心距離時，以輸入陣列先後決勝；宿主可預先排序。</p>
+  <p>除了有狀態零件需在宿主結束局面時呼叫 <code>reset()</code>，其餘純運算 API 不保留 DOM 監聽器，也不需 destroy。所有輸入時間單位、可選依賴及限制以上述公開函式契約為準。</p>
+  <p><a href="https://lib.stillnessbyslowly.com/game/movement/moving_platform_carrier_demo.html">互動 Demo</a>　<a href="https://lib.stillnessbyslowly.com/game/movement/test_moving_platform_carrier.html">PASS／FAIL 功能測試</a></p>
+</body>
+</html>

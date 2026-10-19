@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forward Target Selector｜互動 Demo</title>
+  <style>
+    input { max-width: 6em; }
+    label { display: inline-block; margin: 0.3em; }
+    button { min-height: 2em; margin: 0.2em; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Forward Target Selector｜互動示範</h1>
+  <p>根據方向、路線、資格和距離，搜尋最近的前方目標。不是射擊碰撞或卡牌目標選擇器。</p>
+
+  <label>搜尋起點 X <input id="origin" type="number" value="10"></label>
+  <label>同路線 ID <input id="lane" value="a"></label>
+  <label>方向 <select id="direction"><option value="right">right</option><option value="left">left</option></select></label>
+  <p><button id="search">搜尋最近前方目標</button><button id="move">移動第 1 目標 +5</button><button id="toggle">切換第 1 目標有效性</button></p>
+  <pre id="result"></pre>
+
+  <script src="https://lib.stillnessbyslowly.com/game/targeting/forward_target_selector.js"></script>
+
+  <script>
+    "use strict";
+    const targets=[{id:'target_a',x:12,lane:'a',active:true},{id:'target_b',x:29,lane:'a',active:true},{id:'other_lane',x:11,lane:'b',active:true},{id:'behind',x:-5,lane:'a',active:true}];
+function search(){const result=SlowlyForwardTargetSelector.select({origin_x:Number(document.getElementById('origin').value),lane:document.getElementById('lane').value,direction:document.getElementById('direction').value,candidates:targets,is_eligible:target=>target.active});document.getElementById('result').textContent=JSON.stringify({targets,result},null,2);}
+document.getElementById('search').addEventListener('click',search);
+document.getElementById('move').addEventListener('click',()=>{targets[0].x+=5;search();});
+document.getElementById('toggle').addEventListener('click',()=>{targets[0].active=!targets[0].active;search();});
+search();
+  </script>
+</body>
+</html>
