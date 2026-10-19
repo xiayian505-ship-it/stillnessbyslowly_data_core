@@ -1,0 +1,77 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Impact Generator｜程式化撞擊音效 Demo</title><style>
+  body { font: 16px/1.6 system-ui, sans-serif; margin: 1.25rem auto; padding: 0 1rem; max-width: 860px; }
+  fieldset { border: 1px solid #aaa; margin-bottom: 1rem; }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .75rem; }
+  label { display: flex; flex-direction: column; gap: .15rem; }
+  input, select, button { font: inherit; padding: .45rem; }
+  button { min-height: 44px; margin: .15rem .4rem .15rem 0; }
+  output, pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre { border: 1px solid #bbb; padding: .7rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #bbb; padding: .35rem; text-align: left; }
+  .pass { color: #075e26; } .fail { color: #a51816; }
+</style></head>
+<body><h1>Impact Generator｜程式化撞擊音效｜互動 Demo</h1><p>以低頻 Oscillator 主體及短促 Noise 瞬態混合出單次撞擊音；兩層均有獨立 Envelope。</p>
+<p>手機瀏覽器請親自點擊「播放一次」解鎖聲音。首次試聽建議從低音量開始，避免連續高音量試聽。</p>
+<fieldset><legend>參數（單位：Hz／秒／0～1）</legend><div class="fields"><label for="duration_seconds">duration_seconds：秒；整個撞擊時長<input id="duration_seconds" name="duration_seconds" type="number" value="0.25" min="0.02" max="8" step="0.01" inputmode="decimal"></label><label for="volume">volume：主音量（0～1）<input id="volume" name="volume" type="number" value="0.12" min="0" max="1" step="0.01" inputmode="decimal"></label><label for="body_waveform">body_waveform：主體波形（sine、triangle、square、sawtooth）<select id="body_waveform" name="body_waveform"><option value="sine" selected>sine</option><option value="triangle">triangle</option><option value="square">square</option><option value="sawtooth">sawtooth</option></select></label><label for="body_frequency_start_hz">body_frequency_start_hz：低頻主體起始 Hz<input id="body_frequency_start_hz" name="body_frequency_start_hz" type="number" value="150" min="1" max="16000" step="1" inputmode="decimal"></label><label for="body_frequency_end_hz">body_frequency_end_hz：低頻主體結尾 Hz<input id="body_frequency_end_hz" name="body_frequency_end_hz" type="number" value="45" min="1" max="16000" step="1" inputmode="decimal"></label><label for="noise_type">noise_type：噪音種類<select id="noise_type" name="noise_type"><option value="white" selected>white</option><option value="pink">pink</option><option value="brown">brown</option></select></label><label for="noise_duration_seconds">noise_duration_seconds：噪音瞬態秒數，不得超過 duration<input id="noise_duration_seconds" name="noise_duration_seconds" type="number" value="0.06" min="0.006" max="8" step="0.01" inputmode="decimal"></label><label for="noise_filter_frequency_hz">noise_filter_frequency_hz：噪音 Lowpass 截止 Hz<input id="noise_filter_frequency_hz" name="noise_filter_frequency_hz" type="number" value="2600" min="1" max="16000" step="1" inputmode="decimal"></label><label for="body_mix">body_mix：主體層比例（0～1）<input id="body_mix" name="body_mix" type="number" value="0.75" min="0" max="1" step="0.05" inputmode="decimal"></label><label for="noise_mix">noise_mix：噪音層比例（0～1）<input id="noise_mix" name="noise_mix" type="number" value="0.55" min="0" max="1" step="0.05" inputmode="decimal"></label><label for="start_delay_seconds">start_delay_seconds：延後開始秒數<input id="start_delay_seconds" name="start_delay_seconds" type="number" value="0" min="0" max="3600" step="0.01" inputmode="decimal"></label></div></fieldset>
+<button id="play_sound" type="button">播放一次</button><button id="stop_sound" type="button">停止上一聲</button>
+<output id="sound_status" role="status" aria-live="polite">等待播放</output>
+<pre id="played_options"></pre>
+<script src="https://lib.stillnessbyslowly.com/audio/context/audio_context.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/source/oscillator.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/source/noise.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/gain.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/envelope.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/filter/biquad_filter.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/effects/impact_generator.js"></script>
+<script>
+(function () {
+  "use strict";
+  const status = document.getElementById("sound_status");
+  const show_parameters = document.getElementById("played_options");
+  let last_sound = null;
+  let play_count = 0;
+
+  function collect_options() {
+    return {
+      duration_seconds: Number(document.getElementById("duration_seconds").value),
+      volume: Number(document.getElementById("volume").value),
+      body_waveform: document.getElementById("body_waveform").value,
+      body_frequency_start_hz: Number(document.getElementById("body_frequency_start_hz").value),
+      body_frequency_end_hz: Number(document.getElementById("body_frequency_end_hz").value),
+      noise_type: document.getElementById("noise_type").value,
+      noise_duration_seconds: Number(document.getElementById("noise_duration_seconds").value),
+      noise_filter_frequency_hz: Number(document.getElementById("noise_filter_frequency_hz").value),
+      body_mix: Number(document.getElementById("body_mix").value),
+      noise_mix: Number(document.getElementById("noise_mix").value),
+      start_delay_seconds: Number(document.getElementById("start_delay_seconds").value),
+    };
+  }
+
+  document.getElementById("play_sound").addEventListener("click", async function () {
+    const options = collect_options();
+    show_parameters.textContent = JSON.stringify(options, null, 2);
+    status.textContent = "正在解鎖音訊並建立聲音…";
+    try {
+      const sound = await window.SlowlyAudioImpactGenerator.play(options);
+      last_sound = sound;
+      play_count += 1;
+      status.textContent = sound.silent
+        ? "靜音：音量或兩層混合設定為零，未建立音源。"
+        : "已播放第 " + play_count + " 次，排程 " + sound.start_at_seconds.toFixed(3)
+          + "～" + sound.end_at_seconds.toFixed(3) + " 秒；可隨時停止上一聲。";
+    } catch (error) {
+      status.textContent = "播放失敗：" + error.message;
+    }
+  });
+
+  document.getElementById("stop_sound").addEventListener("click", function () {
+    if (!last_sound) {
+      status.textContent = "還沒有可停止的音效。";
+      return;
+    }
+    last_sound.stop();
+    status.textContent = "已要求上一聲提前淡出；不關閉 AudioContext。";
+  });
+})();
+</script></body></html>

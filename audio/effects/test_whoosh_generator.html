@@ -1,0 +1,301 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Whoosh Generator｜程式化呼嘯音效｜功能測試</title><style>
+  body { font: 16px/1.6 system-ui, sans-serif; margin: 1.25rem auto; padding: 0 1rem; max-width: 860px; }
+  fieldset { border: 1px solid #aaa; margin-bottom: 1rem; }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .75rem; }
+  label { display: flex; flex-direction: column; gap: .15rem; }
+  input, select, button { font: inherit; padding: .45rem; }
+  button { min-height: 44px; margin: .15rem .4rem .15rem 0; }
+  output, pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre { border: 1px solid #bbb; padding: .7rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #bbb; padding: .35rem; text-align: left; }
+  .pass { color: #075e26; } .fail { color: #a51816; }
+</style></head>
+<body><h1>Whoosh Generator｜程式化呼嘯音效｜真實 PASS／FAIL 功能測試</h1>
+<p>使用最新軍火庫依賴的公開 API，注入可觀察的 Mock Web AudioContext，驗證節點建立、訊號串接、排程與錯誤。此頁不宣稱已透過實體喇叭驗收音色。</p>
+<p id="summary" aria-live="polite">測試執行中…</p><ol id="test_results"></ol>
+<script src="https://lib.stillnessbyslowly.com/audio/context/audio_context.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/source/noise.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/filter/biquad_filter.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/gain.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/envelope.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/effects/whoosh_generator.js"></script>
+<script>
+(function () {
+  "use strict";
+  const output = document.getElementById("test_results");
+  const summary = document.getElementById("summary");
+  const tests = [];
+  window.__tests_complete = false;
+  window.__test_results = { passed: 0, failed: 0, details: [] };
+
+  function assert(value, message) {
+    if (!value) throw new Error(message || "Assertion failed");
+  }
+  function almost_equal(first, second) {
+    return Math.abs(first - second) < 0.000001;
+  }
+  async function rejects(action, pattern) {
+    let observed_error = null;
+    try { await action(); } catch (error) { observed_error = error; }
+    assert(observed_error !== null, "Expected an error");
+    if (pattern) assert(pattern.test(String(observed_error)), "Unexpected error: " + observed_error);
+  }
+  function case_test(name, action) { tests.push({ name, action }); }
+
+  class FakeAudioParam {
+    constructor(initial_value = 0) { this.value = initial_value; this.events = []; }
+    setValueAtTime(value, time) { this.events.push({ method: "set", value, time }); this.value = value; }
+    linearRampToValueAtTime(value, time) { this.events.push({ method: "linear", value, time }); this.value = value; }
+    exponentialRampToValueAtTime(value, time) { this.events.push({ method: "exponential", value, time }); this.value = value; }
+    cancelScheduledValues(time) { this.events.push({ method: "cancel", time }); }
+  }
+  class FakeAudioNode {
+    constructor(context, kind) {
+      this.context = context;
+      this.kind = kind;
+      this.connections = [];
+      this.disconnected = false;
+      this.started_times = [];
+      this.stopped_times = [];
+      this.onended = null;
+      context.nodes.push(this);
+    }
+    connect(destination) { this.connections.push(destination); return destination; }
+    disconnect() { this.disconnected = true; this.connections = []; }
+    start(time) { this.started_times.push(time); }
+    stop(time) { this.stopped_times.push(time); }
+    emit_ended() { if (typeof this.onended === "function") this.onended(); }
+  }
+  class FakeAudioContext {
+    constructor() {
+      this.currentTime = 12;
+      this.sampleRate = 48000;
+      this.nodes = [];
+      this.destination = new FakeAudioNode(this, "destination");
+      this.created_buffers = [];
+    }
+    createOscillator() {
+      const node = new FakeAudioNode(this, "oscillator");
+      node.frequency = new FakeAudioParam(440);
+      node.detune = new FakeAudioParam(0);
+      return node;
+    }
+    createGain() {
+      const node = new FakeAudioNode(this, "gain");
+      node.gain = new FakeAudioParam(1);
+      return node;
+    }
+    createBiquadFilter() {
+      const node = new FakeAudioNode(this, "filter");
+      node.frequency = new FakeAudioParam(350);
+      node.Q = new FakeAudioParam(1);
+      node.gain = new FakeAudioParam(0);
+      node.detune = new FakeAudioParam(0);
+      return node;
+    }
+    createBuffer(channels, count, sample_rate) {
+      const buffer = { channels, count, sample_rate, data: new Float32Array(count) };
+      this.created_buffers.push(buffer);
+      buffer.getChannelData = function () { return buffer.data; };
+      return buffer;
+    }
+    createBufferSource() {
+      const source = new FakeAudioNode(this, "noise");
+      source.loop = true;
+      source.buffer = null;
+      return source;
+    }
+    find(kind) { return this.nodes.filter(function (node) { return node.kind === kind; }); }
+  }
+  const saved_resume = window.SlowlyAudioContext && window.SlowlyAudioContext.resume;
+  const saved_close = window.SlowlyAudioContext && window.SlowlyAudioContext.close;
+  let fake_context = null;
+  let closed_context_count = 0;
+  function install_context() {
+    fake_context = new FakeAudioContext();
+    window.SlowlyAudioContext.resume = async function () { return fake_context; };
+    window.SlowlyAudioContext.close = async function () { closed_context_count += 1; };
+    return fake_context;
+  }
+  function active_sources(context) {
+    return context.nodes.filter(function (node) {
+      return node.kind === "noise" || node.kind === "oscillator";
+    });
+  }
+
+  
+  const api = window.SlowlyAudioWhooshGenerator;
+  case_test("API available and version declared", async function () {
+    assert(api && typeof api.play === "function" && !!api.version);
+  });
+  case_test("Default graph Noise → Bandpass → Gain → Stop Gain", async function () {
+    const context = fake_context;
+    await api.play();
+    const noise = context.find("noise")[0];
+    const filter = context.find("filter")[0];
+    const gains = context.find("gain");
+    assert(noise && filter && gains.length === 2, "Expected required Web Audio nodes");
+    assert(noise.connections[0] === filter && filter.connections[0] === gains[0]);
+    assert(gains[0].connections[0] === gains[1] && gains[1].connections[0] === context.destination);
+    assert(filter.type === "bandpass" && noise.loop === false);
+  });
+  case_test("Filter sweep has start, peak, and end chronological", async function () {
+    const context = fake_context;
+    const sound = await api.play({ peak_position: 0.4 });
+    const events = context.find("filter")[0].frequency.events;
+    assert(events.length >= 3 && events[0].method === "set" && events[1].method === "linear" && events[2].method === "linear");
+    assert(events[0].time < events[1].time && events[1].time < events[2].time);
+    assert(almost_equal(events[1].time, sound.start_at_seconds + 0.45 * 0.4));
+  });
+  case_test("Actual AudioContext times and audio source duration", async function () {
+    const sound = await api.play({ duration_seconds: 0.3, start_delay_seconds: 0.05 });
+    assert(almost_equal(sound.start_at_seconds, 12.055));
+    assert(almost_equal(sound.end_at_seconds, 12.355));
+    assert(almost_equal(fake_context.created_buffers[0].count, 14400));
+    assert(almost_equal(fake_context.find("noise")[0].stopped_times[0], sound.end_at_seconds));
+  });
+  case_test("White, pink and brown use existing Noise", async function () {
+    for (const noise_type of ["white", "pink", "brown"]) {
+      const context = install_context();
+      await api.play({ noise_type });
+      assert(context.created_buffers.length === 1 && context.find("noise")[0].loop === false);
+    }
+  });
+  case_test("User random provider is passed to Noise", async function () {
+    let called = 0;
+    await api.play({ random: function () { called += 1; return 0.5; }, duration_seconds: 0.04 });
+    assert(called > 100);
+  });
+  case_test("Volume zero returns honest silent result", async function () {
+    const result = await api.play({ volume: 0 });
+    assert(result.silent && fake_context.find("noise").length === 0);
+    result.stop(); result.stop();
+  });
+  case_test("Input values are not modified", async function () {
+    const options = Object.freeze({ volume: 0.1, frequency_start_hz: 700 });
+    await api.play(options);
+    assert(options.volume === 0.1 && options.frequency_start_hz === 700);
+  });
+  case_test("Stop twice is safe and sets fade ramp", async function () {
+    const context = fake_context;
+    const sound = await api.play();
+    sound.stop(); sound.stop();
+    assert(context.find("noise")[0].stopped_times.length >= 2);
+    assert(context.find("gain")[1].gain.events.some(function (event) { return event.method === "linear" && event.value === 0; }));
+    assert(closed_context_count === 0);
+  });
+  case_test("Natural ended event disconnects source and gains", async function () {
+    const context = fake_context;
+    const sound = await api.play();
+    context.find("noise")[0].emit_ended();
+    assert(context.find("noise")[0].disconnected);
+    assert(context.find("gain").every(function (node) { return node.disconnected; }));
+    sound.stop();
+  });
+  case_test("Parallel plays have independent nodes", async function () {
+    const context = fake_context;
+    const first = await api.play();
+    const second = await api.play();
+    assert(context.find("noise").length === 2);
+    first.stop();
+    assert(context.find("noise")[0].stopped_times.length === 2);
+    assert(context.find("noise")[1].stopped_times.length === 1);
+    second.stop();
+  });
+  case_test("Missing dependency rejects instead of falling back", async function () {
+    const previous = window.SlowlyAudioNoise;
+    try {
+      window.SlowlyAudioNoise = null;
+      await rejects(function () { return api.play(); }, /missing dependencies/i);
+    } finally { window.SlowlyAudioNoise = previous; }
+  });
+  case_test("AudioContext resume rejection is visible", async function () {
+    window.SlowlyAudioContext.resume = async function () { throw new Error("Audio unlock rejected"); };
+    await rejects(function () { return api.play(); }, /Audio unlock rejected/);
+  });
+  case_test("Bad noise type rejects", async function () {
+    await rejects(function () { return api.play({ noise_type: "blue" }); }, /noise_type/);
+  });
+  case_test("Negative duration and excessive duration reject", async function () {
+    await rejects(function () { return api.play({ duration_seconds: -1 }); }, /duration_seconds/);
+    await rejects(function () { return api.play({ duration_seconds: 100 }); }, /duration_seconds/);
+  });
+  case_test("Volume outside 0..1 and NaN rejects", async function () {
+    await rejects(function () { return api.play({ volume: 1.5 }); }, /volume/);
+    await rejects(function () { return api.play({ volume: NaN }); }, /volume/);
+  });
+  case_test("Peak position endpoints and out-of-range reject", async function () {
+    for (const peak_position of [0, 1, -0.1, 1.1]) {
+      await rejects(function () { return api.play({ peak_position }); }, /peak_position/);
+    }
+  });
+  case_test("Overlapping attack and release reject", async function () {
+    await rejects(function () { return api.play({ attack_seconds: 0.4, release_seconds: 0.4 }); }, /attack_seconds/);
+  });
+  case_test("Short duration adapts default envelope", async function () {
+    const sound = await api.play({ duration_seconds: 0.04 });
+    assert(!sound.silent);
+  });
+  case_test("Nyquist frequency exceeding sample rate rejects", async function () {
+    await rejects(function () { return api.play({ frequency_peak_hz: 25000 }); }, /Nyquist/);
+  });
+  case_test("Invalid frequency, filter Q, and random reject", async function () {
+    await rejects(function () { return api.play({ frequency_start_hz: -3 }); }, /frequency_start_hz/);
+    await rejects(function () { return api.play({ filter_q: 0 }); }, /filter_q/);
+    await rejects(function () { return api.play({ random: 5 }); }, /random/);
+  });
+  case_test("Rejects invalid destination", async function () {
+    await rejects(function () { return api.play({ destination: {} }); }, /destination/);
+  });
+  case_test("Custom destination receives stop gate connection", async function () {
+    const custom_destination = { connect: function () {} };
+    await api.play({ destination: custom_destination });
+    assert(fake_context.find("gain")[1].connections[0] === custom_destination);
+  });
+  case_test("Deterministic schedule with identical inputs", async function () {
+    const first = await api.play({ duration_seconds: 0.5 });
+    const first_events = JSON.stringify(fake_context.find("filter")[0].frequency.events);
+    install_context();
+    const second = await api.play({ duration_seconds: 0.5 });
+    assert(first.start_at_seconds === second.start_at_seconds);
+    assert(first_events === JSON.stringify(fake_context.find("filter")[0].frequency.events));
+  });
+  case_test("A valid 0-second attack/release works", async function () {
+    const sound = await api.play({ attack_seconds: 0, release_seconds: 0 });
+    assert(sound && !sound.silent);
+  });
+
+
+  async function run_all() {
+    try {
+      for (const item of tests) {
+        const line = document.createElement("li");
+        try {
+          install_context();
+          await item.action();
+          line.className = "pass";
+          line.textContent = "PASS｜" + item.name;
+          window.__test_results.passed += 1;
+          window.__test_results.details.push({ name: item.name, passed: true });
+        } catch (error) {
+          line.className = "fail";
+          line.textContent = "FAIL｜" + item.name + "｜" + String(error && error.message || error);
+          window.__test_results.failed += 1;
+          window.__test_results.details.push({ name: item.name, passed: false, error: String(error) });
+        }
+        output.appendChild(line);
+      }
+    } finally {
+      if (window.SlowlyAudioContext) {
+        window.SlowlyAudioContext.resume = saved_resume;
+        window.SlowlyAudioContext.close = saved_close;
+      }
+      summary.textContent = window.__test_results.passed + " PASS / " + window.__test_results.failed + " FAIL";
+      window.__tests_complete = true;
+    }
+  }
+  run_all();
+})();
+</script>
+</body></html>

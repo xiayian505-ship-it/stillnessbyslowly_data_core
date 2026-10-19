@@ -1,0 +1,76 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Whoosh Generator｜程式化呼嘯音效 Demo</title><style>
+  body { font: 16px/1.6 system-ui, sans-serif; margin: 1.25rem auto; padding: 0 1rem; max-width: 860px; }
+  fieldset { border: 1px solid #aaa; margin-bottom: 1rem; }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .75rem; }
+  label { display: flex; flex-direction: column; gap: .15rem; }
+  input, select, button { font: inherit; padding: .45rem; }
+  button { min-height: 44px; margin: .15rem .4rem .15rem 0; }
+  output, pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre { border: 1px solid #bbb; padding: .7rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #bbb; padding: .35rem; text-align: left; }
+  .pass { color: #075e26; } .fail { color: #a51816; }
+</style></head>
+<body><h1>Whoosh Generator｜程式化呼嘯音效｜互動 Demo</h1><p>使用 Noise → 動態 Bandpass Filter → Gain／Envelope 合成單次呼嘯。沒有內嵌音檔。</p>
+<p>手機瀏覽器請親自點擊「播放一次」解鎖聲音。首次試聽建議從低音量開始，避免連續高音量試聽。</p>
+<fieldset><legend>參數（單位：Hz／秒／0～1）</legend><div class="fields"><label for="duration_seconds">duration_seconds：秒；單次長度（0.02～8）<input id="duration_seconds" name="duration_seconds" type="number" value="0.45" min="0.02" max="8" step="0.01" inputmode="decimal"></label><label for="volume">volume：音量（0～1）；0 不建立音源<input id="volume" name="volume" type="number" value="0.15" min="0" max="1" step="0.01" inputmode="decimal"></label><label for="noise_type">noise_type：噪音音色（white、pink、brown）<select id="noise_type" name="noise_type"><option value="white" selected>white</option><option value="pink">pink</option><option value="brown">brown</option></select></label><label for="frequency_start_hz">frequency_start_hz：起始濾波頻率 Hz；不得超出取樣率安全範圍<input id="frequency_start_hz" name="frequency_start_hz" type="number" value="350" min="1" max="16000" step="1" inputmode="decimal"></label><label for="frequency_peak_hz">frequency_peak_hz：高峰濾波頻率 Hz<input id="frequency_peak_hz" name="frequency_peak_hz" type="number" value="2600" min="1" max="16000" step="1" inputmode="decimal"></label><label for="frequency_end_hz">frequency_end_hz：結束濾波頻率 Hz<input id="frequency_end_hz" name="frequency_end_hz" type="number" value="600" min="1" max="16000" step="1" inputmode="decimal"></label><label for="peak_position">peak_position：高峰位於總時長比例，必須嚴格介於 0 與 1<input id="peak_position" name="peak_position" type="number" value="0.5" min="0.01" max="0.99" step="0.01" inputmode="decimal"></label><label for="filter_q">filter_q：帶通濾波 Q<input id="filter_q" name="filter_q" type="number" value="0.7" min="0.001" max="100" step="0.1" inputmode="decimal"></label><label for="attack_seconds">attack_seconds：起音秒數；和 release 不得超過總長<input id="attack_seconds" name="attack_seconds" type="number" value="0.06" min="0" max="8" step="0.01" inputmode="decimal"></label><label for="release_seconds">release_seconds：淡出秒數<input id="release_seconds" name="release_seconds" type="number" value="0.14" min="0" max="8" step="0.01" inputmode="decimal"></label><label for="start_delay_seconds">start_delay_seconds：延後開始秒數<input id="start_delay_seconds" name="start_delay_seconds" type="number" value="0" min="0" max="3600" step="0.01" inputmode="decimal"></label></div></fieldset>
+<button id="play_sound" type="button">播放一次</button><button id="stop_sound" type="button">停止上一聲</button>
+<output id="sound_status" role="status" aria-live="polite">等待播放</output>
+<pre id="played_options"></pre>
+<script src="https://lib.stillnessbyslowly.com/audio/context/audio_context.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/source/noise.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/filter/biquad_filter.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/gain.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/envelope.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/effects/whoosh_generator.js"></script>
+<script>
+(function () {
+  "use strict";
+  const status = document.getElementById("sound_status");
+  const show_parameters = document.getElementById("played_options");
+  let last_sound = null;
+  let play_count = 0;
+
+  function collect_options() {
+    return {
+      duration_seconds: Number(document.getElementById("duration_seconds").value),
+      volume: Number(document.getElementById("volume").value),
+      noise_type: document.getElementById("noise_type").value,
+      frequency_start_hz: Number(document.getElementById("frequency_start_hz").value),
+      frequency_peak_hz: Number(document.getElementById("frequency_peak_hz").value),
+      frequency_end_hz: Number(document.getElementById("frequency_end_hz").value),
+      peak_position: Number(document.getElementById("peak_position").value),
+      filter_q: Number(document.getElementById("filter_q").value),
+      attack_seconds: Number(document.getElementById("attack_seconds").value),
+      release_seconds: Number(document.getElementById("release_seconds").value),
+      start_delay_seconds: Number(document.getElementById("start_delay_seconds").value),
+    };
+  }
+
+  document.getElementById("play_sound").addEventListener("click", async function () {
+    const options = collect_options();
+    show_parameters.textContent = JSON.stringify(options, null, 2);
+    status.textContent = "正在解鎖音訊並建立聲音…";
+    try {
+      const sound = await window.SlowlyAudioWhooshGenerator.play(options);
+      last_sound = sound;
+      play_count += 1;
+      status.textContent = sound.silent
+        ? "靜音：音量或兩層混合設定為零，未建立音源。"
+        : "已播放第 " + play_count + " 次，排程 " + sound.start_at_seconds.toFixed(3)
+          + "～" + sound.end_at_seconds.toFixed(3) + " 秒；可隨時停止上一聲。";
+    } catch (error) {
+      status.textContent = "播放失敗：" + error.message;
+    }
+  });
+
+  document.getElementById("stop_sound").addEventListener("click", function () {
+    if (!last_sound) {
+      status.textContent = "還沒有可停止的音效。";
+      return;
+    }
+    last_sound.stop();
+    status.textContent = "已要求上一聲提前淡出；不關閉 AudioContext。";
+  });
+})();
+</script></body></html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Whoosh Generator｜程式化呼嘯音效 使用說明</title><style>
+  body { font: 16px/1.6 system-ui, sans-serif; margin: 1.25rem auto; padding: 0 1rem; max-width: 860px; }
+  fieldset { border: 1px solid #aaa; margin-bottom: 1rem; }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .75rem; }
+  label { display: flex; flex-direction: column; gap: .15rem; }
+  input, select, button { font: inherit; padding: .45rem; }
+  button { min-height: 44px; margin: .15rem .4rem .15rem 0; }
+  output, pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre { border: 1px solid #bbb; padding: .7rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #bbb; padding: .35rem; text-align: left; }
+  .pass { color: #075e26; } .fail { color: #a51816; }
+</style></head>
+<body><h1>Whoosh Generator｜程式化呼嘯音效｜使用說明</h1>
+<p>使用 Noise → 動態 Bandpass Filter → Gain／Envelope 合成單次呼嘯。沒有內嵌音檔。</p>
+<p>產生噪音後使用既有 Filter 與 Envelope 排程「起始 → 高峰 → 結束」掃頻；音量另以 Attack/Release 包絡控制。這是組合層，不會生成 WAV/MP3、不依賴素材庫，也不代替現有 AudioContext／Noise／Gain。</p>
+<h2>正式 HTTPS 載入順序</h2><pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/audio/context/audio_context.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/audio/source/noise.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/audio/filter/biquad_filter.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/audio/gain/gain.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/audio/gain/envelope.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://lib.stillnessbyslowly.com/audio/effects/whoosh_generator.js&quot;&gt;&lt;/script&gt;</code></pre>
+<h2>公開 API</h2><p><code>await window.SlowlyAudioWhooshGenerator.play(options)</code> 會回傳 <code>{ context, start_at_seconds, end_at_seconds, silent, stop() }</code>。</p>
+<p><code>start_at_seconds</code>／<code>end_at_seconds</code> 是 Web Audio Context 時間線上的絕對秒數。<code>stop()</code> 可以重複呼叫；提前停止會以短淡出避免直接硬切。每次播放有獨立節點，結束後斷開連線。它<strong>不會關閉</strong>共用 AudioContext。</p>
+<p>當 <code>volume = 0</code> 時不建立音源，回傳 <code>silent: true</code>；其他合法播放為 <code>silent: false</code>。啟動 AudioContext 失敗時 Promise 會拒絕，不會回報假成功。</p>
+<h2>參數</h2><table><thead><tr><th>options 名稱</th><th>單位／限制</th><th>示範預設</th></tr></thead><tbody><tr><td><code>duration_seconds</code></td><td>秒；單次長度（0.02～8）</td><td><code>0.45</code></td></tr>
+<tr><td><code>volume</code></td><td>音量（0～1）；0 不建立音源</td><td><code>0.15</code></td></tr>
+<tr><td><code>noise_type</code></td><td>噪音音色（white、pink、brown）</td><td><code>white</code></td></tr>
+<tr><td><code>frequency_start_hz</code></td><td>起始濾波頻率 Hz；不得超出取樣率安全範圍</td><td><code>350</code></td></tr>
+<tr><td><code>frequency_peak_hz</code></td><td>高峰濾波頻率 Hz</td><td><code>2600</code></td></tr>
+<tr><td><code>frequency_end_hz</code></td><td>結束濾波頻率 Hz</td><td><code>600</code></td></tr>
+<tr><td><code>peak_position</code></td><td>高峰位於總時長比例，必須嚴格介於 0 與 1</td><td><code>0.5</code></td></tr>
+<tr><td><code>filter_q</code></td><td>帶通濾波 Q</td><td><code>0.7</code></td></tr>
+<tr><td><code>attack_seconds</code></td><td>起音秒數；和 release 不得超過總長</td><td><code>0.06</code></td></tr>
+<tr><td><code>release_seconds</code></td><td>淡出秒數</td><td><code>0.14</code></td></tr>
+<tr><td><code>start_delay_seconds</code></td><td>延後開始秒數</td><td><code>0</code></td></tr></tbody></table>
+<ul><li><code>destination</code>：可選 AudioNode，宿主的總音量／混音節點；不接管宿主全域靜音。</li><li><code>random</code>：可選 <code>() =&gt; number</code>，只轉交既有 Noise 給測試控制取樣。</li></ul>
+<p>高峰比例必須嚴格介於 0～1；頻率不得超過 <code>context.sampleRate * 0.475</code>。同時設 attack＋release 不得大於 duration；若只縮短總長，預設 attack／release 會按總長調整。所有數值須為有限 number，不接受字串形式數字，非法資料會拋 TypeError 或 RangeError。超出實際取樣率上限會在 AudioContext 啟用後檢查。</p>
+<h2>宿主如何呼叫</h2>
+<pre><code>&lt;button id=&quot;play_sound&quot;&gt;播放音效&lt;/button&gt;
+&lt;button id=&quot;stop_sound&quot;&gt;提前停止&lt;/button&gt;
+&lt;output id=&quot;sound_status&quot;&gt;&lt;/output&gt;</code></pre>
+<pre><code>let active_sound = null;
+const status = document.getElementById(&quot;sound_status&quot;);
+document.getElementById(&quot;play_sound&quot;).addEventListener(&quot;click&quot;, async function () {
+  try {
+    active_sound = await window.SlowlyAudioWhooshGenerator.play({
+    duration_seconds: 0.45,
+    volume: 0.15,
+    noise_type: &#x27;white&#x27;,
+    frequency_start_hz: 350,
+    frequency_peak_hz: 2600,
+    // destination: my_audio_bus // 選用，須為同個 AudioContext 的 AudioNode
+  });
+  status.textContent = &quot;已排程：&quot; + active_sound.start_at_seconds.toFixed(3);
+  } catch (error) {
+    status.textContent = &quot;播放失敗：&quot; + error.message;
+  }
+});
+document.getElementById(&quot;stop_sound&quot;).addEventListener(&quot;click&quot;, function () {
+  if (active_sound) active_sound.stop();
+});</code></pre>
+<h2>使用限制與生命週期</h2>
+<ul><li>手機瀏覽器通常需要在使用者<strong>點擊</strong>時解鎖音訊；若被拒絕必須顯示錯誤。</li>
+<li>多次播放可交錯進行；播放太多聲音仍可能造成總音量疊加，請由宿主安排呼叫頻率、Master Bus 及靜音設定。</li>
+<li>停止本次播放不會停止其他音效，也不會關閉共用 Context。已排程的來源自然結束會自動斷線。</li>
+<li>Noise 樣本由軍火庫既有 Noise 產生；不內嵌資料音檔，沒有聲音檔可下載。</li>
+<li>不支援 Background Audio、陀螺儀、震動、音效素材匯出或 AudioContext 共用總線管理。</li>
+<li>缺少依賴時直接報錯；不會偷偷建立自製替代音源或引入 vendor。</li></ul>
+<p><a href="https://lib.stillnessbyslowly.com/audio/effects/whoosh_generator_demo.html">前往互動 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/audio/effects/test_whoosh_generator.html">功能測試</a></p>
+</body></html>

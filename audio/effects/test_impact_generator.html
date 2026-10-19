@@ -1,0 +1,314 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Impact Generator｜程式化撞擊音效｜功能測試</title><style>
+  body { font: 16px/1.6 system-ui, sans-serif; margin: 1.25rem auto; padding: 0 1rem; max-width: 860px; }
+  fieldset { border: 1px solid #aaa; margin-bottom: 1rem; }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .75rem; }
+  label { display: flex; flex-direction: column; gap: .15rem; }
+  input, select, button { font: inherit; padding: .45rem; }
+  button { min-height: 44px; margin: .15rem .4rem .15rem 0; }
+  output, pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre { border: 1px solid #bbb; padding: .7rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #bbb; padding: .35rem; text-align: left; }
+  .pass { color: #075e26; } .fail { color: #a51816; }
+</style></head>
+<body><h1>Impact Generator｜程式化撞擊音效｜真實 PASS／FAIL 功能測試</h1>
+<p>使用最新軍火庫依賴的公開 API，注入可觀察的 Mock Web AudioContext，驗證節點建立、訊號串接、排程與錯誤。此頁不宣稱已透過實體喇叭驗收音色。</p>
+<p id="summary" aria-live="polite">測試執行中…</p><ol id="test_results"></ol>
+<script src="https://lib.stillnessbyslowly.com/audio/context/audio_context.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/source/oscillator.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/source/noise.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/gain.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/gain/envelope.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/filter/biquad_filter.js"></script>
+<script src="https://lib.stillnessbyslowly.com/audio/effects/impact_generator.js"></script>
+<script>
+(function () {
+  "use strict";
+  const output = document.getElementById("test_results");
+  const summary = document.getElementById("summary");
+  const tests = [];
+  window.__tests_complete = false;
+  window.__test_results = { passed: 0, failed: 0, details: [] };
+
+  function assert(value, message) {
+    if (!value) throw new Error(message || "Assertion failed");
+  }
+  function almost_equal(first, second) {
+    return Math.abs(first - second) < 0.000001;
+  }
+  async function rejects(action, pattern) {
+    let observed_error = null;
+    try { await action(); } catch (error) { observed_error = error; }
+    assert(observed_error !== null, "Expected an error");
+    if (pattern) assert(pattern.test(String(observed_error)), "Unexpected error: " + observed_error);
+  }
+  function case_test(name, action) { tests.push({ name, action }); }
+
+  class FakeAudioParam {
+    constructor(initial_value = 0) { this.value = initial_value; this.events = []; }
+    setValueAtTime(value, time) { this.events.push({ method: "set", value, time }); this.value = value; }
+    linearRampToValueAtTime(value, time) { this.events.push({ method: "linear", value, time }); this.value = value; }
+    exponentialRampToValueAtTime(value, time) { this.events.push({ method: "exponential", value, time }); this.value = value; }
+    cancelScheduledValues(time) { this.events.push({ method: "cancel", time }); }
+  }
+  class FakeAudioNode {
+    constructor(context, kind) {
+      this.context = context;
+      this.kind = kind;
+      this.connections = [];
+      this.disconnected = false;
+      this.started_times = [];
+      this.stopped_times = [];
+      this.onended = null;
+      context.nodes.push(this);
+    }
+    connect(destination) { this.connections.push(destination); return destination; }
+    disconnect() { this.disconnected = true; this.connections = []; }
+    start(time) { this.started_times.push(time); }
+    stop(time) { this.stopped_times.push(time); }
+    emit_ended() { if (typeof this.onended === "function") this.onended(); }
+  }
+  class FakeAudioContext {
+    constructor() {
+      this.currentTime = 12;
+      this.sampleRate = 48000;
+      this.nodes = [];
+      this.destination = new FakeAudioNode(this, "destination");
+      this.created_buffers = [];
+    }
+    createOscillator() {
+      const node = new FakeAudioNode(this, "oscillator");
+      node.frequency = new FakeAudioParam(440);
+      node.detune = new FakeAudioParam(0);
+      return node;
+    }
+    createGain() {
+      const node = new FakeAudioNode(this, "gain");
+      node.gain = new FakeAudioParam(1);
+      return node;
+    }
+    createBiquadFilter() {
+      const node = new FakeAudioNode(this, "filter");
+      node.frequency = new FakeAudioParam(350);
+      node.Q = new FakeAudioParam(1);
+      node.gain = new FakeAudioParam(0);
+      node.detune = new FakeAudioParam(0);
+      return node;
+    }
+    createBuffer(channels, count, sample_rate) {
+      const buffer = { channels, count, sample_rate, data: new Float32Array(count) };
+      this.created_buffers.push(buffer);
+      buffer.getChannelData = function () { return buffer.data; };
+      return buffer;
+    }
+    createBufferSource() {
+      const source = new FakeAudioNode(this, "noise");
+      source.loop = true;
+      source.buffer = null;
+      return source;
+    }
+    find(kind) { return this.nodes.filter(function (node) { return node.kind === kind; }); }
+  }
+  const saved_resume = window.SlowlyAudioContext && window.SlowlyAudioContext.resume;
+  const saved_close = window.SlowlyAudioContext && window.SlowlyAudioContext.close;
+  let fake_context = null;
+  let closed_context_count = 0;
+  function install_context() {
+    fake_context = new FakeAudioContext();
+    window.SlowlyAudioContext.resume = async function () { return fake_context; };
+    window.SlowlyAudioContext.close = async function () { closed_context_count += 1; };
+    return fake_context;
+  }
+  function active_sources(context) {
+    return context.nodes.filter(function (node) {
+      return node.kind === "noise" || node.kind === "oscillator";
+    });
+  }
+
+  
+  const api = window.SlowlyAudioImpactGenerator;
+  case_test("API available and version declared", async function () {
+    assert(api && typeof api.play === "function" && !!api.version);
+  });
+  case_test("Default graph has oscillator, Noise, filter, and mixed output", async function () {
+    const context = fake_context;
+    await api.play();
+    const oscillator = context.find("oscillator")[0];
+    const noise = context.find("noise")[0];
+    const filter = context.find("filter")[0];
+    const gains = context.find("gain");
+    assert(oscillator && noise && filter && gains.length === 4);
+    assert(oscillator.connections[0] === gains[2]);
+    assert(noise.connections[0] === filter && filter.connections[0] === gains[3]);
+    assert(gains[2].connections[0] === gains[0] && gains[3].connections[0] === gains[0]);
+    assert(gains[0].connections[0] === gains[1] && gains[1].connections[0] === context.destination);
+    assert(noise.loop === false && filter.type === "lowpass");
+  });
+  case_test("Body frequency sweep scheduled by existing Envelope", async function () {
+    const result = await api.play({ body_frequency_start_hz: 300, body_frequency_end_hz: 65 });
+    const events = fake_context.find("oscillator")[0].frequency.events;
+    assert(events.some(function (event) { return event.method === "set" && event.value === 300; }));
+    assert(events.some(function (event) { return event.method === "exponential" && event.value === 65 && almost_equal(event.time, result.end_at_seconds); }));
+  });
+  case_test("Upwards body sweep is allowed", async function () {
+    await api.play({ body_frequency_start_hz: 45, body_frequency_end_hz: 150 });
+    assert(fake_context.find("oscillator")[0].frequency.events.some(function (event) { return event.value === 150; }));
+  });
+  case_test("Noise transient lasts only its selected duration", async function () {
+    const result = await api.play({ duration_seconds: 0.4, noise_duration_seconds: 0.05 });
+    const noise = fake_context.find("noise")[0];
+    assert(almost_equal(noise.stopped_times[0], result.start_at_seconds + 0.05));
+    assert(almost_equal(fake_context.created_buffers[0].count, 2400));
+  });
+  case_test("Noise types all use existing Noise", async function () {
+    for (const noise_type of ["white", "pink", "brown"]) {
+      const context = install_context();
+      await api.play({ noise_type });
+      assert(context.created_buffers.length === 1);
+    }
+  });
+  case_test("Only body layer skips Noise", async function () {
+    const result = await api.play({ body_mix: 0.8, noise_mix: 0 });
+    assert(!result.silent);
+    assert(fake_context.find("oscillator").length === 1 && fake_context.find("noise").length === 0);
+  });
+  case_test("Only noise layer skips Oscillator", async function () {
+    const result = await api.play({ body_mix: 0, noise_mix: 0.8 });
+    assert(!result.silent);
+    assert(fake_context.find("oscillator").length === 0 && fake_context.find("noise").length === 1);
+  });
+  case_test("Both mixes zero returns silent result with no sources", async function () {
+    const result = await api.play({ body_mix: 0, noise_mix: 0 });
+    assert(result.silent && active_sources(fake_context).length === 0);
+    result.stop(); result.stop();
+  });
+  case_test("Volume zero returns silent with no sources", async function () {
+    const result = await api.play({ volume: 0 });
+    assert(result.silent && active_sources(fake_context).length === 0);
+  });
+  case_test("Custom random is passed to Noise", async function () {
+    let count = 0;
+    await api.play({ random: function () { count += 1; return 0.7; } });
+    assert(count > 100);
+  });
+  case_test("Stop twice fades and does not close shared context", async function () {
+    const context = fake_context;
+    const result = await api.play();
+    result.stop(); result.stop();
+    assert(context.find("oscillator")[0].stopped_times.length >= 2);
+    assert(context.find("noise")[0].stopped_times.length >= 2);
+    assert(context.find("gain")[1].gain.events.some(function (event) { return event.method === "linear" && event.value === 0; }));
+    assert(closed_context_count === 0);
+  });
+  case_test("All layers disconnect after both sources end", async function () {
+    const context = fake_context;
+    const sound = await api.play();
+    context.find("noise")[0].emit_ended();
+    assert(!context.find("oscillator")[0].disconnected, "Body still active");
+    context.find("oscillator")[0].emit_ended();
+    assert(context.find("gain").every(function (node) { return node.disconnected; }));
+    sound.stop();
+  });
+  case_test("Concurrent sounds use distinct nodes", async function () {
+    const context = fake_context;
+    const first = await api.play();
+    const second = await api.play();
+    assert(context.find("oscillator").length === 2 && context.find("noise").length === 2);
+    first.stop();
+    assert(context.find("oscillator")[0].stopped_times.length === 2);
+    assert(context.find("oscillator")[1].stopped_times.length === 1);
+    second.stop();
+  });
+  case_test("Missing Noise dependency rejects", async function () {
+    const original = window.SlowlyAudioNoise;
+    try {
+      window.SlowlyAudioNoise = null;
+      await rejects(function () { return api.play(); }, /missing dependencies/i);
+    } finally { window.SlowlyAudioNoise = original; }
+  });
+  case_test("Rejected AudioContext unlock reports failure", async function () {
+    window.SlowlyAudioContext.resume = async function () { throw new Error("Unable to resume"); };
+    await rejects(function () { return api.play(); }, /Unable to resume/);
+  });
+  case_test("Invalid waveform and noise type reject", async function () {
+    await rejects(function () { return api.play({ body_waveform: "random" }); }, /body_waveform/);
+    await rejects(function () { return api.play({ noise_type: "grey" }); }, /noise_type/);
+  });
+  case_test("Duration and noise duration are validated", async function () {
+    await rejects(function () { return api.play({ duration_seconds: 0 }); }, /duration_seconds/);
+    await rejects(function () { return api.play({ duration_seconds: 0.05, noise_duration_seconds: 0.09 }); }, /noise_duration_seconds/);
+    await rejects(function () { return api.play({ noise_duration_seconds: -1 }); }, /noise_duration_seconds/);
+  });
+  case_test("Short duration adapts noise default", async function () {
+    const sound = await api.play({ duration_seconds: 0.025 });
+    assert(!sound.silent && fake_context.created_buffers[0].count > 1000);
+  });
+  case_test("Mixes and volume reject values > 1 or NaN", async function () {
+    for (const value of [2, -0.1, NaN]) {
+      await rejects(function () { return api.play({ body_mix: value }); }, /body_mix/);
+      await rejects(function () { return api.play({ noise_mix: value }); }, /noise_mix/);
+      await rejects(function () { return api.play({ volume: value }); }, /volume/);
+    }
+  });
+  case_test("Negative, infinite, and Nyquist frequencies reject", async function () {
+    await rejects(function () { return api.play({ body_frequency_start_hz: -100 }); }, /body_frequency_start_hz/);
+    await rejects(function () { return api.play({ body_frequency_end_hz: Infinity }); }, /body_frequency_end_hz/);
+    await rejects(function () { return api.play({ noise_filter_frequency_hz: 25000 }); }, /Nyquist/);
+  });
+  case_test("Invalid random and destination reject", async function () {
+    await rejects(function () { return api.play({ random: true }); }, /random/);
+    await rejects(function () { return api.play({ destination: {} }); }, /destination/);
+  });
+  case_test("Input options are not mutated", async function () {
+    const options = Object.freeze({ body_mix: 0.3, noise_type: "pink" });
+    await api.play(options);
+    assert(options.body_mix === 0.3 && options.noise_type === "pink");
+  });
+  case_test("Custom destination is used by master stop gate", async function () {
+    const destination = { connect: function () {} };
+    await api.play({ destination });
+    assert(fake_context.find("gain")[1].connections[0] === destination);
+  });
+  case_test("Actual context schedule timestamps and short transient", async function () {
+    const sound = await api.play({ start_delay_seconds: 0.1, duration_seconds: 0.32 });
+    assert(almost_equal(sound.start_at_seconds, 12.105));
+    assert(almost_equal(sound.end_at_seconds, 12.425));
+  });
+  case_test("Both mixes at 1 do not exceed master volume limit", async function () {
+    await api.play({ body_mix: 1, noise_mix: 1, volume: 0.2 });
+    assert(fake_context.find("gain")[0].gain.value === 0.2);
+  });
+
+
+  async function run_all() {
+    try {
+      for (const item of tests) {
+        const line = document.createElement("li");
+        try {
+          install_context();
+          await item.action();
+          line.className = "pass";
+          line.textContent = "PASS｜" + item.name;
+          window.__test_results.passed += 1;
+          window.__test_results.details.push({ name: item.name, passed: true });
+        } catch (error) {
+          line.className = "fail";
+          line.textContent = "FAIL｜" + item.name + "｜" + String(error && error.message || error);
+          window.__test_results.failed += 1;
+          window.__test_results.details.push({ name: item.name, passed: false, error: String(error) });
+        }
+        output.appendChild(line);
+      }
+    } finally {
+      if (window.SlowlyAudioContext) {
+        window.SlowlyAudioContext.resume = saved_resume;
+        window.SlowlyAudioContext.close = saved_close;
+      }
+      summary.textContent = window.__test_results.passed + " PASS / " + window.__test_results.failed + " FAIL";
+      window.__tests_complete = true;
+    }
+  }
+  run_all();
+})();
+</script>
+</body></html>
