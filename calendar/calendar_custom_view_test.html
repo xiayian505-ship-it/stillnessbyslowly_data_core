@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Calendar Custom View Test</title>
+
+  <style>
+    :root {
+      --bg: #f4f5f5;
+      --surface: #ffffff;
+      --text: #202426;
+      --muted: #687176;
+      --line: #d9dddf;
+      --accent: #536d78;
+      --danger: #9a4d48;
+      --content: 760px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    main {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 40px 0 72px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 1.2rem;
+    }
+
+    .intro {
+      margin: 0 0 32px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .section {
+      margin-top: 24px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .field {
+      margin-top: 16px;
+    }
+
+    .field:first-child {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 42px;
+    }
+
+    .check-row input {
+      width: auto;
+    }
+
+    .check-row label {
+      margin: 0;
+      font-weight: 400;
+    }
+
+    .help {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .advice {
+      margin-top: 6px;
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    .message {
+      display: none;
+      margin-top: 16px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      line-height: 1.5;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      color: var(--danger);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 9px 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    button.danger {
+      color: var(--danger);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .event-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .event-item {
+      padding: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .event-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .event-title {
+      font-weight: 700;
+    }
+
+    .event-date {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .event-note {
+      margin-top: 8px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .event-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .event-actions button {
+      padding: 6px 10px;
+      font-size: 0.9rem;
+    }
+
+    .empty {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .query-result {
+      margin-top: 16px;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        width: min(calc(100% - 24px), var(--content));
+        padding-top: 28px;
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .section {
+        padding: 16px;
+      }
+
+      .row,
+      .row-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .event-head {
+        display: block;
+      }
+
+      .event-actions {
+        margin-top: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Calendar Custom View Test</h1>
+
+    <p class="intro">
+      CalendarCustom 實際操作測試。
+      可新增、編輯、刪除西曆與農曆自訂事件，並查詢指定日期。
+    </p>
+
+    <section class="section">
+      <h2 id="formTitle">新增事件</h2>
+
+      <form id="eventForm">
+        <div class="field">
+          <label for="calendar">曆法</label>
+
+          <select id="calendar">
+            <option value="solar">西曆</option>
+            <option value="lunar">農曆</option>
+          </select>
+        </div>
+
+        <div id="solarFields">
+          <div class="field">
+            <label for="solarDate">日期</label>
+            <input
+              id="solarDate"
+              type="date"
+            >
+          </div>
+        </div>
+
+        <div id="lunarFields" class="hidden">
+          <div class="field row-3">
+            <div>
+              <label for="lunarYear">農曆年</label>
+              <input
+                id="lunarYear"
+                type="number"
+                min="1900"
+                max="2100"
+                placeholder="單次事件需要"
+              >
+            </div>
+
+            <div>
+              <label for="lunarMonth">月</label>
+              <input
+                id="lunarMonth"
+                type="number"
+                min="1"
+                max="12"
+                placeholder="1–12"
+              >
+            </div>
+
+            <div>
+              <label for="lunarDay">日</label>
+              <input
+                id="lunarDay"
+                type="number"
+                min="1"
+                max="30"
+                placeholder="1–30"
+              >
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="check-row">
+              <input
+                id="isLeapMonth"
+                type="checkbox"
+              >
+
+              <label for="isLeapMonth">
+                閏月
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="check-row">
+            <input
+              id="yearly"
+              type="checkbox"
+            >
+
+            <label for="yearly">
+              每年重複
+            </label>
+          </div>
+
+          <div id="yearlyHelp" class="help">
+            西曆每年重複時，只比對月與日。
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="title">名稱</label>
+
+          <input
+            id="title"
+            type="text"
+            maxlength="5"
+            autocomplete="off"
+            placeholder="例如：生日"
+          >
+
+          <div class="help">
+            最多 5 個字元，只允許文字與數字。
+          </div>
+
+          <div
+            id="titleAdvice"
+            class="advice"
+          ></div>
+        </div>
+
+        <div class="field">
+          <label for="note">備註</label>
+
+          <textarea
+            id="note"
+            placeholder="可留空"
+          ></textarea>
+        </div>
+
+        <div class="actions">
+          <button
+            id="submitButton"
+            class="primary"
+            type="submit"
+          >
+            新增
+          </button>
+
+          <button
+            id="cancelEditButton"
+            class="hidden"
+            type="button"
+          >
+            取消編輯
+          </button>
+        </div>
+
+        <div
+          id="formMessage"
+          class="message"
+        ></div>
+      </form>
+    </section>
+
+    <section class="section">
+      <h2>日期查詢</h2>
+
+      <div class="row">
+        <div>
+          <label for="queryDate">西曆日期</label>
+
+          <input
+            id="queryDate"
+            type="date"
+          >
+        </div>
+
+        <div class="actions">
+          <button
+            id="queryButton"
+            class="primary"
+            type="button"
+          >
+            查詢
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="queryResult"
+        class="query-result"
+      ></div>
+    </section>
+
+    <section class="section">
+      <h2>目前事件</h2>
+
+      <div
+        id="eventList"
+        class="event-list"
+      ></div>
+
+      <div class="actions">
+        <button
+          id="clearButton"
+          class="danger"
+          type="button"
+        >
+          清空全部
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script src="./lunar_data.js"></script>
+  <script src="./lunar.js"></script>
+  <script src="./calendar_custom.js"></script>
+
+  <script>
+    const db = CalendarCustom.create({
+      namespace: "calendar-custom-view-test"
+    });
+
+    const form =
+      document.getElementById("eventForm");
+
+    const formTitle =
+      document.getElementById("formTitle");
+
+    const calendarInput =
+      document.getElementById("calendar");
+
+    const solarFields =
+      document.getElementById("solarFields");
+
+    const lunarFields =
+      document.getElementById("lunarFields");
+
+    const solarDate =
+      document.getElementById("solarDate");
+
+    const lunarYear =
+      document.getElementById("lunarYear");
+
+    const lunarMonth =
+      document.getElementById("lunarMonth");
+
+    const lunarDay =
+      document.getElementById("lunarDay");
+
+    const isLeapMonth =
+      document.getElementById("isLeapMonth");
+
+    const yearly =
+      document.getElementById("yearly");
+
+    const yearlyHelp =
+      document.getElementById("yearlyHelp");
+
+    const titleInput =
+      document.getElementById("title");
+
+    const titleAdvice =
+      document.getElementById("titleAdvice");
+
+    const noteInput =
+      document.getElementById("note");
+
+    const submitButton =
+      document.getElementById("submitButton");
+
+    const cancelEditButton =
+      document.getElementById("cancelEditButton");
+
+    const formMessage =
+      document.getElementById("formMessage");
+
+    const eventList =
+      document.getElementById("eventList");
+
+    const queryDate =
+      document.getElementById("queryDate");
+
+    const queryButton =
+      document.getElementById("queryButton");
+
+    const queryResult =
+      document.getElementById("queryResult");
+
+    const clearButton =
+      document.getElementById("clearButton");
+
+    let editingId = null;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function setMessage(text, isError = false) {
+      formMessage.textContent = text;
+      formMessage.classList.add("show");
+      formMessage.classList.toggle(
+        "error",
+        isError
+      );
+    }
+
+    function clearMessage() {
+      formMessage.textContent = "";
+      formMessage.classList.remove(
+        "show",
+        "error"
+      );
+    }
+
+    function updateCalendarFields() {
+      const isSolar =
+        calendarInput.value === "solar";
+
+      solarFields.classList.toggle(
+        "hidden",
+        !isSolar
+      );
+
+      lunarFields.classList.toggle(
+        "hidden",
+        isSolar
+      );
+
+      updateYearlyHelp();
+    }
+
+    function updateYearlyHelp() {
+      if (calendarInput.value === "solar") {
+        yearlyHelp.textContent =
+          yearly.checked
+            ? "每年重複：只比對西曆月與日。"
+            : "單次事件：只在指定西曆日期出現。";
+
+        return;
+      }
+
+      if (yearly.checked) {
+        yearlyHelp.textContent =
+          "每年重複：依農曆月、日與是否閏月比對；不需要填農曆年。";
+      } else {
+        yearlyHelp.textContent =
+          "單次農曆事件需要填農曆年。";
+      }
+    }
+
+    function updateTitleAdvice() {
+      const advice =
+        db.getTitleAdvice(titleInput.value);
+
+      titleAdvice.textContent =
+        advice || "";
+    }
+
+    function buildInput() {
+      const base = {
+        calendar: calendarInput.value,
+        yearly: yearly.checked,
+        title: titleInput.value,
+        note: noteInput.value
+      };
+
+      if (calendarInput.value === "solar") {
+        return {
+          ...base,
+          date: solarDate.value
+        };
+      }
+
+      return {
+        ...base,
+        lunarYear:
+          lunarYear.value === ""
+            ? null
+            : Number(lunarYear.value),
+
+        lunarMonth: Number(
+          lunarMonth.value
+        ),
+
+        lunarDay: Number(
+          lunarDay.value
+        ),
+
+        isLeapMonth:
+          isLeapMonth.checked
+      };
+    }
+
+    function resetForm() {
+      editingId = null;
+
+      form.reset();
+
+      calendarInput.value = "solar";
+
+      formTitle.textContent =
+        "新增事件";
+
+      submitButton.textContent =
+        "新增";
+
+      cancelEditButton.classList.add(
+        "hidden"
+      );
+
+      clearMessage();
+      updateCalendarFields();
+      updateTitleAdvice();
+    }
+
+    function formatEventDate(event) {
+      if (event.calendar === "solar") {
+        if (event.yearly) {
+          const parts =
+            event.date.split("-");
+
+          return (
+            `西曆 每年 ${parts[1]}/${parts[2]}`
+          );
+        }
+
+        return `西曆 ${event.date}`;
+      }
+
+      const leap =
+        event.isLeapMonth
+          ? "閏"
+          : "";
+
+      if (event.yearly) {
+        return (
+          `農曆 每年 ${leap}` +
+          `${event.lunarMonth}月` +
+          `${event.lunarDay}日`
+        );
+      }
+
+      return (
+        `農曆 ${event.lunarYear}年 ` +
+        `${leap}${event.lunarMonth}月` +
+        `${event.lunarDay}日`
+      );
+    }
+
+    function eventHtml(event) {
+      const note = event.note
+        ? `
+          <div class="event-note">
+            ${escapeHtml(event.note)}
+          </div>
+        `
+        : "";
+
+      return `
+        <div
+          class="event-item"
+          data-id="${escapeHtml(event.id)}"
+        >
+          <div class="event-head">
+            <div>
+              <div class="event-title">
+                ${escapeHtml(event.title)}
+              </div>
+
+              <div class="event-date">
+                ${escapeHtml(
+                  formatEventDate(event)
+                )}
+              </div>
+
+              ${note}
+            </div>
+
+            <div class="event-actions">
+              <button
+                type="button"
+                data-action="edit"
+              >
+                編輯
+              </button>
+
+              <button
+                type="button"
+                data-action="delete"
+                class="danger"
+              >
+                刪除
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderEvents() {
+      const events = db.all();
+
+      if (events.length === 0) {
+        eventList.innerHTML =
+          '<div class="empty">目前沒有自訂事件。</div>';
+
+        return;
+      }
+
+      eventList.innerHTML =
+        events.map(eventHtml).join("");
+    }
+
+    function startEdit(id) {
+      const event = db.get(id);
+
+      if (!event) {
+        return;
+      }
+
+      editingId = id;
+
+      calendarInput.value =
+        event.calendar;
+
+      yearly.checked =
+        event.yearly;
+
+      titleInput.value =
+        event.title;
+
+      noteInput.value =
+        event.note || "";
+
+      if (event.calendar === "solar") {
+        solarDate.value =
+          event.date || "";
+
+        lunarYear.value = "";
+        lunarMonth.value = "";
+        lunarDay.value = "";
+        isLeapMonth.checked = false;
+      } else {
+        solarDate.value = "";
+
+        lunarYear.value =
+          event.lunarYear == null
+            ? ""
+            : event.lunarYear;
+
+        lunarMonth.value =
+          event.lunarMonth;
+
+        lunarDay.value =
+          event.lunarDay;
+
+        isLeapMonth.checked =
+          event.isLeapMonth === true;
+      }
+
+      formTitle.textContent =
+        "編輯事件";
+
+      submitButton.textContent =
+        "儲存修改";
+
+      cancelEditButton.classList.remove(
+        "hidden"
+      );
+
+      clearMessage();
+      updateCalendarFields();
+      updateTitleAdvice();
+
+      form.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    function deleteEvent(id) {
+      const event = db.get(id);
+
+      if (!event) {
+        return;
+      }
+
+      const ok = confirm(
+        `確定刪除「${event.title}」？`
+      );
+
+      if (!ok) {
+        return;
+      }
+
+      db.remove(id);
+
+      if (editingId === id) {
+        resetForm();
+      }
+
+      renderEvents();
+      renderQuery();
+    }
+
+    function renderQuery() {
+      if (!queryDate.value) {
+        queryResult.innerHTML = "";
+        return;
+      }
+
+      try {
+        const events =
+          db.getByDate(queryDate.value);
+
+        if (events.length === 0) {
+          queryResult.innerHTML =
+            '<div class="empty">這一天沒有自訂事件。</div>';
+
+          return;
+        }
+
+        queryResult.innerHTML =
+          `<div class="event-list">${
+            events.map(eventHtml).join("")
+          }</div>`;
+      } catch (error) {
+        queryResult.innerHTML =
+          `<div class="message show error">${
+            escapeHtml(error.message)
+          }</div>`;
+      }
+    }
+
+    form.addEventListener(
+      "submit",
+      event => {
+        event.preventDefault();
+
+        clearMessage();
+
+        try {
+          const input =
+            buildInput();
+
+          if (editingId) {
+            db.update(
+              editingId,
+              input
+            );
+
+            setMessage(
+              "修改完成。"
+            );
+          } else {
+            db.add(input);
+
+            setMessage(
+              "新增完成。"
+            );
+          }
+
+          const successMessage =
+            formMessage.textContent;
+
+          resetForm();
+
+          setMessage(
+            successMessage
+          );
+
+          renderEvents();
+          renderQuery();
+        } catch (error) {
+          setMessage(
+            error.message,
+            true
+          );
+        }
+      }
+    );
+
+    calendarInput.addEventListener(
+      "change",
+      updateCalendarFields
+    );
+
+    yearly.addEventListener(
+      "change",
+      updateYearlyHelp
+    );
+
+    titleInput.addEventListener(
+      "input",
+      updateTitleAdvice
+    );
+
+    cancelEditButton.addEventListener(
+      "click",
+      resetForm
+    );
+
+    eventList.addEventListener(
+      "click",
+      event => {
+        const button =
+          event.target.closest("button");
+
+        if (!button) {
+          return;
+        }
+
+        const item =
+          button.closest("[data-id]");
+
+        if (!item) {
+          return;
+        }
+
+        const id =
+          item.dataset.id;
+
+        if (
+          button.dataset.action === "edit"
+        ) {
+          startEdit(id);
+        }
+
+        if (
+          button.dataset.action === "delete"
+        ) {
+          deleteEvent(id);
+        }
+      }
+    );
+
+    queryResult.addEventListener(
+      "click",
+      event => {
+        const button =
+          event.target.closest("button");
+
+        if (!button) {
+          return;
+        }
+
+        const item =
+          button.closest("[data-id]");
+
+        if (!item) {
+          return;
+        }
+
+        const id =
+          item.dataset.id;
+
+        if (
+          button.dataset.action === "edit"
+        ) {
+          startEdit(id);
+        }
+
+        if (
+          button.dataset.action === "delete"
+        ) {
+          deleteEvent(id);
+        }
+      }
+    );
+
+    queryButton.addEventListener(
+      "click",
+      renderQuery
+    );
+
+    clearButton.addEventListener(
+      "click",
+      () => {
+        const events =
+          db.all();
+
+        if (events.length === 0) {
+          return;
+        }
+
+        const ok = confirm(
+          "確定清空全部自訂事件？"
+        );
+
+        if (!ok) {
+          return;
+        }
+
+        db.clear();
+        resetForm();
+        renderEvents();
+        renderQuery();
+      }
+    );
+
+    updateCalendarFields();
+    updateTitleAdvice();
+    renderEvents();
+  </script>
+</body>
+</html>
