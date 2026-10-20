@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lineart｜實際操作 Demo</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Lineart｜實際操作 Demo</h1>
+<p>沿用 Lineart.draw() 的灰階、均值降噪與 Sobel 線稿；演算法未修改。</p>
+
+<p><label>選擇圖片<input id="image_file" type="file" accept="image/*"></label></p>
+<p><label>Sobel 判定閾值（Threshold）<input id="threshold" type="range" min="0" max="255" step="1" value="12"></label>
+<button id="render_button">產生線稿</button><button id="reset">重設閾值</button></p>
+<pre id="report" aria-live="polite">先選擇一張圖片。</pre>
+<canvas id="lineart_canvas" style="max-width: 100%; border: 1px solid;"></canvas>
+
+</main>
+<script src="https://lib.stillnessbyslowly.com/Image/lineart.js"></script>
+<script>
+
+const input = document.querySelector("#image_file");
+const canvas = document.querySelector("#lineart_canvas");
+const report = document.querySelector("#report");
+let image = null;
+let image_url = null;
+function replace_url(file) {
+  if (image_url) URL.revokeObjectURL(image_url);
+  image_url = URL.createObjectURL(file);
+  const next = new Image();
+  next.onload = function () {
+    image = next;
+    render();
+  };
+  next.onerror = function () { report.textContent = "圖片無法解碼。"; };
+  next.src = image_url;
+}
+function render() {
+  if (!image) { report.textContent = "先選擇一張圖片。"; return; }
+  try {
+    const threshold = Number(document.querySelector("#threshold").value);
+    window.Lineart.draw(image, canvas, { threshold });
+    report.textContent = "已繪製 " + canvas.width + " × " + canvas.height +
+      " 線稿；Threshold=" + threshold + "。邊框像素採舊核心輸出行為。";
+  } catch (error) {
+    report.textContent = "產生失敗：" + error.message;
+  }
+}
+input.addEventListener("change", () => {
+  if (!input.files?.[0]) { report.textContent = "未選擇圖片。"; return; }
+  replace_url(input.files[0]);
+});
+document.querySelector("#threshold").addEventListener("input", render);
+document.querySelector("#render_button").addEventListener("click", render);
+document.querySelector("#reset").addEventListener("click", () => {
+  if (!image) return;
+  document.querySelector("#threshold").value = "12";
+  render();
+});
+window.addEventListener("pagehide", () => { if (image_url) URL.revokeObjectURL(image_url); });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid Row Push｜逐項功能測試</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Grid Row Push｜逐項功能測試</h1>
+<p>真實驗證矩形棋盤、溢位、資料不突變、cloning 契約與異常參數。</p>
+<p><button id="run_tests" type="button">重新執行測試</button>　<strong id="summary" aria-live="polite">等待測試</strong></p><ol id="results"></ol>
+</main>
+<script src="https://lib.stillnessbyslowly.com/game/grid/grid_row_push.js"></script>
+<script>
+
+const test_cases = [];
+function test(name, action) {
+  test_cases.push({ name, action });
+}
+function assert(condition, message = "斷言失敗") {
+  if (!condition) throw new Error(message);
+}
+function equal(actual, expected, message = "值不相等") {
+  assert(Object.is(actual, expected), message + `，取得 ${JSON.stringify(actual)}，預期 ${JSON.stringify(expected)}`);
+}
+async function rejects(action, message = "應該拒絕無效資料") {
+  let rejected = false;
+  try { await action(); } catch (error) { rejected = true; }
+  assert(rejected, message);
+}
+
+const api = window.SlowlyGridRowPush;
+test("公開 API 與版本存在", () => assert(typeof api?.push_down === "function" && !!api.version));
+test("新列置頂，舊列等距下移", () => {
+  const r = api.push_down([[1, 2], [3, 4], [5, 6]], [7, 8]);
+  equal(JSON.stringify(r.grid), JSON.stringify([[7,8],[1,2],[3,4]]));
+  equal(JSON.stringify(r.overflow), "[5,6]"); equal(r.shifted_rows, 2);
+});
+test("滿底標記溢位", () => equal(api.push_down([[null], ["X"]], [null]).overflow_occupied, true));
+test("空底不標記溢位", () => equal(api.push_down([["X"], [null]], [null]).overflow_occupied, false));
+test("0 與 false 視為占用而非空", () => equal(api.push_down([[null, null], [0, false]], [null,null]).overflow_occupied, true));
+test("空棋盤配空新列安全", () => {
+  const r = api.push_down([], []); equal(r.grid.length, 0); equal(r.overflow.length, 0); equal(r.shifted_rows, 0);
+});
+test("單列棋盤立即以新列取代", () => {
+  const r = api.push_down([["old"]], ["new"]);
+  equal(r.grid[0][0], "new"); equal(r.overflow[0], "old"); equal(r.shifted_rows, 0);
+});
+test("零寬矩形的每列仍保持空列", () => {
+  const r = api.push_down([[], []], []); equal(r.grid.length, 2); equal(r.grid[0].length, 0);
+});
+test("可自訂空格判定", () => {
+  const r = api.push_down([[1], [0]], [9], {is_empty: cell => cell === 0});
+  equal(r.overflow_occupied, false);
+});
+test("輸入陣列及列陣列不突變", () => {
+  const cell = {value: 2}; const grid = [[cell], [null]]; const row = [{value: 1}];
+  const r = api.push_down(grid, row);
+  assert(r.grid !== grid && r.grid[0] !== row && r.grid[1] !== grid[0]);
+  equal(grid[0][0].value, 2); equal(row[0].value, 1);
+});
+test("預設淺複製：單格物件維持原參照", () => {
+  const cell = {value: 2};
+  const r = api.push_down([[cell], [null]], [null]);
+  assert(r.grid[1][0] === cell);
+});
+test("clone_cell 讓單格物件深層隔離", () => {
+  const cell = {nested: {value: 2}};
+  const r = api.push_down([[cell], [null]], [null], {clone_cell: c => c == null ? c : structuredClone(c)});
+  r.grid[1][0].nested.value = 99;
+  equal(cell.nested.value, 2);
+});
+test("連續推進回報每次溢位", () => {
+  const a = api.push_down([[1], [2]], [3]);
+  const b = api.push_down(a.grid, [4]);
+  equal(a.overflow[0], 2); equal(b.overflow[0], 1); equal(b.grid[0][0], 4);
+});
+test("非矩形輸入拒絕", () => rejects(() => api.push_down([[1],[2,3]],[4])));
+test("新列長度不符拒絕", () => rejects(() => api.push_down([[1,2]], [1])));
+test("空棋盤有非空頂列拒絕", () => rejects(() => api.push_down([], [1])));
+test("is_empty 非函式拒絕", () => rejects(() => api.push_down([[1]], [2], {is_empty: true})));
+test("clone_cell 非函式拒絕", () => rejects(() => api.push_down([[1]], [2], {clone_cell: 5})));
+test("輸入不是二維陣列拒絕", () => rejects(() => api.push_down([1,2],[3,4])));
+
+async function run_tests() {
+  const results = document.querySelector("#results");
+  results.replaceChildren();
+  let passed = 0;
+  let failed = 0;
+  for (const item of test_cases) {
+    const entry = document.createElement("li");
+    try {
+      await item.action();
+      passed += 1;
+      entry.className = "pass";
+      entry.textContent = "PASS｜" + item.name;
+    } catch (error) {
+      failed += 1;
+      entry.className = "fail";
+      entry.textContent = "FAIL｜" + item.name + "：" + (error?.message || String(error));
+      console.error("測試失敗：" + item.name, error);
+    }
+    results.appendChild(entry);
+  }
+  document.querySelector("#summary").textContent = `${passed} PASS／${failed} FAIL／${test_cases.length} TOTAL`;
+  document.body.dataset.passed = String(passed);
+  document.body.dataset.failed = String(failed);
+}
+document.querySelector("#run_tests").addEventListener("click", run_tests);
+run_tests();
+
+</script>
+</body>
+</html>

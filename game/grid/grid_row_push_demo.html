@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid Row Push｜實際操作 Demo</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+
+.board_row { display: flex; }
+.tile { width: 42px; height: 42px; border: 1px solid #999; display: grid; place-items: center; background: #f2f2f2; }
+</style>
+</head>
+<body>
+<main>
+<h1>Grid Row Push｜實際操作 Demo</h1>
+<p>一次插入頂列，把每一整列往下推，顯示底列溢出。</p>
+
+<p><label>新頂列（五個值，以逗號分隔，空白或 . 代表空格）
+<input id="new_row" value="E,.,E,.,E" size="30"></label></p>
+<p><button id="push" type="button">推進一列</button><button id="reset" type="button">重設</button></p>
+<div id="board" aria-label="五乘五棋盤"></div>
+<pre id="details" aria-live="polite"></pre>
+</main>
+<script src="https://lib.stillnessbyslowly.com/game/grid/grid_row_push.js"></script>
+<script>
+
+const api = window.SlowlyGridRowPush;
+let grid = [
+  [null, "A", null, null, "A"],
+  ["B", null, null, "B", null],
+  [null, "C", null, null, null],
+  [null, null, null, "D", null],
+  [null, null, null, null, null]
+];
+const board = document.querySelector("#board");
+const details = document.querySelector("#details");
+function render(message) {
+  board.replaceChildren();
+  grid.forEach(function (row) {
+    const row_container = document.createElement("div");
+    row_container.className = "board_row";
+    row.forEach(function (cell) {
+      const tile = document.createElement("span");
+      tile.className = "tile";
+      tile.textContent = cell == null ? "·" : String(cell);
+      row_container.appendChild(tile);
+    });
+    board.appendChild(row_container);
+  });
+  details.textContent = message + "\n" + JSON.stringify(grid, null, 2);
+}
+document.querySelector("#push").addEventListener("click", function () {
+  try {
+    const new_row = document.querySelector("#new_row").value.split(",").map(function (value) {
+      const trimmed = value.trim();
+      return trimmed === "" || trimmed === "." ? null : trimmed;
+    });
+    const result = api.push_down(grid, new_row);
+    grid = result.grid;
+    render("被推出的舊底列：" + JSON.stringify(result.overflow) +
+      "\n底列原本有內容：" + result.overflow_occupied);
+  } catch (error) {
+    details.textContent = "錯誤：" + error.message;
+  }
+});
+document.querySelector("#reset").addEventListener("click", function () { location.reload(); });
+render("等待插入新列");
+
+</script>
+</body>
+</html>

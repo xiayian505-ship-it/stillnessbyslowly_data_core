@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Storage｜真實 PASS／FAIL 功能測試</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Image Storage｜真實 PASS／FAIL 功能測試</h1>
+<p>使用各自隔離的測試資料庫，測試完關閉並刪除；寫入失敗直接顯示 FAIL。</p>
+<p><button id="run_tests" type="button">重新執行測試</button>　<strong id="summary" aria-live="polite">等待測試</strong></p><ol id="results"></ol>
+</main>
+<script src="https://lib.stillnessbyslowly.com/Image/image_storage.js"></script>
+<script>
+
+const test_cases = [];
+function test(name, action) {
+  test_cases.push({ name, action });
+}
+function assert(condition, message = "斷言失敗") {
+  if (!condition) throw new Error(message);
+}
+function equal(actual, expected, message = "值不相等") {
+  assert(Object.is(actual, expected), message + `，取得 ${JSON.stringify(actual)}，預期 ${JSON.stringify(expected)}`);
+}
+async function rejects(action, message = "應該拒絕無效資料") {
+  let rejected = false;
+  try { await action(); } catch (error) { rejected = true; }
+  assert(rejected, message);
+}
+
+const api = window.ImageStorage;
+function isolated_store(version = 1, name = "images") {
+  const dbName = "test_image_storage_assertions_" + (globalThis.crypto?.randomUUID?.() || Date.now().toString(36) + "_" + Math.random().toString(36).slice(2));
+  return { store: api.create({ dbName, storeName: name, dbVersion: version }), dbName };
+}
+async function clean(dbName, ...stores) {
+  stores.forEach(store => store?.close());
+  await new Promise(resolve => {
+    const request = indexedDB.deleteDatabase(dbName);
+    request.onsuccess = request.onerror = request.onblocked = () => resolve();
+  });
+}
+const blob = () => new Blob(["image bytes"], { type: "image/png" });
+test("原始 IndexedDB API 可讀取", () => assert(typeof api?.create === "function"));
+test("save → get → getBlob 保留 Blob", async () => {
+  const {store,dbName} = isolated_store();
+  try {
+    const id = await store.save(blob(), {filename:"test.png"});
+    const record = await store.get(id); const payload = await store.getBlob(id);
+    equal(record.filename, "test.png"); assert(payload instanceof Blob); equal(payload.type,"image/png");
+  } finally { await clean(dbName,store); }
+});
+test("空資料庫 count=0，儲存後 count=1", async () => {
+  const {store,dbName} = isolated_store();
+  try { equal(await store.count(),0); await store.save(blob()); equal(await store.count(),1); }
+  finally { await clean(dbName,store); }
+});
+test("自訂 ID 覆寫同一筆，不重複計數", async () => {
+  const {store,dbName} = isolated_store();
+  try {
+    await store.save(blob(),{id:"fixed"}); await store.save(new Blob(["a"]),{id:"fixed"});
+    equal(await store.count(),1);
+  } finally { await clean(dbName,store); }
+});
+test("remove 刪除後 getBlob 為 null", async () => {
+  const {store,dbName} = isolated_store();
+  try { const id=await store.save(blob()); await store.remove(id); equal(await store.getBlob(id),null); }
+  finally { await clean(dbName,store); }
+});
+test("clear 清空全部記錄", async () => {
+  const {store,dbName} = isolated_store();
+  try { await store.save(blob()); await store.save(blob()); await store.clear(); equal(await store.count(),0); }
+  finally { await clean(dbName,store); }
+});
+test("非 Blob 必須拒絕", async () => {
+  const {store,dbName} = isolated_store();
+  try { await rejects(() => store.save("not blob")); }
+  finally { await clean(dbName,store); }
+});
+test("無 ID get() 回傳 null", async () => {
+  const {store,dbName} = isolated_store();
+  try { equal(await store.get(""),null); }
+  finally { await clean(dbName,store); }
+});
+test("關閉後重新開啟仍保留資料", async () => {
+  const {store,dbName} = isolated_store();
+  try { const id=await store.save(blob()); store.close(); equal((await store.get(id)).id,id); }
+  finally { await clean(dbName,store); }
+});
+test("不同實例可共用相同資料庫與 objectStore", async () => {
+  const {store,dbName} = isolated_store();
+  const other=api.create({dbName,storeName:"images",dbVersion:1});
+  try { const id=await store.save(blob()); equal((await other.get(id)).id,id); }
+  finally { await clean(dbName,store,other); }
+});
+test("不同資料庫之間不串資料", async () => {
+  const a=isolated_store(); const b=isolated_store();
+  try { await a.store.save(blob(),{id:"target"}); equal(await b.store.get("target"),undefined); }
+  finally { await clean(a.dbName,a.store); await clean(b.dbName,b.store); }
+});
+test("同版本新增不同 storeName 應明確拒絕", async () => {
+  const {store,dbName} = isolated_store();
+  const different=api.create({dbName,storeName:"other_store",dbVersion:1});
+  try { await store.save(blob()); await rejects(() => different.count()); }
+  finally { await clean(dbName,store,different); }
+});
+test("提升 dbVersion 可新增 objectStore", async () => {
+  const {store,dbName} = isolated_store();
+  const another=api.create({dbName,storeName:"second_store",dbVersion:2});
+  try { await store.save(blob()); store.close(); equal(await another.count(),0); }
+  finally { await clean(dbName,store,another); }
+});
+test("無法序列化 meta 時交易必須拒絕", async () => {
+  const {store,dbName} = isolated_store();
+  try { await rejects(() => store.save(blob(),{bad_value: ()=>"fail"})); }
+  finally { await clean(dbName,store); }
+});
+test("取消選檔時不執行 save，仍為 0 筆（宿主契約）", async () => {
+  const {store,dbName} = isolated_store();
+  try { const input=document.createElement("input"); input.type="file";
+    if (input.files.length) await store.save(input.files[0]);
+    equal(await store.count(),0);
+  } finally { await clean(dbName,store); }
+});
+
+async function run_tests() {
+  const results = document.querySelector("#results");
+  results.replaceChildren();
+  let passed = 0;
+  let failed = 0;
+  for (const item of test_cases) {
+    const entry = document.createElement("li");
+    try {
+      await item.action();
+      passed += 1;
+      entry.className = "pass";
+      entry.textContent = "PASS｜" + item.name;
+    } catch (error) {
+      failed += 1;
+      entry.className = "fail";
+      entry.textContent = "FAIL｜" + item.name + "：" + (error?.message || String(error));
+      console.error("測試失敗：" + item.name, error);
+    }
+    results.appendChild(entry);
+  }
+  document.querySelector("#summary").textContent = `${passed} PASS／${failed} FAIL／${test_cases.length} TOTAL`;
+  document.body.dataset.passed = String(passed);
+  document.body.dataset.failed = String(failed);
+}
+document.querySelector("#run_tests").addEventListener("click", run_tests);
+run_tests();
+
+</script>
+</body>
+</html>

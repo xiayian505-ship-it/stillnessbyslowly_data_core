@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Storage｜實際操作 Demo</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Image Storage｜實際操作 Demo</h1>
+<p>不依賴 Image Resize；直接儲存／讀取原始圖片 Blob。</p>
+
+<p>資料保存在<b>目前網站來源</b>的 IndexedDB，不上傳雲端。瀏覽器可因隱私設定或空間不足拒絕儲存。清空只影響此 Demo 專用資料庫。</p>
+<p><label>選圖片<input id="image_file" type="file" accept="image/*"></label></p>
+<p><button id="save" type="button">儲存圖片 Blob</button>
+<button id="load" type="button">依 ID 讀取並預覽</button>
+<button id="remove" type="button">刪除此 ID</button>
+<button id="clear" type="button">清空本 Demo 資料</button></p>
+<p><label>指定 ID（不填用最後儲存的 ID）<input id="lookup_id" size="38"></label></p>
+<p>最後儲存 ID：<code id="latest_id">－</code>；目前張數：<strong id="count">…</strong></p>
+<pre id="status" aria-live="polite">尚未操作。</pre>
+<img id="preview" alt="IndexedDB 讀回的圖片" hidden style="max-width: 100%; height: auto;">
+
+</main>
+<script src="https://lib.stillnessbyslowly.com/Image/image_storage.js"></script>
+<script>
+
+const input = document.querySelector("#image_file");
+const status = document.querySelector("#status");
+const preview = document.querySelector("#preview");
+const store = window.ImageStorage.create({ dbName: "slowly_image_storage_demo", storeName: "images", dbVersion: 1 });
+let latest_id = null;
+let preview_url = null;
+function set_preview(blob) {
+  if (preview_url) URL.revokeObjectURL(preview_url);
+  preview_url = URL.createObjectURL(blob);
+  preview.src = preview_url;
+  preview.hidden = false;
+}
+async function refresh_count() {
+  document.querySelector("#count").textContent = String(await store.count());
+  document.querySelector("#latest_id").textContent = latest_id || "－";
+}
+async function execute(action) {
+  try {
+    await action();
+    await refresh_count();
+  } catch (error) {
+    status.textContent = "操作失敗：" + error.message;
+  }
+}
+document.querySelector("#save").addEventListener("click", () => execute(async () => {
+  const file = input.files?.[0];
+  if (!file) { status.textContent = "請先選一張圖片。"; return; }
+  if (!file.type.startsWith("image/")) { status.textContent = "請選擇圖片格式。"; return; }
+  latest_id = await store.save(file, { filename: file.name });
+  status.textContent = "已存入 Blob，ID：" + latest_id;
+}));
+document.querySelector("#load").addEventListener("click", () => execute(async () => {
+  const id = document.querySelector("#lookup_id").value.trim() || latest_id;
+  if (!id) { status.textContent = "請先儲存圖片，或輸入 ID。"; return; }
+  const blob = await store.getBlob(id);
+  if (blob) { set_preview(blob); status.textContent = "已載回圖片：" + id; }
+  else status.textContent = "找不到這個 ID。";
+}));
+document.querySelector("#remove").addEventListener("click", () => execute(async () => {
+  const id = document.querySelector("#lookup_id").value.trim() || latest_id;
+  if (!id) { status.textContent = "沒有可刪除的 ID。"; return; }
+  await store.remove(id);
+  if (id === latest_id) latest_id = null;
+  status.textContent = "刪除要求已完成：" + id;
+}));
+document.querySelector("#clear").addEventListener("click", () => execute(async () => {
+  if (!confirm("清除本 Demo 專用資料庫內所有圖片？")) return;
+  await store.clear(); latest_id = null;
+  status.textContent = "已清空本 Demo 的圖片 store。";
+}));
+window.addEventListener("pagehide", () => {
+  if (preview_url) URL.revokeObjectURL(preview_url);
+  store.close();
+});
+refresh_count().catch(error => status.textContent = error.message);
+
+</script>
+</body>
+</html>

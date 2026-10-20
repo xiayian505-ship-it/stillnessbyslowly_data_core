@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid Row Push｜使用說明</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Grid Row Push｜使用說明</h1>
+<p>矩形棋盤整排下推；由宿主決定內容、壓力週期與後果。</p>
+<p>本頁是已編寫的使用說明；正式公開網址需在檔案上傳部署後才可使用。</p><section><h2>職責與 Grid Gravity 的不同</h2><p>本件只做整排向下位移，將最後一列交給 overflow；不逐欄壓實、不算連通、不產生新泡泡，也不觸發 Game Over。來源靈感為泡泡龍 addPressureRow()，但由宿主供給頂列。</p></section>
+<section><h2>輸入與回傳</h2><table><tr><th>參數</th><th>契約</th></tr>
+<tr><td>grid</td><td>規則矩形的二維列陣列（可為 []）。</td></tr>
+<tr><td>new_row</td><td>與 grid 第一列等寬，頂列由宿主提供；空 grid 只接受 []。</td></tr>
+<tr><td>options.is_empty(cell,index,row_index)</td><td>可選；預設 null／undefined 才算空。0、false 均當占用。</td></tr>
+<tr><td>options.clone_cell(cell)</td><td>可選；預設回傳原參照，僅新建列陣列；需要深層隔離時由宿主提供。</td></tr>
+<tr><td>回傳</td><td>{ grid, overflow, overflow_occupied, shifted_rows }；原 grid 及 new_row 不變。</td></tr></table></section>
+<section><h2>特殊情況</h2><p>零列加空新列回傳空棋盤；單列會直接被新列取代，原列變成 overflow；零寬矩形仍保留列數。原物件不是自動深拷貝，不能修改新棋盤中的巢狀資料後宣稱原資料不變。</p></section>
+<section><h2>驗證入口</h2><p><a href="https://lib.stillnessbyslowly.com/game/grid/grid_row_push_demo.html">可操作 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/game/grid/test_grid_row_push.html">逐項 PASS／FAIL Test</a>。無第三方依賴。</p></section>
+<h2>完整引用範例（部署後 HTTPS 絕對路徑）</h2><pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/grid/grid_row_push.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+const old_grid = [[null, 1], [2, null], [null, 3]];
+const pressure_row = [1, null];
+const result = window.SlowlyGridRowPush.push_down(old_grid, pressure_row);
+console.log(result.grid, result.overflow, result.overflow_occupied);
+// 若儲存格含巢狀物件，可加：{ clone_cell: cell =&gt; structuredClone(cell) }
+&lt;/script&gt;</code></pre>
+</main>
+
+
+</body>
+</html>

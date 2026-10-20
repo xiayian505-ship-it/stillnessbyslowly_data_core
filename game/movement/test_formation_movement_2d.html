@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formation Movement 2D｜逐項功能測試</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Formation Movement 2D｜逐項功能測試</h1>
+<p>真實呼叫 plan_step，測試碰邊、停步、inactive、輸入不可變與非法參數。</p>
+<p><button id="run_tests" type="button">重新執行測試</button>　<strong id="summary" aria-live="polite">等待測試</strong></p><ol id="results"></ol>
+</main>
+<script src="https://lib.stillnessbyslowly.com/game/movement/formation_movement_2d.js"></script>
+<script>
+
+const test_cases = [];
+function test(name, action) {
+  test_cases.push({ name, action });
+}
+function assert(condition, message = "斷言失敗") {
+  if (!condition) throw new Error(message);
+}
+function equal(actual, expected, message = "值不相等") {
+  assert(Object.is(actual, expected), message + `，取得 ${JSON.stringify(actual)}，預期 ${JSON.stringify(expected)}`);
+}
+async function rejects(action, message = "應該拒絕無效資料") {
+  let rejected = false;
+  try { await action(); } catch (error) { rejected = true; }
+  assert(rejected, message);
+}
+
+const api = window.SlowlyFormationMovement2D;
+const member = (x, y = 5, active = true) => ({ x, y, width: 10, height: 8, active, id: x });
+const input = (entities = [member(10)], extras = {}) => ({
+  entities, direction: 1, speed: 10, delta_seconds: 1,
+  left_bound: 0, right_bound: 100, margin: 0, drop_distance: 7,
+  ...extras
+});
+test("公開 API 與版本存在", () => assert(typeof api?.plan_step === "function" && !!api.version));
+test("向右正常水平位移", () => {
+  const r = api.plan_step(input());
+  equal(r.entities[0].x, 20); equal(r.direction, 1); equal(r.bounced, false); equal(r.displacement.y, 0);
+});
+test("向左正常水平位移", () => {
+  const r = api.plan_step(input([member(30)], { direction: -1 }));
+  equal(r.entities[0].x, 20);
+});
+test("任一有效成員碰右邊，全隊折返下移", () => {
+  const r = api.plan_step(input([member(10), member(85)]));
+  equal(r.bounced, true); equal(r.direction, -1);
+  equal(r.entities[0].x, 10); equal(r.entities[1].x, 85);
+  equal(r.entities[0].y, 12); equal(r.entities[1].y, 12);
+});
+test("碰左邊反向並下移", () => {
+  const r = api.plan_step(input([member(4)], { direction: -1 }));
+  equal(r.bounced, true); equal(r.direction, 1); equal(r.entities[0].y, 12);
+});
+test("不活動成員不參與碰邊、位置不變", () => {
+  const r = api.plan_step(input([member(20), member(85, 5, false)]));
+  equal(r.bounced, false); equal(r.entities[0].x, 30); equal(r.entities[1].x, 85);
+});
+test("可注入 is_active 回呼", () => {
+  const r = api.plan_step(input([member(10), member(85)], { is_active: e => e.x < 50 }));
+  equal(r.bounced, false); equal(r.active_count, 1);
+});
+test("空陣列不移動、不折返", () => {
+  const r = api.plan_step(input([])); equal(r.entities.length, 0); equal(r.bounced, false);
+});
+test("速度 0 不觸發碰邊", () => {
+  const r = api.plan_step(input([member(90)], { speed: 0 }));
+  equal(r.bounced, false); equal(r.entities[0].x, 90);
+});
+test("delta 0 不觸發碰邊", () => {
+  const r = api.plan_step(input([member(90)], { delta_seconds: 0 }));
+  equal(r.bounced, false);
+});
+test("巨大位移至多只折返下移一次", () => {
+  const r = api.plan_step(input([member(30)], { speed: 1000000 }));
+  equal(r.bounced, true); equal(r.entities[0].x, 30); equal(r.entities[0].y, 12);
+});
+test("返回新成員物件但不修改來源", () => {
+  const e = member(12); const src = [e]; const r = api.plan_step(input(src));
+  assert(r.entities !== src && r.entities[0] !== e); equal(e.x, 12); equal(src[0].y, 5);
+});
+test("兩隊各自獨立計算", () => {
+  const a = api.plan_step(input([member(85)]));
+  const b = api.plan_step(input([member(10)]));
+  equal(a.bounced, true); equal(b.bounced, false);
+});
+test("負尺寸必須拒絕", () => rejects(() => api.plan_step(input([{...member(10), width:-1}]))));
+test("初始成員超界必須拒絕", () => rejects(() => api.plan_step(input([member(95)]))));
+test("非法 direction 必須拒絕", () => rejects(() => api.plan_step(input([member(10)], {direction: 0}))));
+test("非有限速度必須拒絕", () => rejects(() => api.plan_step(input([member(10)], {speed: Infinity}))));
+test("邊距壓縮界線必須拒絕", () => rejects(() => api.plan_step(input([member(10)], {margin: 51}))));
+test("is_active 非函式必須拒絕", () => rejects(() => api.plan_step(input([member(10)], {is_active: true}))));
+
+async function run_tests() {
+  const results = document.querySelector("#results");
+  results.replaceChildren();
+  let passed = 0;
+  let failed = 0;
+  for (const item of test_cases) {
+    const entry = document.createElement("li");
+    try {
+      await item.action();
+      passed += 1;
+      entry.className = "pass";
+      entry.textContent = "PASS｜" + item.name;
+    } catch (error) {
+      failed += 1;
+      entry.className = "fail";
+      entry.textContent = "FAIL｜" + item.name + "：" + (error?.message || String(error));
+      console.error("測試失敗：" + item.name, error);
+    }
+    results.appendChild(entry);
+  }
+  document.querySelector("#summary").textContent = `${passed} PASS／${failed} FAIL／${test_cases.length} TOTAL`;
+  document.body.dataset.passed = String(passed);
+  document.body.dataset.failed = String(failed);
+}
+document.querySelector("#run_tests").addEventListener("click", run_tests);
+run_tests();
+
+</script>
+</body>
+</html>

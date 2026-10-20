@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formation Movement 2D｜使用說明</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Formation Movement 2D｜使用說明</h1>
+<p>整隊碰邊同步折返下移，與單體追蹤／反彈機制不同。</p>
+<p>本頁是已編寫的使用說明；正式公開網址需在檔案上傳部署後才可使用。</p><section><h2>職責與邊界</h2><p>全隊任一有效矩形在下一幀碰及左右界線，就只下移一次、反向一次；不做碰撞、計分、Canvas 繪製或時間迴圈。來源靈感是小蜜蜂的 moveEnemies()，但改為不突變純計算。</p></section>
+<section><h2>輸入參數</h2><table><tr><th>欄位</th><th>意義</th></tr>
+<tr><td>entities</td><td>含 x/y/width/height 的矩形陣列；可有額外 id、active。</td></tr>
+<tr><td>direction</td><td>1 向右，-1 向左。</td></tr>
+<tr><td>speed、delta_seconds</td><td>非負有限數；相乘為本幀水平位移。</td></tr>
+<tr><td>left_bound、right_bound、margin</td><td>水平方向合法界線及兩側安全邊距。</td></tr>
+<tr><td>drop_distance</td><td>碰邊時整隊下移的非負距離。</td></tr>
+<tr><td>is_active(entity,index)</td><td>可選；預設 entity.active !== false。</td></tr></table></section>
+<section><h2>回傳、細節與限制</h2><p><code>{ entities, direction, bounced, displacement, active_count }</code>。輸入陣列與每個物件均不直接修改；額外欄位為淺層複製，其內巢狀物件仍共用引用。無有效成員、速度 0、delta 0 不碰邊。單次位移跨越很遠時保守地只折返下移，不移動 X；宿主應控制合理步長。初始有效矩形若超出合法邊界就拒絕。</p></section>
+<section><h2>測試與部署</h2><p>請先部署這支核心，再打開 <a href="https://lib.stillnessbyslowly.com/game/movement/formation_movement_2d_demo.html">可操作 Demo</a> 與 <a href="https://lib.stillnessbyslowly.com/game/movement/test_formation_movement_2d.html">PASS／FAIL Test</a>。不依賴任何額外舊軍火庫腳本。</p></section>
+<h2>完整引用範例（部署後 HTTPS 絕對路徑）</h2><pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/game/movement/formation_movement_2d.js&quot;&gt;&lt;/script&gt;
+&lt;button id=&quot;next_frame&quot;&gt;下一幀&lt;/button&gt;
+&lt;script&gt;
+let members = [{ x: 20, y: 10, width: 20, height: 20, active: true }];
+let direction = 1;
+document.querySelector(&quot;#next_frame&quot;).addEventListener(&quot;click&quot;, function () {
+  const result = window.SlowlyFormationMovement2D.plan_step({
+    entities: members,
+    direction,
+    speed: 100,
+    delta_seconds: 0.016,
+    left_bound: 0,
+    right_bound: 500,
+    margin: 6,
+    drop_distance: 16
+  });
+  members = result.entities;
+  direction = result.direction;
+});
+&lt;/script&gt;</code></pre>
+</main>
+
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lineart｜使用說明</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Lineart｜使用說明</h1>
+<p>沿用既有 Sobel 線稿實作，不修改演算法，補齊 Demo／Test。</p>
+<p>本頁是已編寫的使用說明；正式公開網址需在檔案上傳部署後才可使用。</p><section><h2>既有 API</h2><p><code>window.Lineart.draw(img, canvas, { threshold })</code>，同步回傳 canvas。img 可用已載入的 HTMLImageElement 或有寬高的可繪來源；canvas 由宿主建立。並不是新創建的 Edge Detection 引擎。</p></section>
+<section><h2>處理流程</h2><p>原版灰階 → 3×3 均值降噪 → Sobel X/Y 邊緣梯度 → 大於 threshold 為黑色、否則白色。預設 threshold=12；threshold 欄位不能轉有限數時亦採 12。輸出 Canvas 尺寸強制改為來源尺寸。</p></section>
+<section><h2>限制與需人工驗收</h2><p>原始 JS 只迭代內圈 (1 .. width-2 / height-2)，四周 pixel 的透明／黑邊行為須另外驗證；低於 3px 的來源無內圈可運算。跨域圖片若無 CORS，Canvas getImageData 可能拋 SecurityError。原有演算法、測試頁 <code>Image/test_lineart.html</code> 不修改。</p></section>
+<section><h2>驗收入口</h2><p><a href="https://lib.stillnessbyslowly.com/Image/lineart_demo.html">實際 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/Image/test_lineart_assertions.html">原核心 PASS／FAIL Test</a> ｜ <a href="https://lib.stillnessbyslowly.com/Image/test_lineart.html">舊手動測試</a>。</p></section>
+<h2>完整引用範例（部署後 HTTPS 絕對路徑）</h2><pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/Image/lineart.js&quot;&gt;&lt;/script&gt;
+&lt;input type=&quot;file&quot; id=&quot;local_image&quot; accept=&quot;image/*&quot;&gt;
+&lt;canvas id=&quot;output_canvas&quot;&gt;&lt;/canvas&gt;
+&lt;script&gt;
+document.querySelector(&quot;#local_image&quot;).addEventListener(&quot;change&quot;, function (event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  const temporary_url = URL.createObjectURL(file);
+  const source_image = new Image();
+  source_image.onload = function () {
+    try {
+      window.Lineart.draw(source_image, document.querySelector(&quot;#output_canvas&quot;), {threshold: 12});
+    } catch (error) {
+      console.error(&quot;線稿繪製失敗&quot;, error);
+    } finally {
+      URL.revokeObjectURL(temporary_url);
+    }
+  };
+  source_image.onerror = function () {
+    URL.revokeObjectURL(temporary_url);
+    console.error(&quot;圖片解碼失敗&quot;);
+  };
+  source_image.src = temporary_url;
+});
+&lt;/script&gt;</code></pre>
+</main>
+
+
+</body>
+</html>

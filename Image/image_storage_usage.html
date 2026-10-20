@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Storage｜使用說明</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Image Storage｜使用說明</h1>
+<p>IndexedDB Blob 儲存，保留既有公開 API 並補 Demo／Test。</p>
+<p>本頁是已編寫的使用說明；正式公開網址需在檔案上傳部署後才可使用。</p><section><h2>既有圖片儲存核心</h2><p>僅引用原有 <code>Image/image_storage.js</code>，不重做資料庫驅動；不是 localStorage，不是雲端服務，也不需要 Image Resize。網站必須在允許 IndexedDB 的安全來源上運作。</p></section>
+<section><h2>API 與輸入</h2><table><tr><th>方法</th><th>說明</th></tr>
+<tr><td>ImageStorage.create({dbName,storeName,dbVersion})</td><td>預設 slowly_image_storage、images、1，回傳實例。</td></tr>
+<tr><td>save(blob,meta)</td><td>寫 Blob，回傳 ID；meta 可含 id 等資料。</td></tr>
+<tr><td>get(id)、getBlob(id)</td><td>取得記錄或原始 Blob。</td></tr>
+<tr><td>remove(id)、clear()、count()</td><td>刪單筆、清 store、記錄計數。</td></tr>
+<tr><td>close()</td><td>釋放共用於此實例的資料庫連線；之後方法可再開啟。</td></tr></table></section>
+<section><h2>限制與風險</h2><p>同 dbName 同 dbVersion 但不同 storeName 時，不會自動新增 store，需以新版本建置。原有 save() 的 Promise 目前綁 IDB request.onsuccess，並非 transaction.oncomplete：資料完整交易提交的保證需另驗證。meta 可覆寫既有欄位，不能直接接受不可信任的 meta。儲存容量及持續時間依瀏覽器環境。</p></section>
+<section><h2>展示與測試</h2><p><a href="https://lib.stillnessbyslowly.com/Image/image_storage_demo.html">實際 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/Image/test_image_storage_assertions.html">隔離資料庫 Test</a> ｜ <a href="https://lib.stillnessbyslowly.com/Image/test_image_storage.html">原手動測試頁</a>。</p></section>
+<h2>完整引用範例（部署後 HTTPS 絕對路徑）</h2><pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/Image/image_storage.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+const image_store = window.ImageStorage.create({
+  dbName: &quot;my_gallery&quot;, storeName: &quot;images&quot;, dbVersion: 1
+});
+async function store_image(file) {
+  if (!(file instanceof Blob)) return;
+  try {
+    const id = await image_store.save(file, {filename: file.name});
+    const restored = await image_store.getBlob(id);
+    console.log(id, restored);
+  } catch (error) {
+    console.error(&quot;存取失敗&quot;, error);
+  }
+}
+window.addEventListener(&quot;pagehide&quot;, () =&gt; image_store.close());
+&lt;/script&gt;</code></pre>
+</main>
+
+
+</body>
+</html>

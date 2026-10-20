@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Resize｜真實 PASS／FAIL 功能測試</title>
+<style>
+body { margin: 1rem auto; padding: 0 1rem 3rem; max-width: 920px; font: 16px/1.6 system-ui, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button, input, select { min-height: 40px; }
+button { cursor: pointer; margin: .2rem; }
+fieldset { margin: 1rem 0; border: 1px solid #aaa; }
+label { display: inline-flex; flex-direction: column; margin: .25rem .65rem .25rem 0; }
+pre, output { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { border: 1px solid #bbb; padding: .6rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertical-align: top; }
+.pass { color: #14622c; } .fail { color: #a22222; }
+#results > li { margin-bottom: .25rem; }
+
+</style>
+</head>
+<body>
+<main>
+<h1>Image Resize｜真實 PASS／FAIL 功能測試</h1>
+<p>以實際產生的 PNG Blob 操作既有 ImageResize；有問題將顯示 FAIL，不修改原核心。</p>
+<p><button id="run_tests" type="button">重新執行測試</button>　<strong id="summary" aria-live="polite">等待測試</strong></p><ol id="results"></ol>
+</main>
+<script src="https://lib.stillnessbyslowly.com/Image/image_resize.js"></script>
+<script>
+
+const test_cases = [];
+function test(name, action) {
+  test_cases.push({ name, action });
+}
+function assert(condition, message = "斷言失敗") {
+  if (!condition) throw new Error(message);
+}
+function equal(actual, expected, message = "值不相等") {
+  assert(Object.is(actual, expected), message + `，取得 ${JSON.stringify(actual)}，預期 ${JSON.stringify(expected)}`);
+}
+async function rejects(action, message = "應該拒絕無效資料") {
+  let rejected = false;
+  try { await action(); } catch (error) { rejected = true; }
+  assert(rejected, message);
+}
+
+const api = window.ImageResize;
+function make_image(width, height, rgba = "rgba(255, 0, 0, 0.5)") {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+  context.fillStyle = rgba;
+  context.fillRect(0, 0, width, height);
+  return new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+}
+async function decode(blob) {
+  const bitmap = await createImageBitmap(blob);
+  return bitmap;
+}
+test("原始 API 可讀取", () => assert(typeof api?.resize === "function"));
+test("橫向圖片依最大寬縮小", async () => {
+  const blob = await make_image(120, 40);
+  const result = await api.resize(blob, { maxWidth: 60, maxHeight: 60, type: "image/png" });
+  equal(result.width, 60); equal(result.height, 20); assert(result.blob instanceof Blob);
+});
+test("縱向圖片依最大高縮小", async () => {
+  const blob = await make_image(30, 90);
+  const result = await api.resize(blob, { maxWidth: 40, maxHeight: 45, type: "image/png" });
+  equal(result.width, 15); equal(result.height, 45);
+});
+test("小圖不會放大", async () => {
+  const blob = await make_image(12, 8);
+  const result = await api.resize(blob, { maxWidth: 600, maxHeight: 600 });
+  equal(result.width, 12); equal(result.height, 8);
+});
+test("PNG 輸出可解碼且尺寸吻合", async () => {
+  const blob = await make_image(32, 20);
+  const result = await api.resize(blob, { maxWidth: 16, maxHeight: 16, type: "image/png" });
+  const bitmap = await decode(result.blob);
+  equal(bitmap.width, 16); equal(bitmap.height, 10); bitmap.close();
+});
+test("PNG 能保留透明資訊", async () => {
+  const blob = await make_image(20, 20);
+  const result = await api.resize(blob, { maxWidth: 20, maxHeight: 20, type: "image/png" });
+  const bitmap = await decode(result.blob);
+  const canvas = document.createElement("canvas"); canvas.width = 20; canvas.height = 20;
+  const context = canvas.getContext("2d"); context.drawImage(bitmap, 0, 0);
+  const alpha = context.getImageData(10, 10, 1, 1).data[3]; bitmap.close();
+  assert(alpha < 255 && alpha > 0, "PNG 應保留半透明 alpha");
+});
+test("JPEG 有白底而非黑底透明", async () => {
+  const blob = await make_image(20, 20, "rgba(255,0,0,0.5)");
+  const result = await api.resize(blob, { maxWidth: 20, maxHeight: 20, type: "image/jpeg", quality: 1 });
+  const bitmap = await decode(result.blob);
+  const canvas = document.createElement("canvas"); canvas.width = 20; canvas.height = 20;
+  const context = canvas.getContext("2d"); context.drawImage(bitmap, 0, 0);
+  const pixel = context.getImageData(10, 10, 1, 1).data; bitmap.close();
+  equal(pixel[3], 255); assert(pixel[1] > 45, "半透明紅色經白底合成後 G 通道應變亮");
+});
+test("非圖片 Blob 必須拒絕", () => rejects(() => api.resize(new Blob(["hello"], { type: "text/plain" }))));
+test("非 Blob 必須拒絕", () => rejects(() => api.resize("no image")));
+test("大小上限必須拒絕", async () => {
+  const blob = await make_image(20, 20);
+  await rejects(() => api.resize(blob, { maxInputBytes: 1 }));
+});
+test("損毀的 image/png 必須拒絕", () => rejects(() => api.resize(new Blob(["not_png"], {type:"image/png"}))));
+test("圖片讀取完成後撤銷 Object URL", async () => {
+  const blob = await make_image(6,6);
+  const original = URL.revokeObjectURL;
+  let count = 0;
+  URL.revokeObjectURL = function (url) { count += 1; return original.call(URL,url); };
+  try { await api.resize(blob, { maxWidth: 6, maxHeight:6 }); equal(count, 1); }
+  finally { URL.revokeObjectURL = original; }
+});
+test("無效 maxWidth=0 應明確拒絕（舊核心風險）", async () => {
+  const blob = await make_image(10, 10);
+  await rejects(() => api.resize(blob, {maxWidth: 0}));
+});
+test("無效 maxHeight=-10 應明確拒絕（舊核心風險）", async () => {
+  const blob = await make_image(10, 10);
+  await rejects(() => api.resize(blob, {maxHeight: -10}));
+});
+test("無效 quality=2 應明確拒絕（舊核心風險）", async () => {
+  const blob = await make_image(10, 10);
+  await rejects(() => api.resize(blob, {quality: 2}));
+});
+test("Canvas getContext 失敗必須拒絕", async () => {
+  const blob = await make_image(10, 10);
+  const original = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function () { return null; };
+  try { await rejects(() => api.resize(blob)); }
+  finally { HTMLCanvasElement.prototype.getContext = original; }
+});
+
+async function run_tests() {
+  const results = document.querySelector("#results");
+  results.replaceChildren();
+  let passed = 0;
+  let failed = 0;
+  for (const item of test_cases) {
+    const entry = document.createElement("li");
+    try {
+      await item.action();
+      passed += 1;
+      entry.className = "pass";
+      entry.textContent = "PASS｜" + item.name;
+    } catch (error) {
+      failed += 1;
+      entry.className = "fail";
+      entry.textContent = "FAIL｜" + item.name + "：" + (error?.message || String(error));
+      console.error("測試失敗：" + item.name, error);
+    }
+    results.appendChild(entry);
+  }
+  document.querySelector("#summary").textContent = `${passed} PASS／${failed} FAIL／${test_cases.length} TOTAL`;
+  document.body.dataset.passed = String(passed);
+  document.body.dataset.failed = String(failed);
+}
+document.querySelector("#run_tests").addEventListener("click", run_tests);
+run_tests();
+
+</script>
+</body>
+</html>
