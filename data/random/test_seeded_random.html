@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seeded Random｜功能測試｜慢慢軍火庫</title>
+  <style>
+    body { max-width: 960px; margin: 0 auto; padding: 1.5rem; font-family: system-ui, sans-serif; line-height: 1.6; }
+    #summary { border: 1px solid currentColor; padding: .8rem; font-weight: 600; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: .5rem; border: 1px solid #aaa; text-align: left; vertical-align: top; }
+    .pass { color: #176b36; font-weight: 600; }
+    .fail { color: #b32424; font-weight: 600; }
+    td:last-child { overflow-wrap: anywhere; white-space: pre-wrap; }
+    @media (prefers-color-scheme: dark) {
+      .pass { color: #85dca3; }
+      .fail { color: #ff9393; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Seeded Random｜真正 PASS／FAIL 測試</h1>
+  <p>逐項執行固定黃金向量、抽樣邊界、快照、無偏拒絕採樣，以及既有軍火庫積木的實際注入整合。<strong>預期數值為規格固定常數，不是執行當下再由待測演算法計算。</strong></p>
+  <p>以公開 HTTPS 絕對路徑載入；新 JS 上架前若尚未載入，測試會明確顯示 FAIL。</p>
+  <p id="summary" role="status" aria-live="polite">測試準備中……</p>
+  <table>
+    <thead><tr><th>序號</th><th>測試項目</th><th>結果</th><th>錯誤內容／細節</th></tr></thead>
+    <tbody id="results"></tbody>
+  </table>
+</main>
+
+<script src="https://lib.stillnessbyslowly.com/data/random/seeded_random.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/grid/minefield_rules.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  const rows = document.getElementById("results");
+  const summary = document.getElementById("summary");
+  const global_random_before_tests = Math.random;
+  const result_details = [];
+  let passed = 0;
+  let failed = 0;
+
+  function assert(condition, message) {
+    if (!condition) throw new Error(message || "條件未成立。");
+  }
+
+  function equal(actual, expected, label) {
+    if (actual !== expected) {
+      throw new Error((label || "實際值不符合預期") +
+        "：expected=" + String(expected) + ", actual=" + String(actual));
+    }
+  }
+
+  function same_json(actual, expected, label) {
+    const left = JSON.stringify(actual);
+    const right = JSON.stringify(expected);
+    equal(left, right, label);
+  }
+
+  function throws_any(action, expected_name) {
+    let error = null;
+    try {
+      action();
+    } catch (caught) {
+      error = caught;
+    }
+    if (!error) throw new Error("預期應拒絕非法輸入，但並未拋出例外。");
+    if (expected_name && error.name !== expected_name) {
+      throw new Error("預期 " + expected_name + "，實際為 " + error.name);
+    }
+  }
+
+  function test(name, action) {
+    let successful = false;
+    let message = "";
+    try {
+      action();
+      successful = true;
+      passed += 1;
+    } catch (error) {
+      failed += 1;
+      message = error && error.message ? error.message : String(error);
+    }
+
+    const row = document.createElement("tr");
+    const fields = [
+      String(result_details.length + 1),
+      name,
+      successful ? "PASS" : "FAIL",
+      message || "—"
+    ];
+    fields.forEach((value, index) => {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      if (index === 2) cell.className = successful ? "pass" : "fail";
+      row.appendChild(cell);
+    });
+    rows.appendChild(row);
+    result_details.push({ name, passed: successful, message });
+    summary.textContent = "執行中：" + passed + " PASS／" + failed + " FAIL";
+  }
+
+  // JS 尚未部署時不會隱藏錯誤，也不使用本頁的「假亂數」。
+  test("存在 SlowlySeededRandom 及 create()", () => {
+    assert(window.SlowlySeededRandom &&
+      typeof window.SlowlySeededRandom.create === "function",
+    "新核心尚未從 HTTPS 載入，請先部署 seeded_random.js。");
+  });
+
+  if (typeof window.SlowlySeededRandom?.create !== "function") {
+    summary.textContent = "0 PASS／1 FAIL；缺少待測核心，無法進行後續測試。";
+    window.__seeded_random_test_results = { passed, failed, details: result_details };
+    return;
+  }
+
+  const factory = window.SlowlySeededRandom;
+  const make = (seed = "EMPIRE_001") => factory.create(seed);
+
+  test("公開版本固定為 1.0.0", () => equal(factory.version, "1.0.0"));
+  test("公開 API／實例不可被附加欄位", () => {
+    assert(Object.isFrozen(factory));
+    assert(Object.isFrozen(make()));
+  });
+  test("六種實例方法存在", () => {
+    for (const method of ["float", "int", "chance", "get_state", "set_state", "reset"]) {
+      assert(typeof make()[method] === "function", method + " 不存在");
+    }
+  });
+
+  // 獨立寫死的規格黃金測資。
+  const golden_vectors = [
+    { seed: "EMPIRE_001", hash: 746073248, draws: [2503744885, 1837685430, 1854699735] },
+    { seed: "", hash: 223461544, draws: [2611113413, 2843196468, 3666810999] },
+    { seed: 0, hash: 1390718899, draws: [2494087331, 1789874050, 1191693444] },
+    { seed: "0", hash: 2410819400, draws: [2356740427, 2198695939, 2353384910] },
+    { seed: "飛龍在天", hash: 2219641676, draws: [1678222051, 2584019584, 1227487614] }
+  ];
+
+  for (const vector of golden_vectors) {
+    const label = typeof vector.seed + " " + JSON.stringify(vector.seed);
+    test("黃金向量初始 Hash｜" + label, () => {
+      equal(make(vector.seed).get_state().state_uint32, vector.hash);
+    });
+    test("黃金向量前三筆 uint32｜" + label, () => {
+      const instance = make(vector.seed);
+      const actual = [instance.float(), instance.float(), instance.float()].map(
+        (value) => value * 4294967296
+      );
+      same_json(actual, vector.draws);
+      equal(instance.get_state().draw_count, 3);
+    });
+  }
+
+  test("數字 0 與字串 '0' 的原始狀態不同", () => {
+    assert(make(0).get_state().state_uint32 !== make("0").get_state().state_uint32);
+  });
+  test("數值 -0 與 0 等價", () => {
+    same_json(make(-0).get_state(), make(0).get_state());
+  });
+  test("seed 的大小寫及空白不會被偷偷標準化", () => {
+    assert(make(" ABC").get_state().state_uint32 !== make("ABC").get_state().state_uint32);
+    assert(make("abc").get_state().state_uint32 !== make("ABC").get_state().state_uint32);
+  });
+  test("NFC／NFD 原文不被強制 Unicode 正規化", () => {
+    assert(make("é").get_state().state_uint32 !== make("e\u0301").get_state().state_uint32);
+  });
+  test("無 seed／非法 seed 正確拒絕", () => {
+    for (const invalid of [undefined, null, NaN, Infinity, -Infinity, 0.4, true, {}, [], Number.MAX_SAFE_INTEGER + 1]) {
+      throws_any(() => factory.create(invalid), "TypeError");
+    }
+  });
+  test("最小／最大安全整數 seed 可用", () => {
+    equal(typeof make(Number.MIN_SAFE_INTEGER).float(), "number");
+    equal(typeof make(Number.MAX_SAFE_INTEGER).float(), "number");
+  });
+  test("兩實例相同 seed 可得到完整相同序列", () => {
+    const first = make("same"), second = make("same");
+    const a = Array.from({ length: 200 }, () => first.int(-17, 31));
+    const b = Array.from({ length: 200 }, () => second.int(-17, 31));
+    same_json(a, b);
+  });
+  test("不同實例交錯使用互不干擾", () => {
+    const first = make("same"), other = make("other"), second = make("same");
+    const a = first.float();
+    other.int(0, 100);
+    const b = first.float();
+    second.float();
+    const expected = second.float();
+    equal(a, make("same").float());
+    equal(b, expected);
+  });
+  test("reset 回到原始狀態與序列", () => {
+    const instance = make();
+    const value = instance.int(1, 10);
+    instance.float();
+    const snapshot = instance.reset();
+    equal(snapshot.draw_count, 0);
+    equal(snapshot.state_uint32, 746073248);
+    equal(instance.int(1, 10), value);
+  });
+  test("float() 預設 0～1 且消耗一筆", () => {
+    const instance = make();
+    equal(instance.float(), 2503744885 / 4294967296);
+    equal(instance.get_state().draw_count, 1);
+  });
+  test("float 可接受跨零與負區間", () => {
+    const instance = make();
+    const result = instance.float(-90, -20);
+    assert(result >= -90 && result <= -20);
+  });
+  test("float 同邊界不消耗序列", () => {
+    const instance = make();
+    equal(instance.float(-8, -8), -8);
+    equal(instance.get_state().draw_count, 0);
+  });
+  test("float 逆序及非有限輸入不消耗序列", () => {
+    const instance = make();
+    for (const bad of [[3, 2], [NaN, 1], [0, Infinity], [-Infinity, 0], ["0", 1], [-1e308, 1e308]]) {
+      throws_any(() => instance.float(...bad));
+    }
+    equal(instance.get_state().draw_count, 0);
+  });
+  test("int(min,max) 輸入必須是安全整數", () => {
+    const instance = make();
+    for (const bad of [[1.5, 9], [0, Infinity], ["1", 2], [0, 2.5], [5, 4], [0, Number.MAX_SAFE_INTEGER + 1]]) {
+      throws_any(() => instance.int(...bad));
+    }
+    equal(instance.get_state().draw_count, 0);
+  });
+  test("int 整數可含負區間及邊界", () => {
+    const instance = make();
+    for (let count = 0; count < 120; count += 1) {
+      const number = instance.int(-3, 3);
+      assert(Number.isInteger(number) && number >= -3 && number <= 3);
+    }
+  });
+  test("int 上下界相同不消耗序列", () => {
+    const instance = make();
+    equal(instance.int(-24, -24), -24);
+    equal(instance.get_state().draw_count, 0);
+  });
+  test("int 恰好 2^32 個可能值", () => {
+    const instance = make();
+    equal(instance.int(0, 4294967295), 2503744885);
+    equal(instance.get_state().draw_count, 1);
+  });
+  test("int 超出 2^32 區間必須拒絕且不消耗", () => {
+    const instance = make();
+    throws_any(() => instance.int(0, 4294967296), "RangeError");
+    equal(instance.get_state().draw_count, 0);
+  });
+  test("int 接近安全整數上界的窄區間仍準確", () => {
+    const instance = make();
+    const value = instance.int(Number.MAX_SAFE_INTEGER - 10, Number.MAX_SAFE_INTEGER);
+    assert(Number.isSafeInteger(value) && value >= Number.MAX_SAFE_INTEGER - 10 && value <= Number.MAX_SAFE_INTEGER);
+  });
+  test("無偏拒絕採樣｜首筆拒絕、次筆接受，計數為 2", () => {
+    const instance = make("EMPIRE_001");
+    // span=2147483649 的 limit=2147483649；首筆 2503744885 必被拒絕。
+    equal(instance.int(0, 2147483648), 1837685430);
+    equal(instance.get_state().draw_count, 2);
+  });
+  test("拒絕採樣後保存／恢復，下一筆仍一致", () => {
+    const first = make();
+    first.int(0, 2147483648);
+    const saved = first.get_state();
+    const next = first.int(1, 100);
+    const second = make();
+    second.set_state(saved);
+    equal(second.int(1, 100), next);
+  });
+  test("chance(0)／chance(1) 為常數且不消耗", () => {
+    const instance = make();
+    equal(instance.chance(0), false);
+    equal(instance.chance(1), true);
+    equal(instance.get_state().draw_count, 0);
+  });
+  test("chance() 預設為 0.5，可重現且消耗一筆", () => {
+    const instance = make();
+    equal(instance.chance(), false);
+    equal(instance.get_state().draw_count, 1);
+  });
+  test("chance 非法機率拒絕且不消耗", () => {
+    const instance = make();
+    for (const value of [-0.01, 1.1, NaN, Infinity, "0.5", null]) {
+      throws_any(() => instance.chance(value));
+    }
+    equal(instance.get_state().draw_count, 0);
+  });
+  test("混用三種 API 時維持明確抽樣計數", () => {
+    const instance = make();
+    instance.float(0, 5);
+    instance.int(0, 4294967295);
+    instance.chance(0.75);
+    equal(instance.get_state().draw_count, 3);
+  });
+  test("混用不同順序會改變後續對應輸出", () => {
+    const first = make("mixed");
+    const second = make("mixed");
+    const first_int = first.int(0, 4294967295);
+    first.chance(0.7);
+    second.chance(0.7);
+    const second_int = second.int(0, 4294967295);
+    assert(first_int !== second_int, "交換呼叫順序不應取得同一個原始數字。");
+  });
+  test("快照版本與欄位完整，包含原種子與計數", () => {
+    const instance = make();
+    for (let index = 0; index < 5; index += 1) instance.float();
+    same_json(instance.get_state(), {
+      algorithm: "mulberry32",
+      algorithm_version: 1,
+      seed_type: "string",
+      seed_value: "EMPIRE_001",
+      state_uint32: 1313967721,
+      draw_count: 5
+    });
+  });
+  test("每次 get_state() 都回傳新的快照物件", () => {
+    const instance = make();
+    const first = instance.get_state(), second = instance.get_state();
+    assert(first !== second);
+    first.draw_count = 999;
+    equal(instance.get_state().draw_count, 0);
+  });
+  test("快照可 JSON 序列化／還原原後續序列", () => {
+    const instance = make();
+    instance.int(1, 99);
+    const snapshot = JSON.parse(JSON.stringify(instance.get_state()));
+    const next = instance.float();
+    instance.set_state(snapshot);
+    equal(instance.float(), next);
+  });
+  test("同 seed 的另一實例可恢復快照", () => {
+    const first = make("restore"), second = make("restore");
+    first.float();
+    first.int(1, 999);
+    second.set_state(first.get_state());
+    equal(second.int(-20, 20), first.int(-20, 20));
+  });
+  test("set_state() 不修改傳入快照", () => {
+    const first = make("restore"), second = make("restore");
+    first.float();
+    const snapshot = first.get_state();
+    const before = JSON.stringify(snapshot);
+    second.set_state(snapshot);
+    equal(JSON.stringify(snapshot), before);
+    snapshot.draw_count = 0;
+    equal(second.get_state().draw_count, 1);
+  });
+  test("非法快照拒絕且不汙染實例", () => {
+    const instance = make();
+    instance.float();
+    const good = instance.get_state();
+    const alterations = [
+      null, [], {},
+      { ...good, algorithm: "other" },
+      { ...good, algorithm_version: 2 },
+      { ...good, seed_type: "number" },
+      { ...good, seed_value: "someone_else" },
+      { ...good, state_uint32: -1 },
+      { ...good, state_uint32: NaN },
+      { ...good, state_uint32: 4294967296 },
+      { ...good, state_uint32: good.state_uint32 ^ 1 },
+      { ...good, draw_count: -1 },
+      { ...good, draw_count: 1.5 },
+      { ...good, draw_count: Number.MAX_SAFE_INTEGER + 1 },
+      { ...good, draw_count: 8 }
+    ];
+    for (const invalid of alterations) {
+      throws_any(() => instance.set_state(invalid));
+      same_json(instance.get_state(), good, "非法快照後狀態不可改變");
+    }
+  });
+  test("完全相同的 seed 與狀態接續，不依賴 this", () => {
+    const original = make("callback");
+    const extracted_int = original.int;
+    const extracted_float = original.float;
+    const extracted_chance = original.chance;
+    const control = make("callback");
+    equal(extracted_int(1, 10), control.int(1, 10));
+    equal(extracted_float(), control.float());
+    equal(extracted_chance(), control.chance());
+  });
+  test("Math.random 全域函式未被新件改寫", () => {
+    equal(Math.random, global_random_before_tests);
+  });
+  test("不依賴 SlowlyRandom，原 Random 零件可獨立存在", () => {
+    const instance = make("independent");
+    assert(typeof instance.float() === "number");
+  });
+  test("原有 Solvable Pair Layout JS 已從 HTTPS 載入", () => {
+    assert(window.SlowlySolvablePairLayout &&
+      typeof window.SlowlySolvablePairLayout.generate === "function",
+    "缺少 Solvable Pair Layout 的公開軍火庫 JS。");
+  });
+  test("接上既有 Solvable Pair Layout｜同 seed 同棋盤", () => {
+    function build() {
+      const random = make("PAIR_BOARD");
+      return window.SlowlySolvablePairLayout.generate({
+        rows: 4,
+        columns: 6,
+        types: ["A", "B", "C"],
+        random_int: random.int
+      });
+    }
+    const first = build(), second = build();
+    same_json(first.board, second.board);
+    same_json(first.removal_plan, second.removal_plan);
+    equal(first.board.length, 4);
+  });
+  test("原有 Minefield Rules JS 已從 HTTPS 載入", () => {
+    assert(window.SlowlyMinefieldRules &&
+      typeof window.SlowlyMinefieldRules.create_board === "function",
+    "缺少 Minefield Rules 的公開軍火庫 JS。");
+  });
+  test("接上既有 Minefield Rules｜同 seed 同雷區且首點安全", () => {
+    function build() {
+      const random = make("MINES_BOARD");
+      return window.SlowlyMinefieldRules.create_board({
+        rows: 8,
+        columns: 8,
+        mines: 12,
+        first_position: { r: 0, c: 0 },
+        random_int: random.int
+      });
+    }
+    const first = build(), second = build();
+    same_json(first.grid, second.grid);
+    equal(first.grid[0][0].mine, false);
+    equal(first.grid.flat().filter((cell) => cell.mine).length, 12);
+  });
+
+  summary.textContent = "完成｜" + passed + " PASS／" + failed + " FAIL；共 " + result_details.length + " 項。";
+  window.__seeded_random_test_results = {
+    passed,
+    failed,
+    details: result_details
+  };
+})();
+</script>
+</body>
+</html>

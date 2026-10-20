@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seeded Random｜操作 Demo｜慢慢軍火庫</title>
+  <style>
+    body { max-width: 980px; margin: 0 auto; padding: 1.5rem; font-family: system-ui, sans-serif; line-height: 1.6; }
+    fieldset { margin: 1rem 0; padding: 1rem; }
+    label { display: block; margin: .6rem 0; }
+    input, select, textarea, button { font: inherit; }
+    input, select, textarea { max-width: 100%; box-sizing: border-box; }
+    input[type="text"], input[type="number"], textarea { width: min(100%, 32rem); padding: .45rem; }
+    textarea { display: block; width: 100%; min-height: 12rem; }
+    button { margin: .2rem .2rem .2rem 0; padding: .35rem .7rem; cursor: pointer; }
+    .controls { display: flex; gap: .35rem; flex-wrap: wrap; }
+    pre { border: 1px solid #999; padding: 1rem; min-height: 2rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .status { min-height: 1.4rem; }
+    .error { font-weight: 600; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid #999; padding: .35rem .6rem; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Seeded Random｜可重現亂數 Demo</h1>
+  <p>本頁使用實際的 <code>SlowlySeededRandom</code>，並透過既有 <code>Solvable Pair Layout</code> 驗證接線。頁面只管理操作與輸出，不複製亂數或生成棋盤演算法。</p>
+  <p>新核心及舊件均由軍火庫 <strong>HTTPS 絕對 URL</strong> 載入；正式上傳前若新核心尚未公開，本頁會明確顯示載入失敗。</p>
+
+  <fieldset>
+    <legend>1. 建立獨立實例</legend>
+    <label>Seed 類型
+      <select id="seed_type">
+        <option value="string">字串（保留所有空白）</option>
+        <option value="number">數字（安全整數）</option>
+      </select>
+    </label>
+    <label>Seed
+      <input id="seed_input" type="text" value="EMPIRE_001" autocomplete="off">
+    </label>
+    <div class="controls">
+      <button id="create_instance" type="button">建立／切換 Seed</button>
+      <button id="reset_instance" type="button">Reset 目前實例</button>
+      <button id="compare_sequence" type="button">同 Seed 兩實例序列對照</button>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>2. 抽樣</legend>
+    <label>抽樣方法
+      <select id="method">
+        <option value="float">float(min, max)</option>
+        <option value="int">int(min, max)</option>
+        <option value="chance">chance(probability)</option>
+      </select>
+    </label>
+    <label>min / probability
+      <input id="first_argument" type="number" step="any" value="0">
+    </label>
+    <label>max（chance 時不使用）
+      <input id="second_argument" type="number" step="any" value="1">
+    </label>
+    <label>連續抽樣數（1～40）
+      <input id="sample_count" type="number" value="5" min="1" max="40" step="1">
+    </label>
+    <div class="controls">
+      <button id="draw_sample" type="button">依設定抽樣</button>
+      <button id="draw_once" type="button">抽一筆</button>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>3. 快照保存／恢復</legend>
+    <div class="controls">
+      <button id="save_state" type="button">取得狀態（填入 JSON）</button>
+      <button id="restore_state" type="button">由 JSON 恢復狀態</button>
+    </div>
+    <label>狀態快照（可複製、可貼回）
+      <textarea id="snapshot" spellcheck="false" aria-label="亂數狀態 JSON"></textarea>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>4. 軍火庫接線：Solvable Pair Layout</legend>
+    <p>以下兩張棋盤由舊零件 <code>SlowlySolvablePairLayout.generate()</code> 真正生成，隨機數由兩個同 seed 的新實例提供；頁面沒有自行實作配對演算法。</p>
+    <button id="generate_layout" type="button">相同 Seed 生成兩張布局並比較</button>
+    <pre id="board_output" aria-live="polite">尚未生成。</pre>
+  </fieldset>
+
+  <p id="status" class="status" role="status" aria-live="polite">準備載入元件。</p>
+  <p>當前實例的原始抽樣次數：<strong id="draw_count">—</strong></p>
+  <h2>操作紀錄</h2>
+  <pre id="output" aria-live="polite">尚未操作。</pre>
+</main>
+
+<script src="https://lib.stillnessbyslowly.com/data/random/seeded_random.js"></script>
+<script src="https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  const elements = {
+    seed_type: document.getElementById("seed_type"),
+    seed_input: document.getElementById("seed_input"),
+    method: document.getElementById("method"),
+    first_argument: document.getElementById("first_argument"),
+    second_argument: document.getElementById("second_argument"),
+    sample_count: document.getElementById("sample_count"),
+    snapshot: document.getElementById("snapshot"),
+    status: document.getElementById("status"),
+    draw_count: document.getElementById("draw_count"),
+    output: document.getElementById("output"),
+    board_output: document.getElementById("board_output")
+  };
+
+  let generator = null;
+  let seed_value;
+  let log_entries = [];
+
+  function require_core() {
+    if (!window.SlowlySeededRandom || typeof window.SlowlySeededRandom.create !== "function") {
+      throw new Error("Seeded Random JS 尚未成功載入；請確認新零件已部署到軍火庫網址。");
+    }
+  }
+
+  function selected_seed() {
+    const raw_value = elements.seed_input.value;
+    if (elements.seed_type.value === "string") return raw_value;
+    if (!/^[+-]?\d+$/.test(raw_value)) {
+      throw new TypeError("數字 Seed 必須是十進位整數。");
+    }
+    const numeric_value = Number(raw_value);
+    if (!Number.isSafeInteger(numeric_value)) {
+      throw new RangeError("數字 Seed 超出安全整數範圍。");
+    }
+    return numeric_value;
+  }
+
+  function show_status(message, is_error = false) {
+    elements.status.textContent = message;
+    elements.status.classList.toggle("error", is_error);
+  }
+
+  function record(message) {
+    log_entries.unshift(message);
+    log_entries = log_entries.slice(0, 30);
+    elements.output.textContent = log_entries.join("\n");
+  }
+
+  function refresh_count() {
+    elements.draw_count.textContent = generator
+      ? String(generator.get_state().draw_count)
+      : "—";
+  }
+
+  function run(action) {
+    try {
+      action();
+      refresh_count();
+    } catch (error) {
+      show_status("操作失敗：「" + error.message + "」", true);
+      record("ERROR｜" + error.message);
+      refresh_count();
+    }
+  }
+
+  function create_instance() {
+    require_core();
+    seed_value = selected_seed();
+    generator = window.SlowlySeededRandom.create(seed_value);
+    log_entries = [];
+    record("已建立 Seed：" + JSON.stringify(seed_value));
+    show_status("建立成功。每個實例有獨立的抽樣狀態。");
+  }
+
+  function require_instance() {
+    if (!generator) {
+      throw new Error("請先成功建立 Seeded Random 實例。");
+    }
+  }
+
+  function parameters() {
+    const method = elements.method.value;
+    const first = Number(elements.first_argument.value);
+    const second = Number(elements.second_argument.value);
+    if (elements.first_argument.value.trim() === "" ||
+        (method !== "chance" && elements.second_argument.value.trim() === "")) {
+      throw new TypeError("抽樣參數不可留白。");
+    }
+    return { method, first, second };
+  }
+
+  function draw_one(target, config) {
+    if (config.method === "float") return target.float(config.first, config.second);
+    if (config.method === "int") return target.int(config.first, config.second);
+    if (config.method === "chance") return target.chance(config.first);
+    throw new Error("未知抽樣方法。");
+  }
+
+  function draw_samples(force_one = false) {
+    require_instance();
+    const config = parameters();
+    const count = force_one ? 1 : Number(elements.sample_count.value);
+    if (!Number.isInteger(count) || count < 1 || count > 40) {
+      throw new RangeError("連續抽樣數必須是 1～40 的整數。");
+    }
+    const results = [];
+    for (let index = 0; index < count; index += 1) {
+      results.push(draw_one(generator, config));
+    }
+    record(config.method + " × " + count + "：" + JSON.stringify(results));
+    show_status("抽樣成功。請查看操作紀錄與抽樣次數。");
+  }
+
+  function compare_sequence() {
+    require_core();
+    const input_seed = selected_seed();
+    const config = parameters();
+    const first = window.SlowlySeededRandom.create(input_seed);
+    const second = window.SlowlySeededRandom.create(input_seed);
+    const first_results = Array.from({ length: 8 }, () => draw_one(first, config));
+    const second_results = Array.from({ length: 8 }, () => draw_one(second, config));
+    const matches = JSON.stringify(first_results) === JSON.stringify(second_results);
+    record("兩實例序列：" + (matches ? "相同" : "不同") +
+      "\n甲 " + JSON.stringify(first_results) +
+      "\n乙 " + JSON.stringify(second_results));
+    show_status(matches ? "PASS｜同種子、同順序，序列一致。" : "FAIL｜序列不一致。", !matches);
+  }
+
+  function generate_layout() {
+    require_core();
+    if (!window.SlowlySolvablePairLayout ||
+        typeof window.SlowlySolvablePairLayout.generate !== "function") {
+      throw new Error("Solvable Pair Layout 原有軍火庫 JS 尚未成功載入。");
+    }
+    const input_seed = selected_seed();
+
+    function build_board() {
+      const random = window.SlowlySeededRandom.create(input_seed);
+      return window.SlowlySolvablePairLayout.generate({
+        rows: 4,
+        columns: 6,
+        types: ["A", "B", "C"],
+        random_int: random.int
+      });
+    }
+
+    const first_board = build_board();
+    const second_board = build_board();
+    const matches = JSON.stringify(first_board) === JSON.stringify(second_board);
+    const display_board = (layout) => layout.board.map((row) =>
+      row.map((cell) => cell.type_id).join(" ")
+    ).join("\n");
+    elements.board_output.textContent =
+      "布局甲：\n" + display_board(first_board) +
+      "\n\n布局乙：\n" + display_board(second_board) +
+      "\n\n結果：" + (matches ? "PASS｜相同" : "FAIL｜不同");
+    show_status(matches ? "PASS｜既有 Solvable Pair Layout 接線成功。" : "FAIL｜兩次布局不一致。", !matches);
+  }
+
+  document.getElementById("create_instance").addEventListener("click", () => run(create_instance));
+  document.getElementById("reset_instance").addEventListener("click", () => run(() => {
+    require_instance();
+    generator.reset();
+    record("Reset：已回到初始種子。");
+    show_status("Reset 成功。");
+  }));
+  document.getElementById("compare_sequence").addEventListener("click", () => run(compare_sequence));
+  document.getElementById("draw_sample").addEventListener("click", () => run(() => draw_samples(false)));
+  document.getElementById("draw_once").addEventListener("click", () => run(() => draw_samples(true)));
+  document.getElementById("save_state").addEventListener("click", () => run(() => {
+    require_instance();
+    elements.snapshot.value = JSON.stringify(generator.get_state(), null, 2);
+    record("已輸出可 JSON 化的快照。");
+    show_status("快照已填入文字框，可以複製或編輯。");
+  }));
+  document.getElementById("restore_state").addEventListener("click", () => run(() => {
+    require_instance();
+    const snapshot = JSON.parse(elements.snapshot.value);
+    generator.set_state(snapshot);
+    record("已恢復快照，後續抽樣可接續。");
+    show_status("快照恢復成功。");
+  }));
+  document.getElementById("generate_layout").addEventListener("click", () => run(generate_layout));
+
+  run(create_instance);
+})();
+</script>
+</body>
+</html>

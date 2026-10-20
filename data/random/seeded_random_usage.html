@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seeded Random｜使用說明｜慢慢軍火庫</title>
+  <style>
+    body { max-width: 980px; margin: 0 auto; padding: 1.5rem; font-family: system-ui, sans-serif; line-height: 1.7; }
+    pre { overflow: auto; padding: 1rem; border: 1px solid currentColor; white-space: pre; }
+    code { overflow-wrap: anywhere; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #aaa; padding: .55rem; text-align: left; vertical-align: top; }
+    .note { border-left: 3px solid currentColor; padding-left: 1rem; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Seeded Random｜可播種亂數</h1>
+  <p>路徑：<code>data/random/seeded_random.js</code>；公開名稱：<code>window.SlowlySeededRandom</code>；版本：<code>1.0.0</code>。</p>
+  <p>它讓「同一個 seed ＋同樣的 API 呼叫順序」產生同一串偽隨機數，並且支援保存與恢復亂數狀態。每次 <code>create(seed)</code> 都是獨立實例。</p>
+  <p class="note"><strong>注意：</strong>此元件不是密碼學安全亂數，不可用於密碼、Session Token、安全驗證碼、保證唯一 ID。也不會自動幫整款遊戲保存玩家操作或回放。</p>
+
+  <h2>1. 載入方式</h2>
+  <p>正式部署後，以軍火庫公開 HTTPS 絕對路徑引用（上傳前新路徑尚未上線）：</p>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/data/random/seeded_random.js"&gt;&lt;/script&gt;</code></pre>
+  <p>核心只使用原生 JavaScript 的 <code>TextEncoder</code>、<code>Math.imul</code> 等能力，<strong>不需要</strong>載入舊 <code>random.js</code>，也不改寫 <code>Math.random</code>。</p>
+  <p><a href="https://lib.stillnessbyslowly.com/data/random/seeded_random_demo.html">操作 Demo（部署後）</a>、<a href="https://lib.stillnessbyslowly.com/data/random/test_seeded_random.html">自動 Test（部署後）</a>。</p>
+
+  <h2>2. 完整 API</h2>
+  <table>
+    <thead><tr><th>方法</th><th>輸入</th><th>回傳</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td><code>SlowlySeededRandom.create(seed)</code></td><td>字串或安全整數 number，必填</td><td>獨立實例</td><td>沒有預設 seed，不讀時鐘或系統亂數。</td></tr>
+      <tr><td><code>float(min=0, max=1)</code></td><td>有限的數值，且 max ≥ min，跨度有限</td><td>number</td><td>原始亂數均落在 [0,1)；外推至指定範圍後，IEEE-754 捨入可能剛好等於 max。</td></tr>
+      <tr><td><code>int(min, max)</code></td><td>安全整數，上下界皆包含；區間數量 1～2³²</td><td>number</td><td>無偏拒絕採樣；區間超過 2³² 明確拒絕。</td></tr>
+      <tr><td><code>chance(probability=0.5)</code></td><td>0～1 的有限數值</td><td>boolean</td><td>機率判斷。</td></tr>
+      <tr><td><code>get_state()</code></td><td>無</td><td>新的 JSON 可序列化快照物件</td><td>記錄演算法、種子、目前狀態、原始抽樣次數。</td></tr>
+      <tr><td><code>set_state(snapshot)</code></td><td>同 seed、同演算法及版本的完整有效快照</td><td>恢復後的新快照</td><td>在所有欄位驗證完成後才恢復；拒絕損毀或不同種子快照。</td></tr>
+      <tr><td><code>reset()</code></td><td>無</td><td>重置後的新快照</td><td>回到建立時的種子，抽樣次數歸零。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. 基本使用與中途接續</h2>
+  <pre><code>const generator = SlowlySeededRandom.create("EMPIRE_001");
+
+const result_a = generator.int(1, 100);
+const result_b = generator.float();
+const saved_state = generator.get_state();
+const result_c = generator.chance(0.5);
+
+// 恢復到 result_c 抽樣前。
+generator.set_state(JSON.parse(JSON.stringify(saved_state)));
+const repeated_c = generator.chance(0.5);
+console.log(result_c === repeated_c); // true
+
+generator.reset();
+console.log(generator.int(1, 100) === result_a); // true</code></pre>
+  <p>相同的 seed 搭配相同版本與相同方法呼叫順序，才會取得相同序列。兩個實例互不干擾。<strong><code>float</code>／<code>int</code>／<code>chance</code> 都不依賴 this，能直接傳給其他零件作為 callback。</strong></p>
+
+  <h2>4. 種子與抽樣規則</h2>
+  <ul>
+    <li>字串接受 <code>""</code>、中文、空白及特殊字元；不 trim、不轉大小寫、不做 Unicode 正規化。</li>
+    <li>數字接受正、負安全整數及 0；<code>0</code> 與 <code>"0"</code> 是不同 seed；數值 -0 等同 0。</li>
+    <li><code>null</code>、<code>undefined</code>、布林、物件、陣列、浮點數、NaN 和 Infinity 均拒絕。</li>
+    <li>同一種子有穩定序列，<strong>但不同 seed 理論上可能碰撞</strong>，也可能產生相同的有限次抽樣結果。</li>
+    <li><code>float(x,x)</code>、<code>int(x,x)</code>、<code>chance(0)</code>、<code>chance(1)</code> 不消耗原始亂數；非法參數也不消耗。</li>
+    <li>其他有效抽樣會前進序列。<code>int</code> 使用無偏拒絕採樣，一次呼叫<strong>可能消耗多個 32-bit 數字</strong>。<code>draw_count</code> 記錄的是原始抽樣總數，而非方法呼叫次數。</li>
+    <li>有效參數不保證不會碰到瀏覽器的極端數字精度邊界；需要跨版本回放時，請固定輸入與程式版本。</li>
+  </ul>
+
+  <h2>5. 演算法版本與快照</h2>
+  <p>版本 1.0.0 使用 <strong>UTF-8 種子（先加型別前綴 s:／n:）→ FNV-1a 32-bit → Mulberry32</strong>。對外演算法標記 <code>mulberry32</code>、<code>algorithm_version: 1</code>。不同版本不可擅自沿用狀態。</p>
+  <p>例如，在 seed <code>"EMPIRE_001"</code> 的實例消耗五筆原始 32-bit 抽樣後：</p>
+  <pre><code>{
+  "algorithm": "mulberry32",
+  "algorithm_version": 1,
+  "seed_type": "string",
+  "seed_value": "EMPIRE_001",
+  "state_uint32": 1313967721,
+  "draw_count": 5
+}</code></pre>
+  <p>允許 JSON 字串化再還原；不能拿不同原始種子、版本、或與抽樣次數不一致的狀態強行恢復。同樣種子的新實例可以使用該快照。</p>
+  <p>固定測資：<code>"EMPIRE_001"</code> 前三筆原始 unsigned 整數為 <code>2503744885</code>、<code>1837685430</code>、<code>1854699735</code>，可透過 <code>float() * 4294967296</code> 驗證。</p>
+
+  <h2>6. 與既有軍火庫積木接線：Solvable Pair Layout</h2>
+  <p>只需載入兩支公開 JS，**不需要修改**既有生成器：</p>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/data/random/seeded_random.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/grid/solvable_pair_layout.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  function make_board(seed) {
+    const seeded = SlowlySeededRandom.create(seed);
+    return SlowlySolvablePairLayout.generate({
+      rows: 4,
+      columns: 6,
+      types: ["A", "B", "C"],
+      random_int: seeded.int
+    });
+  }
+  console.log(JSON.stringify(make_board("BOARD_001")) ===
+              JSON.stringify(make_board("BOARD_001"))); // true
+&lt;/script&gt;</code></pre>
+
+  <h2>7. 其他現成接入口</h2>
+  <h3>掃雷（Minefield Rules）</h3>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/game/grid/minefield_rules.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const seeded = SlowlySeededRandom.create("MINES_001");
+  const board = SlowlyMinefieldRules.create_board({
+    rows: 8,
+    columns: 8,
+    mines: 10,
+    first_position: { r: 0, c: 0 },
+    random_int: seeded.int
+  });
+&lt;/script&gt;</code></pre>
+  <p>此示例只建立同種子的布雷結果；掃雷的點擊與勝負仍由宿主處理。</p>
+
+  <h3>節奏譜面（Rhythm Chart Generator）</h3>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/audio/tempo/beat_time.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/game/rhythm/rhythm_chart_generator.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const seeded = SlowlySeededRandom.create("SONG_001");
+  const chart = SlowlyRhythmChartGenerator.generate({
+    duration_ms: 12000,
+    bpm: 120,
+    lanes: 4,
+    random_int: seeded.int
+  });
+&lt;/script&gt;</code></pre>
+  <p>節奏譜面另外需要既有 <code>BeatTime</code> 的節拍換算 API；請依該零件的 Usage 核對載入路徑。</p>
+
+  <h3>音訊 Noise</h3>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/audio/source/noise.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const seeded = SlowlySeededRandom.create("RAIN_001");
+  const buffer = SlowlyAudioNoise.createBuffer(audio_context, {
+    random: () =&gt; seeded.float()
+  });
+&lt;/script&gt;</code></pre>
+  <p>音訊比較要固定取樣率、時長與選項；真實 Noise 的 <code>createBuffer</code> options 請以該元件公開 API 為準。Random ID 預設採用 <code>crypto.randomUUID()</code>，不適合直接拿來示範穩定 ID。</p>
+
+  <h2>8. 錯誤、安全與不負責範圍</h2>
+  <p>輸入型別錯誤會拋 <code>TypeError</code>；超出合法區間、快照種子／版本不相容、狀態不一致會拋 <code>RangeError</code>。例外發生前不會消耗任何原始亂數。</p>
+  <p>不負責：完整遊戲回放、遊戲規則改版相容、玩家操作事件、影片畫面、密碼學安全、帳號驗證、全域亂數替換、Worker 排程、DOM 與計時器。需要可重現遊戲，宿主還需固定初始化選項、外部狀態及操作順序。</p>
+</main>
+</body>
+</html>
