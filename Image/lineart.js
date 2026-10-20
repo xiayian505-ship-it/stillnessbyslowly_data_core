@@ -67,6 +67,15 @@
     var out = ctx.createImageData(w, h);
     var o = out.data;
 
+    // Sobel 需要周圍 3×3 像素，最外圈無法計算，預設為不透明白色。
+    // 保留原有內圈線稿判斷，避免輸出透明邊框。
+    for (var borderIndex = 0; borderIndex < o.length; borderIndex += 4) {
+      o[borderIndex] = 255;
+      o[borderIndex + 1] = 255;
+      o[borderIndex + 2] = 255;
+      o[borderIndex + 3] = 255;
+    }
+
     for (var py = 1; py < h - 1; py++) {
       for (var px = 1; px < w - 1; px++) {
         var pp = py * w + px;

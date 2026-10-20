@@ -23,7 +23,7 @@ th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertica
 <body>
 <main>
 <h1>Image Resize｜真實 PASS／FAIL 功能測試</h1>
-<p>以實際產生的 PNG Blob 操作既有 ImageResize；有問題將顯示 FAIL，不修改原核心。</p>
+<p>以實際產生的 PNG Blob 操作既有 ImageResize；有問題將顯示 FAIL，驗證局部參數修補後的真實行為。</p>
 <p><button id="run_tests" type="button">重新執行測試</button>　<strong id="summary" aria-live="polite">等待測試</strong></p><ol id="results"></ol>
 </main>
 <script src="https://lib.stillnessbyslowly.com/Image/image_resize.js"></script>
@@ -114,15 +114,15 @@ test("圖片讀取完成後撤銷 Object URL", async () => {
   try { await api.resize(blob, { maxWidth: 6, maxHeight:6 }); equal(count, 1); }
   finally { URL.revokeObjectURL = original; }
 });
-test("無效 maxWidth=0 應明確拒絕（舊核心風險）", async () => {
+test("無效 maxWidth=0 應明確拒絕（參數修補驗收）", async () => {
   const blob = await make_image(10, 10);
   await rejects(() => api.resize(blob, {maxWidth: 0}));
 });
-test("無效 maxHeight=-10 應明確拒絕（舊核心風險）", async () => {
+test("無效 maxHeight=-10 應明確拒絕（參數修補驗收）", async () => {
   const blob = await make_image(10, 10);
   await rejects(() => api.resize(blob, {maxHeight: -10}));
 });
-test("無效 quality=2 應明確拒絕（舊核心風險）", async () => {
+test("無效 quality=2 應明確拒絕（參數修補驗收）", async () => {
   const blob = await make_image(10, 10);
   await rejects(() => api.resize(blob, {quality: 2}));
 });

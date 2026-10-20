@@ -24,14 +24,14 @@ th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertica
 <main>
 <h1>Image Resize｜使用說明</h1>
 <p>已存在的縮圖核心，只補正式使用說明與驗收入口。</p>
-<p>本頁是已編寫的使用說明；正式公開網址需在檔案上傳部署後才可使用。</p><section><h2>既有零件，非新核心</h2><p>維持現有 <code>Image/image_resize.js</code> 不變，補齊 Usage、獨立 Demo 和新 Test。舊人工頁 <code>Image/test_image_resize.html</code> 也保留。與 <code>Image/image_compress_to_size.js</code> 的「位元組壓縮」不同，Resize 只保證尺寸縮小（不放大）。</p></section>
+<p>本頁是已編寫的使用說明；正式公開網址需在檔案上傳部署後才可使用。</p><section><h2>既有零件，非新核心</h2><p>沿用原有 <code>Image/image_resize.js</code>，僅局部補上最大寬高及輸出品質的參數檢查，並提供 Usage、獨立 Demo 與逐項 Test。舊人工頁 <code>Image/test_image_resize.html</code> 也保留。與 <code>Image/image_compress_to_size.js</code> 的「位元組壓縮」不同，Resize 只保證尺寸縮小（不放大）。</p></section>
 <section><h2>公開 API 與參數</h2><table><tr><th>名稱</th><th>意義</th></tr>
 <tr><td>ImageResize.resize(blob, options)</td><td>Promise&lt;result&gt;，輸入 File／Blob。</td></tr>
-<tr><td>maxWidth / maxHeight</td><td>最大寬／高，預設 600／600。</td></tr>
-<tr><td>type / quality</td><td>預設 image/jpeg、0.82；JPEG 會填白底。</td></tr>
+<tr><td>maxWidth / maxHeight</td><td>最大寬／高，預設 600／600；必須是正有限數。</td></tr>
+<tr><td>type / quality</td><td>預設 image/jpeg、0.82；quality 必須是 0～1 的有限數；JPEG 會填白底。</td></tr>
 <tr><td>maxInputBytes</td><td>預設 12 MiB。</td></tr>
 <tr><td>結果</td><td>blob、width、height、sourceWidth、sourceHeight、sourceBytes、outputBytes、type。</td></tr></table></section>
-<section><h2>限制與安全</h2><p>原版 JS 的 options 邊界驗證不完善；不要把非正長寬、越界品質當成已完全拒絕。JPEG 不保留 alpha；高解析度圖片仍受手機 Canvas 記憶體限制。物件 URL 由核心讀圖後釋放，宿主自己建立的預覽 URL 要自己釋放。部分格式由瀏覽器本身決定支援程度。</p></section>
+<section><h2>限制與安全</h2><p>已補上 <code>maxWidth</code>／<code>maxHeight</code> 正有限數驗證，以及 <code>quality</code> 0～1 的有限數驗證；非法數值會明確拒絕。其他選項與圖片格式的瀏覽器支援仍依原核心契約。JPEG 不保留 alpha；高解析度圖片仍受手機 Canvas 記憶體限制。物件 URL 由核心讀圖後釋放，宿主自己建立的預覽 URL 要自己釋放。部分格式由瀏覽器本身決定支援程度。</p></section>
 <section><h2>驗收入口</h2><p><a href="https://lib.stillnessbyslowly.com/Image/image_resize_demo.html">新 Demo</a> ｜ <a href="https://lib.stillnessbyslowly.com/Image/test_image_resize_assertions.html">新 PASS／FAIL Test</a> ｜ <a href="https://lib.stillnessbyslowly.com/Image/test_image_resize.html">原手動測試頁</a>。</p></section>
 <h2>完整引用範例（部署後 HTTPS 絕對路徑）</h2><pre><code>&lt;script src=&quot;https://lib.stillnessbyslowly.com/Image/image_resize.js&quot;&gt;&lt;/script&gt;
 &lt;input type=&quot;file&quot; id=&quot;local_image&quot; accept=&quot;image/*&quot;&gt;

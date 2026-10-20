@@ -4481,6 +4481,28 @@ window.SlowlyLibraryIndex = [
             ]
           },
           {
+            "title": "Grid Row Push",
+            "desc": "通用矩形棋盤整列下推規則，將宿主傳入的新頂列插入，整體下移一列並回傳尾列溢位、是否有佔用及位移列數；不重做 Grid Gravity 的逐欄壓實，也不綁泡泡顏色與遊戲結束規則。",
+            "links": [
+              {
+                "label": "grid_row_push.js",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/grid_row_push.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/grid_row_push_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/grid_row_push_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/grid/test_grid_row_push.html"
+              }
+            ]
+          },
+          {
             "title": "Grid Shuffle Until",
             "desc": "通用二維格子條件洗牌核心，將 grid 內容攤平、交給宿主提供的 shuffle 重新排列並寫回，再依 accept 條件重試至成功或達嘗試上限；不綁定隨機實作、三消或 UI。",
             "links": [
@@ -4683,6 +4705,28 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/game/movement/test_dash_state.html"
+              }
+            ]
+          },
+          {
+            "title": "Formation Movement 2D",
+            "desc": "通用二維隊形同步移動計算，偵測任一有效成員是否碰邊，輸出全隊水平位移或折返並統一下移的全新狀態；不修改宿主實體資料或處理攻擊規則。",
+            "links": [
+              {
+                "label": "formation_movement_2d.js",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/formation_movement_2d.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/formation_movement_2d_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/formation_movement_2d_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/movement/test_formation_movement_2d.html"
               }
             ]
           },
@@ -5119,6 +5163,36 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "lineart",
+        "title": "Lineart",
+        "subpage": true,
+        "desc": "通用圖片黑白線稿處理。",
+        "items": [
+          {
+            "title": "Lineart",
+            "desc": "將宿主提供的圖片以灰階、均值降噪及 Sobel 邊緣偵測繪製成黑白線稿；可調整 threshold，不負責圖片選取、下載或 UI。",
+            "links": [
+              {
+                "label": "lineart.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/lineart.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/lineart_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/lineart_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/test_lineart_assertions.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "png",
         "title": "PNG",
         "subpage": true,
@@ -5157,6 +5231,66 @@ window.SlowlyLibraryIndex = [
               {
                 "label": "功能測試",
                 "href": "https://lib.stillnessbyslowly.com/Image/png/test_png_download.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "resize",
+        "title": "Resize",
+        "subpage": true,
+        "desc": "依最大寬高縮放圖片。",
+        "items": [
+          {
+            "title": "Image Resize",
+            "desc": "將 File／Blob 依最大寬高等比例縮小為圖片 Blob，可指定輸出格式與品質，不會放大原圖；與以檔案位元組為目標的 Compress To Size 分工。",
+            "links": [
+              {
+                "label": "image_resize.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/image_resize.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/image_resize_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/image_resize_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/test_image_resize_assertions.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "storage",
+        "title": "Storage",
+        "subpage": true,
+        "desc": "圖片 Blob 的 IndexedDB 本機儲存。",
+        "items": [
+          {
+            "title": "Image Storage",
+            "desc": "使用 IndexedDB 儲存與讀取圖片 Blob，支援新增／更新、依 ID 讀取、刪除、清空、計數與關閉連線；不負責縮圖、雲端同步或宿主 UI。",
+            "links": [
+              {
+                "label": "image_storage.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/image_storage.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/image_storage_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/image_storage_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/test_image_storage_assertions.html"
               }
             ]
           }

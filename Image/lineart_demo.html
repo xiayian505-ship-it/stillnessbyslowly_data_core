@@ -23,7 +23,7 @@ th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertica
 <body>
 <main>
 <h1>Lineart｜實際操作 Demo</h1>
-<p>沿用 Lineart.draw() 的灰階、均值降噪與 Sobel 線稿；演算法未修改。</p>
+<p>沿用 Lineart.draw() 的灰階、均值降噪與 Sobel 線稿；內圈算法不變，外框固定不透明白色。</p>
 
 <p><label>選擇圖片<input id="image_file" type="file" accept="image/*"></label></p>
 <p><label>Sobel 判定閾值（Threshold）<input id="threshold" type="range" min="0" max="255" step="1" value="12"></label>
@@ -57,7 +57,7 @@ function render() {
     const threshold = Number(document.querySelector("#threshold").value);
     window.Lineart.draw(image, canvas, { threshold });
     report.textContent = "已繪製 " + canvas.width + " × " + canvas.height +
-      " 線稿；Threshold=" + threshold + "。邊框像素採舊核心輸出行為。";
+      " 線稿；Threshold=" + threshold + "。邊框像素固定為不透明白色。";
   } catch (error) {
     report.textContent = "產生失敗：" + error.message;
   }

@@ -23,6 +23,17 @@ async function resize(blob,options={}){
   if(!(blob instanceof Blob)) throw new TypeError("image must be a File or Blob");
   if(blob.type&&!blob.type.startsWith("image/")) throw new Error("檔案不是圖片。");
   const {maxWidth=600,maxHeight=600,type="image/jpeg",quality=.82,maxInputBytes=12*1024*1024}=options;
+  // 尺寸上限必須為正有限數；輸出品質僅接受 Canvas 支援的 0～1 區間。
+  // 在圖片解碼前檢查，避免非法輸入被 Canvas 默默夾成其他值。
+  if(typeof maxWidth!=="number"||!Number.isFinite(maxWidth)||maxWidth<=0){
+    throw new RangeError("maxWidth must be a positive finite number.");
+  }
+  if(typeof maxHeight!=="number"||!Number.isFinite(maxHeight)||maxHeight<=0){
+    throw new RangeError("maxHeight must be a positive finite number.");
+  }
+  if(typeof quality!=="number"||!Number.isFinite(quality)||quality<0||quality>1){
+    throw new RangeError("quality must be within 0 and 1.");
+  }
   if(blob.size>maxInputBytes) throw new Error("原始圖片檔案過大。");
   const image=await loadImage(blob);
   const sw=image.naturalWidth, sh=image.naturalHeight;

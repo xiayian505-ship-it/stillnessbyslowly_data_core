@@ -23,7 +23,7 @@ th, td { border: 1px solid #aaa; padding: .3rem .5rem; text-align: left; vertica
 <body>
 <main>
 <h1>Lineart｜真實 PASS／FAIL 功能測試</h1>
-<p>用真 Canvas 模擬純色／分界／漸層，檢查原始 Sobel 輸出；已知邊框風險不隱藏。</p>
+<p>用真 Canvas 模擬純色／分界／漸層，檢查原始 Sobel 輸出；檢查已修補的不透明邊框與內圈 Sobel 行為。</p>
 <p><button id="run_tests" type="button">重新執行測試</button>　<strong id="summary" aria-live="polite">等待測試</strong></p><ol id="results"></ol>
 </main>
 <script src="https://lib.stillnessbyslowly.com/Image/lineart.js"></script>
@@ -126,13 +126,13 @@ test("來源 Canvas 的像素不被改寫", () => {
   const after=Array.from(source.getContext("2d").getImageData(4,4,1,1).data);
   equal(JSON.stringify(before),JSON.stringify(after));
 });
-test("輸出四周邊界應不透明（舊核心風險）", () => {
+test("輸出四周邊界應不透明（邊框修補驗收）", () => {
   const source=make_canvas(10,10,context=>{
     context.fillStyle="white";context.fillRect(0,0,10,10);
   });
   const output=draw(source);
   const pixel=output.getContext("2d").getImageData(0,0,1,1).data;
-  equal(pixel[3],255,"應有非透明背景；舊核心可能保留透明邊框");
+  equal(pixel[3],255,"應有非透明背景；外框應已不透明");
 });
 
 async function run_tests() {
