@@ -120,8 +120,12 @@ function removeDownloadLink() {
       既有 <code>ImageResize.resize()</code> 也不能直接替代這三種模式。
     </p>
     <p>
-      PNG／JPG／WebP／BMP／SVG／GIF 等來源是否能解碼，取決於瀏覽器與宿主策略；
-      ICO 核心只接受已編碼完成的 PNG 位元組。
+      本次 Demo 比照原始 <code>ico.html</code> 接受 PNG、JPG（JPEG）、GIF、SVG、
+      WebP、BMP，及其他瀏覽器標示為 image/* 且可解碼的圖片格式。
+      即使原始 SVG 缺少 MIME，Demo 也會在建立圖片 Object URL 前補上
+      <code>image/svg+xml</code>；部分 SVG 沒有內建尺寸時，Canvas 繪製沿用原作的
+      256 px 備用尺寸。是否真的能解碼仍取決於瀏覽器與檔案內容。
+      ICO 核心本身始終只接受已編碼完成的 PNG 位元組。
       使用一般 &lt;img&gt;／Canvas 讀取 GIF 並不能保證抽取動畫第一格，
       不應宣稱具備專門的首格抽取能力。
     </p>

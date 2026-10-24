@@ -11,8 +11,16 @@
     <p>本頁只示範單張圖片轉 ICO。圖片在瀏覽器內處理，不會主動上傳。</p>
 
     <p>
-      <label for="sourceFile">選擇 PNG 或 JPG 圖片：</label>
-      <input id="sourceFile" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg">
+      <label for="sourceFile">選擇圖片（PNG、JPG、GIF、SVG、WebP、BMP）：</label>
+      <input
+        id="sourceFile"
+        type="file"
+        accept=".png,.jpg,.jpeg,.gif,.svg,.webp,.bmp,image/*"
+      >
+    </p>
+    <p>
+      其他瀏覽器可解碼的圖片格式也可嘗試。
+      GIF 使用瀏覽器的圖片解碼結果，無法保證一定取到動畫第一格。
     </p>
 
     <section aria-labelledby="sourceHeading">
@@ -150,8 +158,9 @@
           context.fillRect(0, 0, size, size);
         }
 
-        const originalWidth = image.naturalWidth;
-        const originalHeight = image.naturalHeight;
+        // 沿用原始 ico.html：部分 SVG 未宣告內建尺寸時，使用 256 作備用值。
+        const originalWidth = image.naturalWidth || 256;
+        const originalHeight = image.naturalHeight || 256;
         let drawingWidth = size;
         let drawingHeight = size;
 
@@ -253,6 +262,23 @@
         }
       }
 
+      function isSupportedSourceFile(file) {
+        // 與原始 ico.html 一致：接受瀏覽器標示為 image/* 的檔案，
+        // 也接受 MIME 不完整、但副檔名屬於原作支援範圍的圖片。
+        return /^image\//i.test(file.type) ||
+          /\.(png|jpe?g|gif|svg|webp|bmp)$/i.test(file.name);
+      }
+
+      function createImageSourceBlob(file) {
+        // 部分系統讀取本機 SVG 時會遺失 MIME，須明確補上 image/svg+xml，
+        // 否則瀏覽器可能無法以 <img> 解碼。
+        if (/\.svg$/i.test(file.name) && file.type !== "image/svg+xml") {
+          return new Blob([file], { type: "image/svg+xml" });
+        }
+
+        return file;
+      }
+
       async function handleSourceSelection() {
         const chosenFile = fileInput.files[0];
         fileInput.value = "";
@@ -274,9 +300,8 @@
           return;
         }
 
-        if (!/image\/(png|jpeg)/i.test(chosenFile.type) &&
-            !/\.(png|jpe?g)$/i.test(chosenFile.name)) {
-          reportError(new TypeError("示範頁僅接受 PNG 或 JPG 圖片。"));
+        if (!isSupportedSourceFile(chosenFile)) {
+          reportError(new TypeError("請選擇圖片檔案（PNG、JPG、GIF、SVG、WebP 或 BMP）。"));
           return;
         }
 
@@ -288,13 +313,14 @@
           }
 
           reportStatus("正在讀取來源圖片……");
-          const imageUrl = sourceUrlScope.create(chosenFile);
+          const imageSourceBlob = createImageSourceBlob(chosenFile);
+          const imageUrl = sourceUrlScope.create(imageSourceBlob);
           const decodedImage = new Image();
 
           await new Promise(function (resolve, reject) {
             decodedImage.onload = resolve;
             decodedImage.onerror = function () {
-              reject(new Error("瀏覽器無法解碼選取的圖片。"));
+              reject(new Error("瀏覽器無法解碼選取的圖片，可能不支援該格式或圖片內容無效。"));
             };
             decodedImage.src = imageUrl;
           });
@@ -303,16 +329,14 @@
             return;
           }
 
-          if (decodedImage.naturalWidth === 0 || decodedImage.naturalHeight === 0) {
-            throw new Error("無法取得來源圖片的實際尺寸。");
-          }
-
           sourceImage = decodedImage;
           sourcePreview.src = imageUrl;
           sourcePreview.hidden = false;
+          const sourceWidth = decodedImage.naturalWidth || "?";
+          const sourceHeight = decodedImage.naturalHeight || "?";
           sourceDetails.textContent =
             `${chosenFile.name}，原始尺寸 ` +
-            `${decodedImage.naturalWidth} × ${decodedImage.naturalHeight} px，` +
+            `${sourceWidth} × ${sourceHeight} px，` +
             `${chosenFile.size} bytes。`;
 
           await regenerateIco();
