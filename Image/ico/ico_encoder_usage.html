@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ICO Encoder｜使用說明</title>
+</head>
+<body>
+  <main>
+    <h1>ICO Encoder v1.0.0｜使用說明</h1>
+    <p>
+      ICO Encoder 將一張或多張已經編碼完成的正方形 PNG 位元組封裝成 ICO Blob。
+      它不是 PNG 副檔名修改器、ICO 解碼器，也不負責繪製圖示。
+    </p>
+
+    <h2>檔案與部署路徑</h2>
+    <p>新零件部署後的正式絕對路徑：</p>
+    <pre><code>https://lib.stillnessbyslowly.com/Image/ico/ico_encoder.js</code></pre>
+    <p>
+      這次交付的 ZIP 尚未部署。Demo 與 Test 透過
+      <code>./ico_encoder.js</code> 載入同目錄的新核心，
+      讓本地預覽或自架測試伺服器能先行驗收；
+      真正部署後宿主可改用上方的 HTTPS 絕對路徑。
+    </p>
+    <pre><code>&lt;!-- 正式部署後才可透過此網址取得新核心 --&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/Image/ico/ico_encoder.js"&gt;&lt;/script&gt;
+
+&lt;!-- 以下兩個是已存在的共用軍火庫核心 --&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/data/blob/blob_url_scope.js"&gt;&lt;/script&gt;</code></pre>
+
+    <h2>公開 API</h2>
+    <p>全域物件：<code>window.SlowlyICOEncoder</code>，API 以 <code>Object.freeze</code> 凍結。</p>
+    <pre><code>SlowlyICOEncoder.version                  // "1.0.0"
+SlowlyICOEncoder.encode(pngEntries)       // 同步回傳 ICO Blob</code></pre>
+    <p>
+      <code>pngEntries</code> 必須是非空陣列，元素形如
+      <code>{ size: 16, data: pngBytes }</code>。
+      <code>size</code> 必須是 1～256 的整數，代表正方形 PNG 的寬和高；
+      <code>data</code> 必須是完整的 PNG <code>Uint8Array</code>，
+      不能傳入 Canvas、Blob、Data URL、Base64 字串或未壓縮的 RGBA 像素。
+      同一個 ICO 不允許重複尺寸，輸出順序與輸入順序相同。
+    </p>
+    <pre><code>const iconBlob = SlowlyICOEncoder.encode([
+  { size: 16, data: png16Bytes },
+  { size: 32, data: png32Bytes },
+  { size: 256, data: png256Bytes }
+]);
+
+console.log(iconBlob.type); // "image/x-icon"</code></pre>
+
+    <h2>宿主整合範例</h2>
+    <p>
+      宿主負責取得圖片及繪製不同尺寸的 Canvas。
+      <code>SlowlyCanvasPNG.toBlob(canvas)</code> 是既有軍火庫的非同步方法；
+      用 <code>blob.arrayBuffer()</code> 和 <code>Uint8Array</code> 轉成 ICO 核心需要的位元組。
+      以下假設宿主已建立尺寸正確的兩張 Canvas。
+    </p>
+    <pre><code>async function createIcoFromCanvases(canvas16, canvas256) {
+  const inputCanvases = [
+    { size: 16, canvas: canvas16 },
+    { size: 256, canvas: canvas256 }
+  ];
+
+  const pngEntries = [];
+
+  for (const input of inputCanvases) {
+    // 共用軍火庫核心負責 Canvas → PNG，不要在宿主複製該核心。
+    const pngBlob = await SlowlyCanvasPNG.toBlob(input.canvas);
+
+    if (pngBlob.type !== "image/png") {
+      throw new TypeError("Canvas 沒有產生 PNG Blob。");
+    }
+
+    const pngBytes = new Uint8Array(await pngBlob.arrayBuffer());
+    pngEntries.push({ size: input.size, data: pngBytes });
+  }
+
+  return SlowlyICOEncoder.encode(pngEntries);
+}</code></pre>
+
+    <h2>下載與 URL 回收</h2>
+    <p>
+      ICO Encoder 不負責下載。既有 <code>SlowlyPNGDownload</code>
+      只支援 PNG，不能拿它替代 ICO 下載。
+      使用 Blob URL Scope 管理 Object URL，並由宿主建立下載連結。
+    </p>
+    <pre><code>const iconBlob = await createIcoFromCanvases(canvas16, canvas256);
+const scope = BlobUrlScope.create();
+const iconUrl = scope.create(iconBlob);
+
+const downloadLink = document.createElement("a");
+downloadLink.href = iconUrl;
+downloadLink.download = "favicon.ico";
+downloadLink.textContent = "下載 ICO";
+document.body.appendChild(downloadLink);
+
+// 下載連結仍要提供使用時，不要提前 revoke。
+// 宿主不再需要此下載連結時，才回收 URL：
+function removeDownloadLink() {
+  downloadLink.remove();
+  scope.revoke(iconUrl);
+  scope.destroy();
+}</code></pre>
+
+    <h2>ICO 封裝規則</h2>
+    <p>
+      ICO 開頭是 6 bytes 的 ICONDIR，接著每張圖有 16 bytes 的 ICONDIRENTRY，
+      最後依序放置各張 PNG 的完整位元組。多位元組數值使用 little-endian。
+      寬高欄位寫入 1～255，256 px 則寫入 0（ICO 格式慣例）。
+      Color planes 為 1，bit count 欄位為 32，沿用原作的封裝設定。
+      這是 PNG-in-ICO，不會生成舊式 BMP／AND-mask 圖示。
+    </p>
+
+    <h2>圖片縮放及原始格式</h2>
+    <p>
+      <code>contain</code>（完整置入）、<code>cover</code>（裁切填滿）、
+      <code>stretch</code>（拉伸）及背景色／透明度，全部由宿主的 Canvas
+      繪製邏輯負責，不屬於 ICO Encoder。
+      既有 <code>ImageResize.resize()</code> 也不能直接替代這三種模式。
+    </p>
+    <p>
+      PNG／JPG／WebP／BMP／SVG／GIF 等來源是否能解碼，取決於瀏覽器與宿主策略；
+      ICO 核心只接受已編碼完成的 PNG 位元組。
+      使用一般 &lt;img&gt;／Canvas 讀取 GIF 並不能保證抽取動畫第一格，
+      不應宣稱具備專門的首格抽取能力。
+    </p>
+
+    <h2>參數錯誤與限制</h2>
+    <ul>
+      <li>型別錯誤（例如空陣列、非 Uint8Array、PNG 結構損壞）：拋出 <code>TypeError</code>。</li>
+      <li>範圍或容量錯誤（例如尺寸超出 1～256、重複尺寸、PNG 實際尺寸不符）：拋出 <code>RangeError</code>。</li>
+      <li>會檢查 PNG 簽章、第一個 IHDR、IHDR 尺寸、chunk 邊界、至少一個 IDAT 與完整 IEND。</li>
+      <li>不校驗 CRC、不解壓 IDAT，也不是 PNG 解碼器、消毒工具或惡意內容掃描器。</li>
+      <li>v1 明確限制整個 ICO 最多 <code>134217728</code> bytes（128 MiB）；超過時在配置 ICO ArrayBuffer 前拒絕。</li>
+      <li>同時檢查 ICO uint32 長度／位移、uint16 圖片數量以及 JavaScript 安全整數界線。</li>
+      <li>編碼過程不更改呼叫者的陣列或位元組；回傳 Blob 不受來源 Uint8Array 後續修改影響。</li>
+    </ul>
+    <p>
+      未經信任的 SVG 或跨來源遠端圖片可能帶來安全風險；
+      遠端圖片還可能使 Canvas 受到跨來源限制（tainted canvas），導致 PNG 輸出失敗。
+      建議宿主自行限制檔案來源、大小及可接受類型，必要時透過瀏覽器實際解碼驗證。
+      部分舊系統／ICO 讀取器不支援所有 PNG-in-ICO 組合，
+      不可在未實測的情況下宣稱全面相容。
+    </p>
+
+    <h2>專案邊界</h2>
+    <p>
+      本批只有 <code>ico_encoder.js</code>、本 Usage、Demo、Test 四個新檔案。
+      原始作品 <code>ico.html</code> 不會被修改；
+      已有 PNG／Resize／Blob 核心也不會被複製或覆寫。
+      不修改 <code>index_data.js</code>，不部署、不推送 GitHub。
+    </p>
+  </main>
+</body>
+</html>

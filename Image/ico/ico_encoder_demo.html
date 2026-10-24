@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ICO Encoder｜功能示範</title>
+</head>
+<body>
+  <main>
+    <h1>ICO Encoder｜功能示範</h1>
+    <p>本頁只示範單張圖片轉 ICO。圖片在瀏覽器內處理，不會主動上傳。</p>
+
+    <p>
+      <label for="sourceFile">選擇 PNG 或 JPG 圖片：</label>
+      <input id="sourceFile" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg">
+    </p>
+
+    <section aria-labelledby="sourceHeading">
+      <h2 id="sourceHeading">來源圖片</h2>
+      <img id="sourcePreview" alt="來源圖片預覽" width="96" height="96" hidden>
+      <p id="sourceDetails">尚未選擇圖片。</p>
+    </section>
+
+    <fieldset>
+      <legend>ICO 內要包含的尺寸</legend>
+      <label><input type="checkbox" name="iconSize" value="16" checked>16 × 16</label>
+      <label><input type="checkbox" name="iconSize" value="32" checked>32 × 32</label>
+      <label><input type="checkbox" name="iconSize" value="48" checked>48 × 48</label>
+      <label><input type="checkbox" name="iconSize" value="256" checked>256 × 256</label>
+    </fieldset>
+
+    <p>
+      <label for="fitMode">縮放方式：</label>
+      <select id="fitMode">
+        <option value="contain">完整置入（維持比例）</option>
+        <option value="cover">填滿裁切（維持比例）</option>
+        <option value="stretch">拉伸填滿</option>
+      </select>
+    </p>
+
+    <p>
+      <label><input id="transparentBackground" type="checkbox" checked>透明背景</label>
+      <label for="backgroundColor">不透明背景顏色：</label>
+      <input id="backgroundColor" type="color" value="#ffffff" disabled>
+    </p>
+
+    <section aria-labelledby="resultHeading">
+      <h2 id="resultHeading">轉換結果</h2>
+      <p id="conversionStatus" role="status" aria-live="polite">請先選擇圖片。</p>
+      <p id="conversionError" role="alert" hidden></p>
+      <p id="conversionDetails" hidden></p>
+      <p><a id="downloadLink" download="favicon.ico" hidden>下載 favicon.ico</a></p>
+    </section>
+  </main>
+
+  <!-- 新核心隨交付 ZIP 放置，尚未部署時可直接由同目錄載入。 -->
+  <script src="./ico_encoder.js"></script>
+  <!-- 已存在的軍火庫零件：只透過正式 HTTPS 引用，不建立副本。 -->
+  <script src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url_scope.js"></script>
+  <script>
+    "use strict";
+
+    (function () {
+      const fileInput = document.getElementById("sourceFile");
+      const sourcePreview = document.getElementById("sourcePreview");
+      const sourceDetails = document.getElementById("sourceDetails");
+      const sizeInputs = document.querySelectorAll('input[name="iconSize"]');
+      const fitModeInput = document.getElementById("fitMode");
+      const transparentInput = document.getElementById("transparentBackground");
+      const backgroundColorInput = document.getElementById("backgroundColor");
+      const conversionStatus = document.getElementById("conversionStatus");
+      const conversionError = document.getElementById("conversionError");
+      const conversionDetails = document.getElementById("conversionDetails");
+      const downloadLink = document.getElementById("downloadLink");
+
+      let sourceImage = null;
+      let sourceUrlScope = null;
+      let resultUrlScope = null;
+      let selectionRevision = 0;
+      let conversionRevision = 0;
+
+      function requireDependencies() {
+        if (!window.SlowlyICOEncoder ||
+            typeof window.SlowlyICOEncoder.encode !== "function") {
+          throw new Error("無法載入 ICO Encoder 核心（./ico_encoder.js）。");
+        }
+
+        if (!window.SlowlyCanvasPNG ||
+            typeof window.SlowlyCanvasPNG.toBlob !== "function") {
+          throw new Error("無法載入既有軍火庫 SlowlyCanvasPNG（HTTPS）。");
+        }
+
+        if (!window.BlobUrlScope ||
+            typeof window.BlobUrlScope.create !== "function") {
+          throw new Error("無法載入既有軍火庫 BlobUrlScope（HTTPS）。");
+        }
+      }
+
+      function reportStatus(message) {
+        conversionStatus.textContent = message;
+        conversionError.hidden = true;
+        conversionError.textContent = "";
+      }
+
+      function reportError(error) {
+        conversionStatus.textContent = "轉換未完成。";
+        conversionError.textContent = error instanceof Error
+          ? error.message
+          : String(error);
+        conversionError.hidden = false;
+      }
+
+      function clearPreviousResult() {
+        // 讓設定變更後的舊檔案立即不可下載，避免誤認為新設定的輸出。
+        conversionRevision += 1;
+
+        if (resultUrlScope) {
+          resultUrlScope.clear();
+        }
+
+        downloadLink.removeAttribute("href");
+        downloadLink.hidden = true;
+        conversionDetails.textContent = "";
+        conversionDetails.hidden = true;
+      }
+
+      function selectedSizes() {
+        return Array.from(sizeInputs)
+          .filter(function (input) { return input.checked; })
+          .map(function (input) { return Number(input.value); });
+      }
+
+      function drawSourceToCanvas(image, size, fitMode, backgroundColor) {
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+
+        const context = canvas.getContext("2d");
+
+        if (!context) {
+          throw new Error("目前瀏覽器無法建立 Canvas 2D。");
+        }
+
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+
+        if (backgroundColor !== null) {
+          context.fillStyle = backgroundColor;
+          context.fillRect(0, 0, size, size);
+        }
+
+        const originalWidth = image.naturalWidth;
+        const originalHeight = image.naturalHeight;
+        let drawingWidth = size;
+        let drawingHeight = size;
+
+        if (fitMode !== "stretch") {
+          // contain 保留整張圖；cover 以裁切方式填滿正方形。
+          const scale = fitMode === "cover"
+            ? Math.max(size / originalWidth, size / originalHeight)
+            : Math.min(size / originalWidth, size / originalHeight);
+
+          drawingWidth = originalWidth * scale;
+          drawingHeight = originalHeight * scale;
+        }
+
+        context.drawImage(
+          image,
+          (size - drawingWidth) / 2,
+          (size - drawingHeight) / 2,
+          drawingWidth,
+          drawingHeight
+        );
+
+        return canvas;
+      }
+
+      async function regenerateIco() {
+        clearPreviousResult();
+        const thisConversionRevision = conversionRevision;
+
+        if (!sourceImage) {
+          return;
+        }
+
+        const sizes = selectedSizes();
+
+        if (sizes.length === 0) {
+          reportError(new RangeError("請至少勾選一種 ICO 尺寸。"));
+          return;
+        }
+
+        const fitMode = fitModeInput.value;
+        const backgroundColor = transparentInput.checked
+          ? null
+          : backgroundColorInput.value;
+
+        reportStatus("正在轉換圖片……");
+
+        try {
+          requireDependencies();
+          const pngEntries = [];
+
+          for (const size of sizes) {
+            const iconCanvas = drawSourceToCanvas(
+              sourceImage,
+              size,
+              fitMode,
+              backgroundColor
+            );
+            const pngBlob = await SlowlyCanvasPNG.toBlob(iconCanvas);
+
+            if (thisConversionRevision !== conversionRevision) {
+              return;
+            }
+
+            if (!(pngBlob instanceof Blob) || pngBlob.type !== "image/png") {
+              throw new TypeError("Canvas PNG 回傳的不是 image/png Blob。");
+            }
+
+            const pngBytes = new Uint8Array(await pngBlob.arrayBuffer());
+
+            if (thisConversionRevision !== conversionRevision) {
+              return;
+            }
+
+            pngEntries.push({ size, data: pngBytes });
+          }
+
+          // 僅這一步呼叫新核心，所有繪圖及轉 PNG 都留在宿主層。
+          const icoBlob = SlowlyICOEncoder.encode(pngEntries);
+
+          if (thisConversionRevision !== conversionRevision) {
+            return;
+          }
+
+          if (!resultUrlScope) {
+            resultUrlScope = BlobUrlScope.create();
+          }
+
+          downloadLink.href = resultUrlScope.create(icoBlob);
+          downloadLink.hidden = false;
+          conversionDetails.textContent =
+            `包含尺寸：${sizes.join("、")} px；ICO 大小：${icoBlob.size} bytes。`;
+          conversionDetails.hidden = false;
+          reportStatus("轉換完成，可下載 favicon.ico。");
+        } catch (error) {
+          // 被較新操作淘汰的非同步工作，不得覆蓋最新結果或錯誤狀態。
+          if (thisConversionRevision === conversionRevision) {
+            reportError(error);
+          }
+        }
+      }
+
+      async function handleSourceSelection() {
+        const chosenFile = fileInput.files[0];
+        fileInput.value = "";
+        selectionRevision += 1;
+        const thisSelectionRevision = selectionRevision;
+
+        clearPreviousResult();
+        sourceImage = null;
+        sourcePreview.hidden = true;
+        sourcePreview.removeAttribute("src");
+        sourceDetails.textContent = "尚未選擇圖片。";
+
+        if (sourceUrlScope) {
+          sourceUrlScope.clear();
+        }
+
+        if (!chosenFile) {
+          reportStatus("請先選擇圖片。");
+          return;
+        }
+
+        if (!/image\/(png|jpeg)/i.test(chosenFile.type) &&
+            !/\.(png|jpe?g)$/i.test(chosenFile.name)) {
+          reportError(new TypeError("示範頁僅接受 PNG 或 JPG 圖片。"));
+          return;
+        }
+
+        try {
+          requireDependencies();
+
+          if (!sourceUrlScope) {
+            sourceUrlScope = BlobUrlScope.create();
+          }
+
+          reportStatus("正在讀取來源圖片……");
+          const imageUrl = sourceUrlScope.create(chosenFile);
+          const decodedImage = new Image();
+
+          await new Promise(function (resolve, reject) {
+            decodedImage.onload = resolve;
+            decodedImage.onerror = function () {
+              reject(new Error("瀏覽器無法解碼選取的圖片。"));
+            };
+            decodedImage.src = imageUrl;
+          });
+
+          if (thisSelectionRevision !== selectionRevision) {
+            return;
+          }
+
+          if (decodedImage.naturalWidth === 0 || decodedImage.naturalHeight === 0) {
+            throw new Error("無法取得來源圖片的實際尺寸。");
+          }
+
+          sourceImage = decodedImage;
+          sourcePreview.src = imageUrl;
+          sourcePreview.hidden = false;
+          sourceDetails.textContent =
+            `${chosenFile.name}，原始尺寸 ` +
+            `${decodedImage.naturalWidth} × ${decodedImage.naturalHeight} px，` +
+            `${chosenFile.size} bytes。`;
+
+          await regenerateIco();
+        } catch (error) {
+          if (thisSelectionRevision === selectionRevision) {
+            reportError(error);
+          }
+        }
+      }
+
+      function updateBackgroundChoice() {
+        backgroundColorInput.disabled = transparentInput.checked;
+        regenerateIco();
+      }
+
+      fileInput.addEventListener("change", handleSourceSelection);
+      fitModeInput.addEventListener("change", regenerateIco);
+      transparentInput.addEventListener("change", updateBackgroundChoice);
+      backgroundColorInput.addEventListener("input", regenerateIco);
+
+      for (const sizeInput of sizeInputs) {
+        sizeInput.addEventListener("change", regenerateIco);
+      }
+
+      window.addEventListener("pagehide", function () {
+        if (sourceUrlScope) {
+          sourceUrlScope.destroy();
+        }
+
+        if (resultUrlScope) {
+          resultUrlScope.destroy();
+        }
+      });
+
+      try {
+        requireDependencies();
+      } catch (error) {
+        reportError(error);
+      }
+    })();
+  </script>
+</body>
+</html>

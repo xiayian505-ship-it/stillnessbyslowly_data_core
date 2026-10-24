@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ICO Encoder｜測試</title>
+</head>
+<body>
+  <main>
+    <h1>ICO Encoder｜逐項測試</h1>
+    <p>
+      測試結果由目前瀏覽器實際執行後產生，不預先填入 PASS。
+      新核心從同目錄載入；既有 Canvas PNG 與 Blob URL Scope 從正式 HTTPS 載入。
+    </p>
+    <p>此頁不代表已驗收舊版 Windows 或所有第三方 ICO 讀取器。</p>
+    <p><button id="runTests" type="button">重新執行測試</button></p>
+    <p id="testSummary" role="status" aria-live="polite">尚未執行。</p>
+    <table>
+      <caption>本次瀏覽器測試結果</caption>
+      <thead>
+        <tr>
+          <th scope="col">測試</th>
+          <th scope="col">結果</th>
+          <th scope="col">錯誤／說明</th>
+        </tr>
+      </thead>
+      <tbody id="testResults"></tbody>
+    </table>
+  </main>
+
+  <!-- 新核心尚未部署，本地相對路徑用於本批四檔驗收。 -->
+  <script src="./ico_encoder.js"></script>
+  <!-- 舊核心只走正式 HTTPS，不複製程式碼作為離線備援。 -->
+  <script src="https://lib.stillnessbyslowly.com/Image/png/canvas_png.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/data/blob/blob_url_scope.js"></script>
+  <script>
+    "use strict";
+
+    (function () {
+      const runTestsButton = document.getElementById("runTests");
+      const testSummary = document.getElementById("testSummary");
+      const testResults = document.getElementById("testResults");
+      const pngFixtureCache = new Map();
+
+      // 已知常數：1×1 透明 RGBA PNG，及獨立按 ICO 規格組出的 90-byte ICO。
+      // 完整黃金 ICO 是固定資料，不以待測 encode() 產出 expected。
+      const GOLDEN_PNG_BASE64 =
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR42mNgAAIAAAUAAen63NgAAAAASUVORK5CYII=";
+      const GOLDEN_ICO_BASE64 =
+        "AAABAAEAAQEAAAEAIABEAAAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAABAAAAAQgGAAAAHxXEiQAAAAtJREFUeNpjYAACAAAFAAHp+tzYAAAAAElFTkSuQmCC";
+
+      function assert(condition, message) {
+        if (!condition) {
+          throw new Error(message);
+        }
+      }
+
+      function expectException(action, exceptionType, label) {
+        let actualError = null;
+
+        try {
+          action();
+        } catch (error) {
+          actualError = error;
+        }
+
+        assert(actualError !== null, `${label}：沒有拋出例外。`);
+        assert(
+          actualError instanceof exceptionType,
+          `${label}：預期 ${exceptionType.name}，實際是 ` +
+          `${actualError.constructor ? actualError.constructor.name : typeof actualError}。`
+        );
+      }
+
+      function bytesFromBase64(base64String) {
+        const binaryText = atob(base64String);
+        const output = new Uint8Array(binaryText.length);
+
+        for (let byteIndex = 0; byteIndex < binaryText.length; byteIndex += 1) {
+          output[byteIndex] = binaryText.charCodeAt(byteIndex);
+        }
+
+        return output;
+      }
+
+      function assertSameBytes(actualBytes, expectedBytes, label) {
+        assert(
+          actualBytes.byteLength === expectedBytes.byteLength,
+          `${label}：位元組長度錯誤（${actualBytes.byteLength} / ` +
+          `${expectedBytes.byteLength}）。`
+        );
+
+        for (let byteIndex = 0; byteIndex < expectedBytes.byteLength; byteIndex += 1) {
+          assert(
+            actualBytes[byteIndex] === expectedBytes[byteIndex],
+            `${label}：第 ${byteIndex} 個 byte 不一致。`
+          );
+        }
+      }
+
+      function requireEncoder() {
+        assert(
+          window.SlowlyICOEncoder && typeof SlowlyICOEncoder.encode === "function",
+          "新核心沒有載入，或 encode() 不存在。"
+        );
+      }
+
+      function encodeEntries(entries) {
+        requireEncoder();
+        return SlowlyICOEncoder.encode(entries);
+      }
+
+      function createPngBytes(size) {
+        // 單元測試利用瀏覽器原生 PNG 匯出產生真正圖片，不複製軍火庫的 PNG 核心。
+        // 正式端到端接線另有專項測試，必須呼叫既有 SlowlyCanvasPNG。
+        if (pngFixtureCache.has(size)) {
+          return pngFixtureCache.get(size).slice();
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const context = canvas.getContext("2d");
+        assert(context, "瀏覽器不支援 Canvas 2D，無法生成 PNG 測試資料。");
+
+        context.fillStyle = "rgba(12, 34, 56, 0.75)";
+        context.fillRect(0, 0, size, size);
+
+        const pngDataUrl = canvas.toDataURL("image/png");
+        assert(
+          pngDataUrl.startsWith("data:image/png;base64,"),
+          "瀏覽器沒有回傳 PNG Data URL。"
+        );
+
+        const pngBytes = bytesFromBase64(pngDataUrl.split(",")[1]);
+        pngFixtureCache.set(size, pngBytes);
+        return pngBytes.slice();
+      }
+
+      async function bytesFromBlob(blob) {
+        return new Uint8Array(await blob.arrayBuffer());
+      }
+
+      async function inspectIco(blob) {
+        const bytes = await bytesFromBlob(blob);
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        const imageCount = view.getUint16(4, true);
+        const directory = [];
+
+        for (let entryIndex = 0; entryIndex < imageCount; entryIndex += 1) {
+          const entryOffset = 6 + 16 * entryIndex;
+          assert(entryOffset + 16 <= bytes.length, "ICO 目錄超出檔案長度。");
+
+          directory.push({
+            width: view.getUint8(entryOffset),
+            height: view.getUint8(entryOffset + 1),
+            paletteCount: view.getUint8(entryOffset + 2),
+            reserved: view.getUint8(entryOffset + 3),
+            planes: view.getUint16(entryOffset + 4, true),
+            bitCount: view.getUint16(entryOffset + 6, true),
+            byteCount: view.getUint32(entryOffset + 8, true),
+            dataOffset: view.getUint32(entryOffset + 12, true)
+          });
+        }
+
+        return { bytes, view, imageCount, directory };
+      }
+
+      function modifiedPng(modify) {
+        const pngBytes = bytesFromBase64(GOLDEN_PNG_BASE64);
+        modify(pngBytes);
+        return pngBytes;
+      }
+
+      function simulatedOversizedBytes(reportedByteLength) {
+        // 不配置 GB 級資料；用受控的測試用偽長度觸發容量預檢分支。
+        // 真正 payload 只有 1 byte，故測試只能證明「先拒絕」，不能證明可編碼超大檔。
+        const bytes = new Uint8Array(1);
+        Object.defineProperty(bytes, "byteLength", {
+          value: reportedByteLength,
+          configurable: true
+        });
+        return bytes;
+      }
+
+      function requireCanvasPng() {
+        assert(
+          window.SlowlyCanvasPNG && typeof SlowlyCanvasPNG.toBlob === "function",
+          "既有 SlowlyCanvasPNG HTTPS 載入失敗，無法進行整合測試。"
+        );
+      }
+
+      function requireBlobUrlScope() {
+        assert(
+          window.BlobUrlScope && typeof BlobUrlScope.create === "function",
+          "既有 BlobUrlScope HTTPS 載入失敗，無法進行整合測試。"
+        );
+      }
+
+      const tests = [
+        {
+          name: "核心與 encode() 存在",
+          run: function () { requireEncoder(); }
+        },
+        {
+          name: "版本字串為 v1.0.0",
+          run: function () {
+            requireEncoder();
+            assert(SlowlyICOEncoder.version === "1.0.0", "版本資訊不符。");
+          }
+        },
+        {
+          name: "公開 API 為 Object.freeze",
+          run: function () {
+            requireEncoder();
+            assert(Object.isFrozen(SlowlyICOEncoder), "API 沒有凍結。");
+          }
+        },
+        {
+          name: "不透過 Canvas／DOM 也能直接編碼 PNG bytes",
+          run: async function () {
+            const pngBytes = bytesFromBase64(GOLDEN_PNG_BASE64);
+            const ico = encodeEntries([{ size: 1, data: pngBytes }]);
+            assert(ico instanceof Blob, "未回傳 Blob。");
+          }
+        },
+        {
+          name: "固定黃金 ICO 90 bytes 完整逐位元組比對",
+          run: async function () {
+            const pngBytes = bytesFromBase64(GOLDEN_PNG_BASE64);
+            const actualBytes = await bytesFromBlob(encodeEntries([
+              { size: 1, data: pngBytes }
+            ]));
+            assertSameBytes(
+              actualBytes,
+              bytesFromBase64(GOLDEN_ICO_BASE64),
+              "黃金 ICO"
+            );
+          }
+        },
+        {
+          name: "ICONDIR：reserved=0、type=1、count=2",
+          run: async function () {
+            const result = await inspectIco(encodeEntries([
+              { size: 16, data: createPngBytes(16) },
+              { size: 32, data: createPngBytes(32) }
+            ]));
+            assert(result.view.getUint16(0, true) === 0, "reserved 應為 0。");
+            assert(result.view.getUint16(2, true) === 1, "type 應為 1。");
+            assert(result.imageCount === 2, "count 應為 2。");
+          }
+        },
+        {
+          name: "目錄固定為 6 + 16×N bytes",
+          run: async function () {
+            const result = await inspectIco(encodeEntries([
+              { size: 16, data: createPngBytes(16) },
+              { size: 32, data: createPngBytes(32) }
+            ]));
+            assert(result.directory[0].dataOffset === 38, "第一份 PNG 應從 byte 38 開始。");
+          }
+        },
+        {
+          name: "256×256 目錄尺寸欄位寫 0",
+          run: async function () {
+            const result = await inspectIco(encodeEntries([
+              { size: 256, data: createPngBytes(256) }
+            ]));
+            assert(result.directory[0].width === 0, "256 的寬度欄位不是 0。");
+            assert(result.directory[0].height === 0, "256 的高度欄位不是 0。");
+          }
+        },
+        {
+          name: "ICONDIRENTRY：palette=0、reserved=0、planes=1、bits=32",
+          run: async function () {
+            const result = await inspectIco(encodeEntries([
+              { size: 16, data: createPngBytes(16) }
+            ]));
+            const entry = result.directory[0];
+            assert(entry.paletteCount === 0, "調色盤欄位錯誤。");
+            assert(entry.reserved === 0, "保留欄位錯誤。");
+            assert(entry.planes === 1, "color planes 錯誤。");
+            assert(entry.bitCount === 32, "bit count 錯誤。");
+          }
+        },
+        {
+          name: "長度與位移以 little-endian uint32 寫入",
+          run: async function () {
+            const png16 = createPngBytes(16);
+            const png32 = createPngBytes(32);
+            const result = await inspectIco(encodeEntries([
+              { size: 16, data: png16 },
+              { size: 32, data: png32 }
+            ]));
+            assert(result.directory[0].byteCount === png16.length, "第一筆長度錯誤。");
+            assert(result.directory[0].dataOffset === 38, "第一筆位移錯誤。");
+            assert(result.directory[1].byteCount === png32.length, "第二筆長度錯誤。");
+            assert(result.directory[1].dataOffset === 38 + png16.length, "第二筆位移錯誤。");
+          }
+        },
+        {
+          name: "不同尺寸維持輸入順序，不自行排序",
+          run: async function () {
+            const result = await inspectIco(encodeEntries([
+              { size: 32, data: createPngBytes(32) },
+              { size: 16, data: createPngBytes(16) }
+            ]));
+            assert(result.directory[0].width === 32, "第一筆不是 32。");
+            assert(result.directory[1].width === 16, "第二筆不是 16。");
+          }
+        },
+        {
+          name: "PNG 內容按各筆 offset 完整保留",
+          run: async function () {
+            const sourceEntries = [
+              { size: 16, data: createPngBytes(16) },
+              { size: 32, data: createPngBytes(32) },
+              { size: 48, data: createPngBytes(48) }
+            ];
+            const result = await inspectIco(encodeEntries(sourceEntries));
+
+            for (let index = 0; index < sourceEntries.length; index += 1) {
+              const entry = result.directory[index];
+              const actualPng = result.bytes.subarray(
+                entry.dataOffset,
+                entry.dataOffset + entry.byteCount
+              );
+              assertSameBytes(actualPng, sourceEntries[index].data, `第 ${index + 1} 張 PNG`);
+            }
+          }
+        },
+        {
+          name: "ICO Blob MIME 與總長度正確",
+          run: async function () {
+            const png16 = createPngBytes(16);
+            const png32 = createPngBytes(32);
+            const ico = encodeEntries([
+              { size: 16, data: png16 },
+              { size: 32, data: png32 }
+            ]);
+            assert(ico.type === "image/x-icon", "MIME 應是 image/x-icon。");
+            assert(ico.size === 6 + 16 * 2 + png16.length + png32.length, "總長度錯誤。");
+          }
+        },
+        {
+          name: "同一份輸入連續編碼，位元組一致",
+          run: async function () {
+            const entries = [{ size: 16, data: createPngBytes(16) }];
+            const first = await bytesFromBlob(encodeEntries(entries));
+            const second = await bytesFromBlob(encodeEntries(entries));
+            assertSameBytes(first, second, "重複編碼結果");
+          }
+        },
+        {
+          name: "encode() 不改變輸入陣列與 PNG bytes",
+          run: function () {
+            const originalBytes = createPngBytes(16);
+            const originalCopy = originalBytes.slice();
+            const entry = { size: 16, data: originalBytes };
+            const entries = [entry];
+            encodeEntries(entries);
+            assert(entries.length === 1 && entries[0] === entry, "輸入陣列被變更。");
+            assert(entry.size === 16 && entry.data === originalBytes, "entry 被變更。");
+            assertSameBytes(originalBytes, originalCopy, "原始 PNG");
+          }
+        },
+        {
+          name: "輸出 Blob 不受來源資料後續修改影響",
+          run: async function () {
+            const sourceBytes = createPngBytes(16);
+            const ico = encodeEntries([{ size: 16, data: sourceBytes }]);
+            const before = await bytesFromBlob(ico);
+            sourceBytes.fill(0);
+            const after = await bytesFromBlob(ico);
+            assertSameBytes(after, before, "獨立 Blob 資料");
+          }
+        },
+        ...[1, 16, 32, 256].map(function (size) {
+          return {
+            name: `合法尺寸 ${size}×${size} 可編碼`,
+            run: async function () {
+              const ico = encodeEntries([{ size, data: createPngBytes(size) }]);
+              const result = await inspectIco(ico);
+              assert(result.imageCount === 1, "應包含一張 PNG。");
+              assert(result.directory[0].width === (size === 256 ? 0 : size), "尺寸錯誤。");
+            }
+          };
+        }),
+        {
+          name: "拒絕非陣列、空陣列",
+          run: function () {
+            expectException(() => encodeEntries(null), TypeError, "null");
+            expectException(() => encodeEntries([]), TypeError, "空陣列");
+            expectException(() => encodeEntries({}), TypeError, "普通物件");
+          }
+        },
+        {
+          name: "拒絕空項目與非物件項目",
+          run: function () {
+            expectException(() => encodeEntries([null]), TypeError, "null entry");
+            expectException(() => encodeEntries([undefined]), TypeError, "undefined entry");
+            expectException(() => encodeEntries([12]), TypeError, "數字 entry");
+          }
+        },
+        {
+          name: "拒絕 0、負數、257 等超出範圍的尺寸",
+          run: function () {
+            for (const size of [0, -1, 257]) {
+              expectException(
+                () => encodeEntries([{ size, data: createPngBytes(16) }]),
+                RangeError,
+                `尺寸 ${size}`
+              );
+            }
+          }
+        },
+        {
+          name: "拒絕浮點數、字串、NaN 尺寸",
+          run: function () {
+            for (const size of [16.5, "16", NaN]) {
+              expectException(
+                () => encodeEntries([{ size, data: createPngBytes(16) }]),
+                TypeError,
+                `尺寸 ${String(size)}`
+              );
+            }
+          }
+        },
+        {
+          name: "拒絕同一份 ICO 的重複尺寸",
+          run: function () {
+            const png16 = createPngBytes(16);
+            expectException(
+              () => encodeEntries([
+                { size: 16, data: png16 },
+                { size: 16, data: png16.slice() }
+              ]),
+              RangeError,
+              "重複尺寸"
+            );
+          }
+        },
+        {
+          name: "拒絕非 Uint8Array 與空 bytes",
+          run: function () {
+            expectException(
+              () => encodeEntries([{ size: 16, data: "not-png" }]),
+              TypeError,
+              "字串資料"
+            );
+            expectException(
+              () => encodeEntries([{ size: 16, data: new Uint8Array() }]),
+              RangeError,
+              "空 bytes"
+            );
+          }
+        },
+        {
+          name: "拒絕 JPEG 偽裝 PNG",
+          run: function () {
+            expectException(
+              () => encodeEntries([{ size: 16, data: new Uint8Array([255, 216, 255, 217]) }]),
+              TypeError,
+              "JPEG"
+            );
+          }
+        },
+        {
+          name: "拒絕錯誤 PNG 簽章",
+          run: function () {
+            const corrupt = modifiedPng(bytes => { bytes[0] = 0; });
+            expectException(() => encodeEntries([{ size: 1, data: corrupt }]), TypeError, "簽章");
+          }
+        },
+        {
+          name: "拒絕缺少 IHDR",
+          run: function () {
+            const corrupt = modifiedPng(bytes => { bytes.set([65, 66, 67, 68], 12); });
+            expectException(() => encodeEntries([{ size: 1, data: corrupt }]), TypeError, "IHDR");
+          }
+        },
+        {
+          name: "拒絕 IHDR 長度不等於 13",
+          run: function () {
+            const corrupt = modifiedPng(bytes => { bytes[11] = 12; });
+            expectException(() => encodeEntries([{ size: 1, data: corrupt }]), TypeError, "IHDR 長度");
+          }
+        },
+        {
+          name: "拒絕宣告尺寸與 IHDR 實際尺寸不符",
+          run: function () {
+            expectException(
+              () => encodeEntries([{ size: 16, data: bytesFromBase64(GOLDEN_PNG_BASE64) }]),
+              RangeError,
+              "尺寸不符"
+            );
+          }
+        },
+        {
+          name: "拒絕 PNG chunk 長度超出邊界",
+          run: function () {
+            const corrupt = modifiedPng(bytes => {
+              bytes[8] = 127;
+              bytes[9] = 255;
+              bytes[10] = 255;
+              bytes[11] = 255;
+            });
+            expectException(() => encodeEntries([{ size: 1, data: corrupt }]), TypeError, "chunk 長度");
+          }
+        },
+        {
+          name: "拒絕截斷 PNG",
+          run: function () {
+            const truncated = bytesFromBase64(GOLDEN_PNG_BASE64).slice(0, -5);
+            expectException(() => encodeEntries([{ size: 1, data: truncated }]), TypeError, "截斷資料");
+          }
+        },
+        {
+          name: "拒絕缺少 IEND",
+          run: function () {
+            const missingEnd = bytesFromBase64(GOLDEN_PNG_BASE64).slice(0, -12);
+            expectException(() => encodeEntries([{ size: 1, data: missingEnd }]), TypeError, "缺少 IEND");
+          }
+        },
+        {
+          name: "拒絕缺少 IDAT",
+          run: function () {
+            const corrupt = modifiedPng(bytes => {
+              const idatOffset = 8 + 12 + 13;
+              bytes.set([120, 68, 65, 84], idatOffset + 4);
+            });
+            expectException(() => encodeEntries([{ size: 1, data: corrupt }]), TypeError, "缺少 IDAT");
+          }
+        },
+        {
+          name: "拒絕 IEND 後仍有多餘資料",
+          run: function () {
+            const png = bytesFromBase64(GOLDEN_PNG_BASE64);
+            const appended = new Uint8Array(png.length + 1);
+            appended.set(png);
+            appended[appended.length - 1] = 123;
+            expectException(() => encodeEntries([{ size: 1, data: appended }]), TypeError, "IEND 尾端");
+          }
+        },
+        {
+          name: "拒絕不合法的 IEND chunk 長度",
+          run: function () {
+            const corrupt = modifiedPng(bytes => {
+              const iendOffset = bytes.length - 12;
+              bytes[iendOffset + 3] = 1;
+            });
+            expectException(() => encodeEntries([{ size: 1, data: corrupt }]), TypeError, "IEND 長度");
+          }
+        },
+        {
+          name: "拒絕超過 uint32 的 PNG 長度（受控模擬）",
+          run: function () {
+            expectException(
+              () => encodeEntries([{ size: 16, data: simulatedOversizedBytes(0x100000000) }]),
+              RangeError,
+              "uint32 長度"
+            );
+          }
+        },
+        {
+          name: "拒絕 ICO uint32 總長度／位移溢位（受控模擬）",
+          run: function () {
+            expectException(
+              () => encodeEntries([{ size: 16, data: simulatedOversizedBytes(0xFFFFFFFF) }]),
+              RangeError,
+              "ICO offset"
+            );
+          }
+        },
+        {
+          name: "拒絕非安全整數的長度（受控模擬）",
+          run: function () {
+            expectException(
+              () => encodeEntries([{
+                size: 16,
+                data: simulatedOversizedBytes(Number.MAX_SAFE_INTEGER + 1)
+              }]),
+              RangeError,
+              "安全整數"
+            );
+          }
+        },
+        {
+          name: "超過 128 MiB 記憶體上限時先拒絕（受控模擬）",
+          run: function () {
+            expectException(
+              () => encodeEntries([{
+                size: 16,
+                data: simulatedOversizedBytes(128 * 1024 * 1024)
+              }]),
+              RangeError,
+              "輸出容量"
+            );
+          }
+        },
+        {
+          name: "確實載入既有 HTTPS SlowlyCanvasPNG",
+          run: function () {
+            requireCanvasPng();
+            assert(typeof SlowlyCanvasPNG.version === "string", "缺少 PNG 核心版本。");
+          }
+        },
+        {
+          name: "Canvas → 共用 PNG → ICO → PNG bytes 逐項讀回",
+          run: async function () {
+            requireCanvasPng();
+            const size = 32;
+            const canvas = document.createElement("canvas");
+            canvas.width = size;
+            canvas.height = size;
+            const context = canvas.getContext("2d");
+            assert(context, "沒有 Canvas 2D context。");
+            context.fillStyle = "#ff0000";
+            context.fillRect(0, 0, size, size);
+
+            const pngBlob = await SlowlyCanvasPNG.toBlob(canvas);
+            assert(pngBlob instanceof Blob && pngBlob.type === "image/png", "PNG 核心輸出格式錯誤。");
+            const pngBytes = await bytesFromBlob(pngBlob);
+            const icoBlob = encodeEntries([{ size, data: pngBytes }]);
+            const decoded = await inspectIco(icoBlob);
+            const directoryEntry = decoded.directory[0];
+            const extractedPng = decoded.bytes.subarray(
+              directoryEntry.dataOffset,
+              directoryEntry.dataOffset + directoryEntry.byteCount
+            );
+            assertSameBytes(extractedPng, pngBytes, "端到端內嵌 PNG");
+          }
+        },
+        {
+          name: "Chromium／目前瀏覽器可實際解碼 PNG-in-ICO",
+          run: async function () {
+            requireBlobUrlScope();
+            const icoBlob = encodeEntries([
+              { size: 16, data: createPngBytes(16) },
+              { size: 32, data: createPngBytes(32) }
+            ]);
+            const scope = BlobUrlScope.create();
+            const icoUrl = scope.create(icoBlob);
+
+            try {
+              const iconImage = new Image();
+              await new Promise(function (resolve, reject) {
+                iconImage.onload = resolve;
+                iconImage.onerror = function () {
+                  reject(new Error("目前瀏覽器無法解碼產生的 ICO 圖像。"));
+                };
+                iconImage.src = icoUrl;
+              });
+              assert(iconImage.naturalWidth > 0, "ICO 解碼後寬度為 0。");
+              assert(iconImage.naturalHeight > 0, "ICO 解碼後高度為 0。");
+            } finally {
+              scope.destroy();
+            }
+          }
+        },
+        {
+          name: "既有 BlobUrlScope 建立、回收 ICO Object URL",
+          run: function () {
+            requireBlobUrlScope();
+            const ico = encodeEntries([{ size: 1, data: bytesFromBase64(GOLDEN_PNG_BASE64) }]);
+            const scope = BlobUrlScope.create();
+            const url = scope.create(ico);
+            assert(scope.has(url), "剛建立的 URL 未被紀錄。");
+            assert(scope.revoke(url) === true, "revoke 失敗。");
+            assert(scope.has(url) === false, "URL 尚未移除。");
+            scope.destroy();
+            assert(scope.active === false, "destroy 後仍為 active。");
+          }
+        },
+        {
+          name: "SlowlyCanvasPNG 的 Canvas 失敗會真正 reject",
+          run: async function () {
+            requireCanvasPng();
+            const failingCanvas = {
+              toBlob: function (callback) { callback(null); },
+              toDataURL: function () { return ""; }
+            };
+            let rejected = false;
+
+            try {
+              await SlowlyCanvasPNG.toBlob(failingCanvas);
+            } catch (error) {
+              rejected = true;
+              assert(error instanceof Error, "拒絕值不是錯誤物件。");
+            }
+
+            assert(rejected, "Canvas PNG 對 null Blob 沒有拒絕。");
+          }
+        },
+        {
+          name: "不把未知 MIME 的 Blob 當作有效 PNG",
+          run: async function () {
+            requireCanvasPng();
+            const invalidMimeCanvas = {
+              toBlob: function (callback) {
+                callback(new Blob(["not-a-png"], { type: "application/octet-stream" }));
+              },
+              toDataURL: function () { return ""; }
+            };
+            const candidateBlob = await SlowlyCanvasPNG.toBlob(invalidMimeCanvas);
+            assert(candidateBlob.type !== "image/png", "測試夾具沒有產生未知 MIME。");
+            const candidateBytes = await bytesFromBlob(candidateBlob);
+            expectException(
+              () => encodeEntries([{ size: 16, data: candidateBytes }]),
+              TypeError,
+              "無效 MIME 的非 PNG 位元組"
+            );
+          }
+        }
+      ];
+
+      let isRunning = false;
+
+      async function runAllTests() {
+        if (isRunning) {
+          return;
+        }
+
+        isRunning = true;
+        runTestsButton.disabled = true;
+        testResults.replaceChildren();
+
+        let passedCount = 0;
+        let failedCount = 0;
+
+        try {
+          for (const test of tests) {
+            let result = "PASS";
+            let explanation = "";
+
+            try {
+              await test.run();
+              passedCount += 1;
+            } catch (error) {
+              result = "FAIL";
+              failedCount += 1;
+              explanation = error instanceof Error ? error.message : String(error);
+            }
+
+            const row = document.createElement("tr");
+            const nameCell = document.createElement("th");
+            nameCell.scope = "row";
+            nameCell.textContent = test.name;
+
+            const resultCell = document.createElement("td");
+            resultCell.textContent = result;
+
+            const explanationCell = document.createElement("td");
+            explanationCell.textContent = explanation;
+
+            row.append(nameCell, resultCell, explanationCell);
+            testResults.appendChild(row);
+            testSummary.textContent =
+              `已執行 ${passedCount + failedCount}/${tests.length} 項；` +
+              `PASS ${passedCount}，FAIL ${failedCount}。`;
+          }
+        } finally {
+          isRunning = false;
+          runTestsButton.disabled = false;
+        }
+      }
+
+      runTestsButton.addEventListener("click", runAllTests);
+      runAllTests();
+    })();
+  </script>
+</body>
+</html>
