@@ -5163,6 +5163,36 @@ window.SlowlyLibraryIndex = [
         ]
       },
       {
+        "id": "ico",
+        "title": "ICO",
+        "subpage": true,
+        "desc": "將不同尺寸的 PNG 圖片資料封裝為 ICO 檔案的通用編碼積木。",
+        "items": [
+          {
+            "title": "ICO Encoder",
+            "desc": "接收宿主提供的正方形 PNG Uint8Array 位元組，驗證基本結構與尺寸後，封裝成多尺寸 PNG-in-ICO Blob；不負責圖片解碼、Canvas 繪製、預覽、下載或 UI。展示頁可將 PNG、JPG、GIF、SVG、WebP、BMP 等瀏覽器可解碼圖片轉成 ICO。",
+            "links": [
+              {
+                "label": "ico_encoder.js",
+                "href": "https://lib.stillnessbyslowly.com/Image/ico/ico_encoder.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/Image/ico/ico_encoder_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/Image/ico/ico_encoder_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/Image/ico/test_ico_encoder.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "lineart",
         "title": "Lineart",
         "subpage": true,
