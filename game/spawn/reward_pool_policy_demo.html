@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Reward Pool Policy｜Demo</title></head>
+<body>
+<h1>Reward Pool Policy｜展示</h1><p>先抽分類，再從子群抽項目。每次放回抽取。</p>
+<p><button id="once">抽一項</button> <button id="ten">抽十項</button> <button id="policy">檢視規則</button></p>
+<pre id="output" aria-live="polite"></pre><p><a href="reward_pool_policy_usage.html">使用說明</a>　<a href="test_reward_pool_policy.html">測試</a></p>
+<script src="reward_pool_policy.js"></script><script>
+(function () {
+  "use strict";
+  const policy = SlowlyRewardPoolPolicy.create({ groups: [
+    { id: "ordinary", weight: 2, items: ["a", "b"] },
+    { id: "special", weight: 1, groups: [
+      { id: "set1", weight: 1, items: ["s1", "s2"] },
+      { id: "unique", weight: 1, items: ["s3"] }
+    ] }
+  ] });
+  const output = document.getElementById("output");
+  function show(value) { output.textContent = JSON.stringify(value, null, 2); }
+  document.getElementById("once").onclick = () => show(policy.pick());
+  document.getElementById("ten").onclick = () => show(policy.pickMany(10));
+  document.getElementById("policy").onclick = () => show(policy.getPolicy());
+  show(policy.validate());
+})();
+</script>
+</body>
+</html>

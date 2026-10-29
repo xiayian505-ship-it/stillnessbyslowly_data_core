@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Reward Pool Policy 使用說明</title></head>
+<body>
+<h1>Reward Pool Policy｜使用說明</h1>
+<p>以「分類 → 可選子群 → 候選項目」分層權重抽選；每次獨立放回。</p>
+<p><a href="game/spawn/reward_pool_policy_demo.html">Demo</a>　<a href="test_reward_pool_policy.html">Test</a></p>
+<h2>引用方式</h2>
+<pre>&lt;script src="https://lib.stillnessbyslowly.com/game/spawn/reward_pool_policy.js"&gt;&lt;/script&gt;</pre>
+<p>以上為部署後的預定網址，並非保證已經上架。使用全域 <code>SlowlyRewardPoolPolicy</code>。</p>
+<h2>規則</h2><p>頂層 <code>groups</code> 必填，每項有非空 id、可選非負 <code>weight</code>（預設 1）；每個群組包含 <code>items</code> 非空陣列，或一層 <code>groups</code> 子群（不可同時存在）。選定分類、子群後，再均勻抽取 items。支援最多兩層群組，**不**支援保底、不放回或資產發放。</p>
+<table border="1" cellpadding="5"><tr><th>API</th><th>用途</th></tr>
+<tr><td>create(policy, { random?, maxBatch? }?)</td><td>建立規則，random 需每次回傳 0 ≤ r ＜ 1，預設 Math.random；maxBatch 預設 10000。</td></tr>
+<tr><td>pick(), pickMany(count)</td><td>獨立放回抽選單筆／批次；回傳候選項目的 JSON 副本，不建立實體卡。</td></tr>
+<tr><td>getPolicy(), validate()</td><td>回傳規則副本／驗證結果。</td></tr></table>
+<p>各層權重按該層相對比例計算，不以類別內物品數量改變最外層選中機率。零權重不會被抽到，全零、負數、非有限權重、空候選池會在建立時拒絕。資料與隨機來源錯誤以 TypeError／RangeError／Error 回報。</p>
+<p>與既有 <code>data/random/random.js</code>（基礎亂數）、<code>state/reward_claim_flow.js</code>（領獎順序）責任不同；宿主可自由組合，不強制引用。</p>
+<h2>最小使用範例</h2><pre><code>const policy = SlowlyRewardPoolPolicy.create({
+  groups: [
+    { id:&quot;ordinary&quot;, weight:2, items:[&quot;a&quot;, &quot;b&quot;] },
+    { id:&quot;special&quot;, weight:1, groups:[
+      { id:&quot;common&quot;, weight:1, items:[&quot;s1&quot;, &quot;s2&quot;] },
+      { id:&quot;unique&quot;, weight:1, items:[&quot;s3&quot;] }
+    ]}
+  ]
+});
+const chosenId = policy.pick();
+const fiveIds = policy.pickMany(5); // 有可能重複</code></pre>
+<p>以上 JS 不負責畫面、永久儲存、遊戲專屬規則；宿主自行提供資料、UI 與必要回呼。</p>
+
+</body>
+</html>

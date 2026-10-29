@@ -4057,6 +4057,28 @@ window.SlowlyLibraryIndex = [
         "desc": "牌庫循環、卡牌身分、區域移轉、資源、選擇目標、效果、回合與組牌等通用卡牌機制；具體玩法由宿主決定。",
         "items": [
           {
+            "title": "Card Branch Selection",
+            "desc": "依實體卡 ID、等級和宿主自訂類型規則判斷戰術分支是否合法，回傳新卡牌副本；不修改原卡、不計算卡牌升級或戰鬥效果。",
+            "links": [
+              {
+                "label": "card_branch_selection.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_branch_selection.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_branch_selection_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_branch_selection_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_branch_selection.html"
+              }
+            ]
+          },
+          {
             "title": "Card Deck Presets",
             "desc": "管理多套以實體卡 ID 為準的出戰配置，支援啟用切換、編輯、失效引用清理、快照還原；不負責出牌或卡牌效果。",
             "links": [
@@ -5016,8 +5038,30 @@ window.SlowlyLibraryIndex = [
         "id": "spawn",
         "title": "Spawn / 生成與回收",
         "subpage": true,
-        "desc": "管理物件名額和存活期限，或依世界視窗規劃生成與清理位置；不綁關卡與美術。",
+        "desc": "管理生成名額、存活期限、可視範圍內的產生與回收，以及遊戲獎勵候選的分層抽選；不綁關卡與美術。",
         "items": [
+          {
+            "title": "Reward Pool Policy",
+            "desc": "遊戲獎勵候選的分類／子群分層加權抽選，支援批次、可注入亂數與放回抽取；不生成卡牌實體、不發放收藏或處理領獎。",
+            "links": [
+              {
+                "label": "reward_pool_policy.js",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/reward_pool_policy.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/reward_pool_policy_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/reward_pool_policy_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/spawn/test_reward_pool_policy.html"
+              }
+            ]
+          },
           {
             "title": "Spawn Lifecycle",
             "desc": "通用物件 ID 與生成位置的名額、存活期限及主動釋放管理，支援容量限制與外部時間驅動的到期回收；不建立計時器、DOM 或隨機來源。",
@@ -5474,6 +5518,28 @@ window.SlowlyLibraryIndex = [
         "id": "general",
         "title": "General / 通用",
         "items": [
+          {
+            "title": "Story Manifest Loader",
+            "desc": "從 JSON 篇章索引載入指定小節，驗證 ID 與安全路徑、記憶體快取、同小節請求共用及過期結果防護；不播放故事、不儲存閱讀進度。",
+            "links": [
+              {
+                "label": "story_manifest_loader.js",
+                "href": "https://lib.stillnessbyslowly.com/state/story_manifest_loader.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/story_manifest_loader_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/story_manifest_loader_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_story_manifest_loader.html"
+              }
+            ]
+          },
           {
             "title": "Focus Confirm",
             "desc": "純狀態式聚焦後確認：第一次選取只聚焦，第二次相同選項才確認；支援合法 ID 集合、焦點切換／清除與獨立多實例，不要求限時雙擊、不操控頁面。",

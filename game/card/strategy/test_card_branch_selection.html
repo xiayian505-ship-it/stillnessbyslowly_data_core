@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Card Branch Selection 測試</title></head>
+<body>
+<h1>Card Branch Selection｜功能測試</h1><p>自動案例顯示 PASS / FAIL；若失敗，請檢視項目。</p><ol id="results"></ol><output id="summary"></output><p><a href="card_branch_selection_usage.html">使用說明</a></p>
+<script src="card_branch_selection.js"></script><script>
+(async function () {
+"use strict";
+let passed = 0;
+let failed = 0;
+function log(label, ok, detail = "") {
+  const row = document.createElement("li");
+  row.textContent = (ok ? "PASS " : "FAIL ") + label + (detail ? ": " + detail : "");
+  document.getElementById("results").appendChild(row);
+  if (ok) passed += 1; else failed += 1;
+}
+async function check(label, fn) {
+  try { log(label, (await fn()) === true); }
+  catch (error) { log(label, false, error.message || String(error)); }
+}
+async function rejects(fn) {
+  try { await fn(); return false; } catch (_) { return true; }
+}
+
+const byType={attack:["標準","破盾","汲取"],defense:["標準","堅守"]};
+const rules=SlowlyCardBranchSelection.create({branchesByType:byType});
+const a={id:"A",cardId:"attack_same",type:"attack",level:1,branch:"標準"};
+const b={id:"B",cardId:"attack_same",type:"attack",level:2,branch:"標準"};
+await check("合法分支切換",()=>rules.select(a,"破盾").card.branch==="破盾");
+await check("原卡不被修改",()=>a.branch==="標準");
+await check("不同實體互不影響",()=>rules.select(a,"破盾").card.id==="A"&&b.branch==="標準");
+await check("取得現有分支",()=>rules.getCurrent(a)==="標準");
+await check("允許合法分支清單",()=>rules.getAvailable(a).length===3);
+await check("未升級時禁止切換",()=>rules.canSelect({...a,level:0},"破盾").reason==="insufficient_level");
+await check("最低等級不符合回傳失敗",()=>rules.select({...a,level:0},"標準").ok===false);
+await check("錯誤分支被拒絕",()=>rules.canSelect(a,"反震").reason==="invalid_branch");
+await check("不支援類型拒絕",()=>rules.canSelect({...a,type:"magic"},"標準").reason==="unsupported_type");
+await check("重設為預設分支",()=>rules.reset({...a,branch:"破盾"}).card.branch==="標準");
+await check("原卡 level 與 cardId 保持",()=>{const result=rules.select(a,"汲取").card;return result.level===1&&result.cardId==="attack_same";});
+await check("規則複本不污染來源",()=>{byType.attack.push("other");return rules.getRules().branchesByType.attack.length===3;});
+await check("規則外部取得不污染核心",()=>{const copy=rules.getRules();copy.branchesByType.attack.push("bad");return rules.getRules().branchesByType.attack.length===3;});
+await check("額外資格可阻擋",()=>{const extra=SlowlyCardBranchSelection.create({branchesByType:{attack:["標準","破盾"]},canSelect:(_,branch,ctx)=>ctx&&ctx.allowed===branch});return extra.canSelect(a,"破盾",{allowed:"標準"}).reason==="not_allowed";});
+await check("自訂等級門檻",()=>{const extra=SlowlyCardBranchSelection.create({branchesByType:{attack:["標準","破盾"]},minimumLevel:3});return extra.getAvailable(a).length===0&&extra.canSelect(a,"破盾").ok===false;});
+await check("未設定 branch 時回退預設",()=>rules.getCurrent({...a,branch:undefined})==="標準");
+await check("無效卡資料拒絕",()=>rejects(()=>rules.canSelect({type:"attack",level:1},"破盾")));
+await check("重複分支設定拒絕",()=>rejects(()=>SlowlyCardBranchSelection.create({branchesByType:{attack:["標準","標準"]}})));
+await check("預設分支不存在拒絕",()=>rejects(()=>SlowlyCardBranchSelection.create({branchesByType:{attack:["標準"]},defaultBranch:"wrong"})));
+await check("設定不同實例互不干擾",()=>{const other=SlowlyCardBranchSelection.create({branchesByType:{attack:["一","二"]},minimumLevel:0});return other.select({...a,level:0},"二").ok&&rules.canSelect(a,"二").ok===false;});
+await check("不觸發效果或寫入儲存",()=>typeof rules.select(a,"破盾").card==="object"&&a.branch==="標準");
+
+document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+window.round3TestResult = { passed, failed, completed: true };
+})().catch(error => { document.getElementById("summary").textContent="FAIL 測試中斷："+error.message;window.round3TestResult={passed:0,failed:1,completed:true};});
+</script>
+</body>
+</html>

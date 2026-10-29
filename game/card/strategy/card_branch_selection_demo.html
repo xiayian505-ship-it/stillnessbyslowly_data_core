@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Card Branch Selection｜Demo</title></head>
+<body>
+<h1>Card Branch Selection｜展示</h1><p>兩張相同卡種、不同實體卡，各自切換戰術分支。</p>
+<p><button id="first">卡 A 選破盾</button> <button id="second">卡 B 選汲取</button> <button id="reset">重設卡 A</button></p>
+<pre id="output" aria-live="polite"></pre><p><a href="card_branch_selection_usage.html">使用說明</a>　<a href="test_card_branch_selection.html">測試</a></p>
+<script src="card_branch_selection.js"></script><script>
+(function () {
+  "use strict";
+  const rules = SlowlyCardBranchSelection.create({
+    branchesByType: { attack: ["標準", "破盾", "汲取"] }
+  });
+  let cardA = { id: "A", cardId: "same-type", type: "attack", level: 1, branch: "標準" };
+  let cardB = { id: "B", cardId: "same-type", type: "attack", level: 2, branch: "標準" };
+  const output = document.getElementById("output");
+  function display() { output.textContent = JSON.stringify({ cardA, cardB }, null, 2); }
+  function update(which, branch) {
+    const card = which === "A" ? cardA : cardB;
+    const result = rules.select(card, branch);
+    if (!result.ok) { output.textContent = result.reason; return; }
+    if (which === "A") cardA = result.card; else cardB = result.card;
+    display();
+  }
+  document.getElementById("first").onclick = () => update("A", "破盾");
+  document.getElementById("second").onclick = () => update("B", "汲取");
+  document.getElementById("reset").onclick = () => update("A", "標準");
+  display();
+})();
+</script>
+</body>
+</html>

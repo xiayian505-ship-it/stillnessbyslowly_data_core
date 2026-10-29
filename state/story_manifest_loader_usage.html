@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Story Manifest Loader 使用說明</title></head>
+<body>
+<h1>Story Manifest Loader｜使用說明</h1>
+<p>讀取篇章索引並安全載入各小節 JSON，提供快取與過期請求防護。</p>
+<p><a href="state/story_manifest_loader_demo.html">Demo</a>　<a href="test_story_manifest_loader.html">Test</a></p>
+<h2>引用方式</h2>
+<pre>&lt;script src="https://lib.stillnessbyslowly.com/state/story_manifest_loader.js"&gt;&lt;/script&gt;</pre>
+<p>以上為部署後的預定網址，並非保證已經上架。使用全域 <code>SlowlyStoryManifestLoader</code>。</p>
+<h2>資料結構與 API</h2>
+<p>索引需包含 <code>main</code>、<code>extras</code> 兩個陣列；每篇必須有唯一 <code>id</code> 及非空 <code>sections</code>，每小節有全域唯一 <code>id</code> 及 <code>file</code>。小節 JSON 必須具有一致的 <code>id</code> 和 <code>events: []</code>。</p>
+<table border="1" cellpadding="5"><tr><th>方法</th><th>結果</th></tr>
+<tr><td>create({ baseUrl, manifestUrl?, fetcher? })</td><td>建立獨立實例；baseUrl 是允許讀取的 HTTP(S) 資料目錄，建議以 / 結尾</td></tr>
+<tr><td>loadManifest(source?)</td><td>取得並驗證索引，亦可傳入索引物件；若較新的索引載入取代舊請求，舊請求回傳 null</td></tr>
+<tr><td>loadSection(sectionId)</td><td>依小節 ID 載入並快取；同小節同時請求共用工作，過期請求回傳 null</td></tr>
+<tr><td>getManifest(), getSection(id), hasSection(id)</td><td>取得安全副本／快取狀態</td></tr>
+<tr><td>clearCache(id?), getState()</td><td>清除一筆或全部快取；查詢狀態</td></tr></table>
+<h2>限制與錯誤</h2><p>禁止離開指定 baseUrl 目錄、其他 origin 或非 JSON 路徑。錯誤會以 TypeError／RangeError／Error 或 fetcher 原始錯誤拋出。索引重新載入成功後清除舊快取；重新載入失敗不覆蓋舊索引。clearCache 讓尚未完成的指定小節回應失效，但不取消 HTTP。索引可包含多小節；本零件不負責播放或預載全部小節。快取僅在記憶體。</p>
+<p>依賴：原生 URL、fetch（或宿主提供 fetcher）。故事播放可另搭配既有 <code>state/story_event_player.js</code>，但不強制載入。</p>
+<h2>最小使用範例</h2><pre><code>const loader = SlowlyStoryManifestLoader.create({
+  baseUrl: &quot;https://example.com/story/data/&quot;,
+  manifestUrl: &quot;chapters.json&quot;
+});
+await loader.loadManifest();
+const section = await loader.loadSection(&quot;prologue&quot;);
+// 將 section.events 交給宿主或 Story Event Player。</code></pre>
+<p>以上 JS 不負責畫面、永久儲存、遊戲專屬規則；宿主自行提供資料、UI 與必要回呼。</p>
+
+</body>
+</html>

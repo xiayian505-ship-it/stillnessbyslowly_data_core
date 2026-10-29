@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Reward Pool Policy 測試</title></head>
+<body>
+<h1>Reward Pool Policy｜功能測試</h1><p>自動案例顯示 PASS / FAIL；若失敗，請檢視項目。</p><ol id="results"></ol><output id="summary"></output><p><a href="reward_pool_policy_usage.html">使用說明</a></p>
+<script src="reward_pool_policy.js"></script><script>
+(async function () {
+"use strict";
+let passed = 0;
+let failed = 0;
+function log(label, ok, detail = "") {
+  const row = document.createElement("li");
+  row.textContent = (ok ? "PASS " : "FAIL ") + label + (detail ? ": " + detail : "");
+  document.getElementById("results").appendChild(row);
+  if (ok) passed += 1; else failed += 1;
+}
+async function check(label, fn) {
+  try { log(label, (await fn()) === true); }
+  catch (error) { log(label, false, error.message || String(error)); }
+}
+async function rejects(fn) {
+  try { await fn(); return false; } catch (_) { return true; }
+}
+
+const input={groups:[
+  {id:"attack",weight:1,items:["a1","a2"]},
+  {id:"special",weight:1,groups:[
+    {id:"group1",weight:1,items:["s1","s2"]},
+    {id:"unique",weight:1,items:["s3"]}
+  ]}
+]};
+function drawAt(...values){let i=0;return SlowlyRewardPoolPolicy.create(input,{random:()=>values[i++%values.length]});}
+await check("規則驗證結果",()=>drawAt(0).validate().valid===true);
+await check("第一類第一項",()=>drawAt(0,0).pick()==="a1");
+await check("第一類第二項",()=>drawAt(0,0.99).pick()==="a2");
+await check("第二類子群項目",()=>drawAt(0.8,0.1,0.2).pick()==="s1");
+await check("第二類唯一項目",()=>drawAt(0.8,0.8,0).pick()==="s3");
+await check("pickMany(0) 回傳空陣列",()=>drawAt(0).pickMany(0).length===0);
+await check("pickMany 可重複抽取",()=>{const values=drawAt(0,0).pickMany(3);return values.length===3&&values.every(v=>v==="a1");});
+await check("權重為零的群組不出現",()=>{
+ const pool=SlowlyRewardPoolPolicy.create({groups:[{id:"disabled",weight:0,items:["x"]},{id:"yes",weight:2,items:["y"]}]},{random:()=>0});return pool.pick()==="y";
+});
+await check("各層權重獨立計算",()=>{
+ const pool=SlowlyRewardPoolPolicy.create({groups:[{id:"few",weight:1,items:["f"]},{id:"many",weight:3,items:["a","b","c","d"]}]},{random:(()=>{let list=[0.2,0];return ()=>list.shift();})()});return pool.pick()==="f";
+});
+await check("policy 輸入不被改變",()=>input.groups[0].items.length===2);
+await check("getPolicy 不污染核心",()=>{const pool=drawAt(0,0);pool.getPolicy().groups[0].items.push("bad");return pool.getPolicy().groups[0].items.length===2;});
+await check("原候選物件不被污染",()=>{const obj={groups:[{id:"x",items:[{name:"ok",meta:{value:1}}]}]};const pool=SlowlyRewardPoolPolicy.create(obj,{random:()=>0});pool.pick().meta.value=999;return obj.groups[0].items[0].meta.value===1&&pool.pick().meta.value===1;});
+await check("空 groups 拒絕",()=>rejects(()=>SlowlyRewardPoolPolicy.create({groups:[]})));
+await check("權重全零拒絕",()=>rejects(()=>SlowlyRewardPoolPolicy.create({groups:[{id:"x",weight:0,items:["a"]}]})));
+await check("負權重拒絕",()=>rejects(()=>SlowlyRewardPoolPolicy.create({groups:[{id:"x",weight:-1,items:["a"]}]})));
+await check("NaN 權重拒絕",()=>rejects(()=>SlowlyRewardPoolPolicy.create({groups:[{id:"x",weight:NaN,items:["a"]}]})));
+await check("空 items 拒絕",()=>rejects(()=>SlowlyRewardPoolPolicy.create({groups:[{id:"x",items:[]}]})));
+await check("重複 group ID 拒絕",()=>rejects(()=>SlowlyRewardPoolPolicy.create({groups:[{id:"x",items:["a"]},{id:"x",items:["b"]}]})));
+await check("無效 random -1 拒絕",()=>rejects(()=>SlowlyRewardPoolPolicy.create(input,{random:()=>-1}).pick()));
+await check("無效 random 1 拒絕",()=>rejects(()=>SlowlyRewardPoolPolicy.create(input,{random:()=>1}).pick()));
+await check("無效 random NaN 拒絕",()=>rejects(()=>SlowlyRewardPoolPolicy.create(input,{random:()=>NaN}).pick()));
+await check("負數與小數 count 拒絕",async()=>await rejects(()=>drawAt(0).pickMany(-1))&&await rejects(()=>drawAt(0).pickMany(1.5)));
+await check("批次上限生效",()=>rejects(()=>SlowlyRewardPoolPolicy.create(input,{maxBatch:2,random:()=>0}).pickMany(3)));
+await check("多實例不同池獨立",()=>{const a=drawAt(0,0);const b=SlowlyRewardPoolPolicy.create({groups:[{id:"x",items:["z"]}]},{random:()=>0});return a.pick()==="a1"&&b.pick()==="z";});
+await check("保留範例七類等機率概念",()=>{
+ const groups=Array.from({length:7},(_,i)=>({id:"group"+i,weight:1,items:["item"+i]}));
+ const seq=[0.0,0.0,0.999,0.0];let i=0;
+ const p=SlowlyRewardPoolPolicy.create({groups},{random:()=>seq[i++%seq.length]});
+ return p.pick()==="item0"&&p.pick()==="item6";
+});
+
+document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+window.round3TestResult = { passed, failed, completed: true };
+})().catch(error => { document.getElementById("summary").textContent="FAIL 測試中斷："+error.message;window.round3TestResult={passed:0,failed:1,completed:true};});
+</script>
+</body>
+</html>

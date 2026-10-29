@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Story Manifest Loader｜Demo</title></head>
+<body>
+<h1>Story Manifest Loader｜展示</h1><p>透過內建模擬資料示範索引、小節讀取與快取；不需連線到《霧林之契》。</p>
+<p><button id="manifest">載入索引</button> <button id="section">載入小節</button> <button id="clear">清除快取</button></p>
+<pre id="output" aria-live="polite"></pre>
+<p><a href="story_manifest_loader_usage.html">使用說明</a>　<a href="test_story_manifest_loader.html">測試</a></p>
+<script src="story_manifest_loader.js"></script><script>
+(function () {
+  "use strict";
+  const index = { schemaVersion: 1, main: [{ id: "chapter", sections: [
+    { id: "sample", file: "chapter/sample.json" }
+  ] }], extras: [] };
+  const section = { id: "sample", title: "範例", events: [
+    { id: "line1", type: "narration", text: "這是一段範例故事。" }
+  ] };
+  const fetcher = async url => ({ ok: true, json: async () =>
+    url.endsWith("chapters.json") ? index : section });
+  const loader = SlowlyStoryManifestLoader.create({ baseUrl: "https://example.test/story/", fetcher });
+  const output = document.getElementById("output");
+  function show(value) { output.textContent = JSON.stringify(value, null, 2); }
+  document.getElementById("manifest").onclick = async () => {
+    try { show(await loader.loadManifest()); } catch (error) { show({ error: error.message }); }
+  };
+  document.getElementById("section").onclick = async () => {
+    try { show(await loader.loadSection("sample")); } catch (error) { show({ error: error.message }); }
+  };
+  document.getElementById("clear").onclick = () => {
+    loader.clearCache(); show(loader.getState());
+  };
+  show(loader.getState());
+})();
+</script>
+</body>
+</html>

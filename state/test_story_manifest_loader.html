@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Story Manifest Loader 測試</title></head>
+<body>
+<h1>Story Manifest Loader｜功能測試</h1><p>自動案例顯示 PASS / FAIL；若失敗，請檢視項目。</p><ol id="results"></ol><output id="summary"></output><p><a href="story_manifest_loader_usage.html">使用說明</a></p>
+<script src="story_manifest_loader.js"></script><script>
+(async function () {
+"use strict";
+let passed = 0;
+let failed = 0;
+function log(label, ok, detail = "") {
+  const row = document.createElement("li");
+  row.textContent = (ok ? "PASS " : "FAIL ") + label + (detail ? ": " + detail : "");
+  document.getElementById("results").appendChild(row);
+  if (ok) passed += 1; else failed += 1;
+}
+async function check(label, fn) {
+  try { log(label, (await fn()) === true); }
+  catch (error) { log(label, false, error.message || String(error)); }
+}
+async function rejects(fn) {
+  try { await fn(); return false; } catch (_) { return true; }
+}
+
+const root = "https://test.example/story/";
+const manifest = { schemaVersion: 1, main: [
+  { id: "ch", sections: [{ id: "s1", file: "ch/s1.json" }, { id: "s2", file: "ch/s2.json" }] }
+], extras: [] };
+const data = { s1: { id: "s1", events: [{ type: "text", text: "OK" }] },
+  s2: { id: "s2", events: [] } };
+let calls = 0;
+function fakeFetch(url) {
+  calls += 1;
+  const source = url.endsWith("chapters.json") ? manifest : url.endsWith("s1.json") ? data.s1 : data.s2;
+  return Promise.resolve({ ok: true, json: async () => JSON.parse(JSON.stringify(source)) });
+}
+const loader = SlowlyStoryManifestLoader.create({ baseUrl: root, fetcher: fakeFetch });
+await check("初始狀態", () => loader.getState().loaded === false);
+await check("載入兩小節索引", async () => (await loader.loadManifest()).main[0].sections.length === 2);
+await check("小節 events 可載入", async () => (await loader.loadSection("s1")).events[0].text === "OK");
+await check("載入快取可查詢", () => loader.hasSection("s1") && loader.getSection("s1").id === "s1");
+await check("重複載入使用快取", async () => { const before=calls;await loader.loadSection("s1");return calls===before; });
+await check("回傳快照不污染快取", () => { const copy=loader.getSection("s1");copy.events[0].text="bad";return loader.getSection("s1").events[0].text==="OK"; });
+await check("索引安全副本", () => { const copy=loader.getManifest();copy.main[0].id="broken";return loader.getManifest().main[0].id==="ch"; });
+await check("events 可以是空陣列", async () => Array.isArray((await loader.loadSection("s2")).events));
+await check("未知小節拒絕", () => rejects(() => loader.loadSection("unknown")));
+await check("清除單筆快取", () => { loader.clearCache("s1");return !loader.hasSection("s1") && loader.hasSection("s2"); });
+await check("清除全部快取", () => { loader.clearCache();return !loader.hasSection("s2"); });
+await check("重複章節 ID 拒絕", () => rejects(() => loader.loadManifest({ ...manifest, extras: [manifest.main[0]] })));
+await check("重複小節 ID 拒絕", () => rejects(() => loader.loadManifest({ ...manifest, main: [{ id:"ch", sections:[
+  {id:"s1",file:"a.json"},{id:"s1",file:"b.json"}]}] })));
+await check("路徑逃逸拒絕", () => rejects(() => loader.loadManifest({ main:[{id:"x",sections:[{id:"x1",file:"../outside.json"}]}],extras:[] })));
+await check("相似目錄前綴不可逃逸", () => rejects(() => loader.loadManifest({ main:[{id:"x",sections:[{id:"x1",file:"../story-other/b.json"}]}],extras:[] })));
+await check("跨來源網址拒絕", () => rejects(() => loader.loadManifest({ main:[{id:"x",sections:[{id:"x1",file:"https://evil.example/a.json"}]}],extras:[] })));
+await check("無效主索引拒絕", () => rejects(() => loader.loadManifest({ main: [], extras: "no" })));
+await check("驗證失敗時保留舊索引", () => loader.getManifest().main[0].id === "ch");
+await check("小節 ID 錯誤拒絕", async () => {
+ const bad=SlowlyStoryManifestLoader.create({baseUrl:root,fetcher:async url => ({ok:true,json:async()=> url.endsWith("chapters.json") ? manifest : {id:"bad",events:[]}})});
+ await bad.loadManifest();return rejects(()=>bad.loadSection("s1"));
+});
+await check("HTTP 404 回報", async () => {
+ const bad=SlowlyStoryManifestLoader.create({baseUrl:root,fetcher:async () => ({ok:false,status:404,json:async()=>null})});
+ return rejects(()=>bad.loadManifest());
+});
+await check("相同小節並行請求共用", async () => {
+ let requestCount=0;let release;
+ const deferred=new Promise(resolve=>{release=resolve;});
+ const obj=SlowlyStoryManifestLoader.create({baseUrl:root,fetcher:async url=>{
+   if(url.endsWith("chapters.json"))return {ok:true,json:async()=>manifest};
+   requestCount+=1;await deferred;return {ok:true,json:async()=>data.s1};
+ }});await obj.loadManifest();const a=obj.loadSection("s1");const b=obj.loadSection("s1");release();
+ const result=await Promise.all([a,b]);return requestCount===1&&result[0].id==="s1"&&result[1].id==="s1";
+});
+await check("索引舊請求不得覆蓋新索引", async () => {
+ let n=0;let release;const waiting=new Promise(r=>{release=r;});
+ const obj=SlowlyStoryManifestLoader.create({baseUrl:root,fetcher:async()=>{
+   n+=1;if(n===1){await waiting;return {ok:true,json:async()=>manifest};}
+   return {ok:true,json:async()=>({main:[],extras:[]})};
+ }});const slow=obj.loadManifest();await obj.loadManifest();release();const old=await slow;
+ return old===null&&obj.getManifest().main.length===0;
+});
+await check("索引更新後舊小節不得回填", async () => {
+ let release;const waiting=new Promise(r=>{release=r;});
+ const obj=SlowlyStoryManifestLoader.create({baseUrl:root,fetcher:async url=>{
+   if(url.endsWith("chapters.json"))return {ok:true,json:async()=>manifest};
+   await waiting;return {ok:true,json:async()=>data.s1};
+ }});await obj.loadManifest();const slow=obj.loadSection("s1");await obj.loadManifest();release();
+ return (await slow)===null&&!obj.hasSection("s1");
+});
+await check("多實例快取互不干擾", async () => {
+ const other=SlowlyStoryManifestLoader.create({baseUrl:root,fetcher:fakeFetch});await other.loadManifest();
+ await other.loadSection("s1");return other.hasSection("s1")&&!loader.hasSection("s1");
+});
+
+document.getElementById("summary").textContent = passed + " PASS / " + failed + " FAIL";
+window.round3TestResult = { passed, failed, completed: true };
+})().catch(error => { document.getElementById("summary").textContent="FAIL 測試中斷："+error.message;window.round3TestResult={passed:0,failed:1,completed:true};});
+</script>
+</body>
+</html>

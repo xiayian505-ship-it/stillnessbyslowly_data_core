@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Card Branch Selection 使用說明</title></head>
+<body>
+<h1>Card Branch Selection｜使用說明</h1>
+<p>檢查單張實體卡是否有資格切換戰術分支；回傳新卡片，不改動原始資料。</p>
+<p><a href="game/card/strategy/card_branch_selection_demo.html">Demo</a>　<a href="test_card_branch_selection.html">Test</a></p>
+<h2>引用方式</h2>
+<pre>&lt;script src="https://lib.stillnessbyslowly.com/game/card/strategy/card_branch_selection.js"&gt;&lt;/script&gt;</pre>
+<p>以上為部署後的預定網址，並非保證已經上架。使用全域 <code>SlowlyCardBranchSelection</code>。</p>
+<h2>API</h2>
+<table border="1" cellpadding="5"><tr><th>方法</th><th>說明</th></tr>
+<tr><td>create({ branchesByType, defaultBranch?, minimumLevel?, canSelect?, getInstanceId?, getCardType?, getCardLevel?, getBranch? })</td><td>建立分支規則。預設最低等級 1、預設分支為每類首項。</td></tr>
+<tr><td>getAvailable(card, context?)</td><td>取得目前等級及宿主自訂條件允許的分支陣列。</td></tr>
+<tr><td>getCurrent(card)</td><td>取得卡目前分支，未設定時回退類型預設。</td></tr>
+<tr><td>canSelect(card, branch, context?)</td><td>回傳 { ok, reason }，可能原因：unsupported_type / invalid_branch / insufficient_level / not_allowed。</td></tr>
+<tr><td>select(card, branch, context?), reset(card, context?)</td><td>成功回傳 { ok:true, card:新副本 }；規則不成立回傳 { ok:false, reason, card:null }。</td></tr>
+<tr><td>getRules()</td><td>規則安全副本。</td></tr></table>
+<h2>界線</h2><p>實體識別預設讀 <code>card.id</code>，不是卡種 <code>card.cardId</code>。選擇採非修改式回傳，由宿主自己保存。宿主可透過 canSelect 回呼限制遊戲階段，必須同步回傳布林值。格式錯誤拋 TypeError／RangeError；未達等級不拋錯，回傳原因。此零件不執行破盾、汲取等戰術效果，也不升級卡牌。</p>
+<p>獨立可用；如有需要可與既有 <code>game/card/strategy/card_level_progression.js</code>、<code>card_effect_registry.js</code> 組合。</p>
+<h2>最小使用範例</h2><pre><code>const branches = SlowlyCardBranchSelection.create({
+  branchesByType: { attack: [&quot;標準&quot;, &quot;破盾&quot;, &quot;汲取&quot;] },
+  minimumLevel: 1
+});
+const original = { id:&quot;instance-1&quot;, cardId:&quot;attack-1&quot;, type:&quot;attack&quot;, level:2, branch:&quot;標準&quot; };
+const result = branches.select(original, &quot;破盾&quot;);
+if (result.ok) {
+  // 宿主自行以 result.card 更新收藏；original 保持不變。
+}</code></pre>
+<p>以上 JS 不負責畫面、永久儲存、遊戲專屬規則；宿主自行提供資料、UI 與必要回呼。</p>
+
+</body>
+</html>
