@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Weather Ambience｜程序化風雨環境音｜測試</title></head><body>
+<h1>Weather Ambience｜程序化風雨環境音｜功能測試</h1><p>PASS / FAIL。風雨聽感與 Canvas 美術另需人工確認。</p><p>音訊播放需要使用者手勢，請按下方按鈕才開始執行測試。</p><button id="run_tests">開始音訊功能測試</button><ol id="results"></ol><output id="summary"></output>
+<script src="../context/audio_context.js"></script>
+<script src="../source/noise.js"></script>
+<script src="../source/oscillator.js"></script>
+<script src="../filter/biquad_filter.js"></script>
+<script src="../gain/gain.js"></script>
+<script src="weather_ambience.js"></script>
+<script>
+document.getElementById('run_tests').addEventListener('click', function () {
+this.disabled = true;
+(async function () {
+"use strict";
+let passed = 0;
+let failed = 0;
+function check(label, fn) {
+  let result = false;
+  let detail = '';
+  try { result = fn() === true; } catch (e) { detail = e.message; }
+  const li = document.createElement('li');
+  li.textContent = (result ? 'PASS ' : 'FAIL ') + label + (detail ? ': ' + detail : '');
+  document.getElementById('results').appendChild(li);
+  if (result) passed += 1; else failed += 1;
+}
+async function checkAsync(label, fn) {
+  let result = false;
+  let detail = '';
+  try { result = await fn() === true; } catch (e) { detail = e.message; }
+  const li = document.createElement('li');
+  li.textContent = (result ? 'PASS ' : 'FAIL ') + label + (detail ? ': ' + detail : '');
+  document.getElementById('results').appendChild(li);
+  if (result) passed += 1; else failed += 1;
+}
+
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+let ambience = SlowlyWeatherAmbience.create({context: ctx, fadeOut: 0, fadeIn: 0});
+await checkAsync("可啟動播放", async function () { await ambience.start(); return ambience.getState().playing && ambience.getState().sourceCount === 3; });
+await checkAsync("重複開始不疊加音源", async function () { await ambience.start(); return ambience.getState().sourceCount === 3; });
+check("音量更新", function () { ambience.setRainVolume(0); ambience.setWindVolume(0.1); ambience.setVolume(0.2); return ambience.getState().rainVolume === 0 && ambience.getState().masterVolume === 0.2; });
+check("拒絕非法音量", function () { try { ambience.setVolume(9); return false; } catch(e) { return e instanceof RangeError; } });
+await checkAsync("停止釋放音源", async function () { await ambience.stop(); return ambience.getState().sourceCount === 0; });
+await checkAsync("停止後可重新播放", async function () { await ambience.start(); return ambience.getState().playing; });
+check("銷毀不關閉共用 Context", function () { ambience.destroy(); return ambience.getState().sourceCount === 0 && ctx.state !== 'closed'; });
+
+const race = SlowlyWeatherAmbience.create({context:ctx,fadeIn:0,fadeOut:0.02});
+await race.start();
+const stopping = race.stop();
+const restarting = race.start();
+check('淡出中重新啟動可復用音源',function(){return race.getState().sourceCount===3;});
+const stoppedNormally = await stopping;
+await restarting;
+check('新啟動中斷舊停止計畫',function(){return stoppedNormally===false && race.getState().playing;});
+race.destroy();
+check('destroy 後不能再次 start',function(){try {race.start();return false;}catch(e){return true;}});
+await ctx.close();
+
+document.getElementById('summary').textContent = passed + ' PASS / ' + failed + ' FAIL';
+window.round2TestResult = { passed, failed, completed: true };
+})().catch(function (error) {
+  document.getElementById('summary').textContent = 'FAIL 測試執行中斷：' + error.message;
+  window.round2TestResult = { passed: 0, failed: 1, completed: true };
+});
+});
+</script></body></html>

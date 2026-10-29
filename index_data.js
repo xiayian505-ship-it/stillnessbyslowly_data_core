@@ -559,6 +559,28 @@ window.SlowlyLibraryIndex = [
         "desc": "以既有 Noise、Oscillator、Filter、Gain 與 Envelope 等軍火庫聲音零件，組合可調參數的一次性程式化音效；不另建音訊引擎。",
         "items": [
           {
+            "title": "Weather Ambience",
+            "desc": "程序化風雨環境音組合：透過既有 Audio Noise、Oscillator、Biquad Filter、Gain 形成持續雨聲與緩慢起伏風聲；音量可調，支援淡入淡出、停止音源與銷毀，不關閉宿主 AudioContext。",
+            "links": [
+              {
+                "label": "weather_ambience.js",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/weather_ambience.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/weather_ambience_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/weather_ambience_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/audio/effects/test_weather_ambience.html"
+              }
+            ]
+          },
+          {
             "title": "Impact Generator",
             "desc": "通用程式化撞擊音效組合，透過既有 Oscillator 的低頻主體與 Noise 的短促瞬態，搭配 Filter、Gain 和 Envelope 合成可調頻率、長度、音量及兩層比例的單次撞擊聲；提供可停止的播放控制，不依賴預錄音檔。",
             "links": [
@@ -2006,6 +2028,28 @@ window.SlowlyLibraryIndex = [
         "id": "background",
         "title": "Background / 背景",
         "items": [
+          {
+            "title": "Canvas Fireflies",
+            "desc": "Canvas 螢火蟲背景：以 Canvas 繪製局部漂浮、閃爍、徑向光暈；可調顆數、顏色、尺寸、漂移、透明度與減少動態。獨立生命週期，不含雨絲、霧或霧林 UI。",
+            "links": [
+              {
+                "label": "canvas_fireflies.js",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/canvas_fireflies.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/canvas_fireflies_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/canvas_fireflies_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/effects/background/test_canvas_fireflies.html"
+              }
+            ]
+          },
           {
             "title": "Aurora Background",
             "desc": "純 CSS 全畫面極光背景，以三組模糊徑向光團持續漂移，可由宿主控制三組色彩、模糊與透明度；使用 fixed 疊層且不攔截指標事件，並支援 reduced-motion。",
@@ -4034,7 +4078,6 @@ window.SlowlyLibraryIndex = [
               }
             ]
           },
-
           {
             "title": "Card Effect Registry",
             "desc": "登記宿主自訂的卡牌效果名稱、執行條件與同步處理函式，依名稱檢查並執行；不內建特定卡牌效果、數值或戰鬥規則。",
@@ -5432,6 +5475,50 @@ window.SlowlyLibraryIndex = [
         "title": "General / 通用",
         "items": [
           {
+            "title": "Focus Confirm",
+            "desc": "純狀態式聚焦後確認：第一次選取只聚焦，第二次相同選項才確認；支援合法 ID 集合、焦點切換／清除與獨立多實例，不要求限時雙擊、不操控頁面。",
+            "links": [
+              {
+                "label": "focus_confirm.js",
+                "href": "https://lib.stillnessbyslowly.com/state/focus_confirm.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/focus_confirm_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/focus_confirm_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_focus_confirm.html"
+              }
+            ]
+          },
+          {
+            "title": "Action Playback",
+            "desc": "逐次向宿主取得已結算動作、演出、至多一次命中通知、再呈現狀態；提供取消、終局停止及動畫失敗策略。不預先結算整批動作，不含戰鬥規則與 DOM。",
+            "links": [
+              {
+                "label": "action_playback.js",
+                "href": "https://lib.stillnessbyslowly.com/state/action_playback.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/action_playback_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/action_playback_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_action_playback.html"
+              }
+            ]
+          },
+          {
             "title": "Story Event Player",
             "desc": "單篇故事事件播放狀態核心，支援場景／旁白／對話／文字、同篇選項跳轉與外部挑戰等待；不含 UI、劇情儲存、逐字或解鎖。",
             "links": [
@@ -5541,7 +5628,6 @@ window.SlowlyLibraryIndex = [
               }
             ]
           },
-
           {
             "title": "Combo Streak State",
             "desc": "通用連續成功與失誤中斷狀態，管理目前與最高連擊，支援可選的超時清零和多實例；不處理得分、音符判定、排名或計時器。",

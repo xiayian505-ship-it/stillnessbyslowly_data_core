@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Action Playback｜動作演出協調｜Demo</title></head><body>
+<h1>Action Playback｜動作演出協調｜Demo</h1><p>逐次取得已結算動作、播放演出、至多一次命中通知、顯示結果；不預取後續動作。</p>
+<p>依序展示：取得 → 演出 → 命中 → 呈現結果 → 下一次。</p><p><button id="start">執行三個動作</button><button id="cancel">取消</button></p><pre id="log" aria-live="polite"></pre>
+<script src="action_playback.js"></script>
+<script>
+"use strict";
+let playback = null;
+const log = document.getElementById('log');
+function line(value) { log.textContent += value + '\n'; }
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+document.getElementById('start').onclick = async function () {
+  log.textContent = '';
+  let next = 0;
+  playback = SlowlyActionPlayback.create({
+    nextAction: function () { if (next === 3) return null; next += 1; line('取得／結算 ' + next); return {number: next, after: { hp: 40 - next * 5 }}; },
+    playAction: async function (action, controls) { line('開始演出 ' + action.number); await sleep(220); await controls.impact(); await sleep(220); },
+    onImpact: function (action) { line('命中 ' + action.number); },
+    presentState: function (action) { line('呈現 HP = ' + action.after.hp); },
+    onComplete: function (result) { line('完成 ' + result.count); },
+    onCancel: function () { line('已取消'); }
+  });
+  try { const result = await playback.start(); line('結果：' + result.status); }
+  catch (error) { line('失敗：' + error.message); }
+};
+document.getElementById('cancel').onclick = function () { if (playback) playback.cancel(); };
+</script></body></html>

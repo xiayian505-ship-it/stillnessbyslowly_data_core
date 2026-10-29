@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Weather Ambience｜程序化風雨環境音｜Demo</title></head><body>
+<h1>Weather Ambience｜程序化風雨環境音｜Demo</h1><p>由 Noise、Oscillator、Filter、Gain 組成風雨環境音，不用音檔；AudioContext 由宿主提供。</p>
+<p>請點按開始試聽；音訊自動播放通常受瀏覽器限制。建議先保持低音量。</p><p><button id="start">開始風雨</button><button id="stop">淡出停止</button><button id="rain">減少雨聲</button><button id="wind">減少風聲</button><button id="destroy">銷毀</button></p><output id="status" role="status"></output>
+<script src="../context/audio_context.js"></script>
+<script src="../source/noise.js"></script>
+<script src="../source/oscillator.js"></script>
+<script src="../filter/biquad_filter.js"></script>
+<script src="../gain/gain.js"></script>
+<script src="weather_ambience.js"></script>
+<script>
+"use strict";
+let ambience = null;
+const status = document.getElementById("status");
+function show() { status.textContent = ambience ? JSON.stringify(ambience.getState()) : "尚未初始化"; }
+document.getElementById("start").onclick = async function () {
+  try {
+    if (!ambience) ambience = SlowlyWeatherAmbience.create({ context: SlowlyAudioContext.create() });
+    await ambience.start(); show();
+  } catch (error) { status.textContent = "無法啟動：" + error.message; }
+};
+document.getElementById("stop").onclick = async function () { if (ambience) { await ambience.stop(); show(); } };
+document.getElementById("rain").onclick = function () { if (ambience) { ambience.setRainVolume(0.05); show(); } };
+document.getElementById("wind").onclick = function () { if (ambience) { ambience.setWindVolume(0.08); show(); } };
+document.getElementById("destroy").onclick = function () { if (ambience) { ambience.destroy(); show(); ambience = null; } };
+</script></body></html>

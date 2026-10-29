@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Focus Confirm｜聚焦後確認｜Demo</title></head><body>
+<h1>Focus Confirm｜聚焦後確認｜Demo</h1><p>首次選取只聚焦、第二次相同 ID 才確認；不需要限時雙擊、不綁 DOM。</p>
+<p>請點兩次同一個選項；第一次聚焦，第二次確認。</p><p><button data-choice="story">故事</button><button data-choice="start">開始</button><button data-choice="record">紀錄</button><button id="clear">清除聚焦</button></p><output id="status" role="status"></output>
+<script src="focus_confirm.js"></script>
+<script>
+"use strict";
+const instance = SlowlyFocusConfirm.create({items:['story','start','record']});
+const status = document.getElementById('status');
+document.querySelectorAll('[data-choice]').forEach(function (button) {
+  button.onclick = function () {
+    const result = instance.select(button.dataset.choice);
+    status.textContent = JSON.stringify(result);
+  };
+});
+document.getElementById('clear').onclick = function () { instance.clear(); status.textContent = '已清除'; };
+</script></body></html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Action Playback｜動作演出協調｜使用說明</title></head><body>
+<nav><a href="action_playback_demo.html">展示頁</a>　<a href="test_action_playback.html">功能測試</a></nav>
+<h1>Action Playback｜動作演出協調</h1><p>逐次取得已結算動作、播放演出、至多一次命中通知、顯示結果；不預取後續動作。</p>
+<h2>載入方式</h2><p>將以下 URL 作為 script src，並按需要先載入既有依賴：</p><pre>https://lib.stillnessbyslowly.com/state/action_playback.js</pre>
+<p>本 ZIP 是待合併更新包，URL 代表部署後的預定位置，並非已確認在線。</p>
+<h2>公開全域 API</h2><p><code>SlowlyActionPlayback</code>｜1.0.0</p>
+<table border="1" cellpadding="6"><thead><tr><th>方法</th><th>說明</th></tr></thead><tbody><tr><td><code>create(options)</code></td><td>必填 nextAction、playAction、presentState callbacks；可選 onImpact、shouldStop、onComplete、onCancel、onError。</td></tr>
+<tr><td><code>start()</code></td><td>Promise&lt;{ status, count, error }&gt;；執行中呼叫同一 Promise，不重跑。</td></tr>
+<tr><td><code>cancel()</code></td><td>中止後續動作並通知目前 controls.signal；不可回滾宿主已結算內容。</td></tr>
+<tr><td><code>isRunning()</code></td><td>查詢目前是否執行中。</td></tr>
+<tr><td><code>getState()</code></td><td>回傳不可直接修改內部狀態的快照。</td></tr></tbody></table>
+<h2>最小使用範例</h2><pre><code>const playback = SlowlyActionPlayback.create({
+  nextAction: () =&gt; getOneResolvedAction(),
+  playAction: (action, controls) =&gt; animate(action, controls.impact),
+  onImpact: action =&gt; playImpactSound(action),
+  presentState: action =&gt; drawBattleState(action.after),
+  shouldStop: action =&gt; Boolean(action.after?.outcome)
+});
+const result = await playback.start();</code></pre>
+<h2>依賴、限制、宿主責任</h2><p>nextAction 一次只取得一個已結算動作；絕不預算後續動作。controls.impact() 每動作最多只呼叫 onImpact 一次；playAction 完成後才 presentState。animationError: "present"（預設，動畫失敗仍呈現已結算結果）或 "stop"；cancel() 只中止後續流程，已結算內容不回滾，宿主的非同步 callback 應留意 controls.signal。宿主自行結束回合。</p>
+<p>核心不包含霧林 Boss、故事、畫面或存檔；宿主負責顯示介面、資源或遊戲狀態。參數錯誤主要以 TypeError／RangeError／Error 回報。</p>
+<p><a href="action_playback_demo.html">操作 Demo</a>　<a href="test_action_playback.html">PASS／FAIL 測試</a></p>
+</body></html>

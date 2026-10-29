@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Focus Confirm｜聚焦後確認｜測試</title></head><body>
+<h1>Focus Confirm｜聚焦後確認｜功能測試</h1><p>PASS / FAIL。風雨聽感與 Canvas 美術另需人工確認。</p><ol id="results"></ol><output id="summary"></output>
+<script src="focus_confirm.js"></script>
+<script>
+(async function () {
+"use strict";
+let passed = 0;
+let failed = 0;
+function check(label, fn) {
+  let result = false;
+  let detail = '';
+  try { result = fn() === true; } catch (e) { detail = e.message; }
+  const li = document.createElement('li');
+  li.textContent = (result ? 'PASS ' : 'FAIL ') + label + (detail ? ': ' + detail : '');
+  document.getElementById('results').appendChild(li);
+  if (result) passed += 1; else failed += 1;
+}
+async function checkAsync(label, fn) {
+  let result = false;
+  let detail = '';
+  try { result = await fn() === true; } catch (e) { detail = e.message; }
+  const li = document.createElement('li');
+  li.textContent = (result ? 'PASS ' : 'FAIL ') + label + (detail ? ': ' + detail : '');
+  document.getElementById('results').appendChild(li);
+  if (result) passed += 1; else failed += 1;
+}
+
+const focus=SlowlyFocusConfirm.create({items:['a','b']});
+check('第一次聚焦',function(){return focus.select('a').status==='focused';});
+check('第二次確認',function(){return focus.select('a').status==='confirmed';});
+check('切換焦點不誤確認',function(){return focus.select('b').status==='focused' && focus.getFocused()==='b';});
+check('非法 ID 不改焦點',function(){return focus.select('zzz').status==='invalid' && focus.getFocused()==='b';});
+check('clear 後須再聚焦',function(){focus.clear();return focus.select('a').status==='focused';});
+check('移除已選項目清除焦點',function(){focus.setItems(['b']);return focus.getFocused()===null;});
+check('拒絕重複 ID',function(){try{focus.setItems(['b','b']);return false;}catch(e){return e instanceof RangeError;}});
+check('不同實例不共享焦點',function(){const other=SlowlyFocusConfirm.create({items:['x']});other.select('x');return focus.getFocused()===null;});
+check('destroy 後不可用',function(){focus.destroy();try{focus.select('b');return false;}catch(e){return true;}});
+
+check('允許空選項集合', function () { const empty=SlowlyFocusConfirm.create({items:[]});return empty.select('a').status==='invalid'; });
+check('空字串選項拒絕', function () { try { SlowlyFocusConfirm.create({items:['']}); return false; } catch(e) { return e instanceof TypeError; } });
+check('返回物件明確識別', function () { const fresh=SlowlyFocusConfirm.create({items:['a']}); const first=fresh.select('a'); return first.id==='a' && first.focused==='a' && first.status==='focused'; });
+
+document.getElementById('summary').textContent = passed + ' PASS / ' + failed + ' FAIL';
+window.round2TestResult = { passed, failed, completed: true };
+})().catch(function (error) {
+  document.getElementById('summary').textContent = 'FAIL 測試執行中斷：' + error.message;
+  window.round2TestResult = { passed: 0, failed: 1, completed: true };
+});
+</script></body></html>

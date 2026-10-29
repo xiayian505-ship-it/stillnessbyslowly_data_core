@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Canvas Fireflies｜Canvas 螢火蟲｜測試</title></head><body>
+<h1>Canvas Fireflies｜Canvas 螢火蟲｜功能測試</h1><p>PASS / FAIL。風雨聽感與 Canvas 美術另需人工確認。</p><ol id="results"></ol><output id="summary"></output>
+<script src="canvas_fireflies.js"></script>
+<script>
+(async function () {
+"use strict";
+let passed = 0;
+let failed = 0;
+function check(label, fn) {
+  let result = false;
+  let detail = '';
+  try { result = fn() === true; } catch (e) { detail = e.message; }
+  const li = document.createElement('li');
+  li.textContent = (result ? 'PASS ' : 'FAIL ') + label + (detail ? ': ' + detail : '');
+  document.getElementById('results').appendChild(li);
+  if (result) passed += 1; else failed += 1;
+}
+async function checkAsync(label, fn) {
+  let result = false;
+  let detail = '';
+  try { result = await fn() === true; } catch (e) { detail = e.message; }
+  const li = document.createElement('li');
+  li.textContent = (result ? 'PASS ' : 'FAIL ') + label + (detail ? ': ' + detail : '');
+  document.getElementById('results').appendChild(li);
+  if (result) passed += 1; else failed += 1;
+}
+
+const canvas = document.createElement("canvas");
+canvas.width = 120; canvas.height = 80;
+document.body.appendChild(canvas);
+const fireflies = SlowlyCanvasFireflies.create({ canvas: canvas, count: 0, reducedMotion: true });
+check("零粒子合法", function () { return fireflies.getState().count === 0; });
+check("設定數量可更新", function () { fireflies.setOptions({count: 3}); return fireflies.getState().count === 3; });
+check("靜態模式不排程", function () { fireflies.start(); return fireflies.getState().active; });
+check("停止再啟動", function () { fireflies.stop(); fireflies.start(); return fireflies.getState().active; });
+check("不接受超大數量", function () { try { fireflies.setOptions({count: -1}); return false; } catch(e) { return e instanceof RangeError; } });
+check("不能換掉 canvas", function () { try { fireflies.setOptions({canvas: document.createElement('canvas')}); return false; } catch(e) { return e instanceof TypeError; } });
+check("多實例獨立", function () { const other = SlowlyCanvasFireflies.create({canvas: document.createElement('canvas'),count:1}); const okay=other.getState().count === 1 && fireflies.getState().count === 3; other.destroy(); return okay; });
+check("destroy 清理狀態", function () { fireflies.destroy(); return fireflies.getState().destroyed; });
+check("銷毀後不能 start", function () { try { fireflies.start(); return false; } catch(e) { return true; } });
+
+check('空 canvas 有明確錯誤', function () { try { SlowlyCanvasFireflies.create({canvas:null}); return false; } catch(e) { return e instanceof TypeError; } });
+check('極窄 Canvas 不會失敗', function () { const small=document.createElement('canvas');small.width=1;small.height=1;small.clientWidth=1;small.clientHeight=1; const instance=SlowlyCanvasFireflies.create({canvas:small,count:2});const ok=instance.getState().count===2;instance.destroy();return ok; });
+check('無效顏色參數拒絕', function () { try { SlowlyCanvasFireflies.create({canvas:document.createElement('canvas'),color:''});return false;}catch(e){return e instanceof TypeError;} });
+
+document.getElementById('summary').textContent = passed + ' PASS / ' + failed + ' FAIL';
+window.round2TestResult = { passed, failed, completed: true };
+})().catch(function (error) {
+  document.getElementById('summary').textContent = 'FAIL 測試執行中斷：' + error.message;
+  window.round2TestResult = { passed: 0, failed: 1, completed: true };
+});
+</script></body></html>

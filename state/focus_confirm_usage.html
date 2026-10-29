@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Focus Confirm｜聚焦後確認｜使用說明</title></head><body>
+<nav><a href="focus_confirm_demo.html">展示頁</a>　<a href="test_focus_confirm.html">功能測試</a></nav>
+<h1>Focus Confirm｜聚焦後確認</h1><p>首次選取只聚焦、第二次相同 ID 才確認；不需要限時雙擊、不綁 DOM。</p>
+<h2>載入方式</h2><p>將以下 URL 作為 script src，並按需要先載入既有依賴：</p><pre>https://lib.stillnessbyslowly.com/state/focus_confirm.js</pre>
+<p>本 ZIP 是待合併更新包，URL 代表部署後的預定位置，並非已確認在線。</p>
+<h2>公開全域 API</h2><p><code>SlowlyFocusConfirm</code>｜1.0.0</p>
+<table border="1" cellpadding="6"><thead><tr><th>方法</th><th>說明</th></tr></thead><tbody><tr><td><code>create({items})</code></td><td>傳入唯一且非空的字串 ID 陣列，可為空。</td></tr>
+<tr><td><code>select(id)</code></td><td>回傳 {status: focused|confirmed|invalid, id, focused}。</td></tr>
+<tr><td><code>getFocused()</code></td><td>回傳目前聚焦的 ID 或 null。</td></tr>
+<tr><td><code>clear()</code></td><td>清除聚焦狀態。</td></tr>
+<tr><td><code>setItems(ids)</code></td><td>更新可選 ID；移除被聚焦 ID 時自動清除。</td></tr>
+<tr><td><code>destroy()</code></td><td>清除資料並標記銷毀，之後不可操作。</td></tr></tbody></table>
+<h2>最小使用範例</h2><pre><code>const menu = SlowlyFocusConfirm.create({ items: [&quot;story&quot;, &quot;start&quot;] });
+menu.select(&quot;start&quot;); // focused
+menu.select(&quot;start&quot;); // confirmed
+menu.clear();</code></pre>
+<h2>依賴、限制、宿主責任</h2><p>完全不依賴 DOM、不提供導覽、也不要求 dblclick 的連點時間。無效 ID 回傳 invalid 並保留焦點。與 Tree Selection／Action Menu 的职责不同，適合多個獨立選單實例。</p>
+<p>核心不包含霧林 Boss、故事、畫面或存檔；宿主負責顯示介面、資源或遊戲狀態。參數錯誤主要以 TypeError／RangeError／Error 回報。</p>
+<p><a href="focus_confirm_demo.html">操作 Demo</a>　<a href="test_focus_confirm.html">PASS／FAIL 測試</a></p>
+</body></html>

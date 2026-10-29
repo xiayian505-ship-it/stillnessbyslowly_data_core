@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Action Playback｜動作演出協調｜測試</title></head><body>
+<h1>Action Playback｜動作演出協調｜功能測試</h1><p>PASS / FAIL。風雨聽感與 Canvas 美術另需人工確認。</p><ol id="results"></ol><output id="summary"></output>
+<script src="action_playback.js"></script>
+<script>
+(async function () {
+"use strict";
+let passed = 0;
+let failed = 0;
+function check(label, fn) {
+  let result = false;
+  let detail = '';
+  try { result = fn() === true; } catch (e) { detail = e.message; }
+  const li = document.createElement('li');
+  li.textContent = (result ? 'PASS ' : 'FAIL ') + label + (detail ? ': ' + detail : '');
+  document.getElementById('results').appendChild(li);
+  if (result) passed += 1; else failed += 1;
+}
+async function checkAsync(label, fn) {
+  let result = false;
+  let detail = '';
+  try { result = await fn() === true; } catch (e) { detail = e.message; }
+  const li = document.createElement('li');
+  li.textContent = (result ? 'PASS ' : 'FAIL ') + label + (detail ? ': ' + detail : '');
+  document.getElementById('results').appendChild(li);
+  if (result) passed += 1; else failed += 1;
+}
+
+let order = [];
+let next = 0;
+const player = SlowlyActionPlayback.create({
+  nextAction: async function () { next += 1; order.push('get' + next); return next <= 2 ? {i:next} : null; },
+  playAction: async function (action, controls) { order.push('play' + action.i); await controls.impact(); await controls.impact(); },
+  onImpact: function (action) { order.push('impact' + action.i); },
+  presentState: function (action) { order.push('present' + action.i); }
+});
+const r = await player.start();
+check('完整逐次順序', function () { return order.join(',') === 'get1,play1,impact1,present1,get2,play2,impact2,present2,get3'; });
+check('命中僅一次', function () { return order.filter(x => x.startsWith('impact')).length === 2; });
+check('完成計數', function () { return r.status === 'complete' && r.count === 2 && !player.isRunning(); });
+let calls=0; const end = SlowlyActionPlayback.create({nextAction:()=>({}),playAction:()=>{},presentState:()=>{},shouldStop:()=>{calls++;return true;}});
+const ended=await end.start();
+check('終局停止後續動作', function () { return calls===1 && ended.count===1; });
+const bad = SlowlyActionPlayback.create({nextAction:()=>({}),playAction:()=>{throw new Error('animation');},presentState:()=>{},animationError:'stop'});
+const error = await bad.start();
+check('動畫失敗可回報', function () { return error.status === 'error'; });
+let count=0;const retry = SlowlyActionPlayback.create({nextAction:()=> count++===0 ? {} : null, playAction:()=>{throw Error('animation');},presentState:()=>{}});
+const skipped = await retry.start();
+check('動畫可略過但已結算不重跑', function () { return skipped.status==='complete' && count===2; });
+
+let resolveAnimation;
+let nextCount = 0;
+let cancelled = 0;
+const blocked = SlowlyActionPlayback.create({
+  nextAction: function () { nextCount += 1; return { id: 1 }; },
+  playAction: function () { return new Promise(function (resolve) { resolveAnimation = resolve; }); },
+  presentState: function () {},
+  onCancel: function () { cancelled += 1; }
+});
+const firstPromise = blocked.start();
+const secondPromise = blocked.start();
+check('重複 start 共用同一 Promise', function () { return firstPromise === secondPromise; });
+await Promise.resolve();
+check('取消可通知當前流程', function () { return blocked.cancel(); });
+resolveAnimation();
+const cancelledResult = await firstPromise;
+check('取消後不再取得新動作', function () { return cancelledResult.status === 'cancelled' && nextCount === 1 && cancelled === 1 && !blocked.isRunning(); });
+let impactCount = 0;
+let presentCount = 0;
+let already = false;
+const interrupted = SlowlyActionPlayback.create({
+  nextAction: function () { if (already) return null; already = true; return { id: 7 }; },
+  playAction: async function (action, controls) { await controls.impact(); await controls.impact(); throw Error('animation after impact'); },
+  onImpact: function () { impactCount += 1; },
+  presentState: function () { presentCount += 1; }
+});
+const interruptedResult = await interrupted.start();
+check('動畫命中後失敗仍不重複命中', function () { return impactCount === 1 && presentCount === 1 && interruptedResult.status === 'complete'; });
+const invalid = function () { try { SlowlyActionPlayback.create({nextAction: function(){},presentState: function(){}}); return false; } catch(e) { return e instanceof TypeError; } };
+check('拒絕缺少必要 callback', invalid);
+const fault = SlowlyActionPlayback.create({nextAction: function () { throw Error('no action'); },playAction: function(){},presentState: function(){}});
+const faultResult = await fault.start();
+check('取得下一動作失敗回報 error', function () { return faultResult.status === 'error' && faultResult.error.message === 'no action'; });
+
+document.getElementById('summary').textContent = passed + ' PASS / ' + failed + ' FAIL';
+window.round2TestResult = { passed, failed, completed: true };
+})().catch(function (error) {
+  document.getElementById('summary').textContent = 'FAIL 測試執行中斷：' + error.message;
+  window.round2TestResult = { passed: 0, failed: 1, completed: true };
+});
+</script></body></html>

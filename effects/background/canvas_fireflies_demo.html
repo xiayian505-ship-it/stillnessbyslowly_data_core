@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Canvas Fireflies｜Canvas 螢火蟲｜Demo</title></head><body>
+<h1>Canvas Fireflies｜Canvas 螢火蟲｜Demo</h1><p>提供獨立 Canvas 螢火蟲漂浮、閃爍與光暈；不含雨絲、森林及任何選單。</p>
+<canvas id="fireflies" width="640" height="280" style="width:100%;height:280px;background:#101820;display:block"></canvas>
+<p><button id="start">開始</button><button id="stop">停止</button><button id="reduced">切換靜態</button><button id="count">數量 +5</button><button id="destroy">銷毀</button></p><output id="status" role="status"></output>
+<script src="canvas_fireflies.js"></script>
+<script>
+"use strict";
+const canvas = document.getElementById("fireflies");
+const status = document.getElementById("status");
+let count = 16;
+let staticMode = false;
+const item = SlowlyCanvasFireflies.create({ canvas: canvas, count: count, autoResize: true, reducedMotion: false });
+function show() { status.textContent = JSON.stringify(item.getState()); }
+document.getElementById("start").onclick = function () { try { item.start(); show(); } catch (error) { status.textContent = error.message; } };
+document.getElementById("stop").onclick = function () { item.stop(); show(); };
+document.getElementById("reduced").onclick = function () { staticMode = !staticMode; item.setOptions({ reducedMotion: staticMode }); show(); };
+document.getElementById("count").onclick = function () { count += 5; item.setOptions({ count: count }); show(); };
+document.getElementById("destroy").onclick = function () { item.destroy(); show(); };
+item.start(); show();
+</script></body></html>

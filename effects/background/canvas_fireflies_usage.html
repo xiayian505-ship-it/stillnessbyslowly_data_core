@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Canvas Fireflies｜Canvas 螢火蟲｜使用說明</title></head><body>
+<nav><a href="canvas_fireflies_demo.html">展示頁</a>　<a href="test_canvas_fireflies.html">功能測試</a></nav>
+<h1>Canvas Fireflies｜Canvas 螢火蟲</h1><p>提供獨立 Canvas 螢火蟲漂浮、閃爍與光暈；不含雨絲、森林及任何選單。</p>
+<h2>載入方式</h2><p>將以下 URL 作為 script src，並按需要先載入既有依賴：</p><pre>https://lib.stillnessbyslowly.com/effects/background/canvas_fireflies.js</pre>
+<p>本 ZIP 是待合併更新包，URL 代表部署後的預定位置，並非已確認在線。</p>
+<h2>公開全域 API</h2><p><code>SlowlyCanvasFireflies</code>｜1.0.0</p>
+<table border="1" cellpadding="6"><thead><tr><th>方法</th><th>說明</th></tr></thead><tbody><tr><td><code>create(options)</code></td><td>指定 canvas、count（0～2000）、color、glowColor、minSize/maxSize、glowRadius、driftX/Y、speed、opacity、maxDpr、autoResize、clearCanvas、reducedMotion。</td></tr>
+<tr><td><code>start()</code></td><td>啟動；重複呼叫不重複排程。</td></tr>
+<tr><td><code>stop()</code></td><td>停止動畫，之後可以再次啟動。</td></tr>
+<tr><td><code>resize()</code></td><td>重新測量容器尺寸與 DPR，重建粒子。</td></tr>
+<tr><td><code>draw(time?)</code></td><td>繪製單幀，適合宿主控制畫面。</td></tr>
+<tr><td><code>setOptions(next)</code></td><td>調整參數；尺寸、粒子數及尺寸範圍變動會重新建粒子。</td></tr>
+<tr><td><code>getState()</code></td><td>取得狀態副本。</td></tr>
+<tr><td><code>destroy()</code></td><td>取消動畫、移除事件監聽，銷毀後不可重啟。</td></tr></tbody></table>
+<h2>最小使用範例</h2><pre><code>const fireflies = SlowlyCanvasFireflies.create({ canvas: document.querySelector(&quot;#scene&quot;) });
+fireflies.start();
+// 離開時 fireflies.destroy();</code></pre>
+<h2>依賴、限制、宿主責任</h2><p>單實例使用獨立 Canvas 最安全。共用畫布時設 clearCanvas: false，請宿主統一清畫布；reducedMotion 可為 "system"、true、false。預設色只供展示，宿主可覆寫。Canvas 寬高由宿主 CSS 決定。</p>
+<p>核心不包含霧林 Boss、故事、畫面或存檔；宿主負責顯示介面、資源或遊戲狀態。參數錯誤主要以 TypeError／RangeError／Error 回報。</p>
+<p><a href="canvas_fireflies_demo.html">操作 Demo</a>　<a href="test_canvas_fireflies.html">PASS／FAIL 測試</a></p>
+</body></html>

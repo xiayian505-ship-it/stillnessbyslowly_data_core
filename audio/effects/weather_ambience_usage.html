@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Weather Ambience｜程序化風雨環境音｜使用說明</title></head><body>
+<nav><a href="weather_ambience_demo.html">展示頁</a>　<a href="test_weather_ambience.html">功能測試</a></nav>
+<h1>Weather Ambience｜程序化風雨環境音</h1><p>由 Noise、Oscillator、Filter、Gain 組成風雨環境音，不用音檔；AudioContext 由宿主提供。</p>
+<h2>載入方式</h2><p>將以下 URL 作為 script src，並按需要先載入既有依賴：</p><pre>https://lib.stillnessbyslowly.com/audio/effects/weather_ambience.js</pre>
+<p>本 ZIP 是待合併更新包，URL 代表部署後的預定位置，並非已確認在線。</p>
+<h2>公開全域 API</h2><p><code>SlowlyWeatherAmbience</code>｜1.0.0</p>
+<table border="1" cellpadding="6"><thead><tr><th>方法</th><th>說明</th></tr></thead><tbody><tr><td><code>create(options)</code></td><td>必須提供 context；可指定 destination、rainVolume、windVolume、masterVolume、fadeIn、fadeOut 及風雨濾波配方。</td></tr>
+<tr><td><code>start()</code></td><td>Promise&lt;boolean&gt;。需要使用者手勢；resume 失敗會拋錯。</td></tr>
+<tr><td><code>stop()</code></td><td>Promise&lt;boolean&gt;；淡出後停止音源（若被新 start 中斷，回傳 false）。</td></tr>
+<tr><td><code>setVolume(value)</code></td><td>調整主音量，0～1。</td></tr>
+<tr><td><code>setRainVolume(value)</code></td><td>調整雨聲音量，0～1。</td></tr>
+<tr><td><code>setWindVolume(value)</code></td><td>調整風聲音量，0～1。</td></tr>
+<tr><td><code>getState()</code></td><td>回傳當前狀態及音源數；0 表示已釋放。</td></tr>
+<tr><td><code>destroy()</code></td><td>停止並釋放本實例節點；絕不關閉宿主 AudioContext。</td></tr></tbody></table>
+<h2>最小使用範例</h2><pre><code>const context = SlowlyAudioContext.create();
+const weather = SlowlyWeatherAmbience.create({ context });
+await weather.start(); // 使用者點擊事件內
+await weather.stop();
+weather.destroy(); // 不關閉共用 Context</code></pre>
+<h2>依賴、限制、宿主責任</h2><p>需要 AudioContext、Noise、Oscillator、BiquadFilter、Gain 五個既有零件。start() 受瀏覽器使用者手勢限制，resume 失敗會拋錯；stop() 等待淡出、停止音源，短時間內新 start() 會中斷舊停止流程（舊 stop Promise 回傳 false）。不會關閉宿主的 AudioContext。音色需透過 Demo 人工試聽。</p>
+<p>核心不包含霧林 Boss、故事、畫面或存檔；宿主負責顯示介面、資源或遊戲狀態。參數錯誤主要以 TypeError／RangeError／Error 回報。</p>
+<p><a href="weather_ambience_demo.html">操作 Demo</a>　<a href="test_weather_ambience.html">PASS／FAIL 測試</a></p>
+</body></html>
