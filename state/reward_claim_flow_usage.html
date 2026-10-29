@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reward Claim Flow｜獎勵逐項領取｜使用說明</title></head>
+<body>
+  <nav><a href="reward_claim_flow_demo.html">Demo</a> <a href="test_reward_claim_flow.html">功能測試</a></nav>
+  <h1>Reward Claim Flow｜獎勵逐項領取</h1>
+  <p>接收宿主已產生的獎勵，逐項等待決策；提交後須由宿主 commit 才推進，支援 snapshot 與 pending 中斷恢復。</p>
+  <h2>一、載入方式</h2>
+  <p>本地開發測試：</p>
+  <pre>&lt;script src="./reward_claim_flow.js"&gt;&lt;/script&gt;</pre>
+  <p>正式部署在你的軍火庫後，其他宿主可以採絕對網址：</p>
+  <pre>https://lib.stillnessbyslowly.com/state/reward_claim_flow.js</pre>
+  <p>注意：本 ZIP 尚未部署，上列 HTTPS 網址為預計發布路徑，不代表目前已上線。</p>
+  <h2>二、公開 API</h2>
+  <p>全域物件：<code>SlowlyRewardClaimFlow</code>；版本 1.0.0。錯誤輸入通常丟出 TypeError／RangeError／Error，應由宿主捕捉。</p>
+  <table><thead><tr><th>函式</th><th>用途與輸入輸出</th></tr></thead><tbody>
+        <tr><td><code>create() / start(items, {flowId?})</code></td><td>建立新流程；items 各需唯一字串 id；建議宿主傳穩定 flowId</td></tr>
+        <tr><td><code>current()</code></td><td>目前待處理獎勵，若無則 null</td></tr>
+        <tr><td><code>accept(details?) / reject(reason?)</code></td><td>回傳待提交的決定，不直接領取或推進</td></tr>
+        <tr><td><code>replace(targetId)</code></td><td>提出替換決定，targetId 必填</td></tr>
+        <tr><td><code>commit(decisionId)</code></td><td>宿主確實成功處理後提交，回傳 committed / completed</td></tr>
+        <tr><td><code>cancel(decisionId)</code></td><td>宿主失敗時撤銷待提交決定，游標保持原位</td></tr>
+        <tr><td><code>snapshot() / restore(data)</code></td><td>保存、還原待提交與已確認決定</td></tr>
+        <tr><td><code>isComplete()</code></td><td>查詢整批是否完成</td></tr>
+  </tbody></table>
+  <h2>三、最小使用範例</h2>
+  <pre><code>const flow = SlowlyRewardClaimFlow.create();
+flow.start([{ id: &quot;reward_a&quot;, name: &quot;獎勵 A&quot; }], { flowId: &quot;battle_202&quot; });
+const decision = flow.accept();
+// 宿主先依 decision.decisionId 做可重試去重的永久收藏更新。
+const hostSucceeded = true;
+if (hostSucceeded) flow.commit(decision.decisionId);
+else flow.cancel(decision.decisionId);</code></pre>
+  <h2>四、相依及宿主責任</h2>
+  <p>核心獨立運作，沒有強制依賴任何其他軍火庫零件。這不代表要重做既有能力：宿主仍應使用適當的軍火庫零件處理逐字效果、導航、牌組合法性、卡牌升級與儲存等工作。</p>
+  <p>本核心無跨存檔交易保證。宿主若在「資產已更新、commit 前」當機，恢復後必須用 decisionId 於自己的存檔去重，才能避免重複領取。領獎方案、升級、收藏上限皆屬宿主。</p>
+  <h2>五、驗證與展示</h2>
+  <p><a href="reward_claim_flow_demo.html">操作 Demo</a>　<a href="test_reward_claim_flow.html">PASS／FAIL 測試頁</a></p>
+  <p>核心不附加排版或視覺特效；本文件及展示頁都只使用 HTML 必要元素。</p>
+</body>
+</html>

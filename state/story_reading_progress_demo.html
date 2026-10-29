@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Reading Progress｜故事閱讀進度｜Demo</title></head>
+<body>
+  <nav><a href="story_reading_progress_usage.html">使用說明</a> <a href="test_story_reading_progress.html">功能測試</a></nav>
+  <h1>Story Reading Progress｜故事閱讀進度｜Demo</h1>
+  <p>分開追蹤看過與讀完，保存單一篇章書籤，支援還原與驗證，不預設任何儲存平台。</p>
+  <div id="controls"></div>
+  <pre id="output"></pre>
+  <p id="error" role="status"></p>
+  <script src="./story_reading_progress.js"></script>
+  <script>
+    const output = document.querySelector('#output');
+    const error = document.querySelector('#error');
+    const controlContainer = document.querySelector('#controls');
+
+const progress = SlowlyStoryReadingProgress.create();
+function show() { output.textContent = JSON.stringify(progress.snapshot(), null, 2); }
+const controls = [
+  ["標記看過", () => progress.markSeen("chapter_a")],
+  ["保存書籤", () => progress.setBookmark("chapter_a", { eventId: "line_2", eventIndex: 1 })],
+  ["略過", () => progress.skip("chapter_a")],
+  ["完整讀完", () => progress.finish("chapter_a")],
+  ["清除全部", () => progress.clear()]
+];
+
+    for (const [label, operation] of controls) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        try {
+          operation();
+          error.textContent = '';
+        } catch (failure) {
+          error.textContent = failure.message;
+        }
+        show();
+      });
+      controlContainer.append(button, document.createTextNode(' '));
+    }
+    show();
+  </script>
+</body>
+</html>

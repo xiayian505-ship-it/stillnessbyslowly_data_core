@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Trigger Rules｜劇情觸發規則｜Demo</title></head>
+<body>
+  <nav><a href="story_trigger_rules_usage.html">使用說明</a> <a href="test_story_trigger_rules.html">功能測試</a></nav>
+  <h1>Story Trigger Rules｜劇情觸發規則｜Demo</h1>
+  <p>對宿主提供的 context 執行 callback 條件，分別判斷章節解鎖與事件觸發，穩定排序所有符合的候選。</p>
+  <div id="controls"></div>
+  <pre id="output"></pre>
+  <p id="error" role="status"></p>
+  <script src="./story_trigger_rules.js"></script>
+  <script>
+    const output = document.querySelector('#output');
+    const error = document.querySelector('#error');
+    const controlContainer = document.querySelector('#controls');
+
+const triggers = SlowlyStoryTriggerRules.create([
+  { id: "first", targetId: "chapter_01", event: "battleWon", priority: 1,
+    unlockWhen: context => context.completed >= 1,
+    triggerWhen: context => context.auto && !context.seen.includes("chapter_01") },
+  { id: "second", targetId: "chapter_02", event: "battleWon", priority: 2,
+    unlockWhen: context => context.completed >= 2,
+    triggerWhen: context => context.auto && !context.seen.includes("chapter_02") }
+]);
+let completed = 0;
+let auto = true;
+function show() {
+  const context = { completed, auto, seen: [] };
+  output.textContent = JSON.stringify({ context,
+    chapterOneUnlocked: triggers.isUnlocked("chapter_01", context),
+    eligible: triggers.evaluate("battleWon", context) }, null, 2);
+}
+const controls = [
+  ["通過一關", () => { completed += 1; }],
+  ["切換自動播放", () => { auto = !auto; }],
+  ["重置", () => { completed = 0; auto = true; }]
+];
+
+    for (const [label, operation] of controls) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        try {
+          operation();
+          error.textContent = '';
+        } catch (failure) {
+          error.textContent = failure.message;
+        }
+        show();
+      });
+      controlContainer.append(button, document.createTextNode(' '));
+    }
+    show();
+  </script>
+</body>
+</html>

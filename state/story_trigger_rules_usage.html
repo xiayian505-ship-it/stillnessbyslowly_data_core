@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Trigger Rules｜劇情觸發規則｜使用說明</title></head>
+<body>
+  <nav><a href="story_trigger_rules_demo.html">Demo</a> <a href="test_story_trigger_rules.html">功能測試</a></nav>
+  <h1>Story Trigger Rules｜劇情觸發規則</h1>
+  <p>對宿主提供的 context 執行 callback 條件，分別判斷章節解鎖與事件觸發，穩定排序所有符合的候選。</p>
+  <h2>一、載入方式</h2>
+  <p>本地開發測試：</p>
+  <pre>&lt;script src="./story_trigger_rules.js"&gt;&lt;/script&gt;</pre>
+  <p>正式部署在你的軍火庫後，其他宿主可以採絕對網址：</p>
+  <pre>https://lib.stillnessbyslowly.com/state/story_trigger_rules.js</pre>
+  <p>注意：本 ZIP 尚未部署，上列 HTTPS 網址為預計發布路徑，不代表目前已上線。</p>
+  <h2>二、公開 API</h2>
+  <p>全域物件：<code>SlowlyStoryTriggerRules</code>；版本 1.0.0。錯誤輸入通常丟出 TypeError／RangeError／Error，應由宿主捕捉。</p>
+  <table><thead><tr><th>函式</th><th>用途與輸入輸出</th></tr></thead><tbody>
+        <tr><td><code>create(rules)</code></td><td>rules 是陣列，各項 id、targetId 必填</td></tr>
+        <tr><td><code>isUnlocked(targetId, context)</code></td><td>存在符合的解鎖規則則為 true</td></tr>
+        <tr><td><code>evaluate(eventName, context)</code></td><td>依 priority 降冪、同值依登記順序，回傳所有符合規則</td></tr>
+        <tr><td><code>shouldTrigger(eventName, context)</code></td><td>有至少一個符合候選時回傳 true</td></tr>
+        <tr><td><code>getRules()</code></td><td>只讀的規則摘要，不含 callback 函式</td></tr>
+  </tbody></table>
+  <h2>三、最小使用範例</h2>
+  <pre><code>const triggers = SlowlyStoryTriggerRules.create([{ 
+  id: &quot;after_level_2&quot;, targetId: &quot;chapter_02&quot;, event: &quot;battleWon&quot;,
+  unlockWhen: context =&gt; context.completed &gt;= 2,
+  triggerWhen: context =&gt; context.auto === true &amp;&amp; !context.seen.includes(&quot;chapter_02&quot;),
+  priority: 10
+}]);
+const targets = triggers.evaluate(&quot;battleWon&quot;, {
+  completed: 2, auto: true, seen: []
+});
+// 由宿主決定是否播放 targets[0].targetId。</code></pre>
+  <h2>四、相依及宿主責任</h2>
+  <p>核心獨立運作，沒有強制依賴任何其他軍火庫零件。這不代表要重做既有能力：宿主仍應使用適當的軍火庫零件處理逐字效果、導航、牌組合法性、卡牌升級與儲存等工作。</p>
+  <p>選擇 callback 而非 JSON 條件語法；規則本身不能直接 JSON 序列化。若缺少必要進度資料，條件應明確回傳 false（只有 ===true 才算命中）；核心不改進度、不跳轉。</p>
+  <h2>五、驗證與展示</h2>
+  <p><a href="story_trigger_rules_demo.html">操作 Demo</a>　<a href="test_story_trigger_rules.html">PASS／FAIL 測試頁</a></p>
+  <p>核心不附加排版或視覺特效；本文件及展示頁都只使用 HTML 必要元素。</p>
+</body>
+</html>

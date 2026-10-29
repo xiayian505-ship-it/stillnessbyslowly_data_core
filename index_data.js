@@ -4013,6 +4013,29 @@ window.SlowlyLibraryIndex = [
         "desc": "牌庫循環、卡牌身分、區域移轉、資源、選擇目標、效果、回合與組牌等通用卡牌機制；具體玩法由宿主決定。",
         "items": [
           {
+            "title": "Card Deck Presets",
+            "desc": "管理多套以實體卡 ID 為準的出戰配置，支援啟用切換、編輯、失效引用清理、快照還原；不負責出牌或卡牌效果。",
+            "links": [
+              {
+                "label": "card_deck_presets.js",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_deck_presets.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_deck_presets_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/card_deck_presets_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/game/card/strategy/test_card_deck_presets.html"
+              }
+            ]
+          },
+
+          {
             "title": "Card Effect Registry",
             "desc": "登記宿主自訂的卡牌效果名稱、執行條件與同步處理函式，依名稱檢查並執行；不內建特定卡牌效果、數值或戰鬥規則。",
             "links": [
@@ -5408,6 +5431,117 @@ window.SlowlyLibraryIndex = [
         "id": "general",
         "title": "General / 通用",
         "items": [
+          {
+            "title": "Story Event Player",
+            "desc": "單篇故事事件播放狀態核心，支援場景／旁白／對話／文字、同篇選項跳轉與外部挑戰等待；不含 UI、劇情儲存、逐字或解鎖。",
+            "links": [
+              {
+                "label": "story_event_player.js",
+                "href": "https://lib.stillnessbyslowly.com/state/story_event_player.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/story_event_player_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/story_event_player_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_story_event_player.html"
+              }
+            ]
+          },
+          {
+            "title": "Story Reading Progress",
+            "desc": "記錄故事篇章已看過、已完成與單一書籤，支援驗證匯出還原及按事件 ID 恢復位置；不寫入固定存檔或綁 UI。",
+            "links": [
+              {
+                "label": "story_reading_progress.js",
+                "href": "https://lib.stillnessbyslowly.com/state/story_reading_progress.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/story_reading_progress_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/story_reading_progress_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_story_reading_progress.html"
+              }
+            ]
+          },
+          {
+            "title": "Story Trigger Rules",
+            "desc": "依宿主提供的回呼條件判斷章節解鎖與劇情自動觸發，穩定排序所有符合條件的目標；不執行導航或播放。",
+            "links": [
+              {
+                "label": "story_trigger_rules.js",
+                "href": "https://lib.stillnessbyslowly.com/state/story_trigger_rules.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/story_trigger_rules_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/story_trigger_rules_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_story_trigger_rules.html"
+              }
+            ]
+          },
+          {
+            "title": "Reward Claim Flow",
+            "desc": "通用逐項獎勵領取狀態機，以宿主確認的 commit 推進接受、拒絕或替換，支援中途存檔與重複提交防護；不自動發放資產。",
+            "links": [
+              {
+                "label": "reward_claim_flow.js",
+                "href": "https://lib.stillnessbyslowly.com/state/reward_claim_flow.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/reward_claim_flow_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/reward_claim_flow_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_reward_claim_flow.html"
+              }
+            ]
+          },
+          {
+            "title": "Rejected Asset Routing",
+            "desc": "依實體 ID 計算保留、放棄與替換的歸屬計畫並驗證，回傳不污染來源的資料；不硬寫 Boss 或跨庫交易。",
+            "links": [
+              {
+                "label": "rejected_asset_routing.js",
+                "href": "https://lib.stillnessbyslowly.com/state/rejected_asset_routing.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/rejected_asset_routing_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/rejected_asset_routing_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_rejected_asset_routing.html"
+              }
+            ]
+          },
+
           {
             "title": "Combo Streak State",
             "desc": "通用連續成功與失誤中斷狀態，管理目前與最高連擊，支援可選的超時清零和多實例；不處理得分、音符判定、排名或計時器。",

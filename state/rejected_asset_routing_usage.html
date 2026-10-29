@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rejected Asset Routing｜放棄資產歸屬分配｜使用說明</title></head>
+<body>
+  <nav><a href="rejected_asset_routing_demo.html">Demo</a> <a href="test_rejected_asset_routing.html">功能測試</a></nav>
+  <h1>Rejected Asset Routing｜放棄資產歸屬分配</h1>
+  <p>產生保留、放棄、替換的歸屬計畫；不執行資產資料修改，不預設接收方是敵人。</p>
+  <h2>一、載入方式</h2>
+  <p>本地開發測試：</p>
+  <pre>&lt;script src="./rejected_asset_routing.js"&gt;&lt;/script&gt;</pre>
+  <p>正式部署在你的軍火庫後，其他宿主可以採絕對網址：</p>
+  <pre>https://lib.stillnessbyslowly.com/state/rejected_asset_routing.js</pre>
+  <p>注意：本 ZIP 尚未部署，上列 HTTPS 網址為預計發布路徑，不代表目前已上線。</p>
+  <h2>二、公開 API</h2>
+  <p>全域物件：<code>RejectedAssetRouting</code>；版本 1.0.0。錯誤輸入通常丟出 TypeError／RangeError／Error，應由宿主捕捉。</p>
+  <table><thead><tr><th>函式</th><th>用途與輸入輸出</th></tr></thead><tbody>
+        <tr><td><code>splitBySelection(items, selectedIds, options?)</code></td><td>options.destination 放棄時必填；依實體 ID 分成 kept／transferred</td></tr>
+        <tr><td><code>planRejection(item, destination, options?)</code></td><td>新獎勵遭放棄的待轉移計畫（不假設先歸玩家所有）</td></tr>
+        <tr><td><code>planReplacement(newItem, oldItemId, destination, {ownedItems})</code></td><td>驗證指定舊物品確實持有後，產生替換計畫</td></tr>
+        <tr><td><code>validatePlan(plan, context?)</code></td><td>檢查唯一性、目的地、removedIds 來源存在；回傳 isValid / errors</td></tr>
+  </tbody></table>
+  <h2>三、最小使用範例</h2>
+  <pre><code>const pool = [{ id: &quot;one&quot;, cardId: &quot;attack&quot; }, { id: &quot;two&quot;, cardId: &quot;attack&quot; }];
+const result = RejectedAssetRouting.splitBySelection(pool, [&quot;one&quot;], {
+  destination: &quot;other_owner&quot;
+});
+const checked = RejectedAssetRouting.validatePlan(result, {
+  availableIds: pool.map(card =&gt; card.id)
+});
+// 檢查成功後，宿主自行原子化套用 result；核心不改 pool。</code></pre>
+  <h2>四、相依及宿主責任</h2>
+  <p>核心獨立運作，沒有強制依賴任何其他軍火庫零件。這不代表要重做既有能力：宿主仍應使用適當的軍火庫零件處理逐字效果、導航、牌組合法性、卡牌升級與儲存等工作。</p>
+  <p>僅提出分配計畫，不做交易或跨儲存回滾；資料 ID 需唯一，宿主應檢查擁有者資料並以原子性更新。planRejection 對新獎勵不會虛構玩家移出紀錄。</p>
+  <h2>五、驗證與展示</h2>
+  <p><a href="rejected_asset_routing_demo.html">操作 Demo</a>　<a href="test_rejected_asset_routing.html">PASS／FAIL 測試頁</a></p>
+  <p>核心不附加排版或視覺特效；本文件及展示頁都只使用 HTML 必要元素。</p>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rejected Asset Routing｜放棄資產歸屬分配｜Demo</title></head>
+<body>
+  <nav><a href="rejected_asset_routing_usage.html">使用說明</a> <a href="test_rejected_asset_routing.html">功能測試</a></nav>
+  <h1>Rejected Asset Routing｜放棄資產歸屬分配｜Demo</h1>
+  <p>產生保留、放棄、替換的歸屬計畫；不執行資產資料修改，不預設接收方是敵人。</p>
+  <div id="controls"></div>
+  <pre id="output"></pre>
+  <p id="error" role="status"></p>
+  <script src="./rejected_asset_routing.js"></script>
+  <script>
+    const output = document.querySelector('#output');
+    const error = document.querySelector('#error');
+    const controlContainer = document.querySelector('#controls');
+
+const pool = [{ id: "copy_1", kind: "attack" }, { id: "copy_2", kind: "attack" }, { id: "copy_3", kind: "shield" }];
+let mode = "split";
+function show() {
+  const result = mode === "split"
+    ? RejectedAssetRouting.splitBySelection(pool, ["copy_1"], { destination: "another_owner" })
+    : RejectedAssetRouting.planReplacement({ id: "new_copy", kind: "heal" }, "copy_2", "another_owner", { ownedItems: pool });
+  output.textContent = JSON.stringify({ plan: result,
+    validation: RejectedAssetRouting.validatePlan(result, { availableIds: pool.map(item => item.id) }) }, null, 2);
+}
+const controls = [
+  ["展示選擇後分配", () => { mode = "split"; }],
+  ["展示舊物品替換", () => { mode = "replace"; }]
+];
+
+    for (const [label, operation] of controls) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        try {
+          operation();
+          error.textContent = '';
+        } catch (failure) {
+          error.textContent = failure.message;
+        }
+        show();
+      });
+      controlContainer.append(button, document.createTextNode(' '));
+    }
+    show();
+  </script>
+</body>
+</html>

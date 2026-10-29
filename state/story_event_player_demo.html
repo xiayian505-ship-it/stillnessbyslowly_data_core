@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Event Player｜故事事件播放器｜Demo</title></head>
+<body>
+  <nav><a href="story_event_player_usage.html">使用說明</a> <a href="test_story_event_player.html">功能測試</a></nav>
+  <h1>Story Event Player｜故事事件播放器｜Demo</h1>
+  <p>讀取單篇 JSON 事件，推進 scene、narration、dialogue、text，支援同篇 choice.goto 跳轉；challenge 暫停等待宿主。</p>
+  <div id="controls"></div>
+  <pre id="output"></pre>
+  <p id="error" role="status"></p>
+  <script src="./story_event_player.js"></script>
+  <script>
+    const output = document.querySelector('#output');
+    const error = document.querySelector('#error');
+    const controlContainer = document.querySelector('#controls');
+
+const events = [
+  { id: "intro", type: "scene", scene: "forest", title: "一個場景" },
+  { id: "line", type: "dialogue", speaker: "旅人", text: "要從哪裡開始？" },
+  { id: "question", type: "choice", options: [
+    { text: "回到開頭", goto: "intro" }, { text: "繼續" }
+  ] },
+  { id: "battle", type: "challenge", text: "請宿主處理外部事件" },
+  { id: "end", type: "narration", text: "本篇結束。" }
+];
+const player = SlowlyStoryEventPlayer.create();
+player.load(events);
+function show() { output.textContent = JSON.stringify(player.snapshot(), null, 2); }
+player.subscribe(show);
+const controls = [
+  ["開始", () => player.start()],
+  ["下一事件", () => player.advance()],
+  ["選項：回到開頭", () => player.choose(0)],
+  ["選項：繼續", () => player.choose(1)],
+  ["宿主已完成", () => player.completeHost()],
+  ["重設", () => player.reset()]
+];
+
+    for (const [label, operation] of controls) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        try {
+          operation();
+          error.textContent = '';
+        } catch (failure) {
+          error.textContent = failure.message;
+        }
+        show();
+      });
+      controlContainer.append(button, document.createTextNode(' '));
+    }
+    show();
+  </script>
+</body>
+</html>

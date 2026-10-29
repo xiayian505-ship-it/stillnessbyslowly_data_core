@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Event Player｜故事事件播放器｜使用說明</title></head>
+<body>
+  <nav><a href="story_event_player_demo.html">Demo</a> <a href="test_story_event_player.html">功能測試</a></nav>
+  <h1>Story Event Player｜故事事件播放器</h1>
+  <p>讀取單篇 JSON 事件，推進 scene、narration、dialogue、text，支援同篇 choice.goto 跳轉；challenge 暫停等待宿主。</p>
+  <h2>一、載入方式</h2>
+  <p>本地開發測試：</p>
+  <pre>&lt;script src="./story_event_player.js"&gt;&lt;/script&gt;</pre>
+  <p>正式部署在你的軍火庫後，其他宿主可以採絕對網址：</p>
+  <pre>https://lib.stillnessbyslowly.com/state/story_event_player.js</pre>
+  <p>注意：本 ZIP 尚未部署，上列 HTTPS 網址為預計發布路徑，不代表目前已上線。</p>
+  <h2>二、公開 API</h2>
+  <p>全域物件：<code>SlowlyStoryEventPlayer</code>；版本 1.0.0。錯誤輸入通常丟出 TypeError／RangeError／Error，應由宿主捕捉。</p>
+  <table><thead><tr><th>函式</th><th>用途與輸入輸出</th></tr></thead><tbody>
+        <tr><td><code>create()</code></td><td>建立獨立實例</td></tr>
+        <tr><td><code>load(events)</code></td><td>驗證並載入新事件陣列；空陣列可載入</td></tr>
+        <tr><td><code>start()</code></td><td>進入第一事件；空資料立即完成</td></tr>
+        <tr><td><code>current()</code></td><td>目前事件的副本或 null</td></tr>
+        <tr><td><code>advance()</code></td><td>一般事件推進；choice / challenge 保持等待</td></tr>
+        <tr><td><code>choose(optionIndex)</code></td><td>choice 選項，goto 僅限同篇已存在的 ID</td></tr>
+        <tr><td><code>completeHost()</code></td><td>宿主完成 challenge 後再往下</td></tr>
+        <tr><td><code>seekByIndex(index)</code></td><td>依索引定位；越界丟 RangeError</td></tr>
+        <tr><td><code>seekById(id)</code></td><td>依字串 ID 定位；不存在丟 RangeError</td></tr>
+        <tr><td><code>snapshot() / reset()</code></td><td>取得快照／重設為 idle</td></tr>
+        <tr><td><code>subscribe(callback)</code></td><td>監聽狀態更新，回傳取消訂閱函式</td></tr>
+  </tbody></table>
+  <h2>三、最小使用範例</h2>
+  <pre><code>const player = SlowlyStoryEventPlayer.create();
+player.load([
+  { id: &quot;intro&quot;, type: &quot;narration&quot;, text: &quot;序章開始。&quot; },
+  { id: &quot;question&quot;, type: &quot;choice&quot;, options: [
+    { text: &quot;重新開始&quot;, goto: &quot;intro&quot; },
+    { text: &quot;繼續&quot; }
+  ] },
+  { type: &quot;challenge&quot; }
+]);
+player.start();
+player.advance();
+player.choose(1);
+// challenge 由宿主處理成功後，再呼叫 player.completeHost();</code></pre>
+  <h2>四、相依及宿主責任</h2>
+  <p>核心獨立運作，沒有強制依賴任何其他軍火庫零件。這不代表要重做既有能力：宿主仍應使用適當的軍火庫零件處理逐字效果、導航、牌組合法性、卡牌升級與儲存等工作。</p>
+  <p>僅單篇事件、不跨篇導航、無條件式劇情、不記錄選項歷史；未知事件類型拒絕。文字繪製、逐字動畫和外部戰鬥由宿主負責。</p>
+  <h2>五、驗證與展示</h2>
+  <p><a href="story_event_player_demo.html">操作 Demo</a>　<a href="test_story_event_player.html">PASS／FAIL 測試頁</a></p>
+  <p>核心不附加排版或視覺特效；本文件及展示頁都只使用 HTML 必要元素。</p>
+</body>
+</html>

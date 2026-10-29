@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Card Deck Presets｜多套牌組管理｜使用說明</title></head>
+<body>
+  <nav><a href="card_deck_presets_demo.html">Demo</a> <a href="test_card_deck_presets.html">功能測試</a></nav>
+  <h1>Card Deck Presets｜多套牌組管理</h1>
+  <p>維護多套實體卡 ID 組牌配置，切換啟用牌組、批次移除失效實體引用。</p>
+  <h2>一、載入方式</h2>
+  <p>本地開發測試：</p>
+  <pre>&lt;script src="./card_deck_presets.js"&gt;&lt;/script&gt;</pre>
+  <p>正式部署在你的軍火庫後，其他宿主可以採絕對網址：</p>
+  <pre>https://lib.stillnessbyslowly.com/game/card/strategy/card_deck_presets.js</pre>
+  <p>注意：本 ZIP 尚未部署，上列 HTTPS 網址為預計發布路徑，不代表目前已上線。</p>
+  <h2>二、公開 API</h2>
+  <p>全域物件：<code>CardDeckPresets</code>；版本 1.0.0。錯誤輸入通常丟出 TypeError／RangeError／Error，應由宿主捕捉。</p>
+  <table><thead><tr><th>函式</th><th>用途與輸入輸出</th></tr></thead><tbody>
+        <tr><td><code>create({ presetCount, maximumCards, ownedIds? })</code></td><td>預設 3 套、每套 30 張；ownedIds 不提供時不檢查所有權</td></tr>
+        <tr><td><code>getPreset(id) / getActive()</code></td><td>取得指定／啟用的配置副本</td></tr>
+        <tr><td><code>setActive(id)</code></td><td>切換目前啟用牌組</td></tr>
+        <tr><td><code>addCard(id, instanceId) / removeCard(id, instanceId)</code></td><td>新增／移除指定實體 ID</td></tr>
+        <tr><td><code>replacePreset(id, instanceIds)</code></td><td>直接覆蓋整套配置，驗證重複與上限</td></tr>
+        <tr><td><code>setName(id, name)</code></td><td>設定牌組名稱</td></tr>
+        <tr><td><code>removeUnavailable(ownedIds)</code></td><td>同步所有權清單並清除全部牌組中的失效引用</td></tr>
+        <tr><td><code>snapshot() / restore(data)</code></td><td>匯出／還原目前配置；格式錯誤不覆蓋原狀態</td></tr>
+  </tbody></table>
+  <h2>三、最小使用範例</h2>
+  <pre><code>const decks = CardDeckPresets.create({
+  presetCount: 3, maximumCards: 30, ownedIds: [&quot;copy_1&quot;, &quot;copy_2&quot;]
+});
+decks.addCard(&quot;preset_1&quot;, &quot;copy_1&quot;);
+decks.addCard(&quot;preset_2&quot;, &quot;copy_1&quot;); // 共享引用，不轉移所有權
+const selected = decks.getActive().instanceIds;
+// 出戰前另外交給 CardLoadoutValidation.validateSelection()。</code></pre>
+  <h2>四、相依及宿主責任</h2>
+  <p>核心獨立運作，沒有強制依賴任何其他軍火庫零件。這不代表要重做既有能力：宿主仍應使用適當的軍火庫零件處理逐字效果、導航、牌組合法性、卡牌升級與儲存等工作。</p>
+  <p>牌組使用固定穩定識別 preset_1、preset_2……；實體 ID 使用非空字串。若不傳 ownedIds，核心不能判斷所有權，後續可呼叫 removeUnavailable() 同步。禁止戰鬥期間切換由宿主決定。</p>
+  <h2>五、驗證與展示</h2>
+  <p><a href="card_deck_presets_demo.html">操作 Demo</a>　<a href="test_card_deck_presets.html">PASS／FAIL 測試頁</a></p>
+  <p>核心不附加排版或視覺特效；本文件及展示頁都只使用 HTML 必要元素。</p>
+</body>
+</html>

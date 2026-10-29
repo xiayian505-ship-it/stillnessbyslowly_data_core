@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>card_deck_presets｜功能測試</title></head>
+<body>
+  <nav><a href="card_deck_presets_usage.html">使用說明</a> <a href="card_deck_presets_demo.html">Demo</a></nav>
+  <h1>card_deck_presets｜功能測試</h1>
+  <p>開啟本頁即執行真實測試，PASS／FAIL 與錯誤內容均會列出；無需網路。</p>
+  <pre id="results">執行中……</pre>
+  <script src="./card_deck_presets.js"></script>
+  <script src="./test_card_deck_presets_cases.js"></script>
+  <script>
+    const report = MistforestUnitTests.run();
+    document.querySelector('#results').textContent = report.results.map(result =>
+      result.status + ' ' + result.name + (result.error ? '：' + result.error : '')
+    ).join('\n') + '\n總計：' + report.passes + ' PASS / ' + report.failures + ' FAIL';
+    document.body.dataset.test_status = report.failures === 0 ? 'PASS' : 'FAIL';
+  </script>
+</body>
+</html>

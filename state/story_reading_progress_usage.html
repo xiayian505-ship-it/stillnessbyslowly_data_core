@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Story Reading Progress｜故事閱讀進度｜使用說明</title></head>
+<body>
+  <nav><a href="story_reading_progress_demo.html">Demo</a> <a href="test_story_reading_progress.html">功能測試</a></nav>
+  <h1>Story Reading Progress｜故事閱讀進度</h1>
+  <p>分開追蹤看過與讀完，保存單一篇章書籤，支援還原與驗證，不預設任何儲存平台。</p>
+  <h2>一、載入方式</h2>
+  <p>本地開發測試：</p>
+  <pre>&lt;script src="./story_reading_progress.js"&gt;&lt;/script&gt;</pre>
+  <p>正式部署在你的軍火庫後，其他宿主可以採絕對網址：</p>
+  <pre>https://lib.stillnessbyslowly.com/state/story_reading_progress.js</pre>
+  <p>注意：本 ZIP 尚未部署，上列 HTTPS 網址為預計發布路徑，不代表目前已上線。</p>
+  <h2>二、公開 API</h2>
+  <p>全域物件：<code>SlowlyStoryReadingProgress</code>；版本 1.0.0。錯誤輸入通常丟出 TypeError／RangeError／Error，應由宿主捕捉。</p>
+  <table><thead><tr><th>函式</th><th>用途與輸入輸出</th></tr></thead><tbody>
+        <tr><td><code>create(initialData?)</code></td><td>建立管理器，也可用快照初始化</td></tr>
+        <tr><td><code>markSeen(id) / markCompleted(id)</code></td><td>標記已看過／已完成（完成同時看過）</td></tr>
+        <tr><td><code>skip(id) / finish(id)</code></td><td>略過／完成，並清除該篇書籤</td></tr>
+        <tr><td><code>getStatus(id)</code></td><td>回傳 { seen, completed }</td></tr>
+        <tr><td><code>setBookmark(id, position)</code></td><td>position 為 { eventId?, eventIndex? }；至少一項有效</td></tr>
+        <tr><td><code>getBookmark() / clearBookmark(id?)</code></td><td>取得書籤副本／清除指定或全部書籤</td></tr>
+        <tr><td><code>resolveBookmark(events)</code></td><td>優先用 eventId 查找；失效不悄悄跳其他位置</td></tr>
+        <tr><td><code>snapshot() / restore(data)</code></td><td>取出或匯入已看／已完成／書籤資料</td></tr>
+        <tr><td><code>reset(id) / clear()</code></td><td>清除指定篇章或所有閱讀紀錄</td></tr>
+  </tbody></table>
+  <h2>三、最小使用範例</h2>
+  <pre><code>const progress = SlowlyStoryReadingProgress.create();
+progress.markSeen(&quot;prologue&quot;);
+progress.setBookmark(&quot;prologue&quot;, { eventId: &quot;line_3&quot;, eventIndex: 2 });
+const saved = progress.snapshot();
+// 儲存時由宿主自行 JSON.stringify(saved) 並選擇儲存方式。
+progress.finish(&quot;prologue&quot;);</code></pre>
+  <h2>四、相依及宿主責任</h2>
+  <p>核心獨立運作，沒有強制依賴任何其他軍火庫零件。這不代表要重做既有能力：宿主仍應使用適當的軍火庫零件處理逐字效果、導航、牌組合法性、卡牌升級與儲存等工作。</p>
+  <p>只支援單一最近書籤。當 eventId 已不存在時，回傳 found:false/missing-id，刻意不回退到可能已位移的 eventIndex；沒有自動 localStorage。</p>
+  <h2>五、驗證與展示</h2>
+  <p><a href="story_reading_progress_demo.html">操作 Demo</a>　<a href="test_story_reading_progress.html">PASS／FAIL 測試頁</a></p>
+  <p>核心不附加排版或視覺特效；本文件及展示頁都只使用 HTML 必要元素。</p>
+</body>
+</html>

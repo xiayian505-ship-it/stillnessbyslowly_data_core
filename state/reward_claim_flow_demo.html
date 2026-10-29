@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reward Claim Flow｜獎勵逐項領取｜Demo</title></head>
+<body>
+  <nav><a href="reward_claim_flow_usage.html">使用說明</a> <a href="test_reward_claim_flow.html">功能測試</a></nav>
+  <h1>Reward Claim Flow｜獎勵逐項領取｜Demo</h1>
+  <p>接收宿主已產生的獎勵，逐項等待決策；提交後須由宿主 commit 才推進，支援 snapshot 與 pending 中斷恢復。</p>
+  <div id="controls"></div>
+  <pre id="output"></pre>
+  <p id="error" role="status"></p>
+  <script src="./reward_claim_flow.js"></script>
+  <script>
+    const output = document.querySelector('#output');
+    const error = document.querySelector('#error');
+    const controlContainer = document.querySelector('#controls');
+
+const flow = SlowlyRewardClaimFlow.create();
+flow.start([{ id: "apple", name: "蘋果" }, { id: "stone", name: "石頭" }], { flowId: "demo_batch" });
+function show() { output.textContent = JSON.stringify(flow.snapshot(), null, 2); }
+function chooseAndCommit(type) {
+  // Demo 用宿主模擬「外部資產操作成功」：實際使用時應先等待宿主成功回覆。
+  const decision = type === "accept" ? flow.accept() : flow.reject("示範不領取");
+  return flow.commit(decision.decisionId);
+}
+const controls = [
+  ["接受當前獎勵", () => chooseAndCommit("accept")],
+  ["放棄當前獎勵", () => chooseAndCommit("reject")],
+  ["重新開始示範", () => flow.start([{ id: "apple", name: "蘋果" }, { id: "stone", name: "石頭" }], { flowId: "demo_batch_2" })]
+];
+
+    for (const [label, operation] of controls) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        try {
+          operation();
+          error.textContent = '';
+        } catch (failure) {
+          error.textContent = failure.message;
+        }
+        show();
+      });
+      controlContainer.append(button, document.createTextNode(' '));
+    }
+    show();
+  </script>
+</body>
+</html>

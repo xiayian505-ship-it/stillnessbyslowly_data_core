@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Card Deck Presets｜多套牌組管理｜Demo</title></head>
+<body>
+  <nav><a href="card_deck_presets_usage.html">使用說明</a> <a href="test_card_deck_presets.html">功能測試</a></nav>
+  <h1>Card Deck Presets｜多套牌組管理｜Demo</h1>
+  <p>維護多套實體卡 ID 組牌配置，切換啟用牌組、批次移除失效實體引用。</p>
+  <div id="controls"></div>
+  <pre id="output"></pre>
+  <p id="error" role="status"></p>
+  <script src="./card_deck_presets.js"></script>
+  <script>
+    const output = document.querySelector('#output');
+    const error = document.querySelector('#error');
+    const controlContainer = document.querySelector('#controls');
+
+const decks = CardDeckPresets.create({ presetCount: 2, maximumCards: 2,
+  ownedIds: ["card_A", "card_B", "card_C"] });
+function show() { output.textContent = JSON.stringify(decks.snapshot(), null, 2); }
+const controls = [
+  ["1 號加入 A", () => decks.addCard("preset_1", "card_A")],
+  ["2 號加入 A", () => decks.addCard("preset_2", "card_A")],
+  ["2 號加入 B", () => decks.addCard("preset_2", "card_B")],
+  ["啟用 2 號", () => decks.setActive("preset_2")],
+  ["失去 A", () => decks.removeUnavailable(["card_B", "card_C"])],
+  ["啟用 1 號", () => decks.setActive("preset_1")]
+];
+
+    for (const [label, operation] of controls) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        try {
+          operation();
+          error.textContent = '';
+        } catch (failure) {
+          error.textContent = failure.message;
+        }
+        show();
+      });
+      controlContainer.append(button, document.createTextNode(' '));
+    }
+    show();
+  </script>
+</body>
+</html>
