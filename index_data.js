@@ -5585,6 +5585,28 @@ window.SlowlyLibraryIndex = [
             ]
           },
           {
+            "title": "Linear Story Reader",
+            "desc": "串接故事索引載入、事件播放與閱讀進度，支援逐格前進／倒退、跨小節、略過空節、書籤失效回復、完讀及重讀；不處理 UI、持久化或劇情分支。",
+            "links": [
+              {
+                "label": "story_linear_reader.js",
+                "href": "https://lib.stillnessbyslowly.com/state/story_linear_reader.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/story_linear_reader_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/story_linear_reader_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_story_linear_reader.html"
+              }
+            ]
+          },
+          {
             "title": "Story Event Player",
             "desc": "單篇故事事件播放狀態核心，支援場景／旁白／對話／文字、同篇選項跳轉與外部挑戰等待；不含 UI、劇情儲存、逐字或解鎖。",
             "links": [

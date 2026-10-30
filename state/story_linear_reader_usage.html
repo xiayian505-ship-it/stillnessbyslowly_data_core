@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linear Story Reader｜使用說明</title>
+</head>
+<body>
+  <h1>Linear Story Reader｜線性故事閱讀控制器</h1>
+  <p>版本 1.1.0。組合既有故事索引載入、事件播放與閱讀進度，提供逐格閱讀、跨小節、書籤恢復與完讀。每一個 <code>events</code> 項目是一格，不按字數拆分。</p>
+  <p>不負責文字轉譯、對話辨識、選項、遊戲戰鬥、畫面、CSS、動畫、網路／本機持久化。旁白與人名可由宿主依 <code>view.event.type</code> 和 <code>view.event.speaker</code> 呈現。</p>
+
+  <h2>引入順序</h2>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/state/story_manifest_loader.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/state/story_event_player.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/state/story_reading_progress.js"&gt;&lt;/script&gt;
+&lt;script src="https://lib.stillnessbyslowly.com/state/story_linear_reader.js"&gt;&lt;/script&gt;</code></pre>
+  <p>公開全域為 <code>SlowlyLinearStoryReader</code>。單機離線使用時，請下載以上四支 JS 作為本機檔案並使用本機路徑；離線閱讀器不應引用 CDN。</p>
+
+  <h2>公開 API</h2>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <thead><tr><th>方法</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td><code>create({ loader, player, progress })</code></td><td>注入三個既有核心的實例。</td></tr>
+      <tr><td><code>await initialize(manifestSource)</code></td><td>載入索引；有效書籤優先，否則從第一個未完成小節開始。</td></tr>
+      <tr><td><code>await next()</code></td><td>下一格，必要時跨小節；末格後再呼叫一次才算完成。</td></tr>
+      <tr><td><code>await previous()</code></td><td>上一格／上一小節末格；完成後可返回最後一個有內容的格。</td></tr>
+      <tr><td><code>await openSection(sectionId)</code></td><td>開啟指定小節；空小節往後尋找有內容的小節。</td></tr>
+      <tr><td><code>await readFromStart()</code></td><td>從第一個有內容的格重讀，不清除完讀紀錄。</td></tr>
+      <tr><td><code>getView()</code></td><td>取得與內部隔離的閱讀狀態、事件及進度快照。</td></tr>
+      <tr><td><code>subscribe(listener)</code></td><td>訂閱狀態並取得取消訂閱函式。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>最小接線範例</h2>
+  <pre><code>const sections = {
+  "chapter/a.json": {
+    id: "first",
+    events: [
+      { id: "line1", type: "narration", speaker: "旁白", text: "門開了。" },
+      { id: "line2", type: "dialogue", speaker: "甲", text: "你回來了。" }
+    ]
+  }
+};
+const baseUrl = "https://offline-reader.invalid/story-data/";
+const loader = SlowlyStoryManifestLoader.create({
+  baseUrl,
+  fetcher: async function (url) {
+    const base = new URL(baseUrl);
+    const request = new URL(url);
+    const path = request.origin === base.origin &amp;&amp; request.pathname.startsWith(base.pathname)
+      ? decodeURIComponent(request.pathname.slice(base.pathname.length)) : "";
+    const data = sections[path];
+    return { ok: Boolean(data), status: data ? 200 : 404,
+      json: async function () { return data; } };
+  }
+});
+const player = SlowlyStoryEventPlayer.create();
+const progress = SlowlyStoryReadingProgress.create();
+const reader = SlowlyLinearStoryReader.create({ loader, player, progress });
+
+reader.subscribe(function (view) {
+  // 宿主自行顯示 view.event.speaker / view.text，及保存 view.progress。
+  console.log(view.state, view.event &amp;&amp; view.event.speaker, view.text);
+});
+await reader.initialize({
+  main: [{ id: "chapter", title: "第一章", sections: [
+    { id: "first", title: "第一節", file: "chapter/a.json" }
+  ] }], extras: []
+});
+await reader.next();</code></pre>
+
+  <h2>正式行為與限制</h2>
+  <ul>
+    <li><strong>空小節</strong>：自動標記已完成並略過；全書均為空時進入 <code>complete</code>，不顯示無內容的閱讀格。</li>
+    <li><strong>結尾</strong>：看到最後一格仍是 <code>reading</code>；再呼叫 <code>next()</code> 才進入 <code>complete</code>。重複 <code>next()</code> 不會循環。</li>
+    <li><strong>書籤</strong>：有事件 ID 時優先依 ID 恢復；ID 已失效時返回同小節第一格，<code>view.recovery.reason</code> 為 <code>bookmark-position-missing</code>，不使用舊 index 冒充。</li>
+    <li><strong>失效小節</strong>：若書籤指向的小節不存在，回到第一個未完成小節（全部完讀則維持完成），並提供 <code>bookmark-section-missing</code>。</li>
+    <li><strong>空小節書籤</strong>：略過後回報 <code>bookmark-empty-section</code>；恢復原因會在下一次主動導航後清除。</li>
+    <li><strong>操作鎖</strong>：同一實例非同步讀取期間的重複操作會被忽略，不排隊；已註冊的通知回呼若拋錯，將與核心狀態隔離。</li>
+    <li><strong>錯誤</strong>：無效索引、未知小節、讀取失敗與互動事件會拒絕並進入 <code>error</code>；保留先前書籤，宿主可呼叫 <code>openSection()</code> 或 <code>initialize()</code> 恢復。</li>
+    <li><strong>輸出</strong>：<code>getView()</code> 包含 <code>state</code>（idle／loading／reading／complete／error）、<code>busy</code>、<code>error</code>、<code>recovery</code>、<code>event</code>、<code>text</code>、章節和格數、<code>progress</code>。資料均為安全副本。</li>
+    <li><strong>持久化</strong>：核心不接觸 <code>localStorage</code>；宿主自行保存 <code>view.progress</code>，下次建構 <code>SlowlyStoryReadingProgress.create(savedData)</code> 即可恢復。</li>
+  </ul>
+  <p>互動型 <code>choice</code>、<code>challenge</code> 事件不支援，並會明確報錯；不得悄悄略過。</p>
+  <p><a href="story_linear_reader_demo.html">展示頁</a> · <a href="test_story_linear_reader.html">測試頁</a></p>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linear Story Reader｜Demo</title>
+  <style>button{margin:.25rem}pre{white-space:pre-wrap;min-height:5rem}</style>
+</head>
+<body>
+  <h1>Linear Story Reader｜Demo</h1>
+  <p>只使用自製測試文字；不依賴《折彎》或《霧林之契》的劇情。</p>
+  <p id="position"></p>
+  <p id="speaker"></p>
+  <pre id="content"></pre>
+  <button id="previous" type="button">上一格</button>
+  <button id="next" type="button">下一格</button>
+  <button id="restart" type="button">從頭重讀</button>
+  <button id="restore" type="button">模擬書籤恢復</button>
+  <p id="message" role="status"></p>
+
+  <script src="https://lib.stillnessbyslowly.com/state/story_manifest_loader.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/state/story_event_player.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/state/story_reading_progress.js"></script>
+  <script src="story_linear_reader.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      const files = {
+        "part1.json": { id: "part1", events: [
+          { id: "a", type: "narration", speaker: "旁白", text: "傍晚下雨了。" },
+          { id: "b", type: "dialogue", speaker: "甲", text: "你帶傘了嗎？" }
+        ] },
+        "empty.json": { id: "empty", events: [] },
+        "part2.json": { id: "part2", events: [
+          { id: "c", type: "dialogue", speaker: "乙", text: "我帶了兩把。" }
+        ] }
+      };
+      const manifest = { schemaVersion: 1, main: [{ id: "demo", title: "範例故事", sections: [
+        { id: "part1", title: "第一節", file: "part1.json" },
+        { id: "empty", title: "空小節", file: "empty.json" },
+        { id: "part2", title: "第二節", file: "part2.json" }
+      ] }], extras: [] };
+      const source = SlowlyStoryManifestLoader.create({
+        baseUrl: "https://demo.invalid/stories/",
+        fetcher: async function (url) {
+          const name = new URL(url).pathname.split("/").pop();
+          return { ok: Boolean(files[name]), status: files[name] ? 200 : 404,
+            json: async function () { return files[name]; } };
+        }
+      });
+      const progress = SlowlyStoryReadingProgress.create();
+      let reader;
+
+      function render(view) {
+        document.querySelector("#position").textContent = view.state + "｜" +
+          (view.sectionTitle || "") + "｜" + view.paragraphNumber + "/" + view.paragraphCount;
+        document.querySelector("#speaker").textContent = view.event?.speaker || "";
+        document.querySelector("#content").textContent = view.text ||
+          (view.state === "complete" ? "全部讀完了。" : "正在準備故事……");
+        document.querySelector("#message").textContent = view.error ||
+          (view.recovery ? "書籤恢復：" + view.recovery.reason : "");
+      }
+
+      function connectReader() {
+        reader = SlowlyLinearStoryReader.create({
+          loader: source, player: SlowlyStoryEventPlayer.create(), progress
+        });
+        reader.subscribe(render);
+        return reader;
+      }
+
+      async function perform(operation) {
+        try { await operation(); }
+        catch (error) { document.querySelector("#message").textContent = error.message; }
+      }
+      document.querySelector("#previous").onclick = () => perform(() => reader.previous());
+      document.querySelector("#next").onclick = () => perform(() => reader.next());
+      document.querySelector("#restart").onclick = () => perform(() => reader.readFromStart());
+      document.querySelector("#restore").onclick = () => perform(async function () {
+        // 同一進度物件，建立新的控制器來模擬重新開啟。
+        await connectReader().initialize(manifest);
+      });
+      perform(() => connectReader().initialize(manifest));
+    })();
+  </script>
+</body>
+</html>

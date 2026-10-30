@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linear Story Reader｜Test</title>
+</head>
+<body>
+  <h1>Linear Story Reader｜Test</h1>
+  <p>使用記憶體資料與注入式 fetcher，不讀取任何作品原文。</p>
+  <p id="summary">執行中……</p>
+  <ol id="results"></ol>
+  <script src="https://lib.stillnessbyslowly.com/state/story_manifest_loader.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/state/story_event_player.js"></script>
+  <script src="https://lib.stillnessbyslowly.com/state/story_reading_progress.js"></script>
+  <script src="story_linear_reader.js"></script>
+  <script>
+    (async function () {
+      "use strict";
+      const list = document.querySelector("#results");
+      let passed = 0;
+      let failed = 0;
+
+      function check(label, condition) {
+        const item = document.createElement("li");
+        const ok = Boolean(condition);
+        item.textContent = (ok ? "PASS " : "FAIL ") + label;
+        list.append(item);
+        if (ok) passed++; else failed++;
+      }
+
+      async function test(label, work) {
+        try {
+          await work();
+          check(label, true);
+        } catch (error) {
+          check(label + "：「" + (error.message || String(error)) + "」", false);
+        }
+      }
+
+      function assert(condition, message) {
+        if (!condition) throw new Error(message || "assertion failed");
+      }
+
+      function fixture(config = {}) {
+        const definitions = config.sections || [
+          { id: "first", file: "one.json", events: [
+            { id: "a", type: "narration", speaker: "旁白", text: "甲" },
+            { id: "b", type: "dialogue", speaker: "角色", text: "乙" }
+          ] },
+          { id: "second", file: "two.json", events: [
+            { id: "c", type: "text", text: "丙" }
+          ] }
+        ];
+        const files = new Map();
+        for (const definition of definitions) {
+          if (!definition.missing) {
+            files.set(definition.file, { id: definition.dataId || definition.id,
+              events: definition.events });
+          }
+        }
+        const manifest = { schemaVersion: 1, main: [{ id: "chapter", title: "測試章", sections:
+          definitions.map(definition => ({ id: definition.id, file: definition.file, title: definition.id }))
+        }], extras: [] };
+        const baseUrl = "https://test.invalid/data/";
+        const fetcher = async function (url) {
+          const path = new URL(url).pathname.slice(new URL(baseUrl).pathname.length);
+          if (typeof config.onFetch === "function") await config.onFetch(path);
+          const data = files.get(path);
+          return { ok: Boolean(data), status: data ? 200 : 404,
+            json: async function () { return data; } };
+        };
+        const loader = SlowlyStoryManifestLoader.create({ baseUrl, fetcher });
+        const progress = SlowlyStoryReadingProgress.create(config.progressData);
+        const player = SlowlyStoryEventPlayer.create();
+        const reader = SlowlyLinearStoryReader.create({ loader, player, progress });
+        return { reader, player, loader, progress, manifest, files };
+      }
+
+      function event(id, text) {
+        return { id, type: "narration", text };
+      }
+
+      function section(id, events, additional = {}) {
+        return { id, file: id + ".json", events, ...additional };
+      }
+
+      await test("三格：啟動顯示第一格", async function () {
+        const { reader, manifest } = fixture();
+        const view = await reader.initialize(manifest);
+        assert(view.state === "reading" && view.text === "甲" && view.paragraphNumber === 1);
+        assert(!view.busy && view.sectionCount === 2);
+      });
+      await test("下一格和事件說話者", async function () {
+        const { reader, manifest } = fixture();
+        await reader.initialize(manifest);
+        await reader.next();
+        assert(reader.getView().text === "乙" && reader.getView().event.speaker === "角色");
+      });
+      await test("看到小節末格不提前標記完成", async function () {
+        const { reader, manifest, progress } = fixture();
+        await reader.initialize(manifest);
+        await reader.next();
+        assert(!progress.getStatus("first").completed);
+      });
+      await test("跨小節且前一節完讀", async function () {
+        const { reader, manifest, progress } = fixture();
+        await reader.initialize(manifest);
+        await reader.next(); await reader.next();
+        assert(reader.getView().text === "丙" && reader.getView().sectionNumber === 2);
+        assert(progress.getStatus("first").completed);
+      });
+      await test("跨小節往回到上一節末格", async function () {
+        const { reader, manifest } = fixture();
+        await reader.initialize(manifest);
+        await reader.next(); await reader.next(); await reader.previous();
+        assert(reader.getView().text === "乙");
+      });
+      await test("最末格再按一次才完全完讀", async function () {
+        const { reader, manifest, progress } = fixture();
+        await reader.initialize(manifest);
+        await reader.next(); await reader.next();
+        assert(reader.getView().state === "reading");
+        await reader.next();
+        assert(reader.getView().state === "complete" && reader.getView().event === null);
+        assert(progress.getStatus("second").completed && progress.getBookmark() === null);
+      });
+      await test("完成後多按下一格不循環", async function () {
+        const { reader, manifest } = fixture();
+        await reader.initialize(manifest);
+        await reader.next(); await reader.next(); await reader.next();
+        await reader.next();
+        assert(reader.getView().state === "complete");
+      });
+      await test("完成後上一格能回到末格", async function () {
+        const { reader, manifest } = fixture();
+        await reader.initialize(manifest);
+        await reader.next(); await reader.next(); await reader.next();
+        await reader.previous();
+        assert(reader.getView().text === "丙");
+      });
+      await test("重新閱讀保留完讀歷史", async function () {
+        const { reader, manifest, progress } = fixture();
+        await reader.initialize(manifest);
+        await reader.next(); await reader.next(); await reader.next();
+        await reader.readFromStart();
+        assert(reader.getView().text === "甲" && progress.getStatus("second").completed);
+      });
+      await test("指定小節開啟", async function () {
+        const { reader, manifest } = fixture();
+        await reader.initialize(manifest);
+        await reader.openSection("second");
+        assert(reader.getView().text === "丙");
+      });
+      await test("未知小節明確報錯，可回到已知小節", async function () {
+        const { reader, manifest } = fixture();
+        await reader.initialize(manifest);
+        let error = false;
+        try { await reader.openSection("missing"); } catch (exception) { error = true; }
+        assert(error && reader.getView().state === "error");
+        await reader.openSection("first");
+        assert(reader.getView().state === "reading" && reader.getView().text === "甲");
+      });
+      await test("首個空小節自動略過並完成", async function () {
+        const { reader, manifest, progress } = fixture({ sections: [
+          section("empty", []), section("content", [event("a", "內容")])
+        ] });
+        await reader.initialize(manifest);
+        assert(reader.getView().text === "內容" && progress.getStatus("empty").completed);
+      });
+      await test("中間連續空小節自動略過", async function () {
+        const { reader, manifest, progress } = fixture({ sections: [
+          section("before", [event("a", "前")]), section("emptyA", []),
+          section("emptyB", []), section("after", [event("b", "後")])
+        ] });
+        await reader.initialize(manifest); await reader.next();
+        assert(reader.getView().text === "後");
+        assert(progress.getStatus("emptyA").completed && progress.getStatus("emptyB").completed);
+      });
+      await test("末尾空小節完成後不殘留事件", async function () {
+        const { reader, manifest, progress } = fixture({ sections: [
+          section("before", [event("a", "前")]), section("lastEmpty", [])
+        ] });
+        await reader.initialize(manifest); await reader.next();
+        assert(reader.getView().state === "complete" && reader.getView().text === null);
+        assert(progress.getStatus("lastEmpty").completed);
+        await reader.previous();
+        assert(reader.getView().text === "前");
+      });
+      await test("全部空小節直接進入 complete", async function () {
+        const { reader, manifest, progress } = fixture({ sections: [
+          section("emptyA", []), section("emptyB", [])
+        ] });
+        await reader.initialize(manifest);
+        assert(reader.getView().state === "complete" && reader.getView().event === null);
+        assert(progress.getStatus("emptyA").completed && progress.getStatus("emptyB").completed);
+        await reader.previous();
+        assert(reader.getView().state === "complete");
+      });
+      await test("全部完讀再次初始化仍為 complete", async function () {
+        const { reader, manifest, progress } = fixture();
+        await reader.initialize(manifest); await reader.next(); await reader.next(); await reader.next();
+        await reader.initialize(manifest);
+        assert(reader.getView().state === "complete" && progress.getBookmark() === null);
+      });
+      await test("有效事件 ID 書籤恢復優先於 index", async function () {
+        const { reader, manifest } = fixture({ progressData: {
+          seenIds: ["first"], completedIds: [],
+          bookmark: { contentId: "first", eventId: "b", eventIndex: 0 }
+        } });
+        await reader.initialize(manifest);
+        assert(reader.getView().text === "乙" && reader.getView().recovery === null);
+      });
+      await test("書籤事件 ID 消失，不拿舊 index 亂跳", async function () {
+        const { reader, manifest } = fixture({ progressData: {
+          seenIds: ["first"], completedIds: [],
+          bookmark: { contentId: "first", eventId: "deleted", eventIndex: 1 }
+        } });
+        await reader.initialize(manifest);
+        assert(reader.getView().text === "甲");
+        assert(reader.getView().recovery.reason === "bookmark-position-missing");
+      });
+      await test("只有 eventIndex 的舊書籤可恢復", async function () {
+        const { reader, manifest } = fixture({ progressData: {
+          seenIds: ["first"], completedIds: [],
+          bookmark: { contentId: "first", eventIndex: 1 }
+        } });
+        await reader.initialize(manifest);
+        assert(reader.getView().text === "乙");
+      });
+      await test("書籤指向已刪除小節，回到首個未完讀", async function () {
+        const { reader, manifest } = fixture({ progressData: {
+          seenIds: [], completedIds: [],
+          bookmark: { contentId: "removed", eventId: "a", eventIndex: 0 }
+        } });
+        await reader.initialize(manifest);
+        assert(reader.getView().text === "甲");
+        assert(reader.getView().recovery.reason === "bookmark-section-missing");
+      });
+      await test("已完讀且舊書籤小節消失，不強制重讀", async function () {
+        const { reader, manifest } = fixture({ progressData: {
+          seenIds: ["first", "second"], completedIds: ["first", "second"],
+          bookmark: { contentId: "removed", eventId: "a", eventIndex: 0 }
+        } });
+        await reader.initialize(manifest);
+        assert(reader.getView().state === "complete");
+        assert(reader.getView().recovery.reason === "bookmark-section-missing");
+      });
+      await test("書籤指向空小節，跳過並回報", async function () {
+        const { reader, manifest } = fixture({
+          sections: [section("empty", []), section("valid", [event("a", "內容")])],
+          progressData: { seenIds: [], completedIds: [],
+            bookmark: { contentId: "empty", eventId: "gone", eventIndex: 0 } }
+        });
+        await reader.initialize(manifest);
+        assert(reader.getView().text === "內容");
+        assert(reader.getView().recovery.reason === "bookmark-empty-section");
+      });
+      await test("主動下一格清除舊書籤恢復提示", async function () {
+        const { reader, manifest } = fixture({ progressData: {
+          seenIds: [], completedIds: [],
+          bookmark: { contentId: "first", eventId: "gone", eventIndex: 1 }
+        } });
+        await reader.initialize(manifest); await reader.next();
+        assert(reader.getView().recovery === null);
+      });
+      await test("choice 不被略過而是明確拒絕", async function () {
+        const { reader, manifest } = fixture({ sections: [section("choice", [
+          { id: "c", type: "choice", options: [{ text: "繼續" }] }
+        ])] });
+        try { await reader.initialize(manifest); } catch (error) {}
+        assert(reader.getView().state === "error" && /interactive/.test(reader.getView().error));
+      });
+      await test("challenge 不被略過而是明確拒絕", async function () {
+        const { reader, manifest } = fixture({ sections: [section("challenge", [
+          { id: "c", type: "challenge", text: "任務" }
+        ])] });
+        try { await reader.initialize(manifest); } catch (error) {}
+        assert(reader.getView().state === "error" && /interactive/.test(reader.getView().error));
+      });
+      await test("非法小節 ID／事件資料不標記已完成", async function () {
+        const { reader, manifest, progress } = fixture({ sections: [
+          section("valid", [event("a", "好")]),
+          section("bad", [event("b", "錯")], { dataId: "wrong" })
+        ] });
+        await reader.initialize(manifest);
+        try { await reader.next(); } catch (error) {}
+        assert(reader.getView().state === "error");
+        assert(!progress.getStatus("bad").completed);
+        assert(!progress.getStatus("valid").completed);
+        assert(progress.getBookmark().eventId === "a");
+        await reader.openSection("valid");
+        assert(reader.getView().text === "好");
+      });
+      await test("HTTP 404 保留原書籤且可復原", async function () {
+        const { reader, manifest, progress, files } = fixture();
+        await reader.initialize(manifest);
+        files.delete("two.json");
+        await reader.next();
+        try { await reader.next(); } catch (error) {}
+        assert(reader.getView().state === "error");
+        assert(progress.getBookmark().contentId === "first");
+        files.set("two.json", { id: "second", events: [event("c", "丙")] });
+        await reader.openSection("first");
+        assert(reader.getView().text === "甲");
+      });
+      await test("無有效初始化時 next 給明確錯誤", async function () {
+        const { reader } = fixture();
+        let thrown = false;
+        try { await reader.next(); } catch (error) { thrown = true; }
+        assert(thrown && reader.getView().state === "error");
+      });
+      await test("getView 回傳資料改動不污染核心", async function () {
+        const { reader, manifest } = fixture();
+        await reader.initialize(manifest);
+        const view = reader.getView();
+        view.event.text = "污染";
+        view.progress.seenIds.push("污染");
+        assert(reader.getView().text === "甲");
+        assert(!reader.getView().progress.seenIds.includes("污染"));
+      });
+      await test("一個 subscriber 拋錯不影響另一個", async function () {
+        const { reader, manifest } = fixture();
+        let calls = 0;
+        reader.subscribe(function () { throw new Error("host render error"); });
+        reader.subscribe(function () { calls++; });
+        await reader.initialize(manifest); await reader.next();
+        assert(calls >= 2 && reader.getView().text === "乙");
+      });
+      await test("subscribe 回傳取消訂閱有效", async function () {
+        const { reader, manifest } = fixture();
+        let calls = 0;
+        const unsubscribe = reader.subscribe(function () { calls++; });
+        await reader.initialize(manifest);
+        const before = calls;
+        unsubscribe();
+        await reader.next();
+        assert(calls === before);
+      });
+      await test("通知給不同宿主的副本互不污染", async function () {
+        const { reader, manifest } = fixture();
+        let safeText = null;
+        reader.subscribe(function (view) { if (view.event) view.event.text = "污染"; });
+        reader.subscribe(function (view) { safeText = view.text; });
+        await reader.initialize(manifest);
+        assert(safeText === "甲" && reader.getView().text === "甲");
+      });
+      await test("無儲存權限／回呼拋錯仍可閱讀", async function () {
+        const { reader, manifest } = fixture();
+        reader.subscribe(function () { throw new Error("storage disabled"); });
+        await reader.initialize(manifest); await reader.next();
+        assert(reader.getView().text === "乙");
+      });
+      await test("多實例不同進度互不影響", async function () {
+        const a = fixture(); const b = fixture();
+        await a.reader.initialize(a.manifest); await b.reader.initialize(b.manifest);
+        await a.reader.next();
+        assert(a.reader.getView().text === "乙" && b.reader.getView().text === "甲");
+      });
+      await test("本機快照重建實例可恢復", async function () {
+        const first = fixture();
+        await first.reader.initialize(first.manifest); await first.reader.next();
+        const snapshot = first.progress.snapshot();
+        const second = fixture({ progressData: snapshot });
+        await second.reader.initialize(second.manifest);
+        assert(second.reader.getView().text === "乙");
+      });
+      await test("快速連點不跳讀且不排隊", async function () {
+        let unblock;
+        const gate = new Promise(resolve => { unblock = resolve; });
+        const f = fixture({ onFetch: async function (path) {
+          if (path === "two.json") await gate;
+        } });
+        await f.reader.initialize(f.manifest);
+        await f.reader.next();
+        const pending = f.reader.next();
+        const ignored = await f.reader.next();
+        assert(ignored.busy === true);
+        unblock();
+        await pending;
+        assert(f.reader.getView().text === "丙");
+        assert(f.reader.getView().state === "reading");
+      });
+      await test("讀取失敗後重新 initialize 可恢復", async function () {
+        const f = fixture();
+        await f.reader.initialize(f.manifest);
+        f.files.delete("two.json");
+        await f.reader.next();
+        try { await f.reader.next(); } catch (error) {}
+        f.files.set("two.json", { id: "second", events: [event("c", "丙")] });
+        await f.reader.initialize(f.manifest);
+        assert(f.reader.getView().state === "reading" && f.reader.getView().text === "乙");
+      });
+      await test("從指定空小節開啟會跳到下一個有效小節", async function () {
+        const f = fixture({ sections: [
+          section("valid", [event("a", "前")]), section("empty", []), section("end", [event("b", "後")])
+        ] });
+        await f.reader.initialize(f.manifest);
+        await f.reader.openSection("empty");
+        assert(f.reader.getView().text === "後");
+        assert(f.progress.getStatus("empty").completed);
+      });
+      await test("開啟最後空小節正常完成", async function () {
+        const f = fixture({ sections: [section("valid", [event("a", "前")]), section("empty", [])] });
+        await f.reader.initialize(f.manifest); await f.reader.openSection("empty");
+        assert(f.reader.getView().state === "complete");
+      });
+      await test("不同段落不含 id 仍可使用索引書籤", async function () {
+        const f = fixture({ sections: [section("valid", [
+          { type: "text", text: "無 ID 第一格" }, { type: "text", text: "無 ID 第二格" }
+        ])] });
+        await f.reader.initialize(f.manifest); await f.reader.next();
+        assert(f.progress.getBookmark().eventId === undefined);
+        const snapshot = f.progress.snapshot();
+        const f2 = fixture({ sections: [section("valid", [
+          { type: "text", text: "無 ID 第一格" }, { type: "text", text: "無 ID 第二格" }
+        ])], progressData: snapshot });
+        await f2.reader.initialize(f2.manifest);
+        assert(f2.reader.getView().text === "無 ID 第二格");
+      });
+      document.querySelector("#summary").textContent = passed + " PASS / " + failed + " FAIL";
+      document.querySelector("#summary").dataset.done = "true";
+    })();
+  </script>
+</body>
+</html>
