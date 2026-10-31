@@ -5585,6 +5585,28 @@ window.SlowlyLibraryIndex = [
             ]
           },
           {
+            "title": "Replay Player",
+            "desc": "通用操作歷程播放器：播放／暫停、上一動作／下一動作、回到開頭／跳到結尾、進度定位與倍速。核心只管理記錄位置與計時，不執行動作、不決定畫面、遊戲規則或 UI。",
+            "links": [
+              {
+                "label": "replay_player.js",
+                "href": "https://lib.stillnessbyslowly.com/state/replay_player.js"
+              },
+              {
+                "label": "展示頁",
+                "href": "https://lib.stillnessbyslowly.com/state/replay_player_demo.html"
+              },
+              {
+                "label": "使用說明",
+                "href": "https://lib.stillnessbyslowly.com/state/replay_player_usage.html"
+              },
+              {
+                "label": "功能測試",
+                "href": "https://lib.stillnessbyslowly.com/state/test_replay_player.html"
+              }
+            ]
+          },
+          {
             "title": "Linear Story Reader",
             "desc": "串接故事索引載入、事件播放與閱讀進度，支援逐格前進／倒退、跨小節、略過空節、書籤失效回復、完讀及重讀；不處理 UI、持久化或劇情分支。",
             "links": [

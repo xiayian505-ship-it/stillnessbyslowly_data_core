@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Replay Player｜Demo</title>
+</head>
+<body>
+  <h1>Replay Player｜Demo</h1>
+  <p>使用虛構操作記錄，確認可播放、暫停、逐步前後移動、拖曳與調速。此處不呈現任何特定遊戲。</p>
+
+  <p id="status" role="status"></p>
+  <p id="scene"></p>
+  <label for="progress">播放進度</label>
+  <input id="progress" type="range" min="0" max="0" step="1" value="0">
+  <output id="position" for="progress"></output>
+
+  <div>
+    <button id="restart" type="button">回到開頭</button>
+    <button id="previous" type="button">上一步</button>
+    <button id="toggle" type="button">播放</button>
+    <button id="next" type="button">下一步</button>
+    <button id="end" type="button">跳到結尾</button>
+    <label for="rate">播放速度</label>
+    <select id="rate">
+      <option value="0.5">0.5×</option>
+      <option value="1" selected>1×</option>
+      <option value="1.5">1.5×</option>
+      <option value="2">2×</option>
+      <option value="4">4×</option>
+    </select>
+  </div>
+
+  <p><a href="replay_player_usage.html">使用說明</a>　<a href="test_replay_player.html">功能測試</a></p>
+
+  <script src="replay_player.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      const actions = [
+        { label: "甲將數字增加 2", delta: 2 },
+        { label: "乙將數字增加 3", delta: 3 },
+        { label: "甲將數字減少 1", delta: -1 },
+        { label: "乙將數字增加 4", delta: 4 },
+        { label: "甲將數字減少 2", delta: -2 }
+      ];
+      const player = SlowlyReplayPlayer.create({ intervalMs: 800 });
+      const positionInput = document.querySelector("#progress");
+      const positionOutput = document.querySelector("#position");
+      const toggleButton = document.querySelector("#toggle");
+
+      // 宿主使用位置重建展示狀態，而不是由軍火庫決定畫面。
+      function render(state) {
+        const applied = actions.slice(0, state.position);
+        const sum = applied.reduce(function (value, action) {
+          return value + action.delta;
+        }, 0);
+
+        document.querySelector("#status").textContent = "狀態：" + state.status + "｜速度：" + state.rate + "×";
+        document.querySelector("#scene").textContent = "目前數值：" + sum +
+          (applied.length ? "｜上一步：" + applied[applied.length - 1].label : "｜尚未執行動作");
+        positionInput.max = String(state.total);
+        positionInput.value = String(state.position);
+        positionOutput.value = state.position + " / " + state.total;
+        toggleButton.textContent = state.status === "playing" ? "暫停" : "播放";
+      }
+
+      player.subscribe(render);
+      render(player.load(actions));
+
+      document.querySelector("#restart").addEventListener("click", function () { player.restart(); });
+      document.querySelector("#previous").addEventListener("click", function () { player.previous(); });
+      document.querySelector("#toggle").addEventListener("click", function () { player.toggle(); });
+      document.querySelector("#next").addEventListener("click", function () { player.next(); });
+      document.querySelector("#end").addEventListener("click", function () { player.toEnd(); });
+      positionInput.addEventListener("input", function () { player.seek(Number(positionInput.value)); });
+      document.querySelector("#rate").addEventListener("change", function (event) {
+        player.setRate(Number(event.target.value));
+      });
+      window.addEventListener("pagehide", function () { player.destroy(); }, { once: true });
+    })();
+  </script>
+</body>
+</html>

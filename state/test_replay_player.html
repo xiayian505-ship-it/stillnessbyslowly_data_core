@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Replay Player｜功能測試</title>
+</head>
+<body>
+  <h1>Replay Player｜功能測試</h1>
+  <p>使用假計時器執行可重現的 PASS／FAIL 測試，不依賴遊戲、資料庫或網路。</p>
+  <output id="summary">測試中……</output>
+  <ol id="results"></ol>
+
+  <script src="replay_player.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      const results = document.querySelector("#results");
+      let passed = 0;
+      let failed = 0;
+
+      function check(label, condition) {
+        const success = Boolean(condition);
+        const item = document.createElement("li");
+        item.textContent = (success ? "PASS " : "FAIL ") + label;
+        results.appendChild(item);
+        if (success) passed += 1;
+        else failed += 1;
+      }
+
+      function raises(callback, errorType) {
+        try {
+          callback();
+          return false;
+        } catch (error) {
+          return error instanceof errorType;
+        }
+      }
+
+      function fakeScheduler() {
+        let sequence = 0;
+        const pending = new Map();
+        return {
+          setTimeout(callback, delay) {
+            const id = ++sequence;
+            pending.set(id, { callback, delay });
+            return id;
+          },
+          clearTimeout(id) {
+            pending.delete(id);
+          },
+          advance() {
+            const first = pending.entries().next();
+            if (first.done) throw new Error("No scheduled tick");
+            const [id, task] = first.value;
+            pending.delete(id);
+            task.callback();
+            return task.delay;
+          },
+          get pending() { return pending.size; },
+          get nextDelay() { return pending.values().next().value?.delay ?? null; }
+        };
+      }
+
+      const scheduler = fakeScheduler();
+      const player = SlowlyReplayPlayer.create({ intervalMs: 600, scheduler });
+      check("初始狀態 idle", player.snapshot().status === "idle" && !player.snapshot().loaded);
+      check("未載入不可播放", raises(function () { player.play(); }, Error));
+      check("不接受非陣列", raises(function () { player.load({}); }, TypeError));
+      check("不接受循環參照", raises(function () {
+        const cycle = {};
+        cycle.self = cycle;
+        player.load([cycle]);
+      }, TypeError));
+
+      const source = [{ delta: 1 }, { delta: 2 }, { delta: 3 }];
+      const events = [];
+      player.subscribe(function (state, type) { events.push({ position: state.position, type }); });
+      player.subscribe(function () { throw new Error("host render failed"); });
+      player.load(source);
+      check("載入 3 個動作並通知", player.snapshot().total === 3 &&
+        player.snapshot().position === 0 && events[0].type === "load");
+      source[0].delta = 999;
+      check("載入與原陣列隔離", player.actionAt(0).delta === 1);
+      const action = player.actionAt(1);
+      action.delta = 999;
+      check("讀取結果與內部資料隔離", player.actionAt(1).delta === 2);
+      check("初始位置沒有已完成動作", player.currentAction() === null);
+
+      player.play();
+      check("播放建立單一計時器", player.snapshot().status === "playing" && scheduler.pending === 1);
+      check("重複播放不重排計時器", player.play().status === "playing" && scheduler.pending === 1);
+      check("預設間隔正確", scheduler.nextDelay === 600);
+      scheduler.advance();
+      check("播放前進一步", player.snapshot().position === 1 && player.currentAction().delta === 1);
+      check("訂閱者錯誤不阻止播放", events.some(function (entry) {
+        return entry.type === "tick" && entry.position === 1;
+      }));
+      player.pause();
+      check("暫停清除計時器", player.snapshot().status === "paused" && scheduler.pending === 0);
+      player.toggle();
+      check("切換播放恢復", player.snapshot().status === "playing" && scheduler.pending === 1);
+      player.setRate(2);
+      check("倍速更新重排計時器", player.snapshot().rate === 2 && scheduler.pending === 1 &&
+        scheduler.nextDelay === 300);
+      player.setIntervalMs(1000);
+      check("間隔更新重排計時器", scheduler.nextDelay === 500);
+      scheduler.advance();
+      scheduler.advance();
+      check("播到終點回報完成", player.snapshot().status === "ended" &&
+        player.snapshot().position === 3 && scheduler.pending === 0 &&
+        events.some(function (entry) { return entry.type === "complete"; }));
+      player.play();
+      check("終點再播放從開頭開始", player.snapshot().status === "playing" &&
+        player.snapshot().position === 0 && scheduler.pending === 1);
+      player.seek(2);
+      check("定位任意位置並暫停", player.snapshot().position === 2 &&
+        player.snapshot().status === "paused" && scheduler.pending === 0);
+      player.previous();
+      check("手動後退", player.snapshot().position === 1);
+      player.next();
+      check("手動前進", player.snapshot().position === 2);
+      player.toEnd();
+      check("跳到結尾", player.snapshot().position === 3 && player.snapshot().status === "ended");
+      player.restart();
+      check("回到開頭", player.snapshot().position === 0 && player.snapshot().status === "paused");
+      check("拒絕負數與小數位置", raises(function () { player.seek(-1); }, RangeError) &&
+        raises(function () { player.seek(1.5); }, RangeError));
+      check("拒絕超出總數的位置", raises(function () { player.seek(4); }, RangeError));
+      check("拒絕非法倍率和間隔", raises(function () { player.setRate(0); }, RangeError) &&
+        raises(function () { player.setIntervalMs(-10); }, RangeError));
+
+      player.play();
+      player.load([{ name: "replacement" }]);
+      check("重新載入中止舊的播放", scheduler.pending === 0 &&
+        player.snapshot().total === 1 && player.snapshot().position === 0);
+      const unsubscribe = player.subscribe(function (state, type) { events.push({ position: state.position, type }); });
+      unsubscribe();
+      check("取消訂閱不影響其他監聽", player.seek(1).status === "ended");
+      player.destroy();
+      check("銷毀清理計時器與資料", scheduler.pending === 0 &&
+        player.snapshot().status === "destroyed" && player.snapshot().total === 0 &&
+        player.snapshot().loaded === false);
+      check("銷毀後不可重新載入", raises(function () { player.load([]); }, Error));
+
+      const empty = SlowlyReplayPlayer.create({ scheduler: fakeScheduler() });
+      empty.load([]);
+      check("空動作陣列不可開始播放", empty.play().status === "paused" && empty.snapshot().total === 0);
+      empty.destroy();
+      const one = SlowlyReplayPlayer.create({ scheduler: fakeScheduler() });
+      const two = SlowlyReplayPlayer.create({ scheduler: fakeScheduler() });
+      one.load([{ id: 1 }]);
+      two.load([{ id: 1 }, { id: 2 }]);
+      one.next();
+      check("不同播放器實例互不干擾", one.snapshot().position === 1 && two.snapshot().position === 0);
+      one.destroy();
+      two.destroy();
+
+      document.querySelector("#summary").textContent =
+        "測試結果：" + passed + " PASS / " + failed + " FAIL";
+    })();
+  </script>
+</body>
+</html>

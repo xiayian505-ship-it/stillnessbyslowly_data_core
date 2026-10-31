@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Replay Player｜使用說明</title>
+</head>
+<body>
+  <nav><a href="replay_player_demo.html">展示頁</a>　<a href="test_replay_player.html">功能測試</a></nav>
+  <h1>Replay Player｜已記錄動作播放器</h1>
+  <p>只管理動作序列的位置、播放狀態、定時與速度；不含視覺皮膚、DOM、遊戲規則、動畫、資料庫、錄影或影片格式。</p>
+
+  <h2>引用位置</h2>
+  <pre>https://lib.stillnessbyslowly.com/state/replay_player.js</pre>
+  <p>以上是合併部署至軍火庫後的預定位置；此交付包本身未部署。Demo／Test 使用同目錄相對路徑。</p>
+  <pre><code>&lt;script src="https://lib.stillnessbyslowly.com/state/replay_player.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>公開介面</h2>
+  <p><code>SlowlyReplayPlayer.version</code> 為 <code>1.0.0</code>；使用 <code>SlowlyReplayPlayer.create(options)</code> 建立獨立實例。</p>
+  <table>
+    <thead><tr><th>方法</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td><code>load(actions)</code></td><td>載入 JSON 可序列化的動作陣列，複製內容並重設位置為 0。</td></tr>
+      <tr><td><code>play()</code>、<code>pause()</code>、<code>toggle()</code></td><td>播放、暫停、切換。播放結尾再按播放會由開頭重新開始。</td></tr>
+      <tr><td><code>previous()</code>、<code>next()</code></td><td>後退／前進一個動作位置，並暫停播放。</td></tr>
+      <tr><td><code>seek(position)</code></td><td>定位到 0～動作總數的整數位置，並暫停。位置 0 為原始狀態。</td></tr>
+      <tr><td><code>restart()</code>、<code>toEnd()</code></td><td>回到開頭／跳到結尾。</td></tr>
+      <tr><td><code>setRate(rate)</code></td><td>設定正數播放倍率；0.5、1、1.5、2、4 只是宿主可選的介面預設值。</td></tr>
+      <tr><td><code>setIntervalMs(ms)</code></td><td>設定一般倍率下每一步的時間，預設 800 毫秒。</td></tr>
+      <tr><td><code>snapshot()</code></td><td>讀取 status、position、total、progress、rate、intervalMs、hasPrevious、hasNext、loaded。</td></tr>
+      <tr><td><code>currentAction()</code>、<code>actionAt(index)</code></td><td>取得已完成的最後一個動作／指定的 0 起算動作複本。</td></tr>
+      <tr><td><code>subscribe(listener)</code></td><td>狀態變更時呼叫 <code>listener(state, eventType)</code>，回傳解除訂閱函式。</td></tr>
+      <tr><td><code>destroy()</code></td><td>停止計時、解除訂閱並釋放動作資料；實例不可再使用。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>最小範例</h2>
+  <pre><code>const actions = [
+  { from: "A", to: "B" },
+  { from: "B", to: "C" }
+];
+const player = SlowlyReplayPlayer.create({ intervalMs: 800, rate: 1 });
+
+player.subscribe(function (state, eventType) {
+  // state.position 是「已完成的動作數」，不是陣列索引。
+  // 宿主自行從初始狀態套用 actions.slice(0, state.position)。
+  drawStateAt(state.position);
+});
+
+player.load(actions);
+player.play();
+// player.pause(); player.seek(1); player.previous();
+</code></pre>
+
+  <h2>狀態和事件</h2>
+  <p>狀態：<code>idle</code>（未載入）、<code>paused</code>、<code>playing</code>、<code>ended</code>、<code>destroyed</code>。播放到最後會通知 <code>complete</code>。其他事件名稱：<code>load</code>、<code>play</code>、<code>pause</code>、<code>tick</code>、<code>seek</code>、<code>rate</code>、<code>interval</code>、<code>destroy</code>。</p>
+
+  <h2>依賴與宿主責任</h2>
+  <ul>
+    <li>獨立瀏覽器 JS，沒有第三方套件或其他軍火庫零件的必要依賴。</li>
+    <li>動作只是資料；核心不執行移牌、不驗證通關、不新增遊戲步數、不存取 API。</li>
+    <li>宿主可在收到 <code>tick</code> 時播放動畫；在 <code>seek</code> 時直接重建指定位置的盤面。</li>
+    <li>回呼是同步通知；若宿主以非同步方式載入或渲染，宿主須自行取消過期渲染，避免快轉時畫面倒退。</li>
+    <li>播放器的每步計時以瀏覽器定時器為準；背景分頁可能受到節流，並非精確影片影格時鐘。</li>
+    <li>宿主決定 UI、動畫時長、外觀、進度條、速度選單、儲存方式與播放完成後的返回流程。</li>
+    <li>參數不合法會拋出 TypeError／RangeError；未載入前操作或 destroy 後操作會拋出 Error。</li>
+    <li>可選 <code>options.scheduler</code> 注入 <code>setTimeout</code>／<code>clearTimeout</code>，供離線自動測試使用。</li>
+  </ul>
+  <p><a href="replay_player_demo.html">試用原生控制器 Demo</a>　<a href="test_replay_player.html">執行 PASS／FAIL 測試</a></p>
+</body>
+</html>
